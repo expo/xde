@@ -1,0 +1,26 @@
+{
+  "name": "xde",
+  "version": "0.0.0",
+  "description": "The Exponent Development Environment",
+  "main": "main.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exponentjs/xde.git"
+  },
+  "author": "exponent.team@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exponentjs/xde/issues"
+  },
+  "homepage": "https://github.com/exponentjs/xde#readme",
+  "devDependencies": {
+    "electron-prebuilt": "^0.30.2"
+  },
+  "dependencies": {
+    "react": "^0.13.3"
+  }
+}

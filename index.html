@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <script>
+      var React = require('react');
+      var JSXTransformer = require('react/dist/JSXTransformer');
+    </script>
+    <h1>Hello World!</h1>
+    <h2>Welcome to xde</h2>
+    <h3>The Exponent Development Environment</h3>
+    We are using io.js <script>document.write(process.version)</script>
+    and Electron <script>document.write(process.versions['electron'])</script>.
+    <div id="example">example</div>
+    <script type="text/jsx">
+      React.render(
+        <h1>Hello, React!</h1>,
+        document.getElementById('example')
+      );
+    </script>
+  </body>
+</html>
