@@ -2,21 +2,27 @@
 <html>
   <head>
     <title>Hello World!</title>
+    <style>
+      BODY {
+        margin: 0px 0px 0px 0px;
+        padding: 0px 0px 0px 0px;
+      }
+    </style>
   </head>
   <body>
     <script>
       var React = require('react');
       var JSXTransformer = require('react/dist/JSXTransformer');
+      var App = require('./build/web/App');
     </script>
+
     <h1>Hello World!</h1>
     <h2>Welcome to xde</h2>
     <h3>The Exponent Development Environment</h3>
-    We are using io.js <script>document.write(process.version)</script>
-    and Electron <script>document.write(process.versions['electron'])</script>.
     <div id="example">example</div>
     <script type="text/jsx">
       React.render(
-        <h1>Hello, React!</h1>,
+        <App />,
         document.getElementById('example')
       );
     </script>

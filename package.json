@@ -18,7 +18,16 @@
   },
   "homepage": "https://github.com/exponentjs/xde#readme",
   "devDependencies": {
-    "electron-prebuilt": "^0.30.2"
+    "@exponent/gulp-babel": "^7.1.0",
+    "@exponent/gulp-changed": "^1.3.1",
+    "babel-core": "^5.8.19",
+    "babel-runtime": "^5.8.19",
+    "electron-prebuilt": "^0.30.2",
+    "gulp": "^3.9.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-util": "^3.0.6",
+    "gulp-watch": "^4.3.4"
   },
   "dependencies": {
     "react": "^0.13.3"
