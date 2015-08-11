@@ -17,11 +17,21 @@ app.on('window-all-closed', function() {
   }
 });
 
+var AppMain = require('./build/application/AppMain');
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600});
+
+  var pc = new AppMain.packager.PackagerController();
+  // pc.packagerReady$.then(function (pc_) {
+  //   console.log("packager ready:", pc_);
+  // }, function (err) {
+  //   console.error("packager error:", err);
+  // });
+  pc.startAsync().then(console.log, console.error);
 
   // and load the index.html of the app.
   mainWindow.loadUrl('file://' + __dirname + '/index.html');

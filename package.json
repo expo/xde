@@ -30,7 +30,10 @@
     "gulp-watch": "^4.3.4"
   },
   "dependencies": {
+    "freeport-async": "^1.1.0",
+    "lodash-node": "^3.10.1",
     "react": "^0.13.3",
-    "react-bootstrap": "^0.24.3"
+    "react-bootstrap": "^0.24.3",
+    "react-native": "ide/react-native#2015-08-02-exp"
   }
 }
