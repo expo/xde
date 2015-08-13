@@ -25,13 +25,34 @@ app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600});
 
-  var pc = new AppMain.packager.PackagerController();
-  // pc.packagerReady$.then(function (pc_) {
+  var config = require('./build/application/config');
+
+  Promise.all([
+    config.packagerPathAsync(),
+    config.userCodeRootAsync(),
+  ]).then(function (results) {
+    var packagerPath = results[0];
+    var userCodeRoot = results[1];
+    var pc = new AppMain.packager.PackagerController({
+      packagerPath: packagerPath,
+      absolutePath: userCodeRoot,
+      entryPoint: 'AnExApp.js',
+    });
+    pc.startAsync().then(console.log, console.error).then(function () {
+      pc.getUrlAsync({
+        localhost: true,
+        http: true,
+        dev: true,
+      }).then(function (url) {
+        console.log("URL=", url);
+      }, console.error);
+    });
+  }, console.error);
+// pc.packagerReady$.then(function (pc_) {
   //   console.log("packager ready:", pc_);
   // }, function (err) {
   //   console.error("packager error:", err);
   // });
-  pc.startAsync().then(console.log, console.error);
 
   // and load the index.html of the app.
   mainWindow.loadUrl('file://' + __dirname + '/index.html');

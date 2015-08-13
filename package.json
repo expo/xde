@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cp ./dev/Design/xde.icns ./node_modules/electron-prebuilt/dist/Electron.app/Contents/Resources/atom.icns"
   },
   "repository": {
     "type": "git",
@@ -30,8 +31,10 @@
     "gulp-watch": "^4.3.4"
   },
   "dependencies": {
+    "@exponent/json-file": "^3.0.0",
     "freeport-async": "^1.1.0",
     "lodash-node": "^3.10.1",
+    "my-local-ip": "^1.0.0",
     "react": "^0.13.3",
     "react-bootstrap": "^0.24.3",
     "react-native": "ide/react-native#2015-08-02-exp"
