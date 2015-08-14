@@ -10,6 +10,7 @@ var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default
 
 var React = require('react');
 
+var MainMenu = require('./MainMenu');
 var NgrokPanel = require('./NgrokPanel');
 
 var App = (function (_React$Component) {

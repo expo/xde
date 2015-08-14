@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cp ./dev/Design/xde.icns ./node_modules/electron-prebuilt/dist/Electron.app/Contents/Resources/atom.icns"
+    "postinstall": "cp ./dev/Design/xde.icns ./node_modules/electron-prebuilt/dist/Electron.app/Contents/Resources/atom.icns; cp dev/ElectronHelper-Info.plist node_modules/electron-prebuilt/dist/Electron.app/Contents/Frameworks/Electron\\ Helper.app/Contents/Info.plist; cp dev/Electron-Info.plist node_modules/electron-prebuilt/dist/Electron.app/Contents/Info.plist; touch ./node_modules/electron-prebuilt/dist/Electron.app;"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,9 @@
     "gulp-watch": "^4.3.4"
   },
   "dependencies": {
+    "@ccheever/crayon": "^5.0.0",
     "@exponent/json-file": "^3.0.0",
+    "autobind-decorator": "^1.2.0",
     "freeport-async": "^1.1.0",
     "lodash-node": "^3.10.1",
     "my-local-ip": "^1.0.0",

@@ -7,6 +7,7 @@ require('crash-reporter').start();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is GCed.
 var mainWindow = null;
+var menuWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -25,6 +26,15 @@ app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600});
 
+  var gr = 1.61803398875;
+
+  var height = 300;
+  menuWindow = new BrowserWindow({
+    width: Math.floor(height * gr),
+    height: height,
+  });
+
+  /*
   var config = require('./build/application/config');
 
   Promise.all([
@@ -48,17 +58,26 @@ app.on('ready', function() {
       }, console.error);
     });
   }, console.error);
-// pc.packagerReady$.then(function (pc_) {
+  */
+
+  // pc.packagerReady$.then(function (pc_) {
   //   console.log("packager ready:", pc_);
   // }, function (err) {
   //   console.error("packager error:", err);
   // });
 
   // and load the index.html of the app.
-  mainWindow.loadUrl('file://' + __dirname + '/index.html');
+  mainWindow.loadUrl('file://' + __dirname + '/web/index.html');
 
   // Open the devtools.
   mainWindow.openDevTools();
+  // menuWindow.openDevTools();
+
+  menuWindow.loadUrl('file://' + __dirname + '/web/mainMenu.html');
+
+  menuWindow.on('closed', function () {
+    menuWindow = null;
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
