@@ -11,12 +11,9 @@ var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default
 var React = require('react');
 
 var autobind = require('autobind-decorator');
-var remote = require('remote');
 
 var ProcessInfo = require('./ProcessInfo');
 var StyleConstants = require('./StyleConstants');
-
-var dialog = remote.require('dialog');
 
 var MainMenu = (function (_React$Component) {
   _inherits(MainMenu, _React$Component);
@@ -79,11 +76,39 @@ var MainMenu = (function (_React$Component) {
         onClick: function onClick() {
           console.log("New");
           require('remote').require('dialog').showOpenDialog({
-            properties: ['openDirectory']
+            properties: ['openDirectory', 'createDirectory']
           }, function (fileNames) {
-            if (fileNames === undefined) return;
+
+            if (fileNames == null) {
+              console.log("New article cancelled");
+              return;
+            }
+
             var fileName = fileNames[0];
-            console.log("fileName=" + fileName, "fileNames=", fileNames);
+
+            var env = {
+              root: fileName
+            };
+
+            var init = require('remote').require('./build/commands/init');
+            init.runAsync(env, {}).then(function () {
+              console.log("Successfully created a new project");
+              var runPackager = require('remote').require('./build/commands/runPackager');
+              runPackager.runAsync(env, {}).then(function () {
+                console.log("Successfully started packager");
+
+                // Close this window since we don't need it anymore
+                require('remote').getCurrentWindow().close();
+              }, function (err) {
+                console.error("Failed to start packager");
+                console.error(err);
+                // TODO: Show an error message to the user
+              });
+            }, function (err) {
+              console.error("Didn't initialize!");
+              console.error(err.message);
+              // TODO: Show an error message to the user
+            });
           });
         }
 

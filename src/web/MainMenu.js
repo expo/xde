@@ -1,12 +1,9 @@
 let React = require('react');
 
 let autobind = require('autobind-decorator');
-let remote = require('remote');
 
 let ProcessInfo = require('./ProcessInfo');
 let StyleConstants = require('./StyleConstants');
-
-let dialog = remote.require('dialog');
 
 class MainMenu extends React.Component {
 
@@ -51,11 +48,40 @@ class MainMenu extends React.Component {
         onClick: () => {
           console.log("New");
           require('remote').require('dialog').showOpenDialog({
-            properties: ['openDirectory'],
+            properties: ['openDirectory', 'createDirectory'],
           }, function (fileNames) {
-            if (fileNames === undefined) return;
-            var fileName = fileNames[0];
-            console.log("fileName=" + fileName, "fileNames=", fileNames);
+
+            if (fileNames == null) {
+              console.log("New article cancelled");
+              return;
+            }
+
+            let fileName = fileNames[0];
+
+            let env = {
+              root: fileName,
+            };
+
+            let init = require('remote').require('./build/commands/init');
+            init.runAsync(env, {}).then(() => {
+              console.log("Successfully created a new project");
+              let runPackager = require('remote').require('./build/commands/runPackager');
+              runPackager.runAsync(env, {}).then(() => {
+                console.log("Successfully started packager");
+
+                // Close this window since we don't need it anymore
+                require('remote').getCurrentWindow().close();
+
+              }, (err) => {
+                console.error("Failed to start packager");
+                console.error(err);
+                // TODO: Show an error message to the user
+              });
+            }, (err) => {
+              console.error("Didn't initialize!");
+              console.error(err.message);
+              // TODO: Show an error message to the user
+            });
           });
 
         },

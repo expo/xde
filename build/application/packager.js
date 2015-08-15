@@ -12,6 +12,8 @@ var _Promise = require('babel-runtime/core-js/promise')['default'];
 
 var child_process = require('child_process');
 var freeportAsync = require('freeport-async');
+var instapromise = require('instapromise');
+var ngrok = require('ngrok');
 var path = require('path');
 
 var urlUtils = require('./urlUtils');
@@ -30,6 +32,7 @@ var PackagerController = (function () {
       mainModulePath: 'index.js'
     };
 
+    // absolutePath: root,
     this.opts = _Object$assign(DEFAULT_OPTS, opts);
     this._givenOpts = opts;
     this.packagerReady$ = new _Promise(function (fulfill, reject) {
@@ -39,10 +42,10 @@ var PackagerController = (function () {
   }
 
   _createClass(PackagerController, [{
-    key: 'start',
-    value: function start() {
-      throw new Error("Use `.startAsync()` instead of `.start()`");
-    }
+    key: '_startNgrokAsync',
+    value: _asyncToGenerator(function* () {
+      yield ngrok.promise.connect(this.opts.port);
+    })
   }, {
     key: 'startAsync',
     value: _asyncToGenerator(function* () {
@@ -59,6 +62,8 @@ var PackagerController = (function () {
         stdio: 'inherit',
         detached: false
       });
+
+      this._ngrok$ = this._startNgrokAsync();
 
       return this;
     })
