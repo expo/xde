@@ -1,7 +1,5 @@
 'use strict';
 
-var exp = require('exp');
-
 var packager = require('./packager');
 
 module.exports = {
