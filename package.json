@@ -36,6 +36,7 @@
     "autobind-decorator": "^1.2.0",
     "exists-async": "^1.0.0",
     "freeport-async": "^1.1.0",
+    "fs-extra": "^0.23.1",
     "instapromise": "^2.0.2",
     "lodash-node": "^3.10.1",
     "mkdirp": "^0.5.1",
