@@ -116,13 +116,26 @@ var MainMenu = (function (_React$Component) {
         name: 'Open an Article',
         onClick: function onClick() {
           console.log("Open");
-          var z = require('remote').require('dialog').showOpenDialog({
+          require('remote').require('dialog').showOpenDialog({
             properties: ['openDirectory']
-          }, function (source, selection) {
-            console.log("selection=", selection);
-            console.log("source=", source, "selection=", selection);
+          }, function (selections) {
+
+            if (!selections) {
+              console.log("No directory selected");
+              return;
+            }
+
+            var selection = selections[0];
+            var env = {
+              root: selection
+            };
+            var runPackager = require('remote').require('./build/commands/runPackager');
+            runPackager.runAsync(env, {}).then(function (pc) {
+              console.log("runAsync complete");
+              var url = pc.getUrlAsync();
+              console.log(url);
+            });
           });
-          console.log("z=", z);
         }
       }, {
         name: 'Quit',

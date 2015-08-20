@@ -4,6 +4,7 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 
 var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
 
+  crayon.blue.log("constructUrlAsync");
   opts = opts || {};
 
   var protocol = 'exp';
@@ -60,6 +61,7 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
   return url;
 });
 
+var crayon = require('@ccheever/crayon');
 var myLocalIp = require('my-local-ip');
 var os = require('os');
 

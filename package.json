@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cp ./dev/Design/xde.icns ./node_modules/electron-prebuilt/dist/Electron.app/Contents/Resources/atom.icns; cp dev/ElectronHelper-Info.plist node_modules/electron-prebuilt/dist/Electron.app/Contents/Frameworks/Electron\\ Helper.app/Contents/Info.plist; cp dev/Electron-Info.plist node_modules/electron-prebuilt/dist/Electron.app/Contents/Info.plist; touch ./node_modules/electron-prebuilt/dist/Electron.app;"
+    "postinstall": "node ./build/scripts/postinstall.js"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "mkdirp": "^0.5.1",
     "my-local-ip": "^1.0.0",
     "ngrok": "^0.1.99",
+    "plist": "^1.1.0",
     "react": "^0.13.3",
     "react-bootstrap": "^0.24.3",
     "react-native": "ide/react-native#2015-08-02-exp"

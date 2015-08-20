@@ -1,8 +1,11 @@
+let crayon = require('@ccheever/crayon');
 let myLocalIp = require('my-local-ip');
 let os = require('os');
 
+
 async function constructUrlAsync(pc, opts) {
 
+  crayon.blue.log("constructUrlAsync");
   opts = opts || {};
 
   let protocol = 'exp';

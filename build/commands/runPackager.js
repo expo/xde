@@ -15,7 +15,29 @@ module.exports = {
     // TODO: Guess the main module path from the package.json
     // Or should that be baked into the PackagerController?
     // It probably should
+    pc.packagerReady$.then(function () {
+      console.log("Packager Promise Ready");
+    });
+
+    pc.on('ready', function () {
+      console.log("Packager event ready");
+    });
+
+    pc.on('stdout', function (data) {
+      console.log("stdout:", data);
+    });
+
+    pc.on('stderr', function (data) {
+      console.error("stderr:", data);
+    });
+
+    pc.on('ngrokReady', function (ng) {
+      console.log("NGROK READY");
+    });
+
     yield pc.startAsync();
+
+    return pc;
   })
 };
 //# sourceMappingURL=../sourcemaps/commands/runPackager.js.map

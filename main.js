@@ -28,11 +28,11 @@ app.on('ready', function() {
 
   var gr = 1.61803398875;
 
-  var height = 300;
-  menuWindow = new BrowserWindow({
-    width: Math.floor(height * gr),
-    height: height,
-  });
+  // var height = 300;
+  // menuWindow = new BrowserWindow({
+  //   width: Math.floor(height * gr),
+  //   height: height,
+  // });
 
   /*
   var config = require('./build/application/config');
@@ -73,11 +73,18 @@ app.on('ready', function() {
   mainWindow.openDevTools();
   // menuWindow.openDevTools();
 
-  menuWindow.loadUrl('file://' + __dirname + '/web/mainMenu.html');
+  // menuWindow.loadUrl('file://' + __dirname + '/web/mainMenu.html');
+  //
+  // menuWindow.on('closed', function () {
+  //   menuWindow = null;
+  // });
 
-  menuWindow.on('closed', function () {
-    menuWindow = null;
-  });
+  var runPackager = require('./build/commands/runPackager');
+  runPackager.runAsync({
+    root: '/Users/ccheever/tmp/icecubetray',
+  }, {}).then(function (pc) {
+    pc.getUrlAsync().then(console.log, console.error);
+  }).then(console.log, console.error);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
