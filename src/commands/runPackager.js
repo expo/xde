@@ -1,39 +1,14 @@
 let path = require('path');
 
-let packager = require('../application/packager');
-
+let PackagerController = require('../application/PackagerController');
 
 module.exports = {
   runAsync: async function (env, args) {
-    let pc = new packager.PackagerController({
+    let pc = new PackagerController({
       absolutePath: path.resolve(env.root),
       // TODO: Guess the main module path from the package.json
       // Or should that be baked into the PackagerController?
       // It probably should
-    });
-
-    pc.packagerReady$.then(() => {
-      console.log("Packager Promise Ready");
-    });
-
-    pc.on('ready', () => {
-      console.log("Packager event ready");
-    });
-
-    pc.on('stdout', (data) => {
-      console.log("stdout:", data);
-    });
-
-    pc.on('stderr', (data) => {
-      console.error("stderr:", data);
-    });
-
-    pc.on('ready', () => {
-      pc.getUrlAsync().then((u) => {
-        console.log("URL=" + u);
-      }, (e) => {
-        console.error("Problem getting URL " + e);
-      });
     });
 
     await pc.startAsync();

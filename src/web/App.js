@@ -70,13 +70,6 @@ class App extends React.Component {
 
     }).then(console.log, console.error);
 
-
-    // this.props.emitter.on('setPackagerController', (pc) => {
-    //   this.setState({packagerController: pc});
-    // });
-    //
-    // this.props.emitter.emit('ready', this);
-
   }
 
 };

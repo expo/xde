@@ -96,12 +96,6 @@ var App = (function (_React$Component) {
         _this.setState({ packagerController: pc });
         pc.getUrlAsync().then(console.log, console.error);
       }).then(console.log, console.error);
-
-      // this.props.emitter.on('setPackagerController', (pc) => {
-      //   this.setState({packagerController: pc});
-      // });
-      //
-      // this.props.emitter.emit('ready', this);
     }
   }]);
 
