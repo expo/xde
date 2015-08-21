@@ -10,6 +10,8 @@ var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
+var _slicedToArray = require('babel-runtime/helpers/sliced-to-array')['default'];
+
 var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
 var _Promise = require('babel-runtime/core-js/promise')['default'];
@@ -43,16 +45,41 @@ var PackagerController = (function (_events$EventEmitter) {
     // absolutePath: root,
     this.opts = _Object$assign(DEFAULT_OPTS, opts);
     this._givenOpts = opts;
+
     this.packagerReady$ = new _Promise(function (fulfill, reject) {
       _this._packagerReadyFulfill = fulfill;
       _this._packagerReadyReject = reject;
+    });
+
+    this.ngrokReady$ = new _Promise(function (fulfill, reject) {
+      _this._ngrokReadyFulfill = fulfill;
+      _this._ngrokReadyReject = reject;
+    });
+
+    this.ready$ = _Promise.all([this.packagerReady$, this.ngrokReady$]);
+
+    this.packagerReady$.then(function (packagerProcess) {
+      _this.emit('packagerReady', packagerProcess);
+    });
+
+    this.ngrokReady$.then(function (ngrokUrl) {
+      _this.emit('ngrokReady', ngrokUrl);
+    });
+
+    this.ready$.then(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 2);
+
+      var packagerProcess = _ref2[0];
+      var ngrokUrl = _ref2[1];
+
+      _this.emit('ready', _this, packagerProcess, ngrokUrl);
     });
   }
 
   _createClass(PackagerController, [{
     key: '_startNgrokAsync',
     value: _asyncToGenerator(function* () {
-      yield ngrok.promise.connect(this.opts.port);
+      return yield ngrok.promise.connect(this.opts.port);
     })
   }, {
     key: 'startAsync',
@@ -78,7 +105,8 @@ var PackagerController = (function (_events$EventEmitter) {
 
         if (data.match(/React packager ready\./)) {
           _this2._packagerReadyFulfill(_this2._packager);
-          _this2.emit('ready', _this2._packager);
+          _this2._packagerReady = true;
+          _this2.emit('packagerReady', _this2._packager);
         }
 
         // crayon.yellow.log("STDOUT:", data);
@@ -89,10 +117,19 @@ var PackagerController = (function (_events$EventEmitter) {
         // crayon.orange.error("STDERR:", data);
       });
 
-      this._ngrok$ = this._startNgrokAsync();
-      this._ngrok$.then(function (ng) {
-        _this2.emit('ngrokReady', ng);
+      // If the packager process exits before the packager is ready
+      // then the packager is never gonna be ready
+      this._packager.on('exit', function (code) {
+        if (!_this2._packagerReady) {
+          _this2._packagerReadyReject(code);
+        }
       });
+
+      this._startNgrokAsync().then(function (ngrokUrl) {
+        _this2.ngrokUrl = ngrokUrl;
+        console.log("Set ngrokUrl to ", _this2.ngrokUrl);
+        _this2._ngrokReadyFulfill(ngrokUrl);
+      }, this._ngrokReadyReject);
 
       return this;
     })

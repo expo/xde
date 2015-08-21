@@ -30,47 +30,55 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
     // CDC: Each PackagerController should have its own ngrok instance
     // actually. If we launch a few different ones, they should each
     // be running a different ngrok
-    hostname = 'IMPLEMENT-ME.ngrok.io';
-    port = null;
+    // hostname = 'IMPLEMENT-ME.ngrok.io';
+    if (!pc.ngrokUrl) {
+      console.log("pc.ngrokUrl=", pc.ngrokUrl);
+      throw new Error("Can't get ngrok URL because ngrok not started yet");
+    }
+
+    var pnu = url.parse(pc.ngrokUrl);
+    hostname = pnu.hostname;
+    port = pnu.port;
   }
 
-  var url = protocol + '://' + hostname;
+  var url_ = protocol + '://' + hostname;
   if (port) {
-    url += ':' + port;
+    url_ += ':' + port;
   }
 
   var entryPoint = pc.opts.entryPoint || 'index.js';
   var mainModulePath = opts.mainModulePath || guessMainModulePath(entryPoint);
   console.log("entryPoint=", entryPoint, "mainModulePath=", mainModulePath);
-  url += '/' + encodeURIComponent(mainModulePath) + '.';
+  url_ += '/' + encodeURIComponent(mainModulePath) + '.';
 
   if (opts.includeRequire !== false) {
-    url += encodeURIComponent('includeRequire.');
+    url_ += encodeURIComponent('includeRequire.');
   }
 
   if (opts.runModule !== false) {
-    url += encodeURIComponent('runModule.');
+    url_ += encodeURIComponent('runModule.');
   }
 
-  url += 'bundle';
-  url += '?dev=' + encodeURIComponent(!!opts.dev);
+  url_ += 'bundle';
+  url_ += '?dev=' + encodeURIComponent(!!opts.dev);
   if (opts.minify != null) {
-    url += '&minify=' + encodeURIComponent(!!opts.minify);
+    url_ += '&minify=' + encodeURIComponent(!!opts.minify);
   }
 
-  return url;
+  return url_;
 });
 
 var crayon = require('@ccheever/crayon');
 var myLocalIp = require('my-local-ip');
 var os = require('os');
+var url = require('url');
 
-function expUrlFromHttpUrl(url) {
-  return ('' + url).replace(/^http(s?)/, 'exp');
+function expUrlFromHttpUrl(url_) {
+  return ('' + url_).replace(/^http(s?)/, 'exp');
 }
 
-function httpUrlFromExpUrl(url) {
-  return ('' + url).replace(/^exp(s?)/, 'http');
+function httpUrlFromExpUrl(url_) {
+  return ('' + url_).replace(/^exp(s?)/, 'http');
 }
 
 function guessMainModulePath(entryPoint) {

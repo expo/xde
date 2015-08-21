@@ -28,14 +28,12 @@ module.exports = {
       console.error("stderr:", data);
     });
 
-    pc.on('ngrokReady', (ng) => {
-      console.log("NGROK READY");
-      try {
-        let url = await pc.getUrlAsync();
-        console.log("URL=" + url);
-      } catch (e) {
-        console.error("Problem getting URL" + e);
-      }
+    pc.on('ready', () => {
+      pc.getUrlAsync().then((u) => {
+        console.log("URL=" + u);
+      }, (e) => {
+        console.error("Problem getting URL " + e);
+      });
     });
 
     await pc.startAsync();

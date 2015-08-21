@@ -31,8 +31,12 @@ module.exports = {
       console.error("stderr:", data);
     });
 
-    pc.on('ngrokReady', function (ng) {
-      console.log("NGROK READY");
+    pc.on('ready', function () {
+      pc.getUrlAsync().then(function (u) {
+        console.log("URL=" + u);
+      }, function (e) {
+        console.error("Problem getting URL " + e);
+      });
     });
 
     yield pc.startAsync();

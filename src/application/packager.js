@@ -21,15 +21,38 @@ class PackagerController extends events.EventEmitter {
 
     this.opts = Object.assign(DEFAULT_OPTS, opts);
     this._givenOpts = opts;
+
     this.packagerReady$ = new Promise((fulfill, reject) => {
       this._packagerReadyFulfill = fulfill;
       this._packagerReadyReject = reject;
     });
 
+    this.ngrokReady$ = new Promise((fulfill, reject) => {
+      this._ngrokReadyFulfill = fulfill;
+      this._ngrokReadyReject = reject;
+    });
+
+    this.ready$ = Promise.all([
+      this.packagerReady$,
+      this.ngrokReady$,
+    ]);
+
+    this.packagerReady$.then((packagerProcess) => {
+      this.emit('packagerReady', packagerProcess);
+    });
+
+    this.ngrokReady$.then((ngrokUrl) => {
+      this.emit('ngrokReady', ngrokUrl);
+    });
+
+    this.ready$.then(([packagerProcess, ngrokUrl]) => {
+      this.emit('ready', this, packagerProcess, ngrokUrl);
+    });
+
   }
 
   async _startNgrokAsync() {
-    await ngrok.promise.connect(this.opts.port);
+    return await ngrok.promise.connect(this.opts.port);
   }
 
   async startAsync() {
@@ -54,7 +77,8 @@ class PackagerController extends events.EventEmitter {
 
       if (data.match(/React packager ready\./)) {
         this._packagerReadyFulfill(this._packager);
-        this.emit('ready', this._packager);
+        this._packagerReady = true;
+        this.emit('packagerReady', this._packager);
       }
 
       // crayon.yellow.log("STDOUT:", data);
@@ -65,10 +89,20 @@ class PackagerController extends events.EventEmitter {
       // crayon.orange.error("STDERR:", data);
     });
 
-    this._ngrok$ = this._startNgrokAsync();
-    this._ngrok$.then((ng) => {
-      this.emit('ngrokReady', ng);
+    // If the packager process exits before the packager is ready
+    // then the packager is never gonna be ready
+    this._packager.on('exit', (code) => {
+      if (!this._packagerReady) {
+        this._packagerReadyReject(code);
+      }
     });
+
+    this._startNgrokAsync().then((ngrokUrl) => {
+      this.ngrokUrl = ngrokUrl;
+      console.log("Set ngrokUrl to ", this.ngrokUrl);
+      this._ngrokReadyFulfill(ngrokUrl);
+    }, this._ngrokReadyReject);
+
 
     return this;
   }
