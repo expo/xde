@@ -4,7 +4,7 @@ let autobind = require('autobind-decorator');
 
 let Commands = require('./Commands');
 let MainMenu = require('./MainMenu');
-let PackagerConsole = require('./PackagerConsole');
+let StyleConstants = require('./StyleConstants');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
@@ -157,7 +157,22 @@ class App extends React.Component {
 
     return (
       <div>
-        {this._renderButtons()}
+        <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+        }}>
+          <img src="./ExponentIcon.png" style={{
+              height: 36,
+              width: 36,
+              marginLeft: 15,
+              marginTop: 10,
+              cursor: 'pointer',
+          }} onClick={() => {
+            require('shell').openExternal('http://exponentjs.com/');
+          }} />
+          {this._renderButtons()}
+        </div>
         {this._renderUrl()}
         <div style={{
             display: 'flex',
@@ -181,7 +196,10 @@ class App extends React.Component {
   _renderButtons() {
     return (
       <ButtonToolbar style={{
-          margin: 10,
+          marginTop: 10,
+          marginBottom: 10,
+          marginRight: 10,
+          marginLeft: 3,
       }}>
         <Button bsSize='medium' active onClick={this._newClicked}>New Exp</Button>
         <Button bsSize='medium' active onClick={this._openClicked}>Open Exp</Button>
@@ -328,7 +346,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
     this._runPackagerAsync({
       root: '/Users/ccheever/tmp/icecubetray',
     }).then(console.log, console.error);
@@ -343,6 +360,7 @@ class App extends React.Component {
 };
 
 let Styles = {
+
   log: {
     width: '50%',
     fontFamily: ['Menlo', 'Courier', 'monospace'],
@@ -350,6 +368,7 @@ let Styles = {
     flex: 1,
     height: 300,
   },
+
   logHeaders: {
     display: 'inline-block',
     width: '50%',
@@ -357,6 +376,7 @@ let Styles = {
     fontWeight: 'bold',
     fontSize: 13,
   },
+
   url: {
     paddingLeft: 4,
     paddingRight: 4,
@@ -367,6 +387,18 @@ let Styles = {
     fontSize: 13,
     fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif',],
   },
+
+  logotype: {
+    color: StyleConstants.navy,
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Verdana', 'sans-serif'],
+    fontSize: 18,
+    fontWeight: 200,
+    letterSpacing: 4.5,
+    lineHeight: 20,
+    backgroundColor: 'yellw',
+    textTransform: 'uppercase',
+  },
+
 };
 
 module.exports = App;

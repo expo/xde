@@ -20,7 +20,7 @@ var autobind = require('autobind-decorator');
 
 var Commands = require('./Commands');
 var MainMenu = require('./MainMenu');
-var PackagerConsole = require('./PackagerConsole');
+var StyleConstants = require('./StyleConstants');
 
 var Button = require('react-bootstrap/lib/Button');
 var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
@@ -196,7 +196,24 @@ var App = (function (_React$Component) {
       return React.createElement(
         'div',
         null,
-        this._renderButtons(),
+        React.createElement(
+          'div',
+          { style: {
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start'
+            } },
+          React.createElement('img', { src: './ExponentIcon.png', style: {
+              height: 36,
+              width: 36,
+              marginLeft: 15,
+              marginTop: 10,
+              cursor: 'pointer'
+            }, onClick: function () {
+              require('shell').openExternal('http://exponentjs.com/');
+            } }),
+          this._renderButtons()
+        ),
         this._renderUrl(),
         React.createElement(
           'div',
@@ -226,7 +243,10 @@ var App = (function (_React$Component) {
       return React.createElement(
         ButtonToolbar,
         { style: {
-            margin: 10
+            marginTop: 10,
+            marginBottom: 10,
+            marginRight: 10,
+            marginLeft: 3
           } },
         React.createElement(
           Button,
@@ -406,7 +426,6 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      // this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
       this._runPackagerAsync({
         root: '/Users/ccheever/tmp/icecubetray'
       }).then(console.log, console.error);
@@ -426,6 +445,7 @@ var App = (function (_React$Component) {
 ;
 
 var Styles = {
+
   log: {
     width: '50%',
     fontFamily: ['Menlo', 'Courier', 'monospace'],
@@ -433,6 +453,7 @@ var Styles = {
     flex: 1,
     height: 300
   },
+
   logHeaders: {
     display: 'inline-block',
     width: '50%',
@@ -440,6 +461,7 @@ var Styles = {
     fontWeight: 'bold',
     fontSize: 13
   },
+
   url: {
     paddingLeft: 4,
     paddingRight: 4,
@@ -449,7 +471,19 @@ var Styles = {
     color: '#888888',
     fontSize: 13,
     fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif']
+  },
+
+  logotype: {
+    color: StyleConstants.navy,
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Verdana', 'sans-serif'],
+    fontSize: 18,
+    fontWeight: 200,
+    letterSpacing: 4.5,
+    lineHeight: 20,
+    backgroundColor: 'yellw',
+    textTransform: 'uppercase'
   }
+
 };
 
 module.exports = App;
