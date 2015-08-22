@@ -98,20 +98,25 @@ class App extends React.Component {
 
   _renderSendInput() {
     return (
-      <input
-        type="text"
-        style={Object.assign({}, Styles.url, {
-          width: 202,
-          marginTop: 2,
-        })}
-        placeholder="Phone number or email"
-        name="sendInput"
-        ref="sendInput"
-        onChange={() => {
-          this.setState({sendTo: React.findDOMNode(this.refs.sendInput).value});
-        }}
-        defaultValue={null}
-      />
+        <form onSubmit={(e) => {
+            this._sendClicked();
+            e.preventDefault();
+          }}>
+          <input
+            type="text"
+            style={Object.assign({}, Styles.url, {
+              width: 202,
+              marginTop: 2,
+            })}
+            placeholder="Phone number or email"
+            name="sendInput"
+            ref="sendInput"
+            onChange={() => {
+              this.setState({sendTo: React.findDOMNode(this.refs.sendInput).value});
+            }}
+            defaultValue={null}
+          />
+        </form>
     );
   }
 
@@ -226,6 +231,10 @@ class App extends React.Component {
       disabled: !restartButtonsActive,
     };
 
+    let sendActiveProp = {
+      disabled: (!restartButtonsActive || !this.state.sendTo),
+    };
+
     return (
       <ButtonToolbar style={{
           marginLeft: 10,
@@ -234,7 +243,7 @@ class App extends React.Component {
         <Button bsSize='small' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
         <Button bsSize='small' {...activeProp} onClick={
             this._restartNgrokClicked}>Restart ngrok</Button>
-          <Button bsSize='small' {...activeProp} onClick={this._sendClicked}>Send Link</Button>
+          <Button bsSize='small' {...sendActiveProp} onClick={this._sendClicked}>Send Link</Button>
       </ButtonToolbar>
     );
   }

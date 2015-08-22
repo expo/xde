@@ -125,20 +125,27 @@ var App = (function (_React$Component) {
     value: function _renderSendInput() {
       var _this2 = this;
 
-      return React.createElement('input', {
-        type: 'text',
-        style: _Object$assign({}, Styles.url, {
-          width: 202,
-          marginTop: 2
-        }),
-        placeholder: 'Phone number or email',
-        name: 'sendInput',
-        ref: 'sendInput',
-        onChange: function () {
-          _this2.setState({ sendTo: React.findDOMNode(_this2.refs.sendInput).value });
-        },
-        defaultValue: null
-      });
+      return React.createElement(
+        'form',
+        { onSubmit: function (e) {
+            _this2._sendClicked();
+            e.preventDefault();
+          } },
+        React.createElement('input', {
+          type: 'text',
+          style: _Object$assign({}, Styles.url, {
+            width: 202,
+            marginTop: 2
+          }),
+          placeholder: 'Phone number or email',
+          name: 'sendInput',
+          ref: 'sendInput',
+          onChange: function () {
+            _this2.setState({ sendTo: React.findDOMNode(_this2.refs.sendInput).value });
+          },
+          defaultValue: null
+        })
+      );
     }
   }, {
     key: '_selectUrl',
@@ -276,6 +283,10 @@ var App = (function (_React$Component) {
         disabled: !restartButtonsActive
       };
 
+      var sendActiveProp = {
+        disabled: !restartButtonsActive || !this.state.sendTo
+      };
+
       return React.createElement(
         ButtonToolbar,
         { style: {
@@ -294,7 +305,7 @@ var App = (function (_React$Component) {
         ),
         React.createElement(
           Button,
-          _extends({ bsSize: 'small' }, activeProp, { onClick: this._sendClicked }),
+          _extends({ bsSize: 'small' }, sendActiveProp, { onClick: this._sendClicked }),
           'Send Link'
         )
       );
