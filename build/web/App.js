@@ -338,6 +338,11 @@ var App = (function (_React$Component) {
     value: _asyncToGenerator(function* (env, args) {
       var _this2 = this;
 
+      if (!env) {
+        console.log("Not running packager with empty env");
+        return null;
+      }
+
       args = args || {};
       var runPackager = require('../commands/runPackager');
       var pc = yield runPackager.runAsync(env, {});

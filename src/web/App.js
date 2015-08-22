@@ -265,6 +265,11 @@ class App extends React.Component {
   @autobind
   async _runPackagerAsync(env, args) {
 
+    if (!env) {
+      console.log("Not running packager with empty env");
+      return null;
+    }
+
     args = args || {};
     let runPackager = require('../commands/runPackager');
     let pc = await runPackager.runAsync(env, {});
