@@ -2,16 +2,67 @@
 <html>
   <head>
     <title>Exponent XDE</title>
-    <style>
-      BODY {
-        margin: 0px 0px 0px 0px;
-        padding: 0px 0px 0px 0px;
-      }
-    </style>
 
     <!-- Latest compiled and minified CSS -->
     <!-- TODO(ccheever): Make this a local thing -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <style>
+      BODY {
+        margin: 0px 0px 0px 0px;
+        padding: 0px 0px 0px 0px;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+      PRE {
+        background: #FFF;
+        border: none;
+        color: #000;
+        display: block;
+        font: normal;
+        height: auto;
+        letter-spacing: normal;
+        line-height: normal;
+        margin: 0;
+        padding: 0;
+        text-transform: normal;
+        visibility: visible;
+        width: auto;
+        word-spacing: normal;
+        z-index: auto;
+      }
+      .logs {
+        font-size: 11px;
+        font-family: 'Monaco', 'Fixed8x14', 'Fixed7x14', 'Consolas', 'Fixed8x13', 'Monaco', 'Menlo', 'Courier', monospace;
+        line-height: 1.4;
+        font-weight: lighter;
+      }
+      .log-err {
+        color: red;
+        font-weight: 500;
+      }
+      .log-meta {
+        color: #003A6B;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
+      }
+      .log-meta-error {
+        color: red;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
+      }
+      #app {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+
 
 
   </head>
@@ -22,7 +73,7 @@
       var App = require('../build/web/App');
     </script>
 
-    <div id="app"></div>
+    <div id="app">Hello</div>
     <script type="text/jsx">
       React.render(
         <App emitter={require('remote').require('./application/AppEmitter')} />,

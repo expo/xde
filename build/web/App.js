@@ -17,6 +17,7 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 var React = require('react');
 
 var autobind = require('autobind-decorator');
+var escapeHtml = require('escape-html');
 
 var Commands = require('./Commands');
 var MainMenu = require('./MainMenu');
@@ -24,6 +25,10 @@ var StyleConstants = require('./StyleConstants');
 
 var Button = require('react-bootstrap/lib/Button');
 var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+
+function escapeAndPre(s) {
+  return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, ' ');
+}
 
 var App = (function (_React$Component) {
   _inherits(App, _React$Component);
@@ -44,6 +49,7 @@ var App = (function (_React$Component) {
       sendInput: null
     };
 
+    this._packagerLogsHtml = '';
     this._packagerLogs = '';
     this._packageErrors = '';
     global._App = this;
@@ -151,43 +157,13 @@ var App = (function (_React$Component) {
     key: '_renderPackagerConsole',
     value: function _renderPackagerConsole() {
 
-      return React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'div',
-          { style: { width: '100%' } },
-          React.createElement(
-            'span',
-            { style: Styles.logHeaders },
-            'Packger Logs'
-          ),
-          React.createElement(
-            'span',
-            { style: Styles.logHeaders },
-            'Packager Errors'
-          )
-        ),
-        React.createElement(
-          'div',
-          { style: { width: '100%', display: 'flex', flexDirection: 'row' } },
-          React.createElement('textarea', {
-            ref: 'packagerLogs',
-            readOnly: true,
-            key: 'packagerLogs',
-            style: Styles.log, value: this.state.packagerLogs,
-            controlled: true
-          }),
-          React.createElement('textarea', {
-            readOnly: true,
-            key: 'packagerErrors',
-            ref: 'packagerErrors',
-            style: _Object$assign({}, Styles.log, { color: 'red' }),
-            value: this.state.packagerErrors,
-            controlled: true
-          })
-        )
-      );
+      return React.createElement('div', {
+        ref: 'packagerLogs',
+        key: 'packagerLogs',
+        style: _Object$assign({}, Styles.log, {
+          overflow: 'scroll'
+        }),
+        dangerouslySetInnerHTML: { __html: this.state.packagerLogs } });
     }
   }, {
     key: 'render',
@@ -195,44 +171,55 @@ var App = (function (_React$Component) {
 
       return React.createElement(
         'div',
-        null,
+        { style: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start'
+          } },
         React.createElement(
           'div',
           { style: {
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start'
+              flexShrink: 0,
+              flexGrow: 0
             } },
-          React.createElement('img', { src: './ExponentIcon.png', style: {
-              height: 36,
-              width: 36,
-              marginLeft: 15,
-              marginTop: 10,
-              cursor: 'pointer'
-            }, onClick: function () {
-              require('shell').openExternal('http://exponentjs.com/');
-            } }),
-          this._renderButtons()
-        ),
-        this._renderUrl(),
-        React.createElement(
-          'div',
-          { style: {
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start'
-            } },
-          this._renderAdvancedButtons(),
           React.createElement(
-            'span',
+            'div',
             { style: {
-                paddingLeft: 6,
-                paddingRight: 6,
-                paddingTop: 6
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'flex-start'
               } },
-            'to'
+            React.createElement('img', { src: './ExponentIcon.png', style: {
+                height: 36,
+                width: 36,
+                marginLeft: 15,
+                marginTop: 10,
+                cursor: 'pointer'
+              }, onClick: function () {
+                require('shell').openExternal('http://exponentjs.com/');
+              } }),
+            this._renderButtons()
           ),
-          this._renderSendInput()
+          this._renderUrl(),
+          React.createElement(
+            'div',
+            { style: {
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'flex-start'
+              } },
+            this._renderAdvancedButtons(),
+            React.createElement(
+              'span',
+              { style: {
+                  paddingLeft: 6,
+                  paddingRight: 6,
+                  paddingTop: 6
+                } },
+              'to'
+            ),
+            this._renderSendInput()
+          )
         ),
         this._renderPackagerConsole()
       );
@@ -323,30 +310,40 @@ var App = (function (_React$Component) {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
+      var _this3 = this;
+
       if (this.state.packagerController) {
         console.log("Restarting packager...");
+        this._logMetaMessage("Restarting packager...");
         this.state.packagerController.startOrRestartPackagerAsync().then(function () {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
+          _this3._logMetaMessage("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
+        this._logMetaMessage("Packager not running; can't restart it.");
       }
     }
   }, {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
+      var _this4 = this;
+
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
+        this._logMetaMessage("Restarting ngrok...");
         this.state.packagerController.startOrRestartNgrokAsync().then(function () {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
+          _this4._logMetaMessage("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
+        this._logMetaMessage("ngrok not running; can't restart it.");
       }
     }
   }, {
@@ -360,17 +357,29 @@ var App = (function (_React$Component) {
     key: '_appendPackagerLogs',
     decorators: [autobind],
     value: function _appendPackagerLogs(data) {
-      this._packagerLogs = this._packagerLogs + data;
-      this.setState({ packagerLogs: this._packagerLogs });
+      this._packagerLogsHtml = this._packagerLogsHtml + escapeHtml(data);
+      this._updatePackagerLogState();
+    }
+  }, {
+    key: '_updatePackagerLogState',
+    decorators: [autobind],
+    value: function _updatePackagerLogState() {
+      this.setState({ packagerLogs: '<pre class="logs">' + this._packagerLogsHtml + '</pre>' });
       this._scrollPackagerLogsToBottom();
     }
   }, {
     key: '_appendPackagerErrors',
     decorators: [autobind],
     value: function _appendPackagerErrors(data) {
-      this._packagerErrors = this._packagerErrors + data;
-      this.setState({ packagerErrors: this._packagerErrors });
-      this._scrollPackagerErrorsToBottom();
+      this._packagerLogsHtml += '<span class="log-err">' + escapeHtml(data) + '</span>';
+      this._updatePackagerLogState();
+    }
+  }, {
+    key: '_logMetaMessage',
+    decorators: [autobind],
+    value: function _logMetaMessage(data) {
+      this._packagerLogsHtml += '<div class="log-meta">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
     }
   }, {
     key: '_scrollPackagerLogsToBottom',
@@ -390,7 +399,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this3 = this;
+      var _this5 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -408,13 +417,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this3.setState({ ngrokReady: true });
-        _this3._maybeRecomputeUrl();
+        _this5.setState({ ngrokReady: true });
+        _this5._maybeRecomputeUrl();
+        _this5._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this3.setState({ packagerReady: true });
-        _this3._maybeRecomputeUrl();
+        _this5.setState({ packagerReady: true });
+        _this5._maybeRecomputeUrl();
+        _this5._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -447,16 +458,20 @@ var App = (function (_React$Component) {
 var Styles = {
 
   log: {
-    width: '50%',
+    width: '100%',
     fontFamily: ['Menlo', 'Courier', 'monospace'],
     fontSize: 11,
-    flex: 1,
-    height: 300
+    borderWidth: 1,
+    borderColor: '#888888',
+    borderStyle: 'solid',
+    borderBottomWidth: 0,
+    paddingLeft: 15,
+    paddingRight: 15
   },
 
   logHeaders: {
     display: 'inline-block',
-    width: '50%',
+    width: '100%',
     paddingLeft: 15,
     fontWeight: 'bold',
     fontSize: 13
@@ -484,6 +499,14 @@ var Styles = {
     textTransform: 'uppercase'
   }
 
+};
+
+global.cl = function (a, b, c) {
+  console.log(a, b, c);
+};
+
+global.ce = function (a, b, c) {
+  console.error(a, b, c);
 };
 
 module.exports = App;
