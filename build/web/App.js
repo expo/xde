@@ -131,6 +131,7 @@ var App = (function (_React$Component) {
           width: 202,
           marginTop: 2
         }),
+        placeholder: 'Phone number or email',
         name: 'sendInput',
         ref: 'sendInput',
         onChange: function () {
@@ -179,8 +180,12 @@ var App = (function (_React$Component) {
         React.createElement(
           'div',
           { style: {
+              backgroundColor: '#f6f6f6',
               flexShrink: 0,
-              flexGrow: 0
+              flexGrow: 0,
+              alignSelf: 'stretch',
+              boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
+              zIndex: 0
             } },
           React.createElement(
             'div',
@@ -461,10 +466,6 @@ var Styles = {
     width: '100%',
     fontFamily: ['Menlo', 'Courier', 'monospace'],
     fontSize: 11,
-    borderWidth: 1,
-    borderColor: '#888888',
-    borderStyle: 'solid',
-    borderBottomWidth: 0,
     paddingLeft: 15,
     paddingRight: 15
   },
