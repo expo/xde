@@ -46,6 +46,7 @@
     "react": "^0.13.3",
     "react-bootstrap": "^0.24.3",
     "react-native": "ide/react-native#2015-08-02-exp",
+    "slugid": "^1.0.3",
     "url": "^0.10.3"
   }
 }

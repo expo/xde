@@ -4,12 +4,10 @@ let autobind = require('autobind-decorator');
 
 let Commands = require('./Commands');
 let MainMenu = require('./MainMenu');
-let NgrokPanel = require('./NgrokPanel');
 let PackagerConsole = require('./PackagerConsole');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
-
 
 class App extends React.Component {
 
@@ -24,6 +22,7 @@ class App extends React.Component {
       hostType: 'ngrok',
       dev: true,
       minify: false,
+      sendInput: null,
     }
 
     this._packagerLogs = '';
@@ -91,6 +90,24 @@ class App extends React.Component {
     );
   }
 
+  _renderSendInput() {
+    return (
+      <input
+        type="text"
+        style={Object.assign({}, Styles.url, {
+          width: 202,
+          marginTop: 2,
+        })}
+        name="sendInput"
+        ref="sendInput"
+        onChange={() => {
+          this.setState({sendTo: React.findDOMNode(this.refs.sendInput).value});
+        }}
+        defaultValue={null}
+      />
+    );
+  }
+
   @autobind
   _selectUrl() {
     React.findDOMNode(this.refs.urlInput).select();
@@ -141,8 +158,20 @@ class App extends React.Component {
     return (
       <div>
         {this._renderButtons()}
-        <div>{this._renderUrl()}</div>
-        {this._renderAdvancedButtons()}
+        {this._renderUrl()}
+        <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+          }}>
+          {this._renderAdvancedButtons()}
+          <span style={{
+              paddingLeft: 6,
+              paddingRight: 6,
+              paddingTop: 6,
+          }}>to</span>
+          {this._renderSendInput()}
+        </div>
         {this._renderPackagerConsole()}
       </div>
     );
@@ -232,7 +261,8 @@ class App extends React.Component {
 
   @autobind
   _sendClicked() {
-    console.log("Send link:", this.state.url);
+    console.log("Send link:", this.state.url, "to", this.state.sendTo);
+    Commands.sendAsync(this.state.sendTo, this.state.url).then(console.log, console.error);
   }
 
 
@@ -298,7 +328,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
+    // this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
+    this._runPackagerAsync({
+      root: '/Users/ccheever/tmp/icecubetray',
+    }).then(console.log, console.error);
   }
 
   _maybeRecomputeUrl() {

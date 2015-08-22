@@ -1,4 +1,6 @@
 
+let Api = require('../application/Api');
+
 async function showOpenDialog(opts) {
   return new Promise((fulfill, reject) => {
     let dialog = require('remote').require('dialog');
@@ -36,7 +38,6 @@ module.exports = {
   },
 
   openExpAsync: async function () {
-    console.log(1);
     let dialog = require('remote').require('dialog');
     let selections = await showOpenDialog({
       properties: ['openDirectory'],
@@ -56,7 +57,13 @@ module.exports = {
     };
 
     return env;
-    
+
+  },
+
+  sendAsync: async function (recipient, url_) {
+    console.log("sendAsync command");
+    let result = await Api.callMethodAsync('send', [recipient, url_]);
+    return result;
   },
 
 };

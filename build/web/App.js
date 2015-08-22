@@ -20,7 +20,6 @@ var autobind = require('autobind-decorator');
 
 var Commands = require('./Commands');
 var MainMenu = require('./MainMenu');
-var NgrokPanel = require('./NgrokPanel');
 var PackagerConsole = require('./PackagerConsole');
 
 var Button = require('react-bootstrap/lib/Button');
@@ -41,7 +40,8 @@ var App = (function (_React$Component) {
       http: false,
       hostType: 'ngrok',
       dev: true,
-      minify: false
+      minify: false,
+      sendInput: null
     };
 
     this._packagerLogs = '';
@@ -115,6 +115,25 @@ var App = (function (_React$Component) {
       );
     }
   }, {
+    key: '_renderSendInput',
+    value: function _renderSendInput() {
+      var _this2 = this;
+
+      return React.createElement('input', {
+        type: 'text',
+        style: _Object$assign({}, Styles.url, {
+          width: 202,
+          marginTop: 2
+        }),
+        name: 'sendInput',
+        ref: 'sendInput',
+        onChange: function () {
+          _this2.setState({ sendTo: React.findDOMNode(_this2.refs.sendInput).value });
+        },
+        defaultValue: null
+      });
+    }
+  }, {
     key: '_selectUrl',
     decorators: [autobind],
     value: function _selectUrl() {
@@ -178,12 +197,26 @@ var App = (function (_React$Component) {
         'div',
         null,
         this._renderButtons(),
+        this._renderUrl(),
         React.createElement(
           'div',
-          null,
-          this._renderUrl()
+          { style: {
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start'
+            } },
+          this._renderAdvancedButtons(),
+          React.createElement(
+            'span',
+            { style: {
+                paddingLeft: 6,
+                paddingRight: 6,
+                paddingTop: 6
+              } },
+            'to'
+          ),
+          this._renderSendInput()
         ),
-        this._renderAdvancedButtons(),
         this._renderPackagerConsole()
       );
     }
@@ -300,7 +333,8 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      console.log("Send link:", this.state.url);
+      console.log("Send link:", this.state.url, "to", this.state.sendTo);
+      Commands.sendAsync(this.state.sendTo, this.state.url).then(console.log, console.error);
     }
   }, {
     key: '_appendPackagerLogs',
@@ -336,7 +370,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -354,13 +388,13 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this2.setState({ ngrokReady: true });
-        _this2._maybeRecomputeUrl();
+        _this3.setState({ ngrokReady: true });
+        _this3._maybeRecomputeUrl();
       });
 
       pc.on('packager-ready', function () {
-        _this2.setState({ packagerReady: true });
-        _this2._maybeRecomputeUrl();
+        _this3.setState({ packagerReady: true });
+        _this3._maybeRecomputeUrl();
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -372,7 +406,10 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
+      // this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
+      this._runPackagerAsync({
+        root: '/Users/ccheever/tmp/icecubetray'
+      }).then(console.log, console.error);
     }
   }, {
     key: '_maybeRecomputeUrl',

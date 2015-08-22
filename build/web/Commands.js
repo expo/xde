@@ -13,6 +13,8 @@ var showOpenDialog = _asyncToGenerator(function* (opts) {
   });
 });
 
+var Api = require('../application/Api');
+
 module.exports = {
 
   newExpAsync: _asyncToGenerator(function* () {
@@ -40,7 +42,6 @@ module.exports = {
   }),
 
   openExpAsync: _asyncToGenerator(function* () {
-    console.log(1);
     var dialog = require('remote').require('dialog');
     var selections = yield showOpenDialog({
       properties: ['openDirectory']
@@ -60,6 +61,12 @@ module.exports = {
     };
 
     return env;
+  }),
+
+  sendAsync: _asyncToGenerator(function* (recipient, url_) {
+    console.log("sendAsync command");
+    var result = yield Api.callMethodAsync('send', [recipient, url_]);
+    return result;
   })
 
 };
