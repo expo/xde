@@ -237,17 +237,17 @@ var App = (function (_React$Component) {
           } },
         React.createElement(
           Button,
-          { bsSize: 'medium', active: true, onClick: this._newClicked },
+          { bsSize: 'medium', onClick: this._newClicked },
           'New Exp'
         ),
         React.createElement(
           Button,
-          { bsSize: 'medium', active: true, onClick: this._openClicked },
+          { bsSize: 'medium', onClick: this._openClicked },
           'Open Exp'
         ),
         React.createElement(
           Button,
-          { bsSize: 'medium', active: true },
+          { bsSize: 'medium' },
           'Publish'
         )
       );
@@ -267,7 +267,7 @@ var App = (function (_React$Component) {
 
       var restartButtonsActive = !!this.state.packagerController;
       var activeProp = {
-        active: restartButtonsActive,
+        // active: restartButtonsActive,
         disabled: !restartButtonsActive
       };
 
@@ -437,9 +437,9 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this._runPackagerAsync({
-        root: '/Users/ccheever/tmp/icecubetray'
-      }).then(console.log, console.error);
+      // this._runPackagerAsync({
+      //   root: '/Users/ccheever/tmp/icecubetray',
+      // }).then(console.log, console.error);
     }
   }, {
     key: '_maybeRecomputeUrl',

@@ -196,9 +196,9 @@ class App extends React.Component {
           marginRight: 10,
           marginLeft: 3,
       }}>
-        <Button bsSize='medium' active onClick={this._newClicked}>New Exp</Button>
-        <Button bsSize='medium' active onClick={this._openClicked}>Open Exp</Button>
-        <Button bsSize='medium' active>Publish</Button>
+        <Button bsSize='medium' onClick={this._newClicked}>New Exp</Button>
+        <Button bsSize='medium' onClick={this._openClicked}>Open Exp</Button>
+        <Button bsSize='medium' >Publish</Button>
       </ButtonToolbar>
     );
 
@@ -217,7 +217,7 @@ class App extends React.Component {
 
     let restartButtonsActive = !!this.state.packagerController;
     let activeProp = {
-      active: restartButtonsActive,
+      // active: restartButtonsActive,
       disabled: !restartButtonsActive,
     };
 
@@ -359,9 +359,9 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this._runPackagerAsync({
-      root: '/Users/ccheever/tmp/icecubetray',
-    }).then(console.log, console.error);
+    // this._runPackagerAsync({
+    //   root: '/Users/ccheever/tmp/icecubetray',
+    // }).then(console.log, console.error);
   }
 
   _maybeRecomputeUrl() {
