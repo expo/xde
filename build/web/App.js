@@ -8,6 +8,10 @@ var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-clas
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+
+var _extends = require('babel-runtime/helpers/extends')['default'];
+
 var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
 var React = require('react');
@@ -32,7 +36,12 @@ var App = (function (_React$Component) {
     this.state = {
       packagerController: null,
       packagerLogs: '',
-      packagerErrors: ''
+      packagerErrors: '',
+      url: null,
+      http: false,
+      hostType: 'ngrok',
+      dev: true,
+      minify: false
     };
 
     this._packagerLogs = '';
@@ -41,35 +50,102 @@ var App = (function (_React$Component) {
   }
 
   _createDecoratedClass(App, [{
+    key: '_recomputeUrlAsync',
+    value: _asyncToGenerator(function* () {
+      var pc = this.state.packagerController;
+      var opts = {
+        http: this.state.http,
+        ngrok: this.state.hostType === 'ngrok',
+        lan: this.state.hostType === 'lan',
+        localhost: this.state.hostType === 'localhost',
+        dev: this.state.dev,
+        minify: this.state.minify
+      };
+      return yield pc.getUrlAsync(opts);
+    })
+  }, {
+    key: '_recomputeUrlAndSetState',
+    value: function _recomputeUrlAndSetState() {
+      var _this = this;
+
+      this._recomputeUrlAsync().then(function (computedUrl) {
+        console.log("computedUrl=", computedUrl);
+        _this.setState({ url: computedUrl });
+      }, function (err) {
+        console.error("Couldn't compute URL:", err);
+      });
+    }
+  }, {
+    key: '_renderUrl',
+    value: function _renderUrl() {
+
+      var style = _Object$assign({}, Styles.url);
+      var displayText = this.state.url;
+      if (!this.state.url) {
+        style.color = '#dddddd';
+        displayText = "Starting packager and ngrok...";
+      }
+
+      return React.createElement(
+        'div',
+        { style: {
+            marginLeft: 15,
+            marginBottom: 10,
+            marginRight: 10
+          } },
+        React.createElement('input', {
+          type: 'text',
+          ref: 'urlInput',
+          controlled: true,
+          readOnly: true,
+          style: style,
+          value: displayText,
+          onClick: this._selectUrl
+        }),
+        React.createElement('img', {
+          src: './Clipboard-21x21.png',
+          style: {
+            height: 21,
+            width: 21,
+            margin: 5,
+            cursor: 'pointer'
+          },
+          onClick: this._copyUrlToClipboard
+        })
+      );
+    }
+  }, {
+    key: '_selectUrl',
+    decorators: [autobind],
+    value: function _selectUrl() {
+      React.findDOMNode(this.refs.urlInput).select();
+    }
+  }, {
+    key: '_copyUrlToClipboard',
+    decorators: [autobind],
+    value: function _copyUrlToClipboard() {
+      this._selectUrl();
+      document.execCommand('copy');
+      console.log("Copied URL to clipboard");
+    }
+  }, {
     key: '_renderPackagerConsole',
     value: function _renderPackagerConsole() {
-
-      var logStyle = {
-        width: '50%',
-        fontFamily: ['Menlo', 'Courier', 'monospace'],
-        fontSize: 11,
-        flex: 1,
-        height: 300
-      };
 
       return React.createElement(
         'div',
         null,
         React.createElement(
           'div',
-          { style: { width: '100%', background: 'red' } },
+          { style: { width: '100%' } },
           React.createElement(
             'span',
-            { style: {
-                width: '50%'
-              } },
+            { style: Styles.logHeaders },
             'Packger Logs'
           ),
           React.createElement(
             'span',
-            { stlye: {
-                width: '50%'
-              } },
+            { style: Styles.logHeaders },
             'Packager Errors'
           )
         ),
@@ -80,14 +156,14 @@ var App = (function (_React$Component) {
             ref: 'packagerLogs',
             readOnly: true,
             key: 'packagerLogs',
-            style: logStyle, value: this.state.packagerLogs,
+            style: Styles.log, value: this.state.packagerLogs,
             controlled: true
           }),
           React.createElement('textarea', {
             readOnly: true,
             key: 'packagerErrors',
             ref: 'packagerErrors',
-            style: _Object$assign({}, logStyle, { color: 'red' }),
+            style: _Object$assign({}, Styles.log, { color: 'red' }),
             value: this.state.packagerErrors,
             controlled: true
           })
@@ -102,6 +178,12 @@ var App = (function (_React$Component) {
         'div',
         null,
         this._renderButtons(),
+        React.createElement(
+          'div',
+          null,
+          this._renderUrl()
+        ),
+        this._renderAdvancedButtons(),
         this._renderPackagerConsole()
       );
     }
@@ -110,31 +192,18 @@ var App = (function (_React$Component) {
     value: function _renderButtons() {
       return React.createElement(
         ButtonToolbar,
-        null,
+        { style: {
+            margin: 10
+          } },
         React.createElement(
           Button,
           { bsSize: 'medium', active: true, onClick: this._newClicked },
-          'New'
+          'New Exp'
         ),
         React.createElement(
           Button,
-          { bsSize: 'medium', active: true },
-          'Open'
-        ),
-        React.createElement(
-          Button,
-          { bsSize: 'medium', active: true, onClick: this._restartPackagerClicked },
-          'Restart Packager'
-        ),
-        React.createElement(
-          Button,
-          { bsSize: 'medium', active: true },
-          'Restart ngrok'
-        ),
-        React.createElement(
-          Button,
-          { bsSize: 'medium', active: true },
-          'Send Link'
+          { bsSize: 'medium', active: true, onClick: this._openClicked },
+          'Open Exp'
         ),
         React.createElement(
           Button,
@@ -142,12 +211,60 @@ var App = (function (_React$Component) {
           'Publish'
         )
       );
+
+      /*
+      <Button bsSize='medium' disabled style={{
+          background: 'green',
+      }}>Packager Active</Button>
+      <Button bsSize='medium' active>Button</Button>
+      <Button bsStyle='primary' bsSize='medium' active>Primary button</Button>
+      <Button bsSize='medium' active>Button</Button>
+      */
+    }
+  }, {
+    key: '_renderAdvancedButtons',
+    value: function _renderAdvancedButtons() {
+
+      var restartButtonsActive = !!this.state.packagerController;
+      var activeProp = {
+        active: restartButtonsActive,
+        disabled: !restartButtonsActive
+      };
+
+      return React.createElement(
+        ButtonToolbar,
+        { style: {
+            marginLeft: 10,
+            marginBottom: 10
+          } },
+        React.createElement(
+          Button,
+          _extends({ bsSize: 'small' }, activeProp, { onClick: this._restartPackagerClicked }),
+          'Restart Packager'
+        ),
+        React.createElement(
+          Button,
+          _extends({ bsSize: 'small' }, activeProp, { onClick: this._restartNgrokClicked }),
+          'Restart ngrok'
+        ),
+        React.createElement(
+          Button,
+          _extends({ bsSize: 'small' }, activeProp, { onClick: this._sendClicked }),
+          'Send Link'
+        )
+      );
     }
   }, {
     key: '_newClicked',
     decorators: [autobind],
     value: function _newClicked() {
-      Commands['new']();
+      Commands.newExpAsync().then(this._runPackagerAsync, console.error);
+    }
+  }, {
+    key: '_openClicked',
+    decorators: [autobind],
+    value: function _openClicked() {
+      Commands.openExpAsync().then(this._runPackagerAsync, console.error);
     }
   }, {
     key: '_restartPackagerClicked',
@@ -165,10 +282,25 @@ var App = (function (_React$Component) {
       }
     }
   }, {
-    key: '_openClicked',
+    key: '_restartNgrokClicked',
     decorators: [autobind],
-    value: function _openClicked() {
-      Commands.open();
+    value: function _restartNgrokClicked() {
+      if (this.state.packagerController) {
+        console.log("Restarting ngrok...");
+        this.state.packagerController.startOrRestartNgrokAsync().then(function () {
+          console.log("ngrok restarted.");
+        }, function (err) {
+          console.error("Failed to restart ngrok :(");
+        });
+      } else {
+        console.error("No ngrok to restart!");
+      }
+    }
+  }, {
+    key: '_sendClicked',
+    decorators: [autobind],
+    value: function _sendClicked() {
+      console.log("Send link:", this.state.url);
     }
   }, {
     key: '_appendPackagerLogs',
@@ -201,23 +333,48 @@ var App = (function (_React$Component) {
       ta.scrollTop = ta.scrollHeight;
     }
   }, {
+    key: '_runPackagerAsync',
+    decorators: [autobind],
+    value: _asyncToGenerator(function* (env, args) {
+      var _this2 = this;
+
+      args = args || {};
+      var runPackager = require('../commands/runPackager');
+      var pc = yield runPackager.runAsync(env, {});
+
+      this.setState({ packagerReady: false, ngrokReady: false });
+
+      this._packagerController = pc;
+
+      pc.on('stdout', this._appendPackagerLogs);
+      pc.on('stderr', this._appendPackagerErrors);
+      pc.on('ngrok-ready', function () {
+        _this2.setState({ ngrokReady: true });
+        _this2._maybeRecomputeUrl();
+      });
+
+      pc.on('packager-ready', function () {
+        _this2.setState({ packagerReady: true });
+        _this2._maybeRecomputeUrl();
+      });
+
+      this.setState({ packagerController: this._packagerController });
+
+      pc.startAsync();
+
+      return pc;
+    })
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this = this;
-
-      var runPackager = require('../commands/runPackager');
-      // let runPackager = require('remote').require('../build/commands/runPackager');
-      runPackager.runAsync({
-        root: '/Users/ccheever/tmp/icecubetray'
-      }, {}).then(function (pc) {
-        _this._packagerController = pc;
-        pc.on('stdout', _this._appendPackagerLogs);
-
-        pc.on('stderr', _this._appendPackagerErrors);
-
-        _this.setState({ packagerController: pc });
-        pc.startAsync();
-      }).then(console.log, console.error);
+      this._runPackagerAsync('/Users/ccheever/tmp/icecubetray').then(console.log, console.error);
+    }
+  }, {
+    key: '_maybeRecomputeUrl',
+    value: function _maybeRecomputeUrl() {
+      if (this.state.packagerReady && this.state.ngrokReady) {
+        this._recomputeUrlAndSetState();
+      }
     }
   }]);
 
@@ -226,13 +383,32 @@ var App = (function (_React$Component) {
 
 ;
 
+var Styles = {
+  log: {
+    width: '50%',
+    fontFamily: ['Menlo', 'Courier', 'monospace'],
+    fontSize: 11,
+    flex: 1,
+    height: 300
+  },
+  logHeaders: {
+    display: 'inline-block',
+    width: '50%',
+    paddingLeft: 15,
+    fontWeight: 'bold',
+    fontSize: 13
+  },
+  url: {
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingTop: 2,
+    paddingBottom: 2,
+    width: 521,
+    color: '#888888',
+    fontSize: 13,
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif']
+  }
+};
+
 module.exports = App;
-/*
-<Button bsSize='medium' disabled style={{
-   background: 'green',
-}}>Packager Active</Button>
-<Button bsSize='medium' active>Button</Button>
-<Button bsStyle='primary' bsSize='medium' active>Primary button</Button>
-<Button bsSize='medium' active>Button</Button>
-*/
 //# sourceMappingURL=../sourcemaps/web/App.js.map

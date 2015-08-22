@@ -25,21 +25,17 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
     hostname = myLocalIp;
     port = pc.opts.port;
   } else {
-    // or if opts.ngrok
-    // TODO: Implement ngrok
-    // CDC: Each PackagerController should have its own ngrok instance
-    // actually. If we launch a few different ones, they should each
-    // be running a different ngrok
-    // hostname = 'IMPLEMENT-ME.ngrok.io';
-    if (!pc.ngrokUrl) {
-      console.log("pc.ngrokUrl=", pc.ngrokUrl);
+    var ngrokUrl = yield pc.getNgrokUrlAsync();
+    if (!ngrokUrl) {
       throw new Error("Can't get ngrok URL because ngrok not started yet");
     }
 
-    var pnu = url.parse(pc.ngrokUrl);
+    var pnu = url.parse(ngrokUrl);
     hostname = pnu.hostname;
     port = pnu.port;
   }
+
+  // console.log("opts=", opts);
 
   var url_ = protocol + '://' + hostname;
   if (port) {
@@ -48,7 +44,7 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
 
   var entryPoint = pc.opts.entryPoint || 'index.js';
   var mainModulePath = opts.mainModulePath || guessMainModulePath(entryPoint);
-  console.log("entryPoint=", entryPoint, "mainModulePath=", mainModulePath);
+  // console.log("entryPoint=", entryPoint, "mainModulePath=", mainModulePath);
   url_ += '/' + encodeURIComponent(mainModulePath) + '.';
 
   if (opts.includeRequire !== false) {
@@ -64,6 +60,8 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
   if (opts.minify != null) {
     url_ += '&minify=' + encodeURIComponent(!!opts.minify);
   }
+
+  console.log("url_=", url_);
 
   return url_;
 });

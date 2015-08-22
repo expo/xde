@@ -44,7 +44,8 @@ class PackagerController extends events.EventEmitter {
     this.ngrokReady$ = ngrok.promise.connect(this.opts.port);
     // this._setCombinedPromises();
     this._ngrokUrl = await this.ngrokReady$;
-    this.emit('ngrok-started', this.opts.port, this._ngrokUrl);
+    this.emit('ngrok-did-start', this.opts.port, this._ngrokUrl);
+    this.emit('ngrok-ready', this.opts.port, this._ngrokUrl);
 
     console.log("Connected ngrok to port " + this.opts.port + " via " + this._ngrokUrl);
     return this._ngrokUrl;
@@ -69,9 +70,9 @@ class PackagerController extends events.EventEmitter {
     // switch to chokidar?
     let node = path.resolve(path.join(__dirname, '../../io.js/v2.3.1/bin/iojs'));
     this._packager = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--root=" + root, "--assetRoots=" + root,], {
-        // stdio: [process.stdin, 'pipe', process.stderr],
+        // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
-        detached: false,
+        // detached: false,
       });
     this._packager.stdout.setEncoding('utf8');
     this._packager.stderr.setEncoding('utf8');
@@ -167,20 +168,10 @@ class PackagerController extends events.EventEmitter {
     return urlUtils.constructUrlAsync(this, opts);
   }
 
-}
+  async getNgrokUrlAsync() {
+    return this._ngrokUrl;
+  }
 
-if (require.main === module) {
-  console.log("Startin");
-  let pc = new PackagerController({
-    absolutePath: '/Users/ccheever/tmp/icecubetray',
-  });
-  pc.on('stdout', crayon.green.log);
-  pc.on('stderr', crayon.red.log);
-  pc._packager = true;
-  pc.startAsync().then(() => {
-    console.log("Started?");
-  });
-  console.log("Done");
 }
 
 module.exports = PackagerController;
