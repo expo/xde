@@ -12,11 +12,11 @@ module.exports = {
       absolutePath: path.resolve(env.root)
     });
 
+    // await pc.startAsync();
+
     // TODO: Guess the main module path from the package.json
     // Or should that be baked into the PackagerController?
     // It probably should
-    yield pc.startAsync();
-
     return pc;
   })
 };

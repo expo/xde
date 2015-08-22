@@ -21,7 +21,10 @@ var PackagerConsole = (function (_React$Component) {
     _classCallCheck(this, PackagerConsole);
 
     _get(Object.getPrototypeOf(PackagerConsole.prototype), 'constructor', this).call(this);
-    this.state = {};
+    this.state = {
+      packagerLogs: '',
+      packagerErrors: ''
+    };
   }
 
   _createClass(PackagerConsole, [{
@@ -31,9 +34,43 @@ var PackagerConsole = (function (_React$Component) {
         'div',
         null,
         React.createElement(
-          'span',
-          null,
-          'PackagerConsole!'
+          'div',
+          { style: { width: '100%' } },
+          React.createElement(
+            'span',
+            { style: {
+                width: '50%'
+              } },
+            'Packger Logs'
+          ),
+          React.createElement(
+            'span',
+            { stlye: {
+                width: '50%'
+              } },
+            'Packager Errors'
+          )
+        ),
+        React.createElement(
+          'div',
+          { style: { width: '100%' } },
+          React.createElement(
+            'textarea',
+            { readOnly: true, key: 'packagerLogs', style: {
+                fontFamily: ['Menlo', 'Courier', 'monospace'],
+                width: '50%'
+              } },
+            this.state.packagerLogs
+          ),
+          React.createElement(
+            'textarea',
+            { readOnly: true, key: 'packagerErrors', style: {
+                fontFamily: ['Menlo', 'Courier', 'monospace'],
+                color: 'red',
+                width: '50%'
+              } },
+            this.state.packagerErrors
+          )
         )
       );
     }

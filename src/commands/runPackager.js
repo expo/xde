@@ -11,7 +11,7 @@ module.exports = {
       // It probably should
     });
 
-    await pc.startAsync();
+    // await pc.startAsync();
 
     return pc;
 
