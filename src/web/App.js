@@ -350,12 +350,14 @@ class App extends React.Component {
 
   @autobind
   _sendClicked() {
-    console.log("Send link:", this.state.url, "to", this.state.sendTo);
-    let message = "Sent link " + this.state.url + " to " + this.state.sendTo;
-    Commands.sendAsync(this.state.sendTo, this.state.url).then(() => {
+    let url_ = this._computeUrl();
+    let sendTo = this.state.sendTo;
+    console.log("Send link:", url_, "to", sendTo);
+    let message = "Sent link " + url_ + " to " + sendTo;
+    Commands.sendAsync(sendTo, url_).then(() => {
       this._logMetaMessage(message);
 
-      userSettings.updateAsync('sendTo', this.state.sendTo).catch((err) => {
+      userSettings.updateAsync('sendTo', sendTo_).catch((err) => {
         this._logMetaWarning("Couldn't save the number or e-mail you sent do");
       });
 

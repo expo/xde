@@ -451,12 +451,14 @@ var App = (function (_React$Component) {
     value: function _sendClicked() {
       var _this6 = this;
 
-      console.log("Send link:", this.state.url, "to", this.state.sendTo);
-      var message = "Sent link " + this.state.url + " to " + this.state.sendTo;
-      Commands.sendAsync(this.state.sendTo, this.state.url).then(function () {
+      var url_ = this._computeUrl();
+      var sendTo = this.state.sendTo;
+      console.log("Send link:", url_, "to", sendTo);
+      var message = "Sent link " + url_ + " to " + sendTo;
+      Commands.sendAsync(sendTo, url_).then(function () {
         _this6._logMetaMessage(message);
 
-        userSettings.updateAsync('sendTo', _this6.state.sendTo)['catch'](function (err) {
+        userSettings.updateAsync('sendTo', sendTo_)['catch'](function (err) {
           _this6._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
