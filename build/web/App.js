@@ -122,7 +122,7 @@ var App = (function (_React$Component) {
           name: 'sendInput',
           ref: 'sendInput',
           onChange: function (event) {
-            _this.setState({ value: event.target.value });
+            // this.setState({value: event.target.value});
             _this.setState({ sendTo: React.findDOMNode(_this.refs.sendInput).value });
           },
           value: this.state.sendTo,
@@ -581,7 +581,7 @@ var App = (function (_React$Component) {
       Commands.sendAsync(sendTo, url_).then(function () {
         _this8._logMetaMessage(message);
 
-        userSettings.updateAsync('sendTo', sendTo_)['catch'](function (err) {
+        userSettings.updateAsync('sendTo', sendTo)['catch'](function (err) {
           _this8._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
@@ -592,6 +592,9 @@ var App = (function (_React$Component) {
     key: '_appendPackagerLogs',
     decorators: [autobind],
     value: function _appendPackagerLogs(data) {
+
+      // Remove confusing log information
+      // let cleanedData = data.replace("│  Keep this packager running while developing on any JS projects. Feel      │", '').replace("│  free to close this tab and run your own packager instance if you          │", '').replace("│  prefer.                                                                   │", '');
       this._packagerLogsHtml = this._packagerLogsHtml + escapeHtml(data);
       this._updatePackagerLogState();
     }

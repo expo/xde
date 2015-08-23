@@ -97,7 +97,7 @@ class App extends React.Component {
             name="sendInput"
             ref="sendInput"
             onChange={(event) => {
-              this.setState({value: event.target.value});
+              // this.setState({value: event.target.value});
               this.setState({sendTo: React.findDOMNode(this.refs.sendInput).value});
             }}
             value={this.state.sendTo}
@@ -436,7 +436,7 @@ class App extends React.Component {
     Commands.sendAsync(sendTo, url_).then(() => {
       this._logMetaMessage(message);
 
-      userSettings.updateAsync('sendTo', sendTo_).catch((err) => {
+      userSettings.updateAsync('sendTo', sendTo).catch((err) => {
         this._logMetaWarning("Couldn't save the number or e-mail you sent do");
       });
 
@@ -448,6 +448,9 @@ class App extends React.Component {
 
   @autobind
   _appendPackagerLogs(data) {
+
+    // Remove confusing log information
+    // let cleanedData = data.replace("│  Keep this packager running while developing on any JS projects. Feel      │", '').replace("│  free to close this tab and run your own packager instance if you          │", '').replace("│  prefer.                                                                   │", '');
     this._packagerLogsHtml = this._packagerLogsHtml +  escapeHtml(data);
     this._updatePackagerLogState();
   }
