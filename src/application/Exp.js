@@ -80,7 +80,7 @@ async function saveRecentExpRootAsync(root) {
     return x != root;
   });
   recentExps.unshift(root);
-  return await recentExpsJsonFile.writeAsync(recentExps);
+  return await recentExpsJsonFile.writeAsync(recentExps.slice(0, 100));
 }
 
 function getHomeDir() {
@@ -125,9 +125,11 @@ async function recentValidExpsAsync() {
 
   console.log("results=", results);
 
-  return results.filter((x) => {
+  let filteredResults = results.filter((x) => {
     return !!x;
   });
+
+  return filteredResults.slice(0, 5);
 
 }
 

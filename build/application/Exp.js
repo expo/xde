@@ -65,7 +65,7 @@ var saveRecentExpRootAsync = _asyncToGenerator(function* (root) {
     return x != root;
   });
   recentExps.unshift(root);
-  return yield recentExpsJsonFile.writeAsync(recentExps);
+  return yield recentExpsJsonFile.writeAsync(recentExps.slice(0, 100));
 });
 
 var expInfoAsync = _asyncToGenerator(function* (root) {
@@ -97,9 +97,11 @@ var recentValidExpsAsync = _asyncToGenerator(function* () {
 
   console.log("results=", results);
 
-  return results.filter(function (x) {
+  var filteredResults = results.filter(function (x) {
     return !!x;
   });
+
+  return filteredResults.slice(0, 5);
 });
 
 var jsonFile = require('@exponent/json-file');
