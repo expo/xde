@@ -34,8 +34,9 @@ var ApiClient = (function () {
 
       var response = yield request.promise.get(url);
       var body = response.body;
+      var responseObj;
       try {
-        var _responseObj = JSON.parse(body);
+        responseObj = JSON.parse(body);
       } catch (e) {
         throw new Error("Invalid JSON returned from API: " + e);
       }

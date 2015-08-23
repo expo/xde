@@ -23,6 +23,7 @@ var config = require('../config');
 var Commands = require('./Commands');
 var MainMenu = require('./MainMenu');
 var StyleConstants = require('./StyleConstants');
+var userSettings = require('../application/userSettings');
 
 var Button = require('react-bootstrap/lib/Button');
 var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
@@ -47,7 +48,8 @@ var App = (function (_React$Component) {
       hostType: 'ngrok',
       dev: true,
       minify: false,
-      sendInput: null
+      sendInput: null,
+      savedSendToValue: null
     };
 
     this._packagerLogsHtml = '';
@@ -129,7 +131,9 @@ var App = (function (_React$Component) {
       return React.createElement(
         'form',
         { onSubmit: function (e) {
-            _this2._sendClicked();
+            if (_this2._isSendToActive()) {
+              _this2._sendClicked();
+            }
             e.preventDefault();
           } },
         React.createElement('input', {
@@ -141,9 +145,11 @@ var App = (function (_React$Component) {
           placeholder: 'Phone number or email',
           name: 'sendInput',
           ref: 'sendInput',
-          onChange: function () {
+          onChange: function (event) {
+            _this2.setState({ value: event.target.value });
             _this2.setState({ sendTo: React.findDOMNode(_this2.refs.sendInput).value });
           },
+          value: this.state.sendTo,
           defaultValue: null
         })
       );
@@ -275,6 +281,11 @@ var App = (function (_React$Component) {
       */
     }
   }, {
+    key: '_isSendToActive',
+    value: function _isSendToActive() {
+      return !!this.state.packagerController && !!this.state.sendTo;
+    }
+  }, {
     key: '_renderAdvancedButtons',
     value: function _renderAdvancedButtons() {
 
@@ -285,7 +296,7 @@ var App = (function (_React$Component) {
       };
 
       var sendActiveProp = {
-        disabled: !restartButtonsActive || !this.state.sendTo
+        disabled: !this._isSendToActive()
       };
 
       return React.createElement(
@@ -336,11 +347,11 @@ var App = (function (_React$Component) {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
-          _this3._logMetaMessage("Failed to restart packager :(");
+          _this3._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
-        this._logMetaMessage("Packager not running; can't restart it.");
+        this._logMetaError("Packager not running; can't restart it.");
       }
     }
   }, {
@@ -356,19 +367,30 @@ var App = (function (_React$Component) {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
-          _this4._logMetaMessage("Failed to restart ngrok :(");
+          _this4._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
-        this._logMetaMessage("ngrok not running; can't restart it.");
+        this._logMetaError("ngrok not running; can't restart it.");
       }
     }
   }, {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
+      var _this5 = this;
+
       console.log("Send link:", this.state.url, "to", this.state.sendTo);
-      Commands.sendAsync(this.state.sendTo, this.state.url).then(console.log, console.error);
+      var message = "Sent link " + this.state.url + " to " + this.state.sendTo;
+      Commands.sendAsync(this.state.sendTo, this.state.url).then(function () {
+        _this5._logMetaMessage(message);
+
+        userSettings.updateAsync('sendTo', _this5.state.sendTo)['catch'](function (err) {
+          _this5._logMetaWarning("Couldn't save the number or e-mail you sent do");
+        });
+      }, function (err) {
+        _this5._logMetaError("Sending link failed :( " + err);
+      });
     }
   }, {
     key: '_appendPackagerLogs',
@@ -399,6 +421,20 @@ var App = (function (_React$Component) {
       this._updatePackagerLogState();
     }
   }, {
+    key: '_logMetaError',
+    decorators: [autobind],
+    value: function _logMetaError(data) {
+      this._packagerLogsHtml += '<div class="log-meta-error">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
+    }
+  }, {
+    key: '_logMetaWarning',
+    decorators: [autobind],
+    value: function _logMetaWarning(data) {
+      this._packagerLogsHtml += '<div class="log-meta-warning">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
+    }
+  }, {
     key: '_scrollPackagerLogsToBottom',
     decorators: [autobind],
     value: function _scrollPackagerLogsToBottom() {
@@ -416,7 +452,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -434,15 +470,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this5.setState({ ngrokReady: true });
-        _this5._maybeRecomputeUrl();
-        _this5._logMetaMessage("ngrok ready.");
+        _this6.setState({ ngrokReady: true });
+        _this6._maybeRecomputeUrl();
+        _this6._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this5.setState({ packagerReady: true });
-        _this5._maybeRecomputeUrl();
-        _this5._logMetaMessage("Packager ready.");
+        _this6.setState({ packagerReady: true });
+        _this6._maybeRecomputeUrl();
+        _this6._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -454,6 +490,7 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this7 = this;
 
       if (config.__DEV__) {
         this._runPackagerAsync({
@@ -464,6 +501,14 @@ var App = (function (_React$Component) {
           console.error("Failed to load icecubetray :(", err);
         });
       }
+
+      console.log("Getting sendTo");
+      userSettings.getAsync('sendTo').then(function (sendTo) {
+        _this7.setState({ sendTo: sendTo });
+      }, function (err) {
+        // Probably means that there's no saved value here; not a huge deal
+        // console.error("Error getting sendTo:", err);
+      });
     }
   }, {
     key: '_maybeRecomputeUrl',

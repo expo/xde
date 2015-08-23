@@ -7,6 +7,7 @@ let config = require('../config');
 let Commands = require('./Commands');
 let MainMenu = require('./MainMenu');
 let StyleConstants = require('./StyleConstants');
+let userSettings = require('../application/userSettings');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
@@ -29,6 +30,7 @@ class App extends React.Component {
       dev: true,
       minify: false,
       sendInput: null,
+      savedSendToValue: null,
     }
 
     this._packagerLogsHtml = '';
@@ -100,7 +102,9 @@ class App extends React.Component {
   _renderSendInput() {
     return (
         <form onSubmit={(e) => {
-            this._sendClicked();
+            if (this._isSendToActive()) {
+              this._sendClicked();
+            }
             e.preventDefault();
           }}>
           <input
@@ -112,9 +116,11 @@ class App extends React.Component {
             placeholder="Phone number or email"
             name="sendInput"
             ref="sendInput"
-            onChange={() => {
+            onChange={(event) => {
+              this.setState({value: event.target.value});
               this.setState({sendTo: React.findDOMNode(this.refs.sendInput).value});
             }}
+            value={this.state.sendTo}
             defaultValue={null}
           />
         </form>
@@ -224,6 +230,10 @@ class App extends React.Component {
 
   }
 
+  _isSendToActive() {
+    return (!!this.state.packagerController && !!this.state.sendTo);
+  }
+
   _renderAdvancedButtons() {
 
     let restartButtonsActive = !!this.state.packagerController;
@@ -233,7 +243,7 @@ class App extends React.Component {
     };
 
     let sendActiveProp = {
-      disabled: (!restartButtonsActive || !this.state.sendTo),
+      disabled: !this._isSendToActive(),
     };
 
     return (
@@ -268,11 +278,11 @@ class App extends React.Component {
         console.log("Packager restarted :)");
       }, (err) => {
         console.error("Failed to restart packager :(");
-        this._logMetaMessage("Failed to restart packager :(");
+        this._logMetaError("Failed to restart packager :(");
       });
     } else {
       console.error("No packager to restart!");
-      this._logMetaMessage("Packager not running; can't restart it.");
+      this._logMetaError("Packager not running; can't restart it.");
     }
   }
 
@@ -285,18 +295,28 @@ class App extends React.Component {
         console.log("ngrok restarted.");
       }, (err) => {
         console.error("Failed to restart ngrok :(");
-        this._logMetaMessage("Failed to restart ngrok :(");
+        this._logMetaError("Failed to restart ngrok :(");
       });
     } else {
       console.error("No ngrok to restart!");
-      this._logMetaMessage("ngrok not running; can't restart it.");
+      this._logMetaError("ngrok not running; can't restart it.");
     }
   }
 
   @autobind
   _sendClicked() {
     console.log("Send link:", this.state.url, "to", this.state.sendTo);
-    Commands.sendAsync(this.state.sendTo, this.state.url).then(console.log, console.error);
+    let message = "Sent link " + this.state.url + " to " + this.state.sendTo;
+    Commands.sendAsync(this.state.sendTo, this.state.url).then(() => {
+      this._logMetaMessage(message);
+
+      userSettings.updateAsync('sendTo', this.state.sendTo).catch((err) => {
+        this._logMetaWarning("Couldn't save the number or e-mail you sent do");
+      });
+
+    }, (err) => {
+      this._logMetaError("Sending link failed :( " + err);
+    });
   }
 
 
@@ -321,6 +341,18 @@ class App extends React.Component {
   @autobind
   _logMetaMessage(data) {
     this._packagerLogsHtml += '<div class="log-meta">' + escapeHtml(data) + '</div>';
+    this._updatePackagerLogState();
+  }
+
+  @autobind
+  _logMetaError(data) {
+    this._packagerLogsHtml += '<div class="log-meta-error">' + escapeHtml(data) + '</div>';
+    this._updatePackagerLogState();
+  }
+
+  @autobind
+  _logMetaWarning(data) {
+    this._packagerLogsHtml += '<div class="log-meta-warning">' + escapeHtml(data) + '</div>';
     this._updatePackagerLogState();
   }
 
@@ -384,6 +416,17 @@ class App extends React.Component {
         console.error("Failed to load icecubetray :(", err);
       });
     }
+
+    console.log("Getting sendTo");
+    userSettings.getAsync('sendTo').then((sendTo) => {
+      this.setState({sendTo});
+    }, (err) => {
+      // Probably means that there's no saved value here; not a huge deal
+      // console.error("Error getting sendTo:", err);
+    });
+
+
+
   }
 
   _maybeRecomputeUrl() {

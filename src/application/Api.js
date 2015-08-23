@@ -20,8 +20,9 @@ export default class ApiClient {
 
     let response = await request.promise.get(url);
     let body = response.body;
+    var responseObj;
     try {
-      let responseObj  = JSON.parse(body);
+      responseObj  = JSON.parse(body);
     } catch (e) {
       throw new Error("Invalid JSON returned from API: " + e);
     }
