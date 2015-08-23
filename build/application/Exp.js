@@ -4,8 +4,10 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 
 var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
 var determineEntryPoint = _asyncToGenerator(function* (root) {
-  var pkgJson = jsonFile(path.join(root, 'package.json'));
+  var pkgJson = packageJsonForRoot(root);
   var main = yield pkgJson.getAsync('main', 'index.js');
   // console.log("main=", main);
   return main;
@@ -54,6 +56,52 @@ var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
   return data;
 });
 
+var saveRecentExpRootAsync = _asyncToGenerator(function* (root) {
+  // Write the recent Exps JSON file
+  var recentExpsJsonFile = userSettings.recentExpsJsonFile();
+  var recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
+  // Filter out copies of this so we don't get dupes in this list
+  recentExps = recentExps.filter(function (x) {
+    return x != root;
+  });
+  recentExps.unshift(root);
+  return yield recentExpsJsonFile.writeAsync(recentExps);
+});
+
+var expInfoAsync = _asyncToGenerator(function* (root) {
+  var pkgJson = packageJsonForRoot(root);
+  var pkg = yield pkgJson.readAsync();
+  var name = pkg.name;
+  var description = pkg.description;
+  return {
+    readableRoot: makePathReadable(root),
+    root: root,
+    name: name,
+    description: description
+  };
+});
+
+var expInfoSafeAsync = _asyncToGenerator(function* (root) {
+  try {
+    return expInfoAsync(root);
+  } catch (e) {
+    return null;
+  }
+});
+
+var recentValidExpsAsync = _asyncToGenerator(function* () {
+  var recentExpsJsonFile = userSettings.recentExpsJsonFile();
+  var recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
+
+  var results = yield _Promise.all(recentExps.map(expInfoSafeAsync));
+
+  console.log("results=", results);
+
+  return results.filter(function (x) {
+    return !!x;
+  });
+});
+
 var jsonFile = require('@exponent/json-file');
 var existsAsync = require('exists-async');
 var fs = require('fs');
@@ -72,8 +120,27 @@ function NewExpError(code, message) {
   return err;
 }
 
+function packageJsonForRoot(root) {
+  return jsonFile(path.join(root, 'package.json'));
+}
+
+function getHomeDir() {
+  return process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
+}
+
+function makePathReadable(pth) {
+  var homedir = getHomeDir();
+  if (pth.substr(0, homedir.length) === homedir) {
+    return '~' + pth.substr(homedir.length);
+  } else {
+    return pth;
+  }
+}
+
 module.exports = {
   determineEntryPoint: determineEntryPoint,
-  createNewExpAsync: createNewExpAsync
+  createNewExpAsync: createNewExpAsync,
+  saveRecentExpRootAsync: saveRecentExpRootAsync,
+  recentValidExpsAsync: recentValidExpsAsync
 };
 //# sourceMappingURL=../sourcemaps/application/Exp.js.map

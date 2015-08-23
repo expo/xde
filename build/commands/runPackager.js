@@ -6,6 +6,7 @@ var path = require('path');
 
 var Exp = require('../application/Exp');
 var PackagerController = require('../application/PackagerController');
+var userSettings = require('../application/userSettings');
 
 module.exports = {
   runAsync: _asyncToGenerator(function* (env, args) {
@@ -24,6 +25,9 @@ module.exports = {
       absolutePath: path.resolve(env.root),
       entryPoint: env.entryPoint
     });
+
+    // Write the recent Exps JSON file
+    yield Exp.saveRecentExpRootAsync(env.root);
 
     return pc;
   })

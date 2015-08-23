@@ -2,6 +2,7 @@ let path = require('path');
 
 let Exp = require('../application/Exp');
 let PackagerController = require('../application/PackagerController');
+let userSettings = require('../application/userSettings');
 
 module.exports = {
   runAsync: async function (env, args) {
@@ -20,6 +21,9 @@ module.exports = {
       absolutePath: path.resolve(env.root),
       entryPoint: env.entryPoint,
     });
+
+    // Write the recent Exps JSON file
+    await Exp.saveRecentExpRootAsync(env.root);
 
     return pc;
 

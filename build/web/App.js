@@ -21,6 +21,7 @@ var escapeHtml = require('escape-html');
 
 var config = require('../config');
 var Commands = require('./Commands');
+var Exp = require('../application/Exp');
 var StyleConstants = require('./StyleConstants');
 var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
@@ -52,7 +53,8 @@ var App = (function (_React$Component) {
       sendInput: null,
       savedSendToValue: null,
       dev: true,
-      minify: false
+      minify: false,
+      recentExps: null
     };
 
     this._packagerLogsHtml = '';
@@ -172,13 +174,110 @@ var App = (function (_React$Component) {
     key: '_renderPackagerConsole',
     value: function _renderPackagerConsole() {
 
-      return React.createElement('div', {
-        ref: 'packagerLogs',
-        key: 'packagerLogs',
-        style: _Object$assign({}, Styles.log, {
-          overflow: 'scroll'
-        }),
-        dangerouslySetInnerHTML: { __html: this.state.packagerLogs } });
+      if (this.state.packagerController) {
+        return React.createElement('div', {
+          ref: 'packagerLogs',
+          key: 'packagerLogs',
+          style: _Object$assign({}, Styles.log, {
+            overflow: 'scroll'
+          }),
+          dangerouslySetInnerHTML: { __html: this.state.packagerLogs } });
+      } else {
+        return this._renderNoPackager();
+      }
+    }
+  }, {
+    key: '_renderNoPackager',
+    value: function _renderNoPackager() {
+      return React.createElement(
+        'div',
+        { style: {
+            display: 'flex',
+            alignSelf: 'stretch',
+            flexDirection: 'column',
+            margin: 'auto'
+          } },
+        React.createElement(
+          'div',
+          { style: {
+              color: '#bbbbbb',
+              fontSize: 17,
+              fontWeight: 200,
+              fontFamily: ['Helvetica Neue', 'Verdana', 'Arial', 'Sans-serif'],
+              flex: 1,
+              textAlign: 'center'
+            } },
+          this.state.recentExps ? React.createElement(
+            'div',
+            null,
+            this.state.recentExps.map(this._renderExp)
+          ) : React.createElement(
+            'div',
+            null,
+            React.createElement(
+              'div',
+              { style: {
+                  maxWidth: 460,
+                  marginTop: '-15vh',
+                  color: '#dddddd'
+                } },
+              'Use the New Exp button to create a new Exponent experience or the Open Exp button to open an existing Exponent experience or React Native app'
+            )
+          )
+        )
+      );
+    }
+  }, {
+    key: '_renderExp',
+    decorators: [autobind],
+    value: function _renderExp(exp) {
+      var _this3 = this;
+
+      return React.createElement(
+        'div',
+        {
+          onClick: function () {
+            _this3._runPackagerAsync({
+              root: exp.root
+            }, {})['catch'](function (err) {
+              _this3._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
+            });
+          },
+          style: {
+            borderRadius: 10,
+            borderColor: '#eeeeee',
+            borderWidth: 0,
+            borderStyle: 'solid',
+            padding: 8,
+            margin: 10,
+            maxWidth: 600,
+            cursor: 'pointer'
+          } },
+        React.createElement(
+          'div',
+          { style: {
+              color: 'rgba(0, 59, 107, 0.5)'
+            } },
+          React.createElement(
+            'strong',
+            null,
+            exp.name
+          ),
+          ' - ',
+          React.createElement(
+            'small',
+            null,
+            exp.description
+          )
+        ),
+        React.createElement(
+          'div',
+          { style: {
+              fontSize: 11
+            } },
+          exp.readableRoot
+        )
+      );
     }
   }, {
     key: 'render',
@@ -189,7 +288,9 @@ var App = (function (_React$Component) {
         { style: {
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'flex-start'
+            alignItems: 'flex-start',
+            alignItems: 'stretch',
+            height: '100%'
           } },
         React.createElement(
           'div',
@@ -247,7 +348,7 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderUrlOptionButtons',
     value: function _renderUrlOptionButtons() {
-      var _this3 = this;
+      var _this4 = this;
 
       return React.createElement(
         'div',
@@ -269,7 +370,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: function (event) {
-                _this3.setState({ hostType: 'ngrok' });
+                _this4.setState({ hostType: 'ngrok' });
                 event.target.blur();
               } }),
             'ngrok'
@@ -277,7 +378,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: function (event) {
-                _this3.setState({ hostType: 'lan' });
+                _this4.setState({ hostType: 'lan' });
                 event.target.blur();
               } }),
             'LAN'
@@ -285,7 +386,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: function (event) {
-                _this3.setState({ hostType: 'localhost' });
+                _this4.setState({ hostType: 'localhost' });
                 event.target.blur();
               } }),
             'localhost'
@@ -297,7 +398,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: function (event) {
-                _this3.setState({ dev: !_this3.state.dev });
+                _this4.setState({ dev: !_this4.state.dev });
                 event.target.blur();
               } }),
             'dev'
@@ -305,7 +406,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: function (event) {
-                _this3.setState({ minify: !_this3.state.minify });
+                _this4.setState({ minify: !_this4.state.minify });
                 event.target.blur();
               } }),
             'minify'
@@ -396,27 +497,27 @@ var App = (function (_React$Component) {
     key: '_newClicked',
     decorators: [autobind],
     value: function _newClicked() {
-      var _this4 = this;
+      var _this5 = this;
 
       Commands.newExpAsync().then(this._runPackagerAsync, function (err) {
-        _this4._logMetaError("Failed to make a new Exp :( " + err);
+        _this5._logMetaError("Failed to make a new Exp :( " + err);
       });
     }
   }, {
     key: '_openClicked',
     decorators: [autobind],
     value: function _openClicked() {
-      var _this5 = this;
+      var _this6 = this;
 
       Commands.openExpAsync().then(this._runPackagerAsync, function (err) {
-        _this5._logMetaError("Failed to open Exp :( " + err);
+        _this6._logMetaError("Failed to open Exp :( " + err);
       });
     }
   }, {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting packager...");
@@ -425,7 +526,7 @@ var App = (function (_React$Component) {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
-          _this6._logMetaError("Failed to restart packager :(");
+          _this7._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
@@ -436,7 +537,7 @@ var App = (function (_React$Component) {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
-      var _this7 = this;
+      var _this8 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
@@ -445,7 +546,7 @@ var App = (function (_React$Component) {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
-          _this7._logMetaError("Failed to restart ngrok :(");
+          _this8._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
@@ -456,20 +557,20 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      var _this8 = this;
+      var _this9 = this;
 
       var url_ = this._computeUrl();
       var sendTo = this.state.sendTo;
       console.log("Send link:", url_, "to", sendTo);
       var message = "Sent link " + url_ + " to " + sendTo;
       Commands.sendAsync(sendTo, url_).then(function () {
-        _this8._logMetaMessage(message);
+        _this9._logMetaMessage(message);
 
         userSettings.updateAsync('sendTo', sendTo_)['catch'](function (err) {
-          _this8._logMetaWarning("Couldn't save the number or e-mail you sent do");
+          _this9._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
-        _this8._logMetaError("Sending link failed :( " + err);
+        _this9._logMetaError("Sending link failed :( " + err);
       });
     }
   }, {
@@ -532,7 +633,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this9 = this;
+      var _this10 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -550,15 +651,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this9.setState({ ngrokReady: true });
+        _this10.setState({ ngrokReady: true });
         // this._maybeRecomputeUrl();
-        _this9._logMetaMessage("ngrok ready.");
+        _this10._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this9.setState({ packagerReady: true });
+        _this10.setState({ packagerReady: true });
         // this._maybeRecomputeUrl();
-        _this9._logMetaMessage("Packager ready.");
+        _this10._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -570,7 +671,7 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this10 = this;
+      var _this11 = this;
 
       if (config.__DEV__) {
         this._runPackagerAsync({
@@ -584,10 +685,16 @@ var App = (function (_React$Component) {
 
       console.log("Getting sendTo");
       userSettings.getAsync('sendTo').then(function (sendTo) {
-        _this10.setState({ sendTo: sendTo });
+        _this11.setState({ sendTo: sendTo });
       }, function (err) {
         // Probably means that there's no saved value here; not a huge deal
         // console.error("Error getting sendTo:", err);
+      });
+
+      Exp.recentValidExpsAsync().then(function (recentExps) {
+        _this11.setState({ recentExps: recentExps });
+      }, function (err) {
+        console.error("Couldn't get list of recent Exps :(", err);
       });
     }
   }, {
@@ -671,4 +778,5 @@ global.ce = function (a, b, c) {
 };
 
 module.exports = App;
+/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/
 //# sourceMappingURL=../sourcemaps/web/App.js.map

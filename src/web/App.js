@@ -5,6 +5,7 @@ let escapeHtml = require('escape-html');
 
 let config = require('../config');
 let Commands = require('./Commands');
+let Exp = require('../application/Exp');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
@@ -34,6 +35,7 @@ class App extends React.Component {
       savedSendToValue: null,
       dev: true,
       minify: false,
+      recentExps: null,
     }
 
     this._packagerLogsHtml = '';
@@ -141,14 +143,89 @@ class App extends React.Component {
 
   _renderPackagerConsole() {
 
+    if (this.state.packagerController) {
+      return (
+        <div
+          ref="packagerLogs"
+          key="packagerLogs"
+          style={Object.assign({}, Styles.log, {
+            overflow: 'scroll',
+          })}
+          dangerouslySetInnerHTML={{__html: this.state.packagerLogs}} />
+      );
+    } else {
+      return (
+        this._renderNoPackager()
+      );
+    }
+
+  }
+
+  _renderNoPackager() {
+    return (
+      <div style={{
+          display: 'flex',
+          alignSelf: 'stretch',
+          flexDirection: 'column',
+          margin: 'auto',
+      }}>
+        <div style={{
+            color: '#bbbbbb',
+            fontSize: 17,
+            fontWeight: 200,
+            fontFamily: ['Helvetica Neue', 'Verdana', 'Arial', 'Sans-serif'],
+            flex: 1,
+            textAlign: 'center',
+        }}>
+        {this.state.recentExps ? (
+          <div>
+            {/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/}
+            {this.state.recentExps.map(this._renderExp)}
+          </div>
+        ) : (
+          <div>
+            <div style={{
+                maxWidth: 460,
+                marginTop: '-15vh',
+                color: '#dddddd',
+            }}>Use the New Exp button to create a new Exponent experience
+            or the Open Exp button to open an existing Exponent experience
+            or React Native app</div>
+          </div>
+        )}
+        </div>
+      </div>
+    );
+  }
+
+  @autobind
+  _renderExp(exp) {
     return (
       <div
-        ref="packagerLogs"
-        key="packagerLogs"
-        style={Object.assign({}, Styles.log, {
-          overflow: 'scroll',
-        })}
-        dangerouslySetInnerHTML={{__html: this.state.packagerLogs}} />
+        onClick={() => {
+          this._runPackagerAsync({
+            root: exp.root,
+          }, {}).catch((err) => {
+            this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
+          });
+        }}
+        style={{
+          borderRadius: 10,
+          borderColor: '#eeeeee',
+          borderWidth: 0,
+          borderStyle: 'solid',
+          padding: 8,
+          margin: 10,
+          maxWidth: 600,
+          cursor: 'pointer',
+      }}>
+      <div style={{
+          color: 'rgba(0, 59, 107, 0.5)',
+      }}><strong>{exp.name}</strong> - <small>{exp.description}</small></div>
+      <div style={{
+          fontSize: 11,
+      }}>{exp.readableRoot}</div>
+    </div>
     );
   }
 
@@ -159,6 +236,8 @@ class App extends React.Component {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
+          alignItems: 'stretch',
+          height: '100%',
       }}>
         <div style={{
             backgroundColor: '#f6f6f6',
@@ -473,6 +552,12 @@ class App extends React.Component {
     }, (err) => {
       // Probably means that there's no saved value here; not a huge deal
       // console.error("Error getting sendTo:", err);
+    });
+
+    Exp.recentValidExpsAsync().then((recentExps) => {
+      this.setState({recentExps});
+    }, (err) => {
+      console.error("Couldn't get list of recent Exps :(", err);
     });
 
 

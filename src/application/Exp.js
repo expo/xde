@@ -16,8 +16,12 @@ function NewExpError(code, message) {
   return err;
 }
 
+function packageJsonForRoot(root) {
+  return jsonFile(path.join(root, 'package.json'));
+}
+
 async function determineEntryPoint(root) {
-  let pkgJson = jsonFile(path.join(root, 'package.json'));
+  let pkgJson = packageJsonForRoot(root);
   let main = await pkgJson.getAsync('main', 'index.js');
   // console.log("main=", main);
   return main;
@@ -67,7 +71,69 @@ async function createNewExpAsync(root, info, opts) {
 
 }
 
+async function saveRecentExpRootAsync(root) {
+  // Write the recent Exps JSON file
+  let recentExpsJsonFile = userSettings.recentExpsJsonFile();
+  let recentExps = await recentExpsJsonFile.readAsync({cantReadFileDefault: []});
+  // Filter out copies of this so we don't get dupes in this list
+  recentExps = recentExps.filter(function (x) {
+    return x != root;
+  });
+  recentExps.unshift(root);
+  return await recentExpsJsonFile.writeAsync(recentExps);
+}
+
+function getHomeDir() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
+function makePathReadable(pth) {
+  let homedir = getHomeDir();
+  if (pth.substr(0, homedir.length) === homedir) {
+    return '~' + pth.substr(homedir.length);
+  } else {
+    return pth;
+  }
+}
+
+async function expInfoAsync(root) {
+  let pkgJson = packageJsonForRoot(root);
+  let pkg = await pkgJson.readAsync();
+  let name = pkg.name;
+  let description = pkg.description;
+  return {
+    readableRoot: makePathReadable(root),
+    root,
+    name,
+    description,
+  };
+}
+
+async function expInfoSafeAsync(root) {
+  try {
+    return expInfoAsync(root);
+  } catch (e) {
+    return null;
+  }
+}
+
+async function recentValidExpsAsync() {
+  let recentExpsJsonFile = userSettings.recentExpsJsonFile();
+  let recentExps = await recentExpsJsonFile.readAsync({cantReadFileDefault: []});
+
+  let results = await Promise.all(recentExps.map(expInfoSafeAsync));
+
+  console.log("results=", results);
+
+  return results.filter((x) => {
+    return !!x;
+  });
+
+}
+
 module.exports = {
   determineEntryPoint,
   createNewExpAsync,
+  saveRecentExpRootAsync,
+  recentValidExpsAsync,
 };
