@@ -14,6 +14,7 @@ var showOpenDialog = _asyncToGenerator(function* (opts) {
 });
 
 var Api = require('../application/Api');
+var Exp = require('../application/Exp');
 
 module.exports = {
 
@@ -35,8 +36,13 @@ module.exports = {
       root: selection
     };
 
-    var init = require('remote').require('./build/commands/init');
-    var result = init.runAsync(env, {});
+    // let init = require('remote').require('./build/commands/init');
+    // let result = init.runAsync(env, {});
+
+    // We'll do a `force` here since if you explicitly choose
+    // a directory from a GUI, you probably mean to overwrite
+    // whatever is in it, I think
+    yield Exp.createNewExpAsync(env.root, {}, { force: true });
 
     return env;
   }),

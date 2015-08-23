@@ -1,5 +1,6 @@
 
 let Api = require('../application/Api');
+let Exp = require('../application/Exp');
 
 async function showOpenDialog(opts) {
   return new Promise((fulfill, reject) => {
@@ -30,8 +31,13 @@ module.exports = {
       root: selection,
     };
 
-    let init = require('remote').require('./build/commands/init');
-    let result = init.runAsync(env, {});
+    // let init = require('remote').require('./build/commands/init');
+    // let result = init.runAsync(env, {});
+
+    // We'll do a `force` here since if you explicitly choose
+    // a directory from a GUI, you probably mean to overwrite
+    // whatever is in it, I think
+    await Exp.createNewExpAsync(env.root, {}, {force: true});
 
     return env;
 

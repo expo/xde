@@ -2,17 +2,78 @@
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
 
+var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+
 var determineEntryPoint = _asyncToGenerator(function* (root) {
   var pkgJson = jsonFile(path.join(root, 'package.json'));
   var main = yield pkgJson.getAsync('main', 'index.js');
-  console.log("main=", main);
+  // console.log("main=", main);
   return main;
 });
 
+var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
+
+  var pp = path.parse(root);
+  var name = pp.name;
+
+  // opts = opts || {force: true};
+  opts = opts || {};
+
+  var author = yield userSettings.getAsync('email', undefined);
+
+  var data = _Object$assign({
+    name: name,
+    version: '0.0.0',
+    description: "Hello Exponent!",
+    main: 'main.js',
+    author: author
+  }, //license: "MIT",
+  // scripts: {
+  //   "test": "echo \"Error: no test specified\" && exit 1"
+  // },
+  info);
+
+  var pkgJson = jsonFile(path.join(root, 'package.json'));
+
+  var exists = yield existsAsync(pkgJson.file);
+  if (exists && !opts.force) {
+    throw NewExpError('WONT_OVERWRITE_WITHOUT_FORCE', "Refusing to create new Exp because package.json already exists at root");
+  }
+
+  yield mkdirp.promise(root);
+
+  var result = yield pkgJson.writeAsync(data);
+
+  yield fsExtra.promise.copy(TEMPLATE_ROOT, root);
+
+  // Custom code for replacing __NAME__ in main.js
+  var mainJs = yield fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
+  var customMainJs = mainJs.replace(/__NAME__/g, data.name);
+  result = yield fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
+
+  return data;
+});
+
 var jsonFile = require('@exponent/json-file');
+var existsAsync = require('exists-async');
+var fs = require('fs');
+var fsExtra = require('fs-extra');
+var mkdirp = require('mkdirp');
 var path = require('path');
 
+var userSettings = require('./userSettings');
+
+var TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../template'));
+
+function NewExpError(code, message) {
+  var err = new Error(message);
+  err.code = code;
+  err._isNewExpError;
+  return err;
+}
+
 module.exports = {
-  determineEntryPoint: determineEntryPoint
+  determineEntryPoint: determineEntryPoint,
+  createNewExpAsync: createNewExpAsync
 };
 //# sourceMappingURL=../sourcemaps/application/Exp.js.map

@@ -1,1 +1,1 @@
-{"version":3,"sources":["config.js"],"names":[],"mappings":";;AAAA,MAAM,CAAC,OAAO,GAAG;AACf,SAAO,EAAE,IAAI;CACd,CAAC","file":"config.js","sourcesContent":["module.exports = {\n  __DEV__: true,\n};\n"],"sourceRoot":"/source/"}
+{"version":3,"sources":["config.js"],"names":[],"mappings":";;AAAA,MAAM,CAAC,OAAO,GAAG;;CAEhB,CAAC","file":"config.js","sourcesContent":["module.exports = {\n  // __DEV__: true,\n};\n"],"sourceRoot":"/source/"}

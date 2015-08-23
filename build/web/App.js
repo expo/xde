@@ -397,19 +397,27 @@ var App = (function (_React$Component) {
     key: '_newClicked',
     decorators: [autobind],
     value: function _newClicked() {
-      Commands.newExpAsync().then(this._runPackagerAsync, console.error);
+      var _this4 = this;
+
+      Commands.newExpAsync().then(this._runPackagerAsync, function (err) {
+        _this4._logMetaError("Failed to make a new Exp :( " + err);
+      });
     }
   }, {
     key: '_openClicked',
     decorators: [autobind],
     value: function _openClicked() {
-      Commands.openExpAsync().then(this._runPackagerAsync, console.error);
+      var _this5 = this;
+
+      Commands.openExpAsync().then(this._runPackagerAsync, function (err) {
+        _this5._logMetaError("Failed to open Exp :( " + err);
+      });
     }
   }, {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
-      var _this4 = this;
+      var _this6 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting packager...");
@@ -418,7 +426,7 @@ var App = (function (_React$Component) {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
-          _this4._logMetaError("Failed to restart packager :(");
+          _this6._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
@@ -429,7 +437,7 @@ var App = (function (_React$Component) {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
-      var _this5 = this;
+      var _this7 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
@@ -438,7 +446,7 @@ var App = (function (_React$Component) {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
-          _this5._logMetaError("Failed to restart ngrok :(");
+          _this7._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
@@ -449,20 +457,20 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      var _this6 = this;
+      var _this8 = this;
 
       var url_ = this._computeUrl();
       var sendTo = this.state.sendTo;
       console.log("Send link:", url_, "to", sendTo);
       var message = "Sent link " + url_ + " to " + sendTo;
       Commands.sendAsync(sendTo, url_).then(function () {
-        _this6._logMetaMessage(message);
+        _this8._logMetaMessage(message);
 
         userSettings.updateAsync('sendTo', sendTo_)['catch'](function (err) {
-          _this6._logMetaWarning("Couldn't save the number or e-mail you sent do");
+          _this8._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
-        _this6._logMetaError("Sending link failed :( " + err);
+        _this8._logMetaError("Sending link failed :( " + err);
       });
     }
   }, {
@@ -525,7 +533,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this7 = this;
+      var _this9 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -543,15 +551,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this7.setState({ ngrokReady: true });
+        _this9.setState({ ngrokReady: true });
         // this._maybeRecomputeUrl();
-        _this7._logMetaMessage("ngrok ready.");
+        _this9._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this7.setState({ packagerReady: true });
+        _this9.setState({ packagerReady: true });
         // this._maybeRecomputeUrl();
-        _this7._logMetaMessage("Packager ready.");
+        _this9._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -563,7 +571,7 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this8 = this;
+      var _this10 = this;
 
       if (config.__DEV__) {
         this._runPackagerAsync({
@@ -577,7 +585,7 @@ var App = (function (_React$Component) {
 
       console.log("Getting sendTo");
       userSettings.getAsync('sendTo').then(function (sendTo) {
-        _this8.setState({ sendTo: sendTo });
+        _this10.setState({ sendTo: sendTo });
       }, function (err) {
         // Probably means that there's no saved value here; not a huge deal
         // console.error("Error getting sendTo:", err);

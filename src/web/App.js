@@ -306,12 +306,16 @@ class App extends React.Component {
 
   @autobind
   _newClicked() {
-    Commands.newExpAsync().then(this._runPackagerAsync, console.error);
+    Commands.newExpAsync().then(this._runPackagerAsync, (err) => {
+      this._logMetaError("Failed to make a new Exp :( " + err);
+    });
   }
 
   @autobind
   _openClicked() {
-    Commands.openExpAsync().then(this._runPackagerAsync, console.error);
+    Commands.openExpAsync().then(this._runPackagerAsync, (err) => {
+      this._logMetaError("Failed to open Exp :( " + err);
+    });
   }
 
   @autobind
