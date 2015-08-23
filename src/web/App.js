@@ -335,7 +335,7 @@ class App extends React.Component {
       }}>
         <Button bsSize='medium' onClick={this._newClicked}>New Exp</Button>
         <Button bsSize='medium' onClick={this._openClicked}>Open Exp</Button>
-        <Button bsSize='medium' >Publish</Button>
+        <Button bsSize='medium' {...{disabled: !this._isSendToActive()}}>Publish</Button>
       </ButtonToolbar>
     );
 

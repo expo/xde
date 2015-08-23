@@ -444,7 +444,7 @@ var App = (function (_React$Component) {
         ),
         React.createElement(
           Button,
-          { bsSize: 'medium' },
+          _extends({ bsSize: 'medium' }, { disabled: !this._isSendToActive() }),
           'Publish'
         )
       );
