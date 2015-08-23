@@ -486,12 +486,20 @@ var App = (function (_React$Component) {
         React.createElement(
           Button,
           _extends({ bsSize: 'small' }, activeProp, { onClick: this._restartPackagerClicked }),
-          'Restart Packager'
+          React.createElement(
+            'small',
+            null,
+            'Restart Packager'
+          )
         ),
         React.createElement(
           Button,
           _extends({ bsSize: 'small' }, activeProp, { onClick: this._restartNgrokClicked }),
-          'Restart ngrok'
+          React.createElement(
+            'small',
+            null,
+            'Restart ngrok'
+          )
         ),
         React.createElement(
           Button,

@@ -371,9 +371,9 @@ class App extends React.Component {
           marginLeft: 10,
           marginBottom: 10,
       }}>
-        <Button bsSize='small' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
+        <Button bsSize='small' {...activeProp} onClick={this._restartPackagerClicked}><small>Restart Packager</small></Button>
         <Button bsSize='small' {...activeProp} onClick={
-            this._restartNgrokClicked}>Restart ngrok</Button>
+            this._restartNgrokClicked}><small>Restart ngrok</small></Button>
           <Button bsSize='small' {...sendActiveProp} onClick={this._sendClicked}>Send Link</Button>
       </ButtonToolbar>
     );
