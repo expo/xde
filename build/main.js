@@ -5,6 +5,8 @@ var BrowserWindow = require('browser-window'); // Module to create native browse
 var events = require('events');
 var path = require('path');
 
+var config = require('./config');
+
 // Report crashes to our server.
 require('crash-reporter').start();
 
@@ -32,7 +34,9 @@ app.on('ready', function () {
   mainWindow.loadUrl('file://' + path.resolve(path.join(__dirname, '..', '/web/index.html')));
 
   // Open the devtools.
-  mainWindow.openDevTools();
+  if (config.__DEV__) {
+    mainWindow.openDevTools();
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

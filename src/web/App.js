@@ -3,6 +3,7 @@ let React = require('react');
 let autobind = require('autobind-decorator');
 let escapeHtml = require('escape-html');
 
+let config = require('../config');
 let Commands = require('./Commands');
 let MainMenu = require('./MainMenu');
 let StyleConstants = require('./StyleConstants');
@@ -373,9 +374,16 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // this._runPackagerAsync({
-    //   root: '/Users/ccheever/tmp/icecubetray',
-    // }).then(console.log, console.error);
+
+    if (config.__DEV__) {
+      this._runPackagerAsync({
+        root: '/Users/ccheever/tmp/icecubetray',
+      }).then(() => {
+        console.log("Successfully loaded icecubetray");
+      }, (err) => {
+        console.error("Failed to load icecubetray :(", err);
+      });
+    }
   }
 
   _maybeRecomputeUrl() {

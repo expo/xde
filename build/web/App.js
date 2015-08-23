@@ -19,6 +19,7 @@ var React = require('react');
 var autobind = require('autobind-decorator');
 var escapeHtml = require('escape-html');
 
+var config = require('../config');
 var Commands = require('./Commands');
 var MainMenu = require('./MainMenu');
 var StyleConstants = require('./StyleConstants');
@@ -453,9 +454,16 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      // this._runPackagerAsync({
-      //   root: '/Users/ccheever/tmp/icecubetray',
-      // }).then(console.log, console.error);
+
+      if (config.__DEV__) {
+        this._runPackagerAsync({
+          root: '/Users/ccheever/tmp/icecubetray'
+        }).then(function () {
+          console.log("Successfully loaded icecubetray");
+        }, function (err) {
+          console.error("Failed to load icecubetray :(", err);
+        });
+      }
     }
   }, {
     key: '_maybeRecomputeUrl',
