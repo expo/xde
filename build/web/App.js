@@ -46,7 +46,6 @@ var App = (function (_React$Component) {
       packagerLogs: '',
       packagerErrors: '',
       url: null,
-      http: false,
       hostType: 'ngrok',
       dev: true,
       minify: false,
@@ -54,7 +53,8 @@ var App = (function (_React$Component) {
       savedSendToValue: null,
       dev: true,
       minify: false,
-      recentExps: null
+      recentExps: null,
+      urlType: 'exp'
     };
 
     this._packagerLogsHtml = '';
@@ -64,32 +64,6 @@ var App = (function (_React$Component) {
   }
 
   _createDecoratedClass(App, [{
-    key: '_recomputeUrlAsync',
-    value: _asyncToGenerator(function* () {
-      var pc = this.state.packagerController;
-      var opts = {
-        http: this.state.http,
-        ngrok: this.state.hostType === 'ngrok',
-        lan: this.state.hostType === 'lan',
-        localhost: this.state.hostType === 'localhost',
-        dev: this.state.dev,
-        minify: this.state.minify
-      };
-      return yield pc.getUrlAsync(opts);
-    })
-  }, {
-    key: '_recomputeUrlAndSetState',
-    value: function _recomputeUrlAndSetState() {
-      var _this = this;
-
-      this._recomputeUrlAsync().then(function (computedUrl) {
-        console.log("computedUrl=", computedUrl);
-        _this.setState({ url: computedUrl });
-      }, function (err) {
-        console.error("Couldn't compute URL:", err);
-      });
-    }
-  }, {
     key: '_renderUrl',
     value: function _renderUrl() {
 
@@ -128,13 +102,13 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderSendInput',
     value: function _renderSendInput() {
-      var _this2 = this;
+      var _this = this;
 
       return React.createElement(
         'form',
         { onSubmit: function (e) {
-            if (_this2._isSendToActive()) {
-              _this2._sendClicked();
+            if (_this._isSendToActive()) {
+              _this._sendClicked();
             }
             e.preventDefault();
           } },
@@ -148,8 +122,8 @@ var App = (function (_React$Component) {
           name: 'sendInput',
           ref: 'sendInput',
           onChange: function (event) {
-            _this2.setState({ value: event.target.value });
-            _this2.setState({ sendTo: React.findDOMNode(_this2.refs.sendInput).value });
+            _this.setState({ value: event.target.value });
+            _this.setState({ sendTo: React.findDOMNode(_this.refs.sendInput).value });
           },
           value: this.state.sendTo,
           defaultValue: null
@@ -231,16 +205,16 @@ var App = (function (_React$Component) {
     key: '_renderExp',
     decorators: [autobind],
     value: function _renderExp(exp) {
-      var _this3 = this;
+      var _this2 = this;
 
       return React.createElement(
         'div',
         {
           onClick: function () {
-            _this3._runPackagerAsync({
+            _this2._runPackagerAsync({
               root: exp.root
             }, {})['catch'](function (err) {
-              _this3._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
+              _this2._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
             });
           },
           style: {
@@ -348,7 +322,9 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderUrlOptionButtons',
     value: function _renderUrlOptionButtons() {
-      var _this4 = this;
+      var _this3 = this;
+
+      var buttonGroupSpacing = 43;
 
       return React.createElement(
         'div',
@@ -357,7 +333,8 @@ var App = (function (_React$Component) {
             flexDirection: 'row',
             // justifyContent: 'space-between',
             justifyContent: 'flex-start',
-            alignItems: 'flex-start',
+            alignItems: 'space-between',
+            width: 1000,
             marginTop: -4,
             marginLeft: 15,
             marginBottom: 10
@@ -365,12 +342,12 @@ var App = (function (_React$Component) {
         React.createElement(
           ButtonGroup,
           { style: {
-              marginRight: 20
+              marginRight: buttonGroupSpacing
             } },
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'ngrok' });
+                _this3.setState({ hostType: 'ngrok' });
                 event.target.blur();
               } }),
             'ngrok'
@@ -378,7 +355,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'lan' });
+                _this3.setState({ hostType: 'lan' });
                 event.target.blur();
               } }),
             'LAN'
@@ -386,7 +363,7 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'localhost' });
+                _this3.setState({ hostType: 'localhost' });
                 event.target.blur();
               } }),
             'localhost'
@@ -394,11 +371,13 @@ var App = (function (_React$Component) {
         ),
         React.createElement(
           ButtonGroup,
-          null,
+          { style: {
+              marginRight: buttonGroupSpacing
+            } },
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: function (event) {
-                _this4.setState({ dev: !_this4.state.dev });
+                _this3.setState({ dev: !_this3.state.dev });
                 event.target.blur();
               } }),
             'dev'
@@ -406,10 +385,38 @@ var App = (function (_React$Component) {
           React.createElement(
             Button,
             _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: function (event) {
-                _this4.setState({ minify: !_this4.state.minify });
+                _this3.setState({ minify: !_this3.state.minify });
                 event.target.blur();
               } }),
             'minify'
+          )
+        ),
+        React.createElement(
+          ButtonGroup,
+          null,
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'exp' }, { onClick: function (event) {
+                _this3.setState({ urlType: 'exp' });
+                event.target.blur();
+              } }),
+            'exp'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'http' }, { onClick: function (event) {
+                _this3.setState({ urlType: 'http' });
+                event.target.blur();
+              } }),
+            'http'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'redirect' }, { onClick: function (event) {
+                _this3.setState({ urlType: 'redirect' });
+                event.target.blur();
+              } }),
+            'redirect'
           )
         )
       );
@@ -497,27 +504,27 @@ var App = (function (_React$Component) {
     key: '_newClicked',
     decorators: [autobind],
     value: function _newClicked() {
-      var _this5 = this;
+      var _this4 = this;
 
       Commands.newExpAsync().then(this._runPackagerAsync, function (err) {
-        _this5._logMetaError("Failed to make a new Exp :( " + err);
+        _this4._logMetaError("Failed to make a new Exp :( " + err);
       });
     }
   }, {
     key: '_openClicked',
     decorators: [autobind],
     value: function _openClicked() {
-      var _this6 = this;
+      var _this5 = this;
 
       Commands.openExpAsync().then(this._runPackagerAsync, function (err) {
-        _this6._logMetaError("Failed to open Exp :( " + err);
+        _this5._logMetaError("Failed to open Exp :( " + err);
       });
     }
   }, {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
-      var _this7 = this;
+      var _this6 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting packager...");
@@ -526,7 +533,7 @@ var App = (function (_React$Component) {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
-          _this7._logMetaError("Failed to restart packager :(");
+          _this6._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
@@ -537,7 +544,7 @@ var App = (function (_React$Component) {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
-      var _this8 = this;
+      var _this7 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
@@ -546,7 +553,7 @@ var App = (function (_React$Component) {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
-          _this8._logMetaError("Failed to restart ngrok :(");
+          _this7._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
@@ -557,20 +564,20 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      var _this9 = this;
+      var _this8 = this;
 
       var url_ = this._computeUrl();
       var sendTo = this.state.sendTo;
       console.log("Send link:", url_, "to", sendTo);
       var message = "Sent link " + url_ + " to " + sendTo;
       Commands.sendAsync(sendTo, url_).then(function () {
-        _this9._logMetaMessage(message);
+        _this8._logMetaMessage(message);
 
         userSettings.updateAsync('sendTo', sendTo_)['catch'](function (err) {
-          _this9._logMetaWarning("Couldn't save the number or e-mail you sent do");
+          _this8._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
-        _this9._logMetaError("Sending link failed :( " + err);
+        _this8._logMetaError("Sending link failed :( " + err);
       });
     }
   }, {
@@ -633,7 +640,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this10 = this;
+      var _this9 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -651,15 +658,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this10.setState({ ngrokReady: true });
+        _this9.setState({ ngrokReady: true });
         // this._maybeRecomputeUrl();
-        _this10._logMetaMessage("ngrok ready.");
+        _this9._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this10.setState({ packagerReady: true });
+        _this9.setState({ packagerReady: true });
         // this._maybeRecomputeUrl();
-        _this10._logMetaMessage("Packager ready.");
+        _this9._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -671,7 +678,7 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this11 = this;
+      var _this10 = this;
 
       if (config.__DEV__) {
         this._runPackagerAsync({
@@ -685,14 +692,14 @@ var App = (function (_React$Component) {
 
       console.log("Getting sendTo");
       userSettings.getAsync('sendTo').then(function (sendTo) {
-        _this11.setState({ sendTo: sendTo });
+        _this10.setState({ sendTo: sendTo });
       }, function (err) {
         // Probably means that there's no saved value here; not a huge deal
         // console.error("Error getting sendTo:", err);
       });
 
       Exp.recentValidExpsAsync().then(function (recentExps) {
-        _this11.setState({ recentExps: recentExps });
+        _this10.setState({ recentExps: recentExps });
       }, function (err) {
         console.error("Couldn't get list of recent Exps :(", err);
       });
@@ -710,12 +717,13 @@ var App = (function (_React$Component) {
       }
 
       var opts = {
-        http: this.state.http,
+        http: this.state.urlType === 'http',
         ngrok: this.state.hostType === 'ngrok',
         lan: this.state.hostType === 'lan',
         localhost: this.state.hostType === 'localhost',
         dev: this.state.dev,
-        minify: this.state.minify
+        minify: this.state.minify,
+        redirect: this.state.urlType === 'redirect'
       };
 
       return urlUtils.constructUrl(this.state.packagerController, opts);

@@ -27,7 +27,6 @@ class App extends React.Component {
       packagerLogs: '',
       packagerErrors: '',
       url: null,
-      http: false,
       hostType: 'ngrok',
       dev: true,
       minify: false,
@@ -36,34 +35,13 @@ class App extends React.Component {
       dev: true,
       minify: false,
       recentExps: null,
+      urlType: 'exp',
     }
 
     this._packagerLogsHtml = '';
     this._packagerLogs = '';
     this._packageErrors = '';
     global._App = this;
-  }
-
-  async _recomputeUrlAsync() {
-    let pc = this.state.packagerController;
-    let opts = {
-      http: this.state.http,
-      ngrok: (this.state.hostType === 'ngrok'),
-      lan: (this.state.hostType === 'lan'),
-      localhost: (this.state.hostType === 'localhost'),
-      dev: this.state.dev,
-      minify: this.state.minify,
-    };
-    return await pc.getUrlAsync(opts);
-  }
-
-  _recomputeUrlAndSetState() {
-    this._recomputeUrlAsync().then((computedUrl) => {
-      console.log("computedUrl=", computedUrl);
-      this.setState({url: computedUrl});
-    }, (err) => {
-      console.error("Couldn't compute URL:", err);
-    });
   }
 
   _renderUrl() {
@@ -287,19 +265,22 @@ class App extends React.Component {
 
   _renderUrlOptionButtons() {
 
+    let buttonGroupSpacing = 43;
+
     return (
       <div style={{
           display: 'flex',
           flexDirection: 'row',
           // justifyContent: 'space-between',
           justifyContent: 'flex-start',
-          alignItems: 'flex-start',
+          alignItems: 'space-between',
+          width: 1000,
           marginTop: -4,
           marginLeft: 15,
           marginBottom: 10,
       }}>
         <ButtonGroup style={{
-            marginRight: 20,
+            marginRight: buttonGroupSpacing,
         }}>
           <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
               this.setState({hostType: 'ngrok'});
@@ -314,7 +295,9 @@ class App extends React.Component {
               event.target.blur();
           }}>localhost</Button>
         </ButtonGroup>
-        <ButtonGroup>
+        <ButtonGroup style={{
+            marginRight: buttonGroupSpacing,
+        }}>
           <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
               this.setState({dev: !this.state.dev});
               event.target.blur();
@@ -323,6 +306,20 @@ class App extends React.Component {
               this.setState({minify: !this.state.minify});
               event.target.blur();
           }}>minify</Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {
+              this.setState({urlType: 'exp'});
+              event.target.blur();
+          }}>exp</Button>
+          <Button bsSize="small" {...{active: this.state.urlType === 'http'}} onClick={(event) => {
+              this.setState({urlType: 'http'});
+              event.target.blur();
+          }}>http</Button>
+          <Button bsSize="small" {...{active: this.state.urlType === 'redirect'}} onClick={(event) => {
+              this.setState({urlType: 'redirect'});
+              event.target.blur();
+          }}>redirect</Button>
         </ButtonGroup>
       </div>
     );
@@ -574,13 +571,15 @@ class App extends React.Component {
       return null;
     }
 
+
     let opts = {
-      http: this.state.http,
+      http: (this.state.urlType === 'http'),
       ngrok: (this.state.hostType === 'ngrok'),
       lan: (this.state.hostType === 'lan'),
       localhost: (this.state.hostType === 'localhost'),
       dev: this.state.dev,
       minify: this.state.minify,
+      redirect: (this.state.urlType === 'redirect'),
     };
 
     return urlUtils.constructUrl(this.state.packagerController, opts);

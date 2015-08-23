@@ -65,6 +65,10 @@ function constructUrl(pc, opts) {
 
   // console.log("url_=", url_);
 
+  if (opts.redirect) {
+    return 'http://exp.host/--/to-exp/' + encodeURIComponent(url_);
+  }
+
   return url_;
 
 }
