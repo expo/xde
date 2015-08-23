@@ -5,7 +5,6 @@ let escapeHtml = require('escape-html');
 
 let config = require('../config');
 let Commands = require('./Commands');
-let MainMenu = require('./MainMenu');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');

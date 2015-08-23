@@ -21,7 +21,6 @@ var escapeHtml = require('escape-html');
 
 var config = require('../config');
 var Commands = require('./Commands');
-var MainMenu = require('./MainMenu');
 var StyleConstants = require('./StyleConstants');
 var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
