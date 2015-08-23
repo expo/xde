@@ -1,10 +1,13 @@
 'use strict';
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var crayon = require('@ccheever/crayon');
+var myLocalIp = require('my-local-ip');
+var os = require('os');
+var url = require('url');
 
-var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
+function constructUrl(pc, opts) {
 
-  crayon.blue.log("constructUrlAsync");
+  // crayon.blue.log("constructUrl");
   opts = opts || {};
 
   var protocol = 'exp';
@@ -25,7 +28,7 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
     hostname = myLocalIp;
     port = pc.opts.port;
   } else {
-    var ngrokUrl = yield pc.getNgrokUrlAsync();
+    var ngrokUrl = pc.getNgrokUrl();
     if (!ngrokUrl) {
       throw new Error("Can't get ngrok URL because ngrok not started yet");
     }
@@ -61,15 +64,10 @@ var constructUrlAsync = _asyncToGenerator(function* (pc, opts) {
     url_ += '&minify=' + encodeURIComponent(!!opts.minify);
   }
 
-  console.log("url_=", url_);
+  // console.log("url_=", url_);
 
   return url_;
-});
-
-var crayon = require('@ccheever/crayon');
-var myLocalIp = require('my-local-ip');
-var os = require('os');
-var url = require('url');
+}
 
 function expUrlFromHttpUrl(url_) {
   return ('' + url_).replace(/^http(s?)/, 'exp');
@@ -84,7 +82,7 @@ function guessMainModulePath(entryPoint) {
 }
 
 module.exports = {
-  constructUrlAsync: constructUrlAsync,
+  constructUrl: constructUrl,
   expUrlFromHttpUrl: expUrlFromHttpUrl,
   httpUrlFromExpUrl: httpUrlFromExpUrl,
   guessMainModulePath: guessMainModulePath

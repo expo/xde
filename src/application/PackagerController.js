@@ -179,6 +179,10 @@ class PackagerController extends events.EventEmitter {
     return this._ngrokUrl;
   }
 
+  getNgrokUrl() {
+    return this._ngrokUrl;
+  }
+
 }
 
 module.exports = PackagerController;

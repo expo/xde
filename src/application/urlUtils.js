@@ -3,9 +3,9 @@ let myLocalIp = require('my-local-ip');
 let os = require('os');
 let url = require('url');
 
-async function constructUrlAsync(pc, opts) {
+function constructUrl(pc, opts) {
 
-  crayon.blue.log("constructUrlAsync");
+  // crayon.blue.log("constructUrl");
   opts = opts || {};
 
   let protocol = 'exp';
@@ -26,7 +26,7 @@ async function constructUrlAsync(pc, opts) {
     hostname = myLocalIp;
     port = pc.opts.port;
   } else {
-    let ngrokUrl = await pc.getNgrokUrlAsync();
+    let ngrokUrl = pc.getNgrokUrl();
     if (!ngrokUrl) {
       throw new Error("Can't get ngrok URL because ngrok not started yet");
     }
@@ -63,7 +63,7 @@ async function constructUrlAsync(pc, opts) {
     url_ += '&minify=' + encodeURIComponent(!!opts.minify);
   }
 
-  console.log("url_=", url_);
+  // console.log("url_=", url_);
 
   return url_;
 
@@ -82,7 +82,7 @@ function guessMainModulePath(entryPoint) {
 }
 
 module.exports = {
-  constructUrlAsync,
+  constructUrl,
   expUrlFromHttpUrl,
   httpUrlFromExpUrl,
   guessMainModulePath,

@@ -23,9 +23,11 @@ var config = require('../config');
 var Commands = require('./Commands');
 var MainMenu = require('./MainMenu');
 var StyleConstants = require('./StyleConstants');
+var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
 
 var Button = require('react-bootstrap/lib/Button');
+var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 
 function escapeAndPre(s) {
@@ -49,7 +51,9 @@ var App = (function (_React$Component) {
       dev: true,
       minify: false,
       sendInput: null,
-      savedSendToValue: null
+      savedSendToValue: null,
+      dev: true,
+      minify: false
     };
 
     this._packagerLogsHtml = '';
@@ -89,17 +93,13 @@ var App = (function (_React$Component) {
     value: function _renderUrl() {
 
       var style = _Object$assign({}, Styles.url);
-      var displayText = this.state.url;
-      if (!this.state.url) {
-        style.color = '#dddddd';
-        displayText = "Starting packager and ngrok...";
-      }
+      var displayText = this._computeUrl();
 
       return React.createElement(
         'div',
         { style: {
             marginLeft: 15,
-            marginBottom: 10,
+            marginBottom: 0,
             marginRight: 10
           } },
         React.createElement('input', {
@@ -109,6 +109,7 @@ var App = (function (_React$Component) {
           readOnly: true,
           style: style,
           value: displayText,
+          placeholder: 'Starting packager and ngrok...',
           onClick: this._selectUrl
         }),
         React.createElement('img', {
@@ -220,6 +221,7 @@ var App = (function (_React$Component) {
             this._renderButtons()
           ),
           this._renderUrl(),
+          this._renderUrlOptionButtons(),
           React.createElement(
             'div',
             { style: {
@@ -241,6 +243,75 @@ var App = (function (_React$Component) {
           )
         ),
         this._renderPackagerConsole()
+      );
+    }
+  }, {
+    key: '_renderUrlOptionButtons',
+    value: function _renderUrlOptionButtons() {
+      var _this3 = this;
+
+      return React.createElement(
+        'div',
+        { style: {
+            display: 'flex',
+            flexDirection: 'row',
+            // justifyContent: 'space-between',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            marginTop: -4,
+            marginLeft: 15,
+            marginBottom: 10
+          } },
+        React.createElement(
+          ButtonGroup,
+          { style: {
+              marginRight: 20
+            } },
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: function (event) {
+                _this3.setState({ hostType: 'ngrok' });
+                event.target.blur();
+              } }),
+            'ngrok'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: function (event) {
+                _this3.setState({ hostType: 'lan' });
+                event.target.blur();
+              } }),
+            'LAN'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: function (event) {
+                _this3.setState({ hostType: 'localhost' });
+                event.target.blur();
+              } }),
+            'localhost'
+          )
+        ),
+        React.createElement(
+          ButtonGroup,
+          null,
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: function (event) {
+                _this3.setState({ dev: !_this3.state.dev });
+                event.target.blur();
+              } }),
+            'dev'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: function (event) {
+                _this3.setState({ minify: !_this3.state.minify });
+                event.target.blur();
+              } }),
+            'minify'
+          )
+        )
       );
     }
   }, {
@@ -338,7 +409,7 @@ var App = (function (_React$Component) {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting packager...");
@@ -347,7 +418,7 @@ var App = (function (_React$Component) {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
-          _this3._logMetaError("Failed to restart packager :(");
+          _this4._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
@@ -358,7 +429,7 @@ var App = (function (_React$Component) {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
@@ -367,7 +438,7 @@ var App = (function (_React$Component) {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
-          _this4._logMetaError("Failed to restart ngrok :(");
+          _this5._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
@@ -378,18 +449,18 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      var _this5 = this;
+      var _this6 = this;
 
       console.log("Send link:", this.state.url, "to", this.state.sendTo);
       var message = "Sent link " + this.state.url + " to " + this.state.sendTo;
       Commands.sendAsync(this.state.sendTo, this.state.url).then(function () {
-        _this5._logMetaMessage(message);
+        _this6._logMetaMessage(message);
 
-        userSettings.updateAsync('sendTo', _this5.state.sendTo)['catch'](function (err) {
-          _this5._logMetaWarning("Couldn't save the number or e-mail you sent do");
+        userSettings.updateAsync('sendTo', _this6.state.sendTo)['catch'](function (err) {
+          _this6._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
-        _this5._logMetaError("Sending link failed :( " + err);
+        _this6._logMetaError("Sending link failed :( " + err);
       });
     }
   }, {
@@ -452,7 +523,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this6 = this;
+      var _this7 = this;
 
       if (!env) {
         console.log("Not running packager with empty env");
@@ -470,15 +541,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this6.setState({ ngrokReady: true });
-        _this6._maybeRecomputeUrl();
-        _this6._logMetaMessage("ngrok ready.");
+        _this7.setState({ ngrokReady: true });
+        // this._maybeRecomputeUrl();
+        _this7._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this6.setState({ packagerReady: true });
-        _this6._maybeRecomputeUrl();
-        _this6._logMetaMessage("Packager ready.");
+        _this7.setState({ packagerReady: true });
+        // this._maybeRecomputeUrl();
+        _this7._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -490,7 +561,7 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this7 = this;
+      var _this8 = this;
 
       if (config.__DEV__) {
         this._runPackagerAsync({
@@ -504,18 +575,34 @@ var App = (function (_React$Component) {
 
       console.log("Getting sendTo");
       userSettings.getAsync('sendTo').then(function (sendTo) {
-        _this7.setState({ sendTo: sendTo });
+        _this8.setState({ sendTo: sendTo });
       }, function (err) {
         // Probably means that there's no saved value here; not a huge deal
         // console.error("Error getting sendTo:", err);
       });
     }
   }, {
-    key: '_maybeRecomputeUrl',
-    value: function _maybeRecomputeUrl() {
-      if (this.state.packagerReady && this.state.ngrokReady) {
-        this._recomputeUrlAndSetState();
+    key: '_computeUrl',
+    value: function _computeUrl() {
+
+      if (!this.state.packagerController) {
+        return null;
       }
+
+      if (this.state.hostType === 'ngrok' && !this.state.packagerController.getNgrokUrl()) {
+        return null;
+      }
+
+      var opts = {
+        http: this.state.http,
+        ngrok: this.state.hostType === 'ngrok',
+        lan: this.state.hostType === 'lan',
+        localhost: this.state.hostType === 'localhost',
+        dev: this.state.dev,
+        minify: this.state.minify
+      };
+
+      return urlUtils.constructUrl(this.state.packagerController, opts);
     }
   }]);
 

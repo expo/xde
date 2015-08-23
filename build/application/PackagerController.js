@@ -203,6 +203,11 @@ var PackagerController = (function (_events$EventEmitter) {
     value: _asyncToGenerator(function* () {
       return this._ngrokUrl;
     })
+  }, {
+    key: 'getNgrokUrl',
+    value: function getNgrokUrl() {
+      return this._ngrokUrl;
+    }
   }]);
 
   return PackagerController;

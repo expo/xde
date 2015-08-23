@@ -16,6 +16,10 @@ function userSettingsJsonFile() {
   return new jsonFile(userSettingsFile(), { cantReadFileDefault: {} });
 }
 
+function recentExpsJsonFile() {
+  return new jsonFile(path.join(dotExponentDirectory(), 'xde-recent-exps.json'));
+}
+
 var mkdirped = false;
 function dotExponentDirectory() {
   if (!process.env.HOME) {
@@ -34,6 +38,7 @@ module.exports = userSettingsJsonFile();
 _Object$assign(module.exports, {
   userSettingsJsonFile: userSettingsJsonFile,
   userSettingsFile: userSettingsFile,
-  dotExponentDirectory: dotExponentDirectory
+  dotExponentDirectory: dotExponentDirectory,
+  recentExpsJsonFile: recentExpsJsonFile
 });
 //# sourceMappingURL=../sourcemaps/application/userSettings.js.map

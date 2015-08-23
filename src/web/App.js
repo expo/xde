@@ -7,9 +7,11 @@ let config = require('../config');
 let Commands = require('./Commands');
 let MainMenu = require('./MainMenu');
 let StyleConstants = require('./StyleConstants');
+let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
 
 let Button = require('react-bootstrap/lib/Button');
+let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 
 function escapeAndPre(s) {
@@ -31,6 +33,8 @@ class App extends React.Component {
       minify: false,
       sendInput: null,
       savedSendToValue: null,
+      dev: true,
+      minify: false,
     }
 
     this._packagerLogsHtml = '';
@@ -64,16 +68,12 @@ class App extends React.Component {
   _renderUrl() {
 
     let style = Object.assign({}, Styles.url);
-    let displayText = this.state.url;
-    if (!this.state.url) {
-      style.color = '#dddddd';
-      displayText = "Starting packager and ngrok...";
-    }
+    let displayText = this._computeUrl();
 
     return (
       <div style={{
           marginLeft: 15,
-          marginBottom: 10,
+          marginBottom: 0,
           marginRight: 10,
         }}>
         <input
@@ -83,6 +83,7 @@ class App extends React.Component {
           readOnly
           style={style}
           value={displayText}
+          placeholder="Starting packager and ngrok..."
           onClick={this._selectUrl}
         />
         <img
@@ -185,6 +186,7 @@ class App extends React.Component {
             {this._renderButtons()}
           </div>
           {this._renderUrl()}
+          {this._renderUrlOptionButtons()}
           <div style={{
               display: 'flex',
               flexDirection: 'row',
@@ -203,6 +205,49 @@ class App extends React.Component {
       </div>
     );
 
+  }
+
+  _renderUrlOptionButtons() {
+
+    return (
+      <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          // justifyContent: 'space-between',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          marginTop: -4,
+          marginLeft: 15,
+          marginBottom: 10,
+      }}>
+        <ButtonGroup style={{
+            marginRight: 20,
+        }}>
+          <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
+              this.setState({hostType: 'ngrok'});
+              event.target.blur();
+          }}>ngrok</Button>
+          <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
+              this.setState({hostType: 'lan'});
+              event.target.blur();
+          }}>LAN</Button>
+          <Button bsSize="small" {...{active: (this.state.hostType === 'localhost')}} onClick={(event) => {
+              this.setState({hostType: 'localhost'});
+              event.target.blur();
+          }}>localhost</Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
+              this.setState({dev: !this.state.dev});
+              event.target.blur();
+          }}>dev</Button>
+          <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
+              this.setState({minify: !this.state.minify});
+              event.target.blur();
+          }}>minify</Button>
+        </ButtonGroup>
+      </div>
+    );
   }
 
   _renderButtons() {
@@ -388,13 +433,13 @@ class App extends React.Component {
     pc.on('stderr', this._appendPackagerErrors);
     pc.on('ngrok-ready', () => {
       this.setState({ngrokReady: true});
-      this._maybeRecomputeUrl();
+      // this._maybeRecomputeUrl();
       this._logMetaMessage("ngrok ready.");
     });
 
     pc.on('packager-ready', () => {
       this.setState({packagerReady: true});
-      this._maybeRecomputeUrl();
+      // this._maybeRecomputeUrl();
       this._logMetaMessage("Packager ready.");
     });
 
@@ -429,10 +474,26 @@ class App extends React.Component {
 
   }
 
-  _maybeRecomputeUrl() {
-    if (this.state.packagerReady && this.state.ngrokReady) {
-      this._recomputeUrlAndSetState();
+  _computeUrl() {
+
+    if (!this.state.packagerController) {
+      return null;
     }
+
+    if ((this.state.hostType === 'ngrok') && (!this.state.packagerController.getNgrokUrl())) {
+      return null;
+    }
+
+    let opts = {
+      http: this.state.http,
+      ngrok: (this.state.hostType === 'ngrok'),
+      lan: (this.state.hostType === 'lan'),
+      localhost: (this.state.hostType === 'localhost'),
+      dev: this.state.dev,
+      minify: this.state.minify,
+    };
+
+    return urlUtils.constructUrl(this.state.packagerController, opts);
   }
 
 };
