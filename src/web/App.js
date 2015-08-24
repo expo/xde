@@ -62,7 +62,7 @@ class App extends React.Component {
           readOnly
           style={style}
           value={displayText}
-          placeholder="Starting packager and ngrok..."
+          placeholder="Waiting for packager and ngrok to start..."
           onClick={this._selectUrl}
         />
         <img

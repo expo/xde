@@ -13,6 +13,17 @@ var determineEntryPoint = _asyncToGenerator(function* (root) {
   return main;
 });
 
+var _getReactNativeVersionAsync = _asyncToGenerator(function* () {
+  var xdePackageJson = jsonFile(path.join(__dirname, '../../package.json'));
+  return yield xdePackageJson.getAsync(['dependencies', 'react-native']);
+});
+
+var _installReactNativeInNewProjectWithRoot = _asyncToGenerator(function* (root) {
+  var nodeModulesPath = path.join(root, 'node_modules');
+  yield mkdirp.promise(nodeModulesPath);
+  yield fsExtra.copy.promise(path.join(__dirname, '../../node_modules/react-native'), path.join(nodeModulesPath, 'react-native'));
+});
+
 var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
 
   var pp = path.parse(root);
@@ -23,12 +34,17 @@ var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
 
   var author = yield userSettings.getAsync('email', undefined);
 
+  var dependencies = {
+    'react-native': yield _getReactNativeVersionAsync()
+  };
+
   var data = _Object$assign({
     name: name,
     version: '0.0.0',
     description: "Hello Exponent!",
     main: 'main.js',
-    author: author
+    author: author,
+    dependencies: dependencies
   }, //license: "MIT",
   // scripts: {
   //   "test": "echo \"Error: no test specified\" && exit 1"
@@ -52,6 +68,9 @@ var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
   var mainJs = yield fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
   var customMainJs = mainJs.replace(/__NAME__/g, data.name);
   result = yield fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
+
+  // Intall react-native
+  yield _installReactNativeInNewProjectWithRoot(root);
 
   return data;
 });
@@ -143,6 +162,7 @@ module.exports = {
   determineEntryPoint: determineEntryPoint,
   createNewExpAsync: createNewExpAsync,
   saveRecentExpRootAsync: saveRecentExpRootAsync,
-  recentValidExpsAsync: recentValidExpsAsync
+  recentValidExpsAsync: recentValidExpsAsync,
+  _getReactNativeVersionAsync: _getReactNativeVersionAsync
 };
 //# sourceMappingURL=../sourcemaps/application/Exp.js.map

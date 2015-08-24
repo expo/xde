@@ -27,6 +27,17 @@ async function determineEntryPoint(root) {
   return main;
 }
 
+async function _getReactNativeVersionAsync() {
+  let xdePackageJson =  jsonFile(path.join(__dirname, '../../package.json'));
+  return await xdePackageJson.getAsync(['dependencies', 'react-native']);
+}
+
+async function _installReactNativeInNewProjectWithRoot(root) {
+  let nodeModulesPath = path.join(root, 'node_modules');
+  await mkdirp.promise(nodeModulesPath);
+  await fsExtra.copy.promise(path.join(__dirname, '../../node_modules/react-native'), path.join(nodeModulesPath, 'react-native'));
+}
+
 async function createNewExpAsync(root, info, opts) {
 
   let pp = path.parse(root);
@@ -37,12 +48,17 @@ async function createNewExpAsync(root, info, opts) {
 
   let author = await userSettings.getAsync('email', undefined);
 
+  let dependencies = {
+    'react-native': await _getReactNativeVersionAsync(),
+  };
+
   let data = Object.assign({
     name,
     version: '0.0.0',
     description: "Hello Exponent!",
     main: 'main.js',
     author,
+    dependencies,
     //license: "MIT",
     // scripts: {
     //   "test": "echo \"Error: no test specified\" && exit 1"
@@ -66,6 +82,9 @@ async function createNewExpAsync(root, info, opts) {
   let mainJs = await fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
   let customMainJs = mainJs.replace(/__NAME__/g, data.name);
   result = await fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
+
+  // Intall react-native
+  await _installReactNativeInNewProjectWithRoot(root);
 
   return data;
 
@@ -138,4 +157,5 @@ module.exports = {
   createNewExpAsync,
   saveRecentExpRootAsync,
   recentValidExpsAsync,
+  _getReactNativeVersionAsync,
 };

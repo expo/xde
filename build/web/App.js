@@ -84,7 +84,7 @@ var App = (function (_React$Component) {
           readOnly: true,
           style: style,
           value: displayText,
-          placeholder: 'Starting packager and ngrok...',
+          placeholder: 'Waiting for packager and ngrok to start...',
           onClick: this._selectUrl
         }),
         React.createElement('img', {
