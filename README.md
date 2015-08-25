@@ -79,6 +79,6 @@ To publish something you've made, just follow these steps:
 
   * Check to make sure you can load your app by sending the link to yourself and opening it in the Exponent app.
 
-  * Once everything looks good, hit the "Publish" button. A few seconds later, you should get a URL sent to you with the URL that you've published to and a log message indicating a successful publish.
+  * Once everything looks good, hit the "Publish" button. A few seconds later, you should get a clean URL sent to you that points to the exp.host server where your package was published to.
 
 You can publish as many times as you want and it will replace your old version, so don't worry about making a mistake!
