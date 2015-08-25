@@ -166,8 +166,8 @@ class App extends React.Component {
                 maxWidth: 460,
                 marginTop: '-15vh',
                 color: '#dddddd',
-            }}>Use the New Exp button to create a new Exponent experience
-            or the Open Exp button to open an existing Exponent experience
+            }}>Use the New Project button to create a new Exponent experience
+            or the Open Project button to open an existing Exponent experience
             or React Native app</div>
           </div>
         )}
@@ -333,8 +333,8 @@ class App extends React.Component {
           marginRight: 10,
           marginLeft: 3,
       }}>
-        <Button bsSize='medium' onClick={this._newClicked}>New Exp</Button>
-        <Button bsSize='medium' onClick={this._openClicked}>Open Exp</Button>
+        <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
+        <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
         <Button bsSize='medium' {...{disabled: !this._isSendToActive()}}>Publish</Button>
       </ButtonToolbar>
     );

@@ -195,7 +195,7 @@ var App = (function (_React$Component) {
                   marginTop: '-15vh',
                   color: '#dddddd'
                 } },
-              'Use the New Exp button to create a new Exponent experience or the Open Exp button to open an existing Exponent experience or React Native app'
+              'Use the New Project button to create a new Exponent experience or the Open Project button to open an existing Exponent experience or React Native app'
             )
           )
         )
@@ -435,12 +435,12 @@ var App = (function (_React$Component) {
         React.createElement(
           Button,
           { bsSize: 'medium', onClick: this._newClicked },
-          'New Exp'
+          'New Project'
         ),
         React.createElement(
           Button,
           { bsSize: 'medium', onClick: this._openClicked },
-          'Open Exp'
+          'Open Project'
         ),
         React.createElement(
           Button,
