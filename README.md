@@ -71,8 +71,6 @@ React Native apps that don't use native modules can work with Exponent. To confi
 
 ### Publishing a Project
 
-(TODO: This feature is still under development)
-
 To publish something you've made, just follow these steps:
 
   * In xde, create an Exponent account or login to an existing one using the pane on the right of the header.
