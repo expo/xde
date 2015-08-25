@@ -3,9 +3,11 @@ let React = require('react');
 let autobind = require('autobind-decorator');
 let escapeHtml = require('escape-html');
 
+let Api = require('../application/Api');
 let config = require('../config');
 let Commands = require('./Commands');
 let Exp = require('../application/Exp');
+let LoginPane = require('./LoginPane');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
@@ -32,10 +34,10 @@ class App extends React.Component {
       minify: false,
       sendInput: null,
       savedSendToValue: null,
-      dev: true,
       minify: false,
       recentExps: null,
       urlType: 'exp',
+      user: null,
     }
 
     this._packagerLogsHtml = '';
@@ -226,6 +228,16 @@ class App extends React.Component {
             zIndex: 0,
         }}>
           <div style={{
+              position: 'absolute',
+              left: 600,
+            }}>
+              <LoginPane
+                onLogin={(user) => {this.setState({user});}}
+                onLogout={() => {this.setState({user: null});}}
+              />
+          </div>
+
+          <div style={{
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'flex-start',
@@ -325,6 +337,45 @@ class App extends React.Component {
     );
   }
 
+  @autobind
+  _isPublishActive() {
+    return (!!this.state.packagerController && !!this.state.user);
+  }
+
+  @autobind
+  _publishClicked() {
+
+    this._logMetaMessage("Publishing...");
+
+    Exp.getPublishInfoAsync(this.state.env, {
+      packagerController: this.state.packagerController,
+      username: this.state.user.username,
+    }).then((publishInfo) => {
+      return Api.callMethodAsync('publish', [publishInfo]).then((result) => {
+        // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
+        this._logMetaMessage("Published to " + result.expUrl);
+        console.log("Published", result);
+        // TODO: send
+
+        let sendTo = this.state.sendTo;
+        if (sendTo) {
+          console.log("Send link:", result.expUrl, "to", sendTo);
+          Commands.sendAsync(sendTo, result.expUrl).then(() => {
+            console.log("Sent link to published package");
+          }, (err) => {
+            console.error("Sending link to published package failed:", err);
+          });
+        } else {
+          console.log("Not sending link because nowhere to send it to.");
+        }
+
+      });
+    }).catch((err) => {
+      this._logMetaError("Failed to publish package: " + err.message);
+    });
+
+  }
+
   _renderButtons() {
     return (
       <ButtonToolbar style={{
@@ -335,7 +386,7 @@ class App extends React.Component {
       }}>
         <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
         <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
-        <Button bsSize='medium' {...{disabled: !this._isSendToActive()}}>Publish</Button>
+        <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish</Button>
       </ButtonToolbar>
     );
 
@@ -499,6 +550,8 @@ class App extends React.Component {
 
   @autobind
   async _runPackagerAsync(env, args) {
+
+    this.setState({env});
 
     if (!env) {
       console.log("Not running packager with empty env");

@@ -32,6 +32,12 @@ async function loginOrAddUserAsync(args) {
 
 }
 
+async function logoutAsync() {
+  let result = await Api.callMethodAsync('logout', []);
+  userSettings.deleteKeyAsync('username');
+}
+
 module.exports = {
   loginOrAddUserAsync,
+  logoutAsync,
 };

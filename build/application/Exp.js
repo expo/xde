@@ -108,6 +108,41 @@ var expInfoSafeAsync = _asyncToGenerator(function* (root) {
   }
 });
 
+var getPublishInfoAsync = _asyncToGenerator(function* (env, opts) {
+
+  var root = env.root;
+  var pkgJson = packageJsonForRoot(root);
+  var pkg = yield pkgJson.readAsync();
+  var name = pkg.name;
+  var description = pkg.description;
+  var version = pkg.version;
+  var username = opts.username;
+  var packagerController = opts.packagerController;
+
+  var remotePackageName = name;
+  var remoteUsername = username;
+  var remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
+  var localPackageName = name;
+  var packageVersion = version;
+
+  var ngrokUrl = urlUtils.constructUrl(packagerController, {
+    ngrok: true,
+    dev: false,
+    minify: true,
+    http: true
+  });
+
+  return {
+    username: username,
+    localPackageName: localPackageName,
+    packageVersion: packageVersion,
+    remoteUsername: remoteUsername,
+    remotePackageName: remotePackageName,
+    remoteFullPackageName: remoteFullPackageName,
+    ngrokUrl: ngrokUrl
+  };
+});
+
 var recentValidExpsAsync = _asyncToGenerator(function* () {
   var recentExpsJsonFile = userSettings.recentExpsJsonFile();
   var recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
@@ -130,6 +165,7 @@ var fsExtra = require('fs-extra');
 var mkdirp = require('mkdirp');
 var path = require('path');
 
+var urlUtils = require('./urlUtils');
 var userSettings = require('./userSettings');
 
 var TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../template'));
@@ -161,6 +197,7 @@ function makePathReadable(pth) {
 module.exports = {
   determineEntryPoint: determineEntryPoint,
   createNewExpAsync: createNewExpAsync,
+  getPublishInfoAsync: getPublishInfoAsync,
   saveRecentExpRootAsync: saveRecentExpRootAsync,
   recentValidExpsAsync: recentValidExpsAsync,
   _getReactNativeVersionAsync: _getReactNativeVersionAsync

@@ -32,11 +32,17 @@ var loginOrAddUserAsync = _asyncToGenerator(function* (args) {
   }
 });
 
+var logoutAsync = _asyncToGenerator(function* () {
+  var result = yield Api.callMethodAsync('logout', []);
+  userSettings.deleteKeyAsync('username');
+});
+
 var Api = require('./Api');
 var password = require('./password');
 var userSettings = require('./userSettings');
 
 module.exports = {
-  loginOrAddUserAsync: loginOrAddUserAsync
+  loginOrAddUserAsync: loginOrAddUserAsync,
+  logoutAsync: logoutAsync
 };
 //# sourceMappingURL=../sourcemaps/application/login.js.map

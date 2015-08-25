@@ -5,6 +5,7 @@ let fsExtra = require('fs-extra');
 let mkdirp = require('mkdirp');
 let path = require('path');
 
+let urlUtils = require('./urlUtils');
 let userSettings = require('./userSettings');
 
 let TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../template'));
@@ -136,6 +137,47 @@ async function expInfoSafeAsync(root) {
   }
 }
 
+async function getPublishInfoAsync(env, opts) {
+
+  let root = env.root;
+  let pkgJson = packageJsonForRoot(root);
+  let pkg = await pkgJson.readAsync();
+  let {
+    name,
+    description,
+    version,
+  } = pkg;
+
+  let {
+    username,
+    packagerController,
+  } = opts;
+
+  let remotePackageName = name;
+  let remoteUsername = username;
+  let remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
+  let localPackageName = name;
+  let packageVersion = version;
+
+  let ngrokUrl = urlUtils.constructUrl(packagerController, {
+    ngrok: true,
+    dev: false,
+    minify: true,
+    http: true,
+  });
+
+  return {
+    username,
+    localPackageName,
+    packageVersion,
+    remoteUsername,
+    remotePackageName,
+    remoteFullPackageName,
+    ngrokUrl,
+  };
+}
+
+
 async function recentValidExpsAsync() {
   let recentExpsJsonFile = userSettings.recentExpsJsonFile();
   let recentExps = await recentExpsJsonFile.readAsync({cantReadFileDefault: []});
@@ -155,6 +197,7 @@ async function recentValidExpsAsync() {
 module.exports = {
   determineEntryPoint,
   createNewExpAsync,
+  getPublishInfoAsync,
   saveRecentExpRootAsync,
   recentValidExpsAsync,
   _getReactNativeVersionAsync,

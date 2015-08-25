@@ -22,8 +22,8 @@ function ApiError(code, message) {
   return err;
 }
 
-// const API_BASE_URL = 'http://exp.host/--/api/';
-const API_BASE_URL = 'http://localhost:3000/--/api/';
+const API_BASE_URL = 'http://exp.host/--/api/';
+// const API_BASE_URL = 'http://localhost:3000/--/api/';
 
 var ApiClient = (function () {
   function ApiClient() {
