@@ -66,7 +66,10 @@ class FirstExperience extends React.Component {
           onSelectColor={this._handleColorSelected.bind(this)}
           style={styles.boxes}
         />
-      <Text style={styles.note}>Try pressing and dragging the boxes.</Text>
+        <Text style={styles.note}>
+          Tap the boxes to change the color of the status bar. Press down
+          and drag them to see them bounce back with spring physics.
+        </Text>
 
         {/* Publishing instructions */}
         <Text style={styles.sectionTitle}>Publishing</Text>

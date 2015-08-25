@@ -12,7 +12,7 @@ let {
 let BOX_LENGTH = 88;
 let BOX_SPACING = 12;
 let PAN_THRESHOLD = 10;
-let PAN_STIFFNESS = 2;
+let PAN_STIFFNESS = 1.2;
 
 class ExBoxes extends React.Component {
   render() {
