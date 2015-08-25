@@ -32,7 +32,7 @@ var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
   // opts = opts || {force: true};
   opts = opts || {};
 
-  var author = yield userSettings.getAsync('email', undefined);
+  var author = yield userSettings.getAsync('email', null);
 
   var dependencies = {
     'react-native': yield _getReactNativeVersionAsync()

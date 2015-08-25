@@ -46,7 +46,7 @@ async function createNewExpAsync(root, info, opts) {
   // opts = opts || {force: true};
   opts = opts || {};
 
-  let author = await userSettings.getAsync('email', undefined);
+  let author = await userSettings.getAsync('email', null);
 
   let dependencies = {
     'react-native': await _getReactNativeVersionAsync(),
