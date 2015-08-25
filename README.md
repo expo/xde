@@ -12,7 +12,7 @@ We're going to bundle it up so that you just have to download one standalone app
 
 In the meantime, you can perform the following steps:
   * `git clone` this repository,
-  * Make sure you have iojs version 2.3.1 or newer. If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it
+  * Make sure you have iojs version 2.3.1 (any iojs-v2 will work probably; iojs-v3 probably won't). If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it
 
 ```shell
   touch ~/.profile
