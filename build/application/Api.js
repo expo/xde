@@ -12,6 +12,9 @@ Object.defineProperty(exports, '__esModule', {
 var instapromise = require('instapromise');
 var request = require('request');
 
+var session = require('./session');
+var userSettings = require('./userSettings');
+
 function ApiError(code, message) {
   var err = new Error(message);
   err.code = code;
@@ -19,8 +22,8 @@ function ApiError(code, message) {
   return err;
 }
 
-const API_BASE_URL = 'http://exp.host/--/api/';
-//const API_BASE_URL = 'http://localhost:3000/--/api/';
+// const API_BASE_URL = 'http://exp.host/--/api/';
+const API_BASE_URL = 'http://localhost:3000/--/api/';
 
 var ApiClient = (function () {
   function ApiClient() {
@@ -32,7 +35,22 @@ var ApiClient = (function () {
     value: _asyncToGenerator(function* (methodName, args) {
       var url = API_BASE_URL + encodeURIComponent(methodName) + '/' + encodeURIComponent(JSON.stringify(args));
 
-      var response = yield request.promise.get(url);
+      var clientId = yield session.clientIdAsync();
+
+      var _ref = yield userSettings.readAsync();
+
+      var username = _ref.username;
+
+      var headers = {
+        'Exp-ClientId': clientId
+      };
+      if (username) {
+        headers['Exp-Username'] = username;
+      }
+
+      // console.log("headers=", headers);
+
+      var response = yield request.promise.get(url, { headers: headers });
       var body = response.body;
       var responseObj;
       try {
