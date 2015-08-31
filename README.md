@@ -1,7 +1,5 @@
-# xde
+# xde [![Slack](http://slack.exponentjs.com/badge.svg)](http://slack.exponentjs.com)
 The Exponent Development Environment - Beta release
-
-Hi,
 
 xde is currently in beta but we're really happy for you to try it out!
 
