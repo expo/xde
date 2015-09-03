@@ -543,12 +543,6 @@ class App extends React.Component {
   }
 
   @autobind
-  _scrollPackagerErrorsToBottom() {
-    let ta = React.findDOMNode(this.refs.packagerErrors);
-    ta.scrollTop = ta.scrollHeight;
-  }
-
-  @autobind
   async _runPackagerAsync(env, args) {
 
     this.setState({env});

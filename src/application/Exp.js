@@ -131,7 +131,7 @@ async function expInfoAsync(root) {
 
 async function expInfoSafeAsync(root) {
   try {
-    return expInfoAsync(root);
+    return await expInfoAsync(root);
   } catch (e) {
     return null;
   }

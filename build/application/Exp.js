@@ -102,7 +102,7 @@ var expInfoAsync = _asyncToGenerator(function* (root) {
 
 var expInfoSafeAsync = _asyncToGenerator(function* (root) {
   try {
-    return expInfoAsync(root);
+    return yield expInfoAsync(root);
   } catch (e) {
     return null;
   }

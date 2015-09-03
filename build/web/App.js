@@ -699,13 +699,6 @@ var App = (function (_React$Component) {
       ta.scrollTop = ta.scrollHeight;
     }
   }, {
-    key: '_scrollPackagerErrorsToBottom',
-    decorators: [autobind],
-    value: function _scrollPackagerErrorsToBottom() {
-      var ta = React.findDOMNode(this.refs.packagerErrors);
-      ta.scrollTop = ta.scrollHeight;
-    }
-  }, {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
