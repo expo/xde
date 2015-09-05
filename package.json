@@ -7,7 +7,7 @@
     "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "node ./build/scripts/postinstall.js",
-    "package": "electron-packager ./ 'Exponent XDE' --platform=darwin --arch=x64 --version=0.31.2 --ignore='(io.js|dev|.*yeoman.*)'"
+    "package": "electron-packager ./ 'Exponent XDE' --platform=darwin --arch=x64 --version=0.31.2"
   },
   "repository": {
     "type": "git",

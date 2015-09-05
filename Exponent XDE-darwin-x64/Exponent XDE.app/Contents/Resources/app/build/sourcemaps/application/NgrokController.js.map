@@ -1,1 +1,0 @@
-{"version":3,"sources":["application/NgrokController.js"],"names":[],"mappings":";;;;IACM,eAAe,YAAf,eAAe;wBAAf,eAAe;;;AAGrB,MAAM,CAAC,OAAO,GAAG,eAAe,CAAC","file":"application/NgrokController.js","sourcesContent":["\nclass NgrokController {\n}\n\nmodule.exports = NgrokController;\n"],"sourceRoot":"/source/"}
