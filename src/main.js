@@ -37,7 +37,7 @@ app.on('ready', function() {
 
   // Open the devtools.
   if (config.__DEV__) {
-    mainWindow.openDevTools();
+      mainWindow.openDevTools();
   }
 
   // Emitted when the window is closed.

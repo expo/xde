@@ -71,6 +71,18 @@
         height: 100vh;
       }
       button:focus {outline:0;}
+
+      #app-loading {
+        display: flex;
+        flex: 1;
+        flex-grow: 1;
+        align-items: center;
+        align-self: center;
+        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
+        color: #ddddee;
+        font-size: 24px;
+      }
+
     </style>
 
 
@@ -81,9 +93,14 @@
       var React = require('react');
       var JSXTransformer = require('react/dist/JSXTransformer');
       var App = require('../build/web/App');
+      function ___openChromeDevTools() {
+        require('remote').getCurrentWindow().openDevTools();
+      }
     </script>
 
-    <div id="app">Hello</div>
+    <div id="app">
+      <a id="app-loading" href="javascript:___openChromeDevTools();">Loading...</a>
+    </div>
     <script type="text/jsx">
       React.render(
         <App emitter={require('remote').require('./application/AppEmitter')} />,
