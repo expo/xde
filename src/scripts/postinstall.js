@@ -5,9 +5,11 @@ let instapromise = require('instapromise');
 let path = require('path');
 let plist = require('plist');
 
-const APP_NAME = 'Exponent XDE';
-
-let XDE_ROOT = path.join(__dirname, '..', '..');
+let {
+  APP_NAME,
+  XDE_ROOT,
+  copyIconsSync,
+} = require('./lib/dotApp');
 
 function renameElectronAppSync(newName) {
   // First move the app folder
@@ -17,7 +19,8 @@ function renameElectronAppSync(newName) {
   // await fs.promise.rename(path.join(XDE_ROOT, './node_modules/electron-prebuilt/dist/Electron.app'), appRoot);
 
   // Install icons
-  fsExtra.copySync(path.join(XDE_ROOT, './dev/Design/xde.icns'), path.join(appRoot, 'Contents/Resources/atom.icns'));
+  copyIconsSync(appRoot);
+  // fsExtra.copySync(path.join(XDE_ROOT, './dev/Design/xde.icns'), path.join(appRoot, 'Contents/Resources/atom.icns'));
 
 }
 

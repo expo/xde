@@ -7,7 +7,7 @@
     "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "node ./build/scripts/postinstall.js",
-    "package": "electron-packager ./ 'Exponent XDE' --platform=darwin --arch=x64 --version=0.31.2"
+    "package": "node ./build/scripts/buildPackage.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@exponent/gulp-babel": "^7.1.0",
     "@exponent/gulp-changed": "^1.3.1",
+    "@exponent/spawn-async": "^1.1.0",
     "babel-core": "^5.8.19",
     "babel-runtime": "^5.8.19",
     "electron-packager": "^5.0.2",
