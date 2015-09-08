@@ -2,6 +2,10 @@ let React = require('react');
 
 let autobind = require('autobind-decorator');
 let escapeHtml = require('escape-html');
+let execAsync = require('exec-async');
+let gitInfoAsync = require('git-info-async');
+let jsonFile = require('@exponent/json-file');
+let path = require('path');
 
 let Api = require('../application/Api');
 let config = require('../config');
@@ -252,6 +256,7 @@ class App extends React.Component {
             }} onClick={() => {
               require('shell').openExternal('http://exponentjs.com/');
             }} />
+            {this._renderAbout()}
             {this._renderButtons()}
           </div>
           {this._renderUrl()}
@@ -336,6 +341,27 @@ class App extends React.Component {
         </ButtonGroup>
       </div>
     );
+  }
+
+  _renderAbout() {
+    return (
+      <div style={{
+          color: '#cccccc',
+          fontSize: 11,
+          fontFamily: ['Verdana', 'Helvetica Neue', 'Monaco', 'Sans-serif'],
+          display: 'flex',
+          flexDirection: 'column',
+          alignSelf: 'flex-end',
+          paddingBottom: 10,
+      }}>{this.state.versionString} {/*this.state.gitInfo*/}</div>
+    );
+  }
+
+  async _versionStringAsync() {
+    let pkgJsonFile = jsonFile(path.join(__dirname, '../../package.json'));
+    let versionString = await pkgJsonFile.getAsync('version');
+    // console.log('vs =', vs);
+    return versionString;
   }
 
   @autobind
@@ -611,6 +637,18 @@ class App extends React.Component {
       this.setState({recentExps});
     }, (err) => {
       console.error("Couldn't get list of recent Exps :(", err);
+    });
+
+    this._versionStringAsync().then((vs) => {
+      this.setState({versionString: vs});
+    }, (err) => {
+      console.error("Couldn't get version string :(", err);
+    });
+
+    gitInfoAsync().then((gitInfo) => {
+      this.setState({gitInfo});
+    }, (err) => {
+      console.error("Couldn't get git info :(", err);
     });
 
 

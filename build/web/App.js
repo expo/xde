@@ -18,6 +18,10 @@ var React = require('react');
 
 var autobind = require('autobind-decorator');
 var escapeHtml = require('escape-html');
+var execAsync = require('exec-async');
+var gitInfoAsync = require('git-info-async');
+var jsonFile = require('@exponent/json-file');
+var path = require('path');
 
 var Api = require('../application/Api');
 var config = require('../config');
@@ -311,6 +315,7 @@ var App = (function (_React$Component) {
               }, onClick: function () {
                 require('shell').openExternal('http://exponentjs.com/');
               } }),
+            this._renderAbout(),
             this._renderButtons()
           ),
           this._renderUrl(),
@@ -440,6 +445,32 @@ var App = (function (_React$Component) {
         )
       );
     }
+  }, {
+    key: '_renderAbout',
+    value: function _renderAbout() {
+      return React.createElement(
+        'div',
+        { style: {
+            color: '#cccccc',
+            fontSize: 11,
+            fontFamily: ['Verdana', 'Helvetica Neue', 'Monaco', 'Sans-serif'],
+            display: 'flex',
+            flexDirection: 'column',
+            alignSelf: 'flex-end',
+            paddingBottom: 10
+          } },
+        this.state.versionString,
+        ' '
+      );
+    }
+  }, {
+    key: '_versionStringAsync',
+    value: _asyncToGenerator(function* () {
+      var pkgJsonFile = jsonFile(path.join(__dirname, '../../package.json'));
+      var versionString = yield pkgJsonFile.getAsync('version');
+      // console.log('vs =', vs);
+      return versionString;
+    })
   }, {
     key: '_isPublishActive',
     decorators: [autobind],
@@ -772,6 +803,18 @@ var App = (function (_React$Component) {
       }, function (err) {
         console.error("Couldn't get list of recent Exps :(", err);
       });
+
+      this._versionStringAsync().then(function (vs) {
+        _this12.setState({ versionString: vs });
+      }, function (err) {
+        console.error("Couldn't get version string :(", err);
+      });
+
+      gitInfoAsync().then(function (gitInfo) {
+        _this12.setState({ gitInfo: gitInfo });
+      }, function (err) {
+        console.error("Couldn't get git info :(", err);
+      });
     }
   }, {
     key: '_computeUrl',
@@ -855,5 +898,5 @@ global.ce = function (a, b, c) {
 };
 
 module.exports = App;
-/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/
+/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/ /*this.state.gitInfo*/
 //# sourceMappingURL=../sourcemaps/web/App.js.map
