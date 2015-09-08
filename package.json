@@ -42,7 +42,7 @@
     "exists-async": "^1.0.0",
     "freeport-async": "^1.1.0",
     "fs-extra": "^0.23.1",
-    "git-info-async": "^1.0.0",
+    "git-info-async": "^1.1.0",
     "instapromise": "^2.0.2",
     "lodash-node": "^3.10.1",
     "mkdirp": "^0.5.1",
