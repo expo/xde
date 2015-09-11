@@ -14,7 +14,8 @@ var buildPackageAsync = _asyncToGenerator(function* (opts) {
 var runAsync = _asyncToGenerator(function* () {
   yield buildPackageAsync();
   crayon.green.log("Bundled up Electron app");
-  copyIconsSync();
+  // The --icon option handles this now
+  // copyIconsSync();
   yield compressAsync(getAppRoot());
   crayon.green.log("Building package complete.");
   return true;

@@ -39,7 +39,8 @@ async function buildPackageAsync(opts) {
 async function runAsync() {
   await buildPackageAsync();
   crayon.green.log("Bundled up Electron app");
-  copyIconsSync();
+  // The --icon option handles this now
+  // copyIconsSync();
   await compressAsync(getAppRoot());
   crayon.green.log("Building package complete.");
   return true;
