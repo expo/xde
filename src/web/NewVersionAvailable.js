@@ -30,7 +30,7 @@ class NewVersionAvailable extends React.Component {
     if (this.state.responseData && this.state.responseData.updateUrl) {
       return this.state.responseData.updateUrl;
     } else {
-      return 'http://exponentjs.com/download';
+      return 'http://exponentjs.com/docs';
     }
   }
 
