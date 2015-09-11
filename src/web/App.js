@@ -13,6 +13,7 @@ let Commands = require('./Commands');
 let Exp = require('../application/Exp');
 let LoginPane = require('./LoginPane');
 let Menu = require('../application/Menu');
+let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
@@ -224,6 +225,7 @@ class App extends React.Component {
           alignItems: 'stretch',
           height: '100%',
       }}>
+        <NewVersionAvailable />
         <div style={{
             backgroundColor: '#f6f6f6',
             flexShrink: 0,
@@ -645,11 +647,11 @@ class App extends React.Component {
       console.error("Couldn't get version string :(", err);
     });
 
-    gitInfoAsync().then((gitInfo) => {
-      this.setState({gitInfo});
-    }, (err) => {
-      console.error("Couldn't get git info :(", err);
-    });
+    // gitInfoAsync().then((gitInfo) => {
+    //   this.setState({gitInfo});
+    // }, (err) => {
+    //   console.error("Couldn't get git info :(", err);
+    // });
 
 
 

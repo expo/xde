@@ -12,6 +12,7 @@ Object.defineProperty(exports, '__esModule', {
 var instapromise = require('instapromise');
 var request = require('request');
 
+var config = require('../config');
 var session = require('./session');
 var userSettings = require('./userSettings');
 
@@ -22,7 +23,11 @@ function ApiError(code, message) {
   return err;
 }
 
-const API_BASE_URL = 'http://exp.host/--/api/';
+var API_BASE_URL = 'http://' + config.api.host;
+if (config.api.port) {
+  API_BASE_URL += ':' + config.api.port;
+}
+API_BASE_URL += '/--/api/';
 // const API_BASE_URL = 'http://localhost:3000/--/api/';
 
 var ApiClient = (function () {
@@ -72,5 +77,8 @@ var ApiClient = (function () {
 })();
 
 exports['default'] = ApiClient;
+
+ApiClient.host = config.api.host;
+ApiClient.port = config.api.port || 80;
 module.exports = exports['default'];
 //# sourceMappingURL=../sourcemaps/application/Api.js.map

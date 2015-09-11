@@ -29,6 +29,7 @@ var Commands = require('./Commands');
 var Exp = require('../application/Exp');
 var LoginPane = require('./LoginPane');
 var Menu = require('../application/Menu');
+var NewVersionAvailable = require('./NewVersionAvailable');
 var StyleConstants = require('./StyleConstants');
 var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
@@ -274,6 +275,7 @@ var App = (function (_React$Component) {
             alignItems: 'stretch',
             height: '100%'
           } },
+        React.createElement(NewVersionAvailable, null),
         React.createElement(
           'div',
           { style: {
@@ -810,11 +812,11 @@ var App = (function (_React$Component) {
         console.error("Couldn't get version string :(", err);
       });
 
-      gitInfoAsync().then(function (gitInfo) {
-        _this12.setState({ gitInfo: gitInfo });
-      }, function (err) {
-        console.error("Couldn't get git info :(", err);
-      });
+      // gitInfoAsync().then((gitInfo) => {
+      //   this.setState({gitInfo});
+      // }, (err) => {
+      //   console.error("Couldn't get git info :(", err);
+      // });
     }
   }, {
     key: '_computeUrl',

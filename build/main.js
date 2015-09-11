@@ -42,6 +42,10 @@ app.on('ready', function () {
     mainWindow.openDevTools();
   }
 
+  // Setup the menu bar
+  var Menu = require('./remote/Menu');
+  Menu.setupMenu();
+
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows

@@ -1,5 +1,6 @@
 let child_process = require('child_process');
 let crayon = require('@ccheever/crayon');
+let jsonFile = require('@exponent/json-file');
 let path = require('path');
 let spawnAsync = require('@exponent/spawn-async');
 
@@ -9,9 +10,15 @@ let {
   XDE_ROOT,
 } = dotApp;
 
+let PLATFORM = 'darwin';
+let ARCH = 'x64';
+
 function getAppRoot() {
-  let appRoot = path.join(XDE_ROOT, APP_NAME + '-darwin-x64', APP_NAME + '.app');
-  return appRoot;
+  return path.join(getAppDir(), APP_NAME + '.app');
+}
+
+function getAppDir() {
+  return path.join(XDE_ROOT, APP_NAME + '-' + PLATFORM + '-' + ARCH);
 }
 
 function copyIconsSync() {
@@ -23,8 +30,10 @@ function copyIconsSync() {
 async function buildPackageAsync(opts) {
   // electron-packager ./ 'Exponent XDE' --platform=darwin --arch=x64 --version=0.31.2 --prune
   let electronPackager = path.join(XDE_ROOT, 'node_modules', '.bin', 'electron-packager');
-  let electronVersion = '0.31.2'; // TODO: Read this from actual electron package
-  return await spawnAsync(electronPackager, ['./', APP_NAME, '--platform=darwin', '--arch=x64', '--version=0.31.2', '--prune', '--overwrite'], {stdio: 'inherit'});
+  let electronPackageJsonFile = jsonFile(path.join(XDE_ROOT, 'node_modules', 'electron-prebuilt', 'package.json'));
+  let electronVersion = await electronPackageJsonFile.getAsync('version');
+  let iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
+  return await spawnAsync(electronPackager, ['./', APP_NAME, '--platform=' + PLATFORM, '--arch=' + ARCH, '--version=' + electronVersion, '--prune', '--overwrite', '--icon=' + iconPath, '--sign=Developer ID Application: 650 Industries, Inc. (C8D8QTF339)'], {stdio: 'inherit'});
 }
 
 async function runAsync() {
@@ -37,7 +46,8 @@ async function runAsync() {
 }
 
 async function compressAsync(appRoot) {
-  await spawnAsync('zip', ['-r', path.join(XDE_ROOT, APP_NAME + '.zip',), appRoot], {stdio: 'inherit'});
+  let appDir = getAppDir();
+  await spawnAsync('zip', ['-r', APP_NAME + '.zip', APP_NAME + '.app'], {stdio: 'inherit', cwd: appDir});
   crayon.green.log("Compressed app into .zip archive");
   return true;
 }

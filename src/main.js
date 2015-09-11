@@ -37,8 +37,12 @@ app.on('ready', function() {
 
   // Open the devtools.
   if (config.__DEV__) {
-      mainWindow.openDevTools();
+    mainWindow.openDevTools();
   }
+
+  // Setup the menu bar
+  let Menu = require('./remote/Menu');
+  Menu.setupMenu();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

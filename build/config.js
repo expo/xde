@@ -7,4 +7,6 @@ module.exports = {
     port: null
   }
 };
+// host: 'localhost',
+// port: 3000,
 //# sourceMappingURL=sourcemaps/config.js.map

@@ -5,8 +5,10 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 var buildPackageAsync = _asyncToGenerator(function* (opts) {
   // electron-packager ./ 'Exponent XDE' --platform=darwin --arch=x64 --version=0.31.2 --prune
   var electronPackager = path.join(XDE_ROOT, 'node_modules', '.bin', 'electron-packager');
-  var electronVersion = '0.31.2'; // TODO: Read this from actual electron package
-  return yield spawnAsync(electronPackager, ['./', APP_NAME, '--platform=darwin', '--arch=x64', '--version=0.31.2', '--prune', '--overwrite'], { stdio: 'inherit' });
+  var electronPackageJsonFile = jsonFile(path.join(XDE_ROOT, 'node_modules', 'electron-prebuilt', 'package.json'));
+  var electronVersion = yield electronPackageJsonFile.getAsync('version');
+  var iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
+  return yield spawnAsync(electronPackager, ['./', APP_NAME, '--platform=' + PLATFORM, '--arch=' + ARCH, '--version=' + electronVersion, '--prune', '--overwrite', '--icon=' + iconPath, '--sign=Developer ID Application: 650 Industries, Inc. (C8D8QTF339)'], { stdio: 'inherit' });
 });
 
 var runAsync = _asyncToGenerator(function* () {
@@ -19,13 +21,15 @@ var runAsync = _asyncToGenerator(function* () {
 });
 
 var compressAsync = _asyncToGenerator(function* (appRoot) {
-  yield spawnAsync('zip', ['-r', path.join(XDE_ROOT, APP_NAME + '.zip'), appRoot], { stdio: 'inherit' });
+  var appDir = getAppDir();
+  yield spawnAsync('zip', ['-r', APP_NAME + '.zip', APP_NAME + '.app'], { stdio: 'inherit', cwd: appDir });
   crayon.green.log("Compressed app into .zip archive");
   return true;
 });
 
 var child_process = require('child_process');
 var crayon = require('@ccheever/crayon');
+var jsonFile = require('@exponent/json-file');
 var path = require('path');
 var spawnAsync = require('@exponent/spawn-async');
 
@@ -33,9 +37,15 @@ var dotApp = require('./lib/dotApp');
 var APP_NAME = dotApp.APP_NAME;
 var XDE_ROOT = dotApp.XDE_ROOT;
 
+var PLATFORM = 'darwin';
+var ARCH = 'x64';
+
 function getAppRoot() {
-  var appRoot = path.join(XDE_ROOT, APP_NAME + '-darwin-x64', APP_NAME + '.app');
-  return appRoot;
+  return path.join(getAppDir(), APP_NAME + '.app');
+}
+
+function getAppDir() {
+  return path.join(XDE_ROOT, APP_NAME + '-' + PLATFORM + '-' + ARCH);
 }
 
 function copyIconsSync() {

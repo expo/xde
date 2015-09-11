@@ -3,6 +3,7 @@
 let instapromise = require('instapromise');
 let request = require('request');
 
+let config = require('../config');
 let session = require('./session');
 let userSettings = require('./userSettings');
 
@@ -13,7 +14,11 @@ function ApiError(code, message) {
   return err;
 }
 
-const API_BASE_URL = 'http://exp.host/--/api/';
+let API_BASE_URL = 'http://' + config.api.host;
+if (config.api.port) {
+  API_BASE_URL += ':' + config.api.port;
+}
+API_BASE_URL += '/--/api/';
 // const API_BASE_URL = 'http://localhost:3000/--/api/';
 
 export default class ApiClient {
@@ -50,3 +55,6 @@ export default class ApiClient {
     }
   }
 }
+
+ApiClient.host = config.api.host;
+ApiClient.port = config.api.port || 80;
