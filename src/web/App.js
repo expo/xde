@@ -36,6 +36,7 @@ class App extends React.Component {
       packagerErrors: '',
       url: null,
       hostType: 'ngrok',
+      platform: 'ios',
       dev: true,
       minify: false,
       sendInput: null,
@@ -314,6 +315,18 @@ class App extends React.Component {
               this.setState({hostType: 'localhost'});
               event.target.blur();
           }}>localhost</Button>
+        </ButtonGroup>
+        <ButtonGroup style={{
+            marginRight: buttonGroupSpacing,
+        }}>
+          <Button bsSize="small" {...{active: (this.state.platform === 'ios')}} onClick={(event) => {
+              this.setState({platform: 'ios'});
+              event.target.blur();
+          }}>iOS</Button>
+        <Button bsSize="small" {...{active: (this.state.platform === 'android')}} onClick={(event) => {
+              this.setState({platform: 'android'});
+              event.target.blur();
+          }}>Android</Button>
         </ButtonGroup>
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
@@ -673,6 +686,7 @@ class App extends React.Component {
       ngrok: (this.state.hostType === 'ngrok'),
       lan: (this.state.hostType === 'lan'),
       localhost: (this.state.hostType === 'localhost'),
+      platform: this.state.platform,
       dev: this.state.dev,
       minify: this.state.minify,
       redirect: (this.state.urlType === 'redirect'),

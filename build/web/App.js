@@ -55,6 +55,7 @@ var App = (function (_React$Component) {
       packagerErrors: '',
       url: null,
       hostType: 'ngrok',
+      platform: 'ios',
       dev: true,
       minify: false,
       sendInput: null,
@@ -393,6 +394,28 @@ var App = (function (_React$Component) {
                 event.target.blur();
               } }),
             'localhost'
+          )
+        ),
+        React.createElement(
+          ButtonGroup,
+          { style: {
+              marginRight: buttonGroupSpacing
+            } },
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.platform === 'ios' }, { onClick: function (event) {
+                _this4.setState({ platform: 'ios' });
+                event.target.blur();
+              } }),
+            'iOS'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'small' }, { active: this.state.platform === 'android' }, { onClick: function (event) {
+                _this4.setState({ platform: 'android' });
+                event.target.blur();
+              } }),
+            'Android'
           )
         ),
         React.createElement(
@@ -835,6 +858,7 @@ var App = (function (_React$Component) {
         ngrok: this.state.hostType === 'ngrok',
         lan: this.state.hostType === 'lan',
         localhost: this.state.hostType === 'localhost',
+        platform: this.state.platform,
         dev: this.state.dev,
         minify: this.state.minify,
         redirect: this.state.urlType === 'redirect'

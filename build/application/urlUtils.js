@@ -50,17 +50,21 @@ function constructUrl(pc, opts) {
   // console.log("entryPoint=", entryPoint, "mainModulePath=", mainModulePath);
   url_ += '/' + encodeURIComponent(mainModulePath) + '.';
 
-  if (opts.includeRequire !== false) {
+  if (opts.includeRequire) {
     url_ += encodeURIComponent('includeRequire.');
   }
 
-  if (opts.runModule !== false) {
+  if (opts.runModule) {
     url_ += encodeURIComponent('runModule.');
   }
 
   url_ += 'bundle';
-  url_ += '?dev=' + encodeURIComponent(!!opts.dev);
-  if (opts.minify != null) {
+
+  var platform = opts.platform || 'ios';
+  url_ += '?platform=' + encodeURIComponent(platform);
+
+  url_ += '&dev=' + encodeURIComponent(!!opts.dev);
+  if (opts.minify) {
     url_ += '&minify=' + encodeURIComponent(!!opts.minify);
   }
 
