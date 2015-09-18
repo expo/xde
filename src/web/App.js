@@ -17,6 +17,7 @@ let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
+let Simulator = require('./Simulator');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -45,6 +46,7 @@ class App extends React.Component {
       recentExps: null,
       urlType: 'exp',
       user: null,
+      projectUrl: null,
     }
 
     this._packagerLogsHtml = '';
@@ -277,6 +279,7 @@ class App extends React.Component {
             }}>to</span>
             {this._renderSendInput()}
           </div>
+          <Simulator packagerController={this.state.packagerController} dev={this.state.dev} minify={this.state.minify} />
         </div>
         {this._renderPackagerConsole()}
       </div>

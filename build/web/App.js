@@ -33,6 +33,7 @@ var NewVersionAvailable = require('./NewVersionAvailable');
 var StyleConstants = require('./StyleConstants');
 var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
+var Simulator = require('./Simulator');
 
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -63,7 +64,8 @@ var App = (function (_React$Component) {
       minify: false,
       recentExps: null,
       urlType: 'exp',
-      user: null
+      user: null,
+      projectUrl: null
     };
 
     this._packagerLogsHtml = '';
@@ -341,7 +343,8 @@ var App = (function (_React$Component) {
               'to'
             ),
             this._renderSendInput()
-          )
+          ),
+          React.createElement(Simulator, { packagerController: this.state.packagerController, dev: this.state.dev, minify: this.state.minify })
         ),
         this._renderPackagerConsole()
       );
