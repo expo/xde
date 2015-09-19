@@ -46,7 +46,9 @@ class Simulator extends React.Component {
 
   @autobind
   async _openUrlInSimulatorAsync(url) {
-    simulator.openUrlInSimulatorAsync(url);
+    let result = await simulator.openUrlInSimulatorAsync(url);
+    await simulator.openSimulatorAsync();
+    return result;
   }
 
   @autobind
@@ -74,20 +76,27 @@ class Simulator extends React.Component {
   // }
 
   render() {
-    return (
-      <ButtonGroup>
-        <Button onClick={this._openSimulatorAsync}>Run Simulator</Button>
-        <Button {...{disabled: !this.state.isSimulatorRunning}} onClick={this._installAppInSimulatorAsync}>Install Exponent on Simulator</Button>
-        <Button {...{disabled: !this.props.packagerController}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on Simulator</Button>
-      </ButtonGroup>
-    );
+    let buttonSize = "medium";
+    if (!this.state.isSimulatorInstalled) {
+      return <div />;
+    } else {
+      return (
+        <ButtonToolbar style={this.props.style}>
+
+          <Button bsSize={buttonSize} {...{disabled: !this.state.isSimulatorInstalled}} onClick={this._openSimulatorAsync}>Run Simulator</Button>
+          <Button bsSizee={buttonSize} {...{disabled: !this.state.isSimulatorRunning}} onClick={this._installAppInSimulatorAsync}>Install Exponent on Simulator</Button>
+          <Button bsSize={buttonSize} {...{disabled: (!this.props.packagerController || !this.state.isSimulatorRunning)}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on Simulator</Button>
+
+        </ButtonToolbar>
+      );
+    }
   }
 
   @autobind
   _updateSimulatorRunningState() {
-    console.log("updateSimulatorRunningState");
+    // console.log("updateSimulatorRunningState");
     simulator.isSimulatorRunningAsync().then((result) => {
-      console.log("updated simulatorRunningState");
+      // console.log("updated simulatorRunningState");
       this.setState({isSimulatorRunning: result});
     }, (err) => {
       console.error("Failed to determine if simulator is running", err);
@@ -103,7 +112,7 @@ class Simulator extends React.Component {
       console.error("Failed to determine if simulator is installed", err);
     });
 
-    setInterval(this._updateSimulatorRunningState, 3000);
+    setInterval(this._updateSimulatorRunningState, 5000);
     this._updateSimulatorRunningState();
 
   }

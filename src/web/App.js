@@ -11,13 +11,14 @@ let Api = require('../application/Api');
 let config = require('../config');
 let Commands = require('./Commands');
 let Exp = require('../application/Exp');
+let FileSystemControls = require('./FileSystemControls');
 let LoginPane = require('./LoginPane');
 let Menu = require('../application/Menu');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
-let Simulator = require('./Simulator');
+let SimulatorControls = require('./SimulatorControls');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -100,8 +101,7 @@ class App extends React.Component {
           }}>
           <input
             type="text"
-            style={Object.assign({}, Styles.url, {
-              width: 202,
+            style={Object.assign({}, Styles.sendInput, {
               marginTop: 2,
             })}
             placeholder="Phone number or email"
@@ -239,9 +239,10 @@ class App extends React.Component {
         }}>
           <div style={{
               position: 'absolute',
-              left: 600,
+              left: 800,
             }}>
               <LoginPane
+                packagerController={this.state.packagerController}
                 onLogin={(user) => {this.setState({user});}}
                 onLogout={() => {this.setState({user: null});}}
               />
@@ -263,28 +264,85 @@ class App extends React.Component {
             }} />
             {this._renderAbout()}
             {this._renderButtons()}
+            {/*
+            {!!this.state.packagerController && (
+              <span style={{
+                  color: 'rgba(59, 59, 107, 0.8)',
+                  fontFamily: 'Verdana',
+                  fontWeight: '600',
+                  marginTop: 18,
+                  marginLeft: 8,
+              }}>{this.state.packagerController.getProjectShortName()}</span>
+            )} */}
           </div>
-          {this._renderUrl()}
-          {this._renderUrlOptionButtons()}
-          <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-            }}>
-            {this._renderAdvancedButtons()}
-            <span style={{
-                paddingLeft: 6,
-                paddingRight: 6,
-                paddingTop: 6,
-            }}>to</span>
-            {this._renderSendInput()}
-          </div>
-          <Simulator packagerController={this.state.packagerController} dev={this.state.dev} minify={this.state.minify} />
+
+          {!!this.state.packagerController && (
+            <div>
+
+              <FileSystemControls style={{
+              }} packagerController={this.state.packagerController} />
+
+              {this._renderUrl()}
+              {this._renderUrlOptionButtons()}
+
+              <SimulatorControls style={{
+                  marginLeft: 10,
+                  marginTop: 10,
+              }} packagerController={this.state.packagerController} dev={this.state.dev} minify={this.state.minify} />
+
+              <div style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  marginTop: 10,
+                  marginLeft: 15,
+                  marginBottom: 10,
+                }}>
+                {this._renderSendLinkButton()}
+                <span style={{
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    paddingTop: 6,
+                }}>to</span>
+                {this._renderSendInput()}
+                {this._renderButtonGroupSeparator()}
+                {this._renderPublishButton()}
+              </div>
+              <div style={{
+                  marginLeft: 15,
+                  marginBottom: 10,
+              }}>
+                {this._renderPackagerButtonToolbar()}
+              </div>
+            </div>
+          )}
+
         </div>
         {this._renderPackagerConsole()}
       </div>
     );
 
+  }
+
+  _getProjectName() {
+    // TODO: Read the project name
+    if (this.state.packagerController) {
+      return this.state.packagerController.opts.absolutePath;
+    } else {
+      return '';
+    }
+    // if (this.state.user && this.state.packagerController) {
+    //   return '@' + this.state.user + '/' + this.state.packagerController.getProjectShortName();
+    // } else {
+    //   if
+    //   return '';
+    // }
+  }
+
+  _renderButtonGroupSeparator() {
+    return (
+      <span class="btn-separator" style={{width: 70,}} />
+    );
   }
 
   _renderUrlOptionButtons() {
@@ -383,11 +441,6 @@ class App extends React.Component {
   }
 
   @autobind
-  _isPublishActive() {
-    return (!!this.state.packagerController && !!this.state.user);
-  }
-
-  @autobind
   _publishClicked() {
 
     this._logMetaMessage("Publishing...");
@@ -421,6 +474,16 @@ class App extends React.Component {
 
   }
 
+  _renderPublishButton() {
+    return (
+      <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
+    );
+  }
+
+  _isPublishActive() {
+    return (!!this.state.packagerController && !!this.state.user);
+  }
+
   _renderButtons() {
     return (
       <ButtonToolbar style={{
@@ -431,7 +494,6 @@ class App extends React.Component {
       }}>
         <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
         <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
-        <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish</Button>
       </ButtonToolbar>
     );
 
@@ -450,29 +512,37 @@ class App extends React.Component {
     return (!!this.state.packagerController && !!this.state.sendTo);
   }
 
-  _renderAdvancedButtons() {
-
+  _renderPackagerButtonToolbar() {
     let restartButtonsActive = !!this.state.packagerController;
     let activeProp = {
       // active: restartButtonsActive,
       disabled: !restartButtonsActive,
     };
 
+    return (
+      <ButtonToolbar style={{
+          marginBottom: 10,
+      }}>
+        <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
+        <Button bsSize='medium' {...activeProp} onClick={
+            this._restartNgrokClicked}>Restart ngrok</Button>
+      </ButtonToolbar>
+    );
+
+
+  }
+
+  _renderSendLinkButton() {
+
+
     let sendActiveProp = {
       disabled: !this._isSendToActive(),
     };
 
     return (
-      <ButtonToolbar style={{
-          marginLeft: 10,
-          marginBottom: 10,
-      }}>
-        <Button bsSize='small' {...activeProp} onClick={this._restartPackagerClicked}><small>Restart Packager</small></Button>
-        <Button bsSize='small' {...activeProp} onClick={
-            this._restartNgrokClicked}><small>Restart ngrok</small></Button>
-          <Button bsSize='small' {...sendActiveProp} onClick={this._sendClicked}>Send Link</Button>
-      </ButtonToolbar>
+      <Button bsSize="medium" {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
     );
+
   }
 
   @autobind
@@ -723,9 +793,20 @@ let Styles = {
     paddingRight: 4,
     paddingTop: 2,
     paddingBottom: 2,
-    width: 521,
+    width: 674,
     color: '#888888',
     fontSize: 13,
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif',],
+  },
+
+  sendInput: {
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingTop: 2,
+    paddingBottom: 2,
+    width: 250,
+    color: '#888888',
+    fontSize: 16,
     fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif',],
   },
 
@@ -736,7 +817,6 @@ let Styles = {
     fontWeight: 200,
     letterSpacing: 4.5,
     lineHeight: 20,
-    backgroundColor: 'yellw',
     textTransform: 'uppercase',
   },
 

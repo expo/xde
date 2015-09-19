@@ -27,13 +27,14 @@ var Api = require('../application/Api');
 var config = require('../config');
 var Commands = require('./Commands');
 var Exp = require('../application/Exp');
+var FileSystemControls = require('./FileSystemControls');
 var LoginPane = require('./LoginPane');
 var Menu = require('../application/Menu');
 var NewVersionAvailable = require('./NewVersionAvailable');
 var StyleConstants = require('./StyleConstants');
 var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
-var Simulator = require('./Simulator');
+var SimulatorControls = require('./SimulatorControls');
 
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -125,8 +126,7 @@ var App = (function (_React$Component) {
           } },
         React.createElement('input', {
           type: 'text',
-          style: _Object$assign({}, Styles.url, {
-            width: 202,
+          style: _Object$assign({}, Styles.sendInput, {
             marginTop: 2
           }),
           placeholder: 'Phone number or email',
@@ -293,9 +293,10 @@ var App = (function (_React$Component) {
             'div',
             { style: {
                 position: 'absolute',
-                left: 600
+                left: 800
               } },
             React.createElement(LoginPane, {
+              packagerController: this.state.packagerController,
               onLogin: function (user) {
                 _this3.setState({ user: user });
               },
@@ -323,31 +324,73 @@ var App = (function (_React$Component) {
             this._renderAbout(),
             this._renderButtons()
           ),
-          this._renderUrl(),
-          this._renderUrlOptionButtons(),
-          React.createElement(
+          !!this.state.packagerController && React.createElement(
             'div',
-            { style: {
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'flex-start'
-              } },
-            this._renderAdvancedButtons(),
+            null,
+            React.createElement(FileSystemControls, { style: {}, packagerController: this.state.packagerController }),
+            this._renderUrl(),
+            this._renderUrlOptionButtons(),
+            React.createElement(SimulatorControls, { style: {
+                marginLeft: 10,
+                marginTop: 10
+              }, packagerController: this.state.packagerController, dev: this.state.dev, minify: this.state.minify }),
             React.createElement(
-              'span',
+              'div',
               { style: {
-                  paddingLeft: 6,
-                  paddingRight: 6,
-                  paddingTop: 6
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  marginTop: 10,
+                  marginLeft: 15,
+                  marginBottom: 10
                 } },
-              'to'
+              this._renderSendLinkButton(),
+              React.createElement(
+                'span',
+                { style: {
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    paddingTop: 6
+                  } },
+                'to'
+              ),
+              this._renderSendInput(),
+              this._renderButtonGroupSeparator(),
+              this._renderPublishButton()
             ),
-            this._renderSendInput()
-          ),
-          React.createElement(Simulator, { packagerController: this.state.packagerController, dev: this.state.dev, minify: this.state.minify })
+            React.createElement(
+              'div',
+              { style: {
+                  marginLeft: 15,
+                  marginBottom: 10
+                } },
+              this._renderPackagerButtonToolbar()
+            )
+          )
         ),
         this._renderPackagerConsole()
       );
+    }
+  }, {
+    key: '_getProjectName',
+    value: function _getProjectName() {
+      // TODO: Read the project name
+      if (this.state.packagerController) {
+        return this.state.packagerController.opts.absolutePath;
+      } else {
+        return '';
+      }
+      // if (this.state.user && this.state.packagerController) {
+      //   return '@' + this.state.user + '/' + this.state.packagerController.getProjectShortName();
+      // } else {
+      //   if
+      //   return '';
+      // }
+    }
+  }, {
+    key: '_renderButtonGroupSeparator',
+    value: function _renderButtonGroupSeparator() {
+      return React.createElement('span', { 'class': 'btn-separator', style: { width: 70 } });
     }
   }, {
     key: '_renderUrlOptionButtons',
@@ -500,12 +543,6 @@ var App = (function (_React$Component) {
       return versionString;
     })
   }, {
-    key: '_isPublishActive',
-    decorators: [autobind],
-    value: function _isPublishActive() {
-      return !!this.state.packagerController && !!this.state.user;
-    }
-  }, {
     key: '_publishClicked',
     decorators: [autobind],
     value: function _publishClicked() {
@@ -540,6 +577,20 @@ var App = (function (_React$Component) {
       });
     }
   }, {
+    key: '_renderPublishButton',
+    value: function _renderPublishButton() {
+      return React.createElement(
+        Button,
+        _extends({ bsSize: 'medium' }, { disabled: !this._isPublishActive() }, { onClick: this._publishClicked }),
+        'Publish to exp.host'
+      );
+    }
+  }, {
+    key: '_isPublishActive',
+    value: function _isPublishActive() {
+      return !!this.state.packagerController && !!this.state.user;
+    }
+  }, {
     key: '_renderButtons',
     value: function _renderButtons() {
       return React.createElement(
@@ -559,11 +610,6 @@ var App = (function (_React$Component) {
           Button,
           { bsSize: 'medium', onClick: this._openClicked },
           'Open Project'
-        ),
-        React.createElement(
-          Button,
-          _extends({ bsSize: 'medium' }, { disabled: !this._isPublishActive() }, { onClick: this._publishClicked }),
-          'Publish'
         )
       );
 
@@ -582,48 +628,43 @@ var App = (function (_React$Component) {
       return !!this.state.packagerController && !!this.state.sendTo;
     }
   }, {
-    key: '_renderAdvancedButtons',
-    value: function _renderAdvancedButtons() {
-
+    key: '_renderPackagerButtonToolbar',
+    value: function _renderPackagerButtonToolbar() {
       var restartButtonsActive = !!this.state.packagerController;
       var activeProp = {
         // active: restartButtonsActive,
         disabled: !restartButtonsActive
       };
 
+      return React.createElement(
+        ButtonToolbar,
+        { style: {
+            marginBottom: 10
+          } },
+        React.createElement(
+          Button,
+          _extends({ style: { marginRight: 10 }, bsSize: 'medium' }, activeProp, { onClick: this._restartPackagerClicked }),
+          'Restart Packager'
+        ),
+        React.createElement(
+          Button,
+          _extends({ bsSize: 'medium' }, activeProp, { onClick: this._restartNgrokClicked }),
+          'Restart ngrok'
+        )
+      );
+    }
+  }, {
+    key: '_renderSendLinkButton',
+    value: function _renderSendLinkButton() {
+
       var sendActiveProp = {
         disabled: !this._isSendToActive()
       };
 
       return React.createElement(
-        ButtonToolbar,
-        { style: {
-            marginLeft: 10,
-            marginBottom: 10
-          } },
-        React.createElement(
-          Button,
-          _extends({ bsSize: 'small' }, activeProp, { onClick: this._restartPackagerClicked }),
-          React.createElement(
-            'small',
-            null,
-            'Restart Packager'
-          )
-        ),
-        React.createElement(
-          Button,
-          _extends({ bsSize: 'small' }, activeProp, { onClick: this._restartNgrokClicked }),
-          React.createElement(
-            'small',
-            null,
-            'Restart ngrok'
-          )
-        ),
-        React.createElement(
-          Button,
-          _extends({ bsSize: 'small' }, sendActiveProp, { onClick: this._sendClicked }),
-          'Send Link'
-        )
+        Button,
+        _extends({ bsSize: 'medium' }, sendActiveProp, { onClick: this._sendClicked }),
+        'Send Link for Phone'
       );
     }
   }, {
@@ -899,9 +940,20 @@ var Styles = {
     paddingRight: 4,
     paddingTop: 2,
     paddingBottom: 2,
-    width: 521,
+    width: 674,
     color: '#888888',
     fontSize: 13,
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif']
+  },
+
+  sendInput: {
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingTop: 2,
+    paddingBottom: 2,
+    width: 250,
+    color: '#888888',
+    fontSize: 16,
     fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif']
   },
 
@@ -912,7 +964,6 @@ var Styles = {
     fontWeight: 200,
     letterSpacing: 4.5,
     lineHeight: 20,
-    backgroundColor: 'yellw',
     textTransform: 'uppercase'
   }
 
@@ -927,5 +978,14 @@ global.ce = function (a, b, c) {
 };
 
 module.exports = App;
-/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/ /*this.state.gitInfo*/
+/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/ /*
+                                                                                 {!!this.state.packagerController && (
+                                                                                  <span style={{
+                                                                                      color: 'rgba(59, 59, 107, 0.8)',
+                                                                                      fontFamily: 'Verdana',
+                                                                                      fontWeight: '600',
+                                                                                      marginTop: 18,
+                                                                                      marginLeft: 8,
+                                                                                  }}>{this.state.packagerController.getProjectShortName()}</span>
+                                                                                 )} */ /*this.state.gitInfo*/
 //# sourceMappingURL=../sourcemaps/web/App.js.map

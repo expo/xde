@@ -101,25 +101,30 @@ var Simulator = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement(
-        ButtonToolbar,
-        { style: this.props.style },
-        React.createElement(
-          Button,
-          { onClick: this._openSimulatorAsync },
-          'Run Simulator'
-        ),
-        React.createElement(
-          Button,
-          _extends({ disabled: !this.state.isSimulatorRunning }, { onClick: this._installAppInSimulatorAsync }),
-          'Install Exponent on Simulator'
-        ),
-        React.createElement(
-          Button,
-          _extends({ disabled: !this.props.packagerController || !this.state.isSimulatorRunning }, { onClick: this._openProjectUrlInSimulatorAsync }),
-          'Open Project in Exponent on Simulator'
-        )
-      );
+      var buttonSize = "medium";
+      if (!this.state.isSimulatorInstalled) {
+        return React.createElement('div', null);
+      } else {
+        return React.createElement(
+          ButtonToolbar,
+          { style: this.props.style },
+          React.createElement(
+            Button,
+            _extends({ bsSize: buttonSize }, { disabled: !this.state.isSimulatorInstalled }, { onClick: this._openSimulatorAsync }),
+            'Run Simulator'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSizee: buttonSize }, { disabled: !this.state.isSimulatorRunning }, { onClick: this._installAppInSimulatorAsync }),
+            'Install Exponent on Simulator'
+          ),
+          React.createElement(
+            Button,
+            _extends({ bsSize: buttonSize }, { disabled: !this.props.packagerController || !this.state.isSimulatorRunning }, { onClick: this._openProjectUrlInSimulatorAsync }),
+            'Open Project in Exponent on Simulator'
+          )
+        );
+      }
     }
   }, {
     key: '_updateSimulatorRunningState',
@@ -155,4 +160,4 @@ var Simulator = (function (_React$Component) {
 })(React.Component);
 
 module.exports = Simulator;
-//# sourceMappingURL=../sourcemaps/web/Simulator.js.map
+//# sourceMappingURL=../sourcemaps/web/SimulatorControls.js.map

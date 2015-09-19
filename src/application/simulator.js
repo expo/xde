@@ -1,11 +1,12 @@
 let execAsync = require('exec-async');
 let path = require('path');
+let osascript = require('@exponent/osascript');
 let spawnAsync = require('@exponent/spawn-async');
 
 async function isSimulatorInstalledAsync() {
   let result;
   try {
-    result = (await execAsync('osascript', ['-e', 'id of app "Simulator"'])).trim();
+    result = (await osascript.execAsync('id of app "Simulator"')).trim();
   } catch (e) {
     console.error("Can't determine id of Simulator app; the Simulator is most likely not installed on this machine", e);
     return false;
@@ -27,7 +28,7 @@ async function installAppOnSimulatorAsync(pathToApp) {
 }
 
 async function isSimulatorRunningAsync() {
-  let zeroMeansNo = (await execAsync('osascript', ['-e', 'tell app "System Events" to count processes whose name is "Simulator"'])).trim();
+  let zeroMeansNo = (await osascript.execAsync('tell app "System Events" to count processes whose name is "Simulator"')).trim();
   // console.log("zeroMeansNo=", zeroMeansNo);
   return (zeroMeansNo !== '0');
 }

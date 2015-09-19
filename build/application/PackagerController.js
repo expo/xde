@@ -208,6 +208,11 @@ var PackagerController = (function (_events$EventEmitter) {
     value: function getNgrokUrl() {
       return this._ngrokUrl;
     }
+  }, {
+    key: 'getProjectShortName',
+    value: function getProjectShortName() {
+      return path.parse(this.opts.absolutePath).base;
+    }
   }]);
 
   return PackagerController;
@@ -216,9 +221,9 @@ var PackagerController = (function (_events$EventEmitter) {
 module.exports = PackagerController;
 
 module.exports.testIntance = function (opts) {
-  var pc = new PackagerController(_Object$assign({}, opts, {
+  var pc = new PackagerController(_Object$assign({}, {
     absolutePath: '/Users/ccheever/tmp/icecubetray'
-  }));
+  }, opts));
   pc.on('stdout', crayon.green.log);
   pc.on('stderr', crayon.red.log);
   pc.on('packager-stopped', function () {

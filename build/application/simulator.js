@@ -5,7 +5,7 @@ var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['def
 var isSimulatorInstalledAsync = _asyncToGenerator(function* () {
   var result = undefined;
   try {
-    result = (yield execAsync('osascript', ['-e', 'id of app "Simulator"'])).trim();
+    result = (yield osascript.execAsync('id of app "Simulator"')).trim();
   } catch (e) {
     console.error("Can't determine id of Simulator app; the Simulator is most likely not installed on this machine", e);
     return false;
@@ -27,7 +27,7 @@ var installAppOnSimulatorAsync = _asyncToGenerator(function* (pathToApp) {
 });
 
 var isSimulatorRunningAsync = _asyncToGenerator(function* () {
-  var zeroMeansNo = (yield execAsync('osascript', ['-e', 'tell app "System Events" to count processes whose name is "Simulator"'])).trim();
+  var zeroMeansNo = (yield osascript.execAsync('tell app "System Events" to count processes whose name is "Simulator"')).trim();
   // console.log("zeroMeansNo=", zeroMeansNo);
   return zeroMeansNo !== '0';
 });
@@ -47,6 +47,7 @@ var openUrlInSimulatorAsync = _asyncToGenerator(function* (url) {
 
 var execAsync = require('exec-async');
 var path = require('path');
+var osascript = require('@exponent/osascript');
 var spawnAsync = require('@exponent/spawn-async');
 
 module.exports = {

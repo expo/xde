@@ -183,14 +183,18 @@ class PackagerController extends events.EventEmitter {
     return this._ngrokUrl;
   }
 
+  getProjectShortName() {
+    return path.parse(this.opts.absolutePath).base;
+  }
+
 }
 
 module.exports = PackagerController;
 
 module.exports.testIntance = function (opts) {
-  let pc = new PackagerController(Object.assign({}, opts, {
+  let pc = new PackagerController(Object.assign({}, {
     absolutePath: '/Users/ccheever/tmp/icecubetray',
-  }));
+  }, opts));
   pc.on('stdout', crayon.green.log);
   pc.on('stderr', crayon.red.log);
   pc.on('packager-stopped', () => {
