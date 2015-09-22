@@ -31,6 +31,7 @@ var FileSystemControls = require('./FileSystemControls');
 var LoginPane = require('./LoginPane');
 var Menu = require('../application/Menu');
 var NewVersionAvailable = require('./NewVersionAvailable');
+var OverlayTooltip = require('./OverlayTooltip');
 var StyleConstants = require('./StyleConstants');
 var urlUtils = require('../application/urlUtils');
 var userSettings = require('../application/userSettings');
@@ -39,6 +40,8 @@ var SimulatorControls = require('./SimulatorControls');
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+var Tooltip = require('react-bootstrap/lib/Tooltip');
 
 function escapeAndPre(s) {
   return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, ' ');
@@ -390,7 +393,7 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderButtonGroupSeparator',
     value: function _renderButtonGroupSeparator() {
-      return React.createElement('span', { 'class': 'btn-separator', style: { width: 70 } });
+      return React.createElement('span', { className: 'btn-separator', style: { width: 70 } });
     }
   }, {
     key: '_renderUrlOptionButtons',
@@ -418,28 +421,40 @@ var App = (function (_React$Component) {
               marginRight: buttonGroupSpacing
             } },
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'ngrok' });
-                event.target.blur();
-              } }),
-            'ngrok'
+            OverlayTooltip,
+            { tooltip: 'This will give you a URL that uses ngrok to connect your to a proxy server out on the Internet. This will mean any phone connected to the Internet will be able to load what you are developing via that URL so this is a great way to share and collaborate with others and is the default' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: function (event) {
+                  _this4.setState({ hostType: 'ngrok' });
+                  event.target.blur();
+                } }),
+              'ngrok'
+            )
           ),
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'lan' });
-                event.target.blur();
-              } }),
-            'LAN'
+            OverlayTooltip,
+            { tooltip: 'This will set the URL to use a LAN address for the URL, like \'Charlies-iMac:19000\'. This will let any device on the same wireless network as your computer access what you\'re developing via the URL, but not computers on the wider Internet. You might want to choose this because it will load faster than ngrok.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: function (event) {
+                  _this4.setState({ hostType: 'lan' });
+                  event.target.blur();
+                } }),
+              'LAN'
+            )
           ),
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'localhost' });
-                event.target.blur();
-              } }),
-            'localhost'
+            OverlayTooltip,
+            { tooltip: 'This will set the URL to use localhost for the URL. This will only be accessible from this computer or a simulator running on this computer but will load the fastest. You might want to use this for debugging if you think you are having problems with networking or ngrok.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: function (event) {
+                  _this4.setState({ hostType: 'localhost' });
+                  event.target.blur();
+                } }),
+              'localhost'
+            )
           )
         ),
         React.createElement(

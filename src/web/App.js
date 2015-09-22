@@ -15,6 +15,7 @@ let FileSystemControls = require('./FileSystemControls');
 let LoginPane = require('./LoginPane');
 let Menu = require('../application/Menu');
 let NewVersionAvailable = require('./NewVersionAvailable');
+let OverlayTooltip = require('./OverlayTooltip');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
@@ -23,6 +24,8 @@ let SimulatorControls = require('./SimulatorControls');
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+let Tooltip = require('react-bootstrap/lib/Tooltip');
 
 function escapeAndPre(s) {
   return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, '\u00a0');
@@ -341,7 +344,7 @@ class App extends React.Component {
 
   _renderButtonGroupSeparator() {
     return (
-      <span class="btn-separator" style={{width: 70,}} />
+      <span className="btn-separator" style={{width: 70}} />
     );
   }
 
@@ -364,18 +367,24 @@ class App extends React.Component {
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
-              this.setState({hostType: 'ngrok'});
-              event.target.blur();
-          }}>ngrok</Button>
-          <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
-              this.setState({hostType: 'lan'});
-              event.target.blur();
-          }}>LAN</Button>
-          <Button bsSize="small" {...{active: (this.state.hostType === 'localhost')}} onClick={(event) => {
-              this.setState({hostType: 'localhost'});
-              event.target.blur();
-          }}>localhost</Button>
+          <OverlayTooltip tooltip="This will give you a URL that uses ngrok to connect your to a proxy server out on the Internet. This will mean any phone connected to the Internet will be able to load what you are developing via that URL so this is a great way to share and collaborate with others and is the default">
+            <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
+                this.setState({hostType: 'ngrok'});
+                event.target.blur();
+            }}>ngrok</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="This will set the URL to use a LAN address for the URL, like 'Charlies-iMac:19000'. This will let any device on the same wireless network as your computer access what you're developing via the URL, but not computers on the wider Internet. You might want to choose this because it will load faster than ngrok.">
+            <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
+                this.setState({hostType: 'lan'});
+                event.target.blur();
+            }}>LAN</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="This will set the URL to use localhost for the URL. This will only be accessible from this computer or a simulator running on this computer but will load the fastest. You might want to use this for debugging if you think you are having problems with networking or ngrok.">
+            <Button bsSize="small" {...{active: (this.state.hostType === 'localhost')}} onClick={(event) => {
+                this.setState({hostType: 'localhost'});
+                event.target.blur();
+            }}>localhost</Button>
+          </OverlayTooltip>
         </ButtonGroup>
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
