@@ -102,7 +102,15 @@ var Simulator = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var buttonSize = "medium";
-      if (!this.state.isSimulatorInstalled) {
+
+      var showSimulatorControls = window.XDE_showSimulatorControls;
+      if (showSimulatorControls == null) {
+        showSimulatorControls = !!this.state.isSimulatorInstalled;
+      }
+
+      showSimulatorControls = false;
+
+      if (!showSimulatorControls) {
         return React.createElement('div', null);
       } else {
         return React.createElement(

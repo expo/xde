@@ -77,7 +77,15 @@ class Simulator extends React.Component {
 
   render() {
     let buttonSize = "medium";
-    if (!this.state.isSimulatorInstalled) {
+
+    let showSimulatorControls = window.XDE_showSimulatorControls;
+    if (showSimulatorControls == null) {
+      showSimulatorControls = !!this.state.isSimulatorInstalled;
+    }
+
+    // showSimulatorControls = false;
+
+    if (!showSimulatorControls) {
       return <div />;
     } else {
       return (
