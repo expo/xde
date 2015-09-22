@@ -389,26 +389,34 @@ class App extends React.Component {
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: (this.state.platform === 'ios')}} onClick={(event) => {
-              this.setState({platform: 'ios'});
-              event.target.blur();
-          }}>iOS</Button>
-        <Button bsSize="small" {...{active: (this.state.platform === 'android')}} onClick={(event) => {
-              this.setState({platform: 'android'});
-              event.target.blur();
-          }}>Android</Button>
+          <OverlayTooltip tooltip="This will set the URL to serve a version of the code for iOS; for now, until Exponent for Android is released, you pretty much want to always use this option.">
+            <Button bsSize="small" {...{active: (this.state.platform === 'ios')}} onClick={(event) => {
+                this.setState({platform: 'ios'});
+                event.target.blur();
+            }}>iOS</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="This will set the URL to serve a version of the code for Android; if you are doing some testing of React Native Android you may want to choose this, but only if you really know what you are doing.">
+            <Button bsSize="small" {...{active: (this.state.platform === 'android')}} onClick={(event) => {
+                  this.setState({platform: 'android'});
+                  event.target.blur();
+              }}>Android</Button>
+          </OverlayTooltip>
         </ButtonGroup>
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
-              this.setState({dev: !this.state.dev});
-              event.target.blur();
-          }}>dev</Button>
-          <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
-              this.setState({minify: !this.state.minify});
-              event.target.blur();
-          }}>minify</Button>
+          <OverlayTooltip tooltip="Turning this on will cause the URL to serve your code with dev mode enabled. Dev mode will give you better stack traces and some debugging enhancements and some error checking but will also make your code run more slowly. In general, you'll want to leave dev on while you're developing unless you are doing performance testing; and you'll want to turn it off in production (we automatically do this for you if you publish.)">
+            <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
+                this.setState({dev: !this.state.dev});
+                event.target.blur();
+            }}>dev</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="Turning this on will minify your JavaScript. This will make your bundle smaller so it will be slightly faster to download and to exexcute, but it takes much longer to generate so the packager will be slower every time you make a change. In general, you'll want to leave this off, and only enable this when you are publishing (which we do for you) or to test it." >
+            <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
+                this.setState({minify: !this.state.minify});
+                event.target.blur();
+            }}>minify</Button>
+          </OverlayTooltip>
         </ButtonGroup>
         <ButtonGroup>
           <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {

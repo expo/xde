@@ -463,20 +463,28 @@ var App = (function (_React$Component) {
               marginRight: buttonGroupSpacing
             } },
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.platform === 'ios' }, { onClick: function (event) {
-                _this4.setState({ platform: 'ios' });
-                event.target.blur();
-              } }),
-            'iOS'
+            OverlayTooltip,
+            { tooltip: 'This will set the URL to serve a version of the code for iOS; for now, until Exponent for Android is released, you pretty much want to always use this option.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.platform === 'ios' }, { onClick: function (event) {
+                  _this4.setState({ platform: 'ios' });
+                  event.target.blur();
+                } }),
+              'iOS'
+            )
           ),
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.platform === 'android' }, { onClick: function (event) {
-                _this4.setState({ platform: 'android' });
-                event.target.blur();
-              } }),
-            'Android'
+            OverlayTooltip,
+            { tooltip: 'This will set the URL to serve a version of the code for Android; if you are doing some testing of React Native Android you may want to choose this, but only if you really know what you are doing.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.platform === 'android' }, { onClick: function (event) {
+                  _this4.setState({ platform: 'android' });
+                  event.target.blur();
+                } }),
+              'Android'
+            )
           )
         ),
         React.createElement(
@@ -485,20 +493,28 @@ var App = (function (_React$Component) {
               marginRight: buttonGroupSpacing
             } },
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: function (event) {
-                _this4.setState({ dev: !_this4.state.dev });
-                event.target.blur();
-              } }),
-            'dev'
+            OverlayTooltip,
+            { tooltip: 'Turning this on will cause the URL to serve your code with dev mode enabled. Dev mode will give you better stack traces and some debugging enhancements and some error checking but will also make your code run more slowly. In general, you\'ll want to leave dev on while you\'re developing unless you are doing performance testing; and you\'ll want to turn it off in production (we automatically do this for you if you publish.)' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: function (event) {
+                  _this4.setState({ dev: !_this4.state.dev });
+                  event.target.blur();
+                } }),
+              'dev'
+            )
           ),
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: function (event) {
-                _this4.setState({ minify: !_this4.state.minify });
-                event.target.blur();
-              } }),
-            'minify'
+            OverlayTooltip,
+            { tooltip: 'Turning this on will minify your JavaScript. This will make your bundle smaller so it will be slightly faster to download and to exexcute, but it takes much longer to generate so the packager will be slower every time you make a change. In general, you\'ll want to leave this off, and only enable this when you are publishing (which we do for you) or to test it.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: function (event) {
+                  _this4.setState({ minify: !_this4.state.minify });
+                  event.target.blur();
+                } }),
+              'minify'
+            )
           )
         ),
         React.createElement(
