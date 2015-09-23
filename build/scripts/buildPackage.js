@@ -12,6 +12,10 @@ var buildPackageAsync = _asyncToGenerator(function* (opts) {
 });
 
 var runAsync = _asyncToGenerator(function* () {
+
+  // Make sure we are using an OK Node version
+  dotApp.checkNodeVersion();
+
   yield buildPackageAsync();
   crayon.green.log("Bundled up Electron app");
   // The --icon option handles this now

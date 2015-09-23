@@ -37,6 +37,10 @@ async function buildPackageAsync(opts) {
 }
 
 async function runAsync() {
+
+  // Make sure we are using an OK Node version
+  dotApp.checkNodeVersion();
+  
   await buildPackageAsync();
   crayon.green.log("Bundled up Electron app");
   // The --icon option handles this now
