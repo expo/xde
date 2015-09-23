@@ -40,7 +40,6 @@ var SimulatorControls = require('./SimulatorControls');
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 var Tooltip = require('react-bootstrap/lib/Tooltip');
 
 function escapeAndPre(s) {
@@ -521,28 +520,40 @@ var App = (function (_React$Component) {
           ButtonGroup,
           null,
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'exp' }, { onClick: function (event) {
-                _this4.setState({ urlType: 'exp' });
-                event.target.blur();
-              } }),
-            'exp'
+            OverlayTooltip,
+            { tooltip: 'This will generate a URL that starts with exp://. iPhones will know to open this with the Exponent app, so this is the default. Unfortunately some mail clients, etc. won\'t always recognize URLs that start with exp:// as URLs, and so you may want to use the redirect option instead in those cases. In general, if the `exp` option works for you, then it is the best choice.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.urlType === 'exp' }, { onClick: function (event) {
+                  _this4.setState({ urlType: 'exp' });
+                  event.target.blur();
+                } }),
+              'exp'
+            )
           ),
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'http' }, { onClick: function (event) {
-                _this4.setState({ urlType: 'http' });
-                event.target.blur();
-              } }),
-            'http'
+            OverlayTooltip,
+            { tooltip: 'Use this option to get a bundle of your source code. If you need to snapshot your source with curl or debug something, then you should choose this option.' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.urlType === 'http' }, { onClick: function (event) {
+                  _this4.setState({ urlType: 'http' });
+                  event.target.blur();
+                } }),
+              'http'
+            )
           ),
           React.createElement(
-            Button,
-            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'redirect' }, { onClick: function (event) {
-                _this4.setState({ urlType: 'redirect' });
-                event.target.blur();
-              } }),
-            'redirect'
+            OverlayTooltip,
+            { tooltip: 'If you need a link that can be opened by Gmail or another client that doesn\'t handle the exp:// protocol properly, you can use this redirect option. It will give you an http:// URL that will serve up a redirect to an exp:// URL. You can use this in e-mails, etc.; tapping on these links will open Safari which can then open Exponent via the exp:// URL' },
+            React.createElement(
+              Button,
+              _extends({ bsSize: 'small' }, { active: this.state.urlType === 'redirect' }, { onClick: function (event) {
+                  _this4.setState({ urlType: 'redirect' });
+                  event.target.blur();
+                } }),
+              'redirect'
+            )
           )
         )
       );
@@ -611,9 +622,13 @@ var App = (function (_React$Component) {
     key: '_renderPublishButton',
     value: function _renderPublishButton() {
       return React.createElement(
-        Button,
-        _extends({ bsSize: 'medium' }, { disabled: !this._isPublishActive() }, { onClick: this._publishClicked }),
-        'Publish to exp.host'
+        OverlayTooltip,
+        { tooltip: 'This will publish your project to the cloud as exp://exp.host/@yourusername/projectname . This published version will be accessible even if you stop running xde or turn off your computer, etc. Published projects will also load more quickly.' },
+        React.createElement(
+          Button,
+          _extends({ bsSize: 'medium' }, { disabled: !this._isPublishActive() }, { onClick: this._publishClicked }),
+          'Publish to exp.host'
+        )
       );
     }
   }, {
@@ -633,25 +648,24 @@ var App = (function (_React$Component) {
             marginLeft: 3
           } },
         React.createElement(
-          Button,
-          { bsSize: 'medium', onClick: this._newClicked },
-          'New Project'
+          OverlayTooltip,
+          { tooltip: 'This will make a new project. It will set up a basic sample project in whatever directory you choose and then open it in xde and get it ready to be viewed.' },
+          React.createElement(
+            Button,
+            { bsSize: 'medium', onClick: this._newClicked },
+            'New Project'
+          )
         ),
         React.createElement(
-          Button,
-          { bsSize: 'medium', onClick: this._openClicked },
-          'Open Project'
+          OverlayTooltip,
+          { tooltip: 'This will let you open an existing project. If you are opening an Xcode-based React Native application, you\'ll also need to make a few small tweaks to get it to work under Exponent. Check out the exponentjs.com website for details.' },
+          React.createElement(
+            Button,
+            { bsSize: 'medium', onClick: this._openClicked },
+            'Open Project'
+          )
         )
       );
-
-      /*
-      <Button bsSize='medium' disabled style={{
-          background: 'green',
-      }}>Packager Active</Button>
-      <Button bsSize='medium' active>Button</Button>
-      <Button bsStyle='primary' bsSize='medium' active>Primary button</Button>
-      <Button bsSize='medium' active>Button</Button>
-      */
     }
   }, {
     key: '_isSendToActive',
@@ -673,14 +687,22 @@ var App = (function (_React$Component) {
             marginBottom: 10
           } },
         React.createElement(
-          Button,
-          _extends({ style: { marginRight: 10 }, bsSize: 'medium' }, activeProp, { onClick: this._restartPackagerClicked }),
-          'Restart Packager'
+          OverlayTooltip,
+          { tooltip: 'You\'ll need to restart the packager if you do anything like npm install a new module in your source code, or sometimes it just gets into a bad state.' },
+          React.createElement(
+            Button,
+            _extends({ style: { marginRight: 10 }, bsSize: 'medium' }, activeProp, { onClick: this._restartPackagerClicked }),
+            'Restart Packager'
+          )
         ),
         React.createElement(
-          Button,
-          _extends({ bsSize: 'medium' }, activeProp, { onClick: this._restartNgrokClicked }),
-          'Restart ngrok'
+          OverlayTooltip,
+          { tooltip: 'You\'ll almost never need to restart ngrok. Don\'t expect clicking this button to fix anything.' },
+          React.createElement(
+            Button,
+            _extends({ bsSize: 'medium' }, activeProp, { onClick: this._restartNgrokClicked }),
+            'Restart ngrok'
+          )
         )
       );
     }
@@ -693,9 +715,13 @@ var App = (function (_React$Component) {
       };
 
       return React.createElement(
-        Button,
-        _extends({ bsSize: 'medium' }, sendActiveProp, { onClick: this._sendClicked }),
-        'Send Link for Phone'
+        OverlayTooltip,
+        { tooltip: 'When you click this, it will send a link to the URL above to any phone number or e-mail address. From there you (or someone else) can tap on it and view your project in the Exponent app on their phone.' },
+        React.createElement(
+          Button,
+          _extends({ bsSize: 'medium' }, sendActiveProp, { onClick: this._sendClicked }),
+          'Send Link for Phone'
+        )
       );
     }
   }, {

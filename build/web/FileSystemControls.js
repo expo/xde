@@ -27,6 +27,7 @@ var fileSystem = require('../application/fileSystem');
 var LoginPane = require('./LoginPane');
 var Menu = require('../application/Menu');
 var NewVersionAvailable = require('./NewVersionAvailable');
+var OverlayTooltip = require('./OverlayTooltip');
 var StyleConstants = require('./StyleConstants');
 var simulator = require('../application/simulator');
 var urlUtils = require('../application/urlUtils');
@@ -57,19 +58,31 @@ var FileSystemControls = (function (_React$Component) {
           ButtonToolbar,
           null,
           React.createElement(
-            Button,
-            { style: { marginRight: buttonSpacing }, onClick: this._showProjectInFinder },
-            'Show Project in Finder'
+            OverlayTooltip,
+            { tooltip: 'This will open a Finder window at the root of your project' },
+            React.createElement(
+              Button,
+              { style: { marginRight: buttonSpacing }, onClick: this._showProjectInFinder },
+              'Show Project in Finder'
+            )
           ),
           React.createElement(
-            Button,
-            { style: { marginRight: buttonSpacing }, onClick: this._openProjectFolderInTerminal },
-            'Open Project Folder in Terminal'
+            OverlayTooltip,
+            { tooltip: 'This will open an iTerm or Terminal window cd-ed to the root directory of your project' },
+            React.createElement(
+              Button,
+              { style: { marginRight: buttonSpacing }, onClick: this._openProjectFolderInTerminal },
+              'Open Project Folder in Terminal'
+            )
           ),
           React.createElement(
-            Button,
-            { onClick: this._openProjectInEditor },
-            'Open Project in Editor'
+            OverlayTooltip,
+            { tooltip: 'This will open your project in a text editor. It will try to guess what editor you are using by looking at popular text editors that you have open and/or installed (ex. Atom, Sublime Text, TextWrangler, Text Mate, etc.)' },
+            React.createElement(
+              Button,
+              { onClick: this._openProjectInEditor },
+              'Open Project in Editor'
+            )
           )
         )
       );

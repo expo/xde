@@ -24,7 +24,6 @@ let SimulatorControls = require('./SimulatorControls');
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
-let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 let Tooltip = require('react-bootstrap/lib/Tooltip');
 
 function escapeAndPre(s) {
@@ -419,18 +418,24 @@ class App extends React.Component {
           </OverlayTooltip>
         </ButtonGroup>
         <ButtonGroup>
-          <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {
-              this.setState({urlType: 'exp'});
-              event.target.blur();
-          }}>exp</Button>
-          <Button bsSize="small" {...{active: this.state.urlType === 'http'}} onClick={(event) => {
-              this.setState({urlType: 'http'});
-              event.target.blur();
-          }}>http</Button>
-          <Button bsSize="small" {...{active: this.state.urlType === 'redirect'}} onClick={(event) => {
-              this.setState({urlType: 'redirect'});
-              event.target.blur();
-          }}>redirect</Button>
+          <OverlayTooltip tooltip="This will generate a URL that starts with exp://. iPhones will know to open this with the Exponent app, so this is the default. Unfortunately some mail clients, etc. won't always recognize URLs that start with exp:// as URLs, and so you may want to use the redirect option instead in those cases. In general, if the `exp` option works for you, then it is the best choice.">
+            <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {
+                this.setState({urlType: 'exp'});
+                event.target.blur();
+            }}>exp</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="Use this option to get a bundle of your source code. If you need to snapshot your source with curl or debug something, then you should choose this option.">
+            <Button bsSize="small" {...{active: this.state.urlType === 'http'}} onClick={(event) => {
+                this.setState({urlType: 'http'});
+                event.target.blur();
+            }}>http</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="If you need a link that can be opened by Gmail or another client that doesn't handle the exp:// protocol properly, you can use this redirect option. It will give you an http:// URL that will serve up a redirect to an exp:// URL. You can use this in e-mails, etc.; tapping on these links will open Safari which can then open Exponent via the exp:// URL">
+            <Button bsSize="small" {...{active: this.state.urlType === 'redirect'}} onClick={(event) => {
+                this.setState({urlType: 'redirect'});
+                event.target.blur();
+            }}>redirect</Button>
+          </OverlayTooltip>
         </ButtonGroup>
       </div>
     );
@@ -493,7 +498,9 @@ class App extends React.Component {
 
   _renderPublishButton() {
     return (
-      <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
+      <OverlayTooltip tooltip="This will publish your project to the cloud as exp://exp.host/@yourusername/projectname . This published version will be accessible even if you stop running xde or turn off your computer, etc. Published projects will also load more quickly.">
+        <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
+      </OverlayTooltip>
     );
   }
 
@@ -509,19 +516,14 @@ class App extends React.Component {
           marginRight: 10,
           marginLeft: 3,
       }}>
-        <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
-        <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
+        <OverlayTooltip tooltip="This will make a new project. It will set up a basic sample project in whatever directory you choose and then open it in xde and get it ready to be viewed.">
+          <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
+        </OverlayTooltip>
+        <OverlayTooltip tooltip="This will let you open an existing project. If you are opening an Xcode-based React Native application, you'll also need to make a few small tweaks to get it to work under Exponent. Check out the exponentjs.com website for details.">
+          <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
+        </OverlayTooltip>
       </ButtonToolbar>
     );
-
-    /*
-    <Button bsSize='medium' disabled style={{
-        background: 'green',
-    }}>Packager Active</Button>
-    <Button bsSize='medium' active>Button</Button>
-    <Button bsStyle='primary' bsSize='medium' active>Primary button</Button>
-    <Button bsSize='medium' active>Button</Button>
-    */
 
   }
 
@@ -540,9 +542,13 @@ class App extends React.Component {
       <ButtonToolbar style={{
           marginBottom: 10,
       }}>
-        <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
-        <Button bsSize='medium' {...activeProp} onClick={
-            this._restartNgrokClicked}>Restart ngrok</Button>
+        <OverlayTooltip tooltip="You'll need to restart the packager if you do anything like npm install a new module in your source code, or sometimes it just gets into a bad state.">
+          <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
+        </OverlayTooltip>
+        <OverlayTooltip tooltip="You'll almost never need to restart ngrok. Don't expect clicking this button to fix anything.">
+          <Button bsSize='medium' {...activeProp} onClick={
+              this._restartNgrokClicked}>Restart ngrok</Button>
+        </OverlayTooltip>
       </ButtonToolbar>
     );
 
@@ -557,7 +563,9 @@ class App extends React.Component {
     };
 
     return (
-      <Button bsSize="medium" {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
+      <OverlayTooltip tooltip="When you click this, it will send a link to the URL above to any phone number or e-mail address. From there you (or someone else) can tap on it and view your project in the Exponent app on their phone.">
+        <Button bsSize="medium" {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
+      </OverlayTooltip>
     );
 
   }

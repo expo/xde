@@ -18,6 +18,7 @@ var Input = require('react-bootstrap/lib/Input');
 
 var Api = require('../application/Api');
 var login = require('../application/login');
+var OverlayTooltip = require('./OverlayTooltip');
 
 var autobind = require('autobind-decorator');
 
@@ -91,13 +92,17 @@ var LoginPane = (function (_React$Component) {
           this.state.loggedInAs.username
         ),
         React.createElement(
-          Button,
-          { bsSize: 'small', style: {
-              marginTop: 5,
-              alignSelf: 'center'
-            }, onClick: this._logoutClicked
-          },
-          'Logout'
+          OverlayTooltip,
+          { tooltip: 'Logs out of exp.host' },
+          React.createElement(
+            Button,
+            { bsSize: 'small', style: {
+                marginTop: 5,
+                alignSelf: 'center'
+              }, onClick: this._logoutClicked
+            },
+            'Logout'
+          )
         )
       );
     }

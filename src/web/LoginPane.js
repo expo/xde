@@ -6,6 +6,7 @@ let Input = require('react-bootstrap/lib/Input');
 
 let Api = require('../application/Api');
 let login = require('../application/login');
+let OverlayTooltip = require('./OverlayTooltip');
 
 let autobind = require('autobind-decorator');
 
@@ -60,11 +61,13 @@ class LoginPane extends React.Component {
     return (
       <div>
         <div style={{paddingTop: 5}}>{this.state.loggedInAs.username}</div>
-        <Button bsSize="small" style={{
-            marginTop: 5,
-            alignSelf: 'center',
-        }} onClick={this._logoutClicked}
-        >Logout</Button>
+        <OverlayTooltip tooltip="Logs out of exp.host">
+          <Button bsSize="small" style={{
+              marginTop: 5,
+              alignSelf: 'center',
+          }} onClick={this._logoutClicked}
+          >Logout</Button>
+        </OverlayTooltip>
     </div>
 
     );

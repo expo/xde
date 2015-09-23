@@ -15,6 +15,7 @@ let fileSystem = require('../application/fileSystem');
 let LoginPane = require('./LoginPane');
 let Menu = require('../application/Menu');
 let NewVersionAvailable = require('./NewVersionAvailable');
+let OverlayTooltip = require('./OverlayTooltip');
 let StyleConstants = require('./StyleConstants');
 let simulator = require('../application/simulator');
 let urlUtils = require('../application/urlUtils');
@@ -31,9 +32,15 @@ class FileSystemControls extends React.Component {
     return (
       <div style={Object.assign({}, styles.bar, this.props.style)}>
         <ButtonToolbar>
-          <Button style={{marginRight: buttonSpacing,}} onClick={this._showProjectInFinder}>Show Project in Finder</Button>
-          <Button style={{marginRight: buttonSpacing,}} onClick={this._openProjectFolderInTerminal}>Open Project Folder in Terminal</Button>
-          <Button onClick={this._openProjectInEditor}>Open Project in Editor</Button>
+          <OverlayTooltip tooltip="This will open a Finder window at the root of your project">
+            <Button style={{marginRight: buttonSpacing,}} onClick={this._showProjectInFinder}>Show Project in Finder</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="This will open an iTerm or Terminal window cd-ed to the root directory of your project">
+            <Button style={{marginRight: buttonSpacing,}} onClick={this._openProjectFolderInTerminal}>Open Project Folder in Terminal</Button>
+          </OverlayTooltip>
+          <OverlayTooltip tooltip="This will open your project in a text editor. It will try to guess what editor you are using by looking at popular text editors that you have open and/or installed (ex. Atom, Sublime Text, TextWrangler, Text Mate, etc.)">
+            <Button onClick={this._openProjectInEditor}>Open Project in Editor</Button>
+          </OverlayTooltip>
         </ButtonToolbar>
       </div>
     );
