@@ -26,7 +26,6 @@ var config = require('../config');
 var Commands = require('./Commands');
 var Exp = require('../application/Exp');
 var LoginPane = require('./LoginPane');
-var Menu = require('../application/Menu');
 var NewVersionAvailable = require('./NewVersionAvailable');
 var StyleConstants = require('./StyleConstants');
 var simulator = require('../application/simulator');
@@ -108,7 +107,7 @@ var Simulator = (function (_React$Component) {
         showSimulatorControls = !!this.state.isSimulatorInstalled;
       }
 
-      showSimulatorControls = false;
+      // showSimulatorControls = false;
 
       if (!showSimulatorControls) {
         return React.createElement('div', null);

@@ -12,7 +12,6 @@ let config = require('../config');
 let Commands = require('./Commands');
 let Exp = require('../application/Exp');
 let LoginPane = require('./LoginPane');
-let Menu = require('../application/Menu');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
 let simulator = require('../application/simulator');

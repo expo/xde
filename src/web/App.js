@@ -13,9 +13,7 @@ let Commands = require('./Commands');
 let Exp = require('../application/Exp');
 let FileSystemControls = require('./FileSystemControls');
 let LoginPane = require('./LoginPane');
-let Menu = require('../application/Menu');
 let NewVersionAvailable = require('./NewVersionAvailable');
-let OverlayTooltip = require('./OverlayTooltip');
 let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
@@ -24,7 +22,6 @@ let SimulatorControls = require('./SimulatorControls');
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
-let Tooltip = require('react-bootstrap/lib/Tooltip');
 
 function escapeAndPre(s) {
   return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, '\u00a0');
@@ -343,7 +340,7 @@ class App extends React.Component {
 
   _renderButtonGroupSeparator() {
     return (
-      <span className="btn-separator" style={{width: 70}} />
+      <span class="btn-separator" style={{width: 70,}} />
     );
   }
 
@@ -366,76 +363,56 @@ class App extends React.Component {
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <OverlayTooltip tooltip="This will give you a URL that uses ngrok to connect your to a proxy server out on the Internet. This will mean any phone connected to the Internet will be able to load what you are developing via that URL so this is a great way to share and collaborate with others and is the default">
-            <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
-                this.setState({hostType: 'ngrok'});
-                event.target.blur();
-            }}>ngrok</Button>
-          </OverlayTooltip>
-          <OverlayTooltip tooltip="This will set the URL to use a LAN address for the URL, like 'Charlies-iMac:19000'. This will let any device on the same wireless network as your computer access what you're developing via the URL, but not computers on the wider Internet. You might want to choose this because it will load faster than ngrok.">
-            <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
-                this.setState({hostType: 'lan'});
-                event.target.blur();
-            }}>LAN</Button>
-          </OverlayTooltip>
-          <OverlayTooltip tooltip="This will set the URL to use localhost for the URL. This will only be accessible from this computer or a simulator running on this computer but will load the fastest. You might want to use this for debugging if you think you are having problems with networking or ngrok.">
-            <Button bsSize="small" {...{active: (this.state.hostType === 'localhost')}} onClick={(event) => {
-                this.setState({hostType: 'localhost'});
-                event.target.blur();
-            }}>localhost</Button>
-          </OverlayTooltip>
+          <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
+              this.setState({hostType: 'ngrok'});
+              event.target.blur();
+          }}>ngrok</Button>
+          <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
+              this.setState({hostType: 'lan'});
+              event.target.blur();
+          }}>LAN</Button>
+          <Button bsSize="small" {...{active: (this.state.hostType === 'localhost')}} onClick={(event) => {
+              this.setState({hostType: 'localhost'});
+              event.target.blur();
+          }}>localhost</Button>
         </ButtonGroup>
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <OverlayTooltip tooltip="This will set the URL to serve a version of the code for iOS; for now, until Exponent for Android is released, you pretty much want to always use this option.">
-            <Button bsSize="small" {...{active: (this.state.platform === 'ios')}} onClick={(event) => {
-                this.setState({platform: 'ios'});
-                event.target.blur();
-            }}>iOS</Button>
-          </OverlayTooltip>
-          <OverlayTooltip tooltip="This will set the URL to serve a version of the code for Android; if you are doing some testing of React Native Android you may want to choose this, but only if you really know what you are doing.">
-            <Button bsSize="small" {...{active: (this.state.platform === 'android')}} onClick={(event) => {
-                  this.setState({platform: 'android'});
-                  event.target.blur();
-              }}>Android</Button>
-          </OverlayTooltip>
+          <Button bsSize="small" {...{active: (this.state.platform === 'ios')}} onClick={(event) => {
+              this.setState({platform: 'ios'});
+              event.target.blur();
+          }}>iOS</Button>
+        <Button bsSize="small" {...{active: (this.state.platform === 'android')}} onClick={(event) => {
+              this.setState({platform: 'android'});
+              event.target.blur();
+          }}>Android</Button>
         </ButtonGroup>
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <OverlayTooltip tooltip="Turning this on will cause the URL to serve your code with dev mode enabled. Dev mode will give you better stack traces and some debugging enhancements and some error checking but will also make your code run more slowly. In general, you'll want to leave dev on while you're developing unless you are doing performance testing; and you'll want to turn it off in production (we automatically do this for you if you publish.)">
-            <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
-                this.setState({dev: !this.state.dev});
-                event.target.blur();
-            }}>dev</Button>
-          </OverlayTooltip>
-          <OverlayTooltip tooltip="Turning this on will minify your JavaScript. This will make your bundle smaller so it will be slightly faster to download and to exexcute, but it takes much longer to generate so the packager will be slower every time you make a change. In general, you'll want to leave this off, and only enable this when you are publishing (which we do for you) or to test it." >
-            <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
-                this.setState({minify: !this.state.minify});
-                event.target.blur();
-            }}>minify</Button>
-          </OverlayTooltip>
+          <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
+              this.setState({dev: !this.state.dev});
+              event.target.blur();
+          }}>dev</Button>
+          <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
+              this.setState({minify: !this.state.minify});
+              event.target.blur();
+          }}>minify</Button>
         </ButtonGroup>
         <ButtonGroup>
-          <OverlayTooltip tooltip="This will generate a URL that starts with exp://. iPhones will know to open this with the Exponent app, so this is the default. Unfortunately some mail clients, etc. won't always recognize URLs that start with exp:// as URLs, and so you may want to use the redirect option instead in those cases. In general, if the `exp` option works for you, then it is the best choice.">
-            <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {
-                this.setState({urlType: 'exp'});
-                event.target.blur();
-            }}>exp</Button>
-          </OverlayTooltip>
-          <OverlayTooltip tooltip="Use this option to get a bundle of your source code. If you need to snapshot your source with curl or debug something, then you should choose this option.">
-            <Button bsSize="small" {...{active: this.state.urlType === 'http'}} onClick={(event) => {
-                this.setState({urlType: 'http'});
-                event.target.blur();
-            }}>http</Button>
-          </OverlayTooltip>
-          <OverlayTooltip tooltip="If you need a link that can be opened by Gmail or another client that doesn't handle the exp:// protocol properly, you can use this redirect option. It will give you an http:// URL that will serve up a redirect to an exp:// URL. You can use this in e-mails, etc.; tapping on these links will open Safari which can then open Exponent via the exp:// URL">
-            <Button bsSize="small" {...{active: this.state.urlType === 'redirect'}} onClick={(event) => {
-                this.setState({urlType: 'redirect'});
-                event.target.blur();
-            }}>redirect</Button>
-          </OverlayTooltip>
+          <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {
+              this.setState({urlType: 'exp'});
+              event.target.blur();
+          }}>exp</Button>
+          <Button bsSize="small" {...{active: this.state.urlType === 'http'}} onClick={(event) => {
+              this.setState({urlType: 'http'});
+              event.target.blur();
+          }}>http</Button>
+          <Button bsSize="small" {...{active: this.state.urlType === 'redirect'}} onClick={(event) => {
+              this.setState({urlType: 'redirect'});
+              event.target.blur();
+          }}>redirect</Button>
         </ButtonGroup>
       </div>
     );
@@ -498,9 +475,7 @@ class App extends React.Component {
 
   _renderPublishButton() {
     return (
-      <OverlayTooltip tooltip="This will publish your project to the cloud as exp://exp.host/@yourusername/projectname . This published version will be accessible even if you stop running xde or turn off your computer, etc. Published projects will also load more quickly.">
-        <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
-      </OverlayTooltip>
+      <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
     );
   }
 
@@ -516,14 +491,19 @@ class App extends React.Component {
           marginRight: 10,
           marginLeft: 3,
       }}>
-        <OverlayTooltip tooltip="This will make a new project. It will set up a basic sample project in whatever directory you choose and then open it in xde and get it ready to be viewed.">
-          <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
-        </OverlayTooltip>
-        <OverlayTooltip tooltip="This will let you open an existing project. If you are opening an Xcode-based React Native application, you'll also need to make a few small tweaks to get it to work under Exponent. Check out the exponentjs.com website for details.">
-          <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
-        </OverlayTooltip>
+        <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
+        <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
       </ButtonToolbar>
     );
+
+    /*
+    <Button bsSize='medium' disabled style={{
+        background: 'green',
+    }}>Packager Active</Button>
+    <Button bsSize='medium' active>Button</Button>
+    <Button bsStyle='primary' bsSize='medium' active>Primary button</Button>
+    <Button bsSize='medium' active>Button</Button>
+    */
 
   }
 
@@ -542,13 +522,9 @@ class App extends React.Component {
       <ButtonToolbar style={{
           marginBottom: 10,
       }}>
-        <OverlayTooltip tooltip="You'll need to restart the packager if you do anything like npm install a new module in your source code, or sometimes it just gets into a bad state.">
-          <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
-        </OverlayTooltip>
-        <OverlayTooltip tooltip="You'll almost never need to restart ngrok. Don't expect clicking this button to fix anything.">
-          <Button bsSize='medium' {...activeProp} onClick={
-              this._restartNgrokClicked}>Restart ngrok</Button>
-        </OverlayTooltip>
+        <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
+        <Button bsSize='medium' {...activeProp} onClick={
+            this._restartNgrokClicked}>Restart ngrok</Button>
       </ButtonToolbar>
     );
 
@@ -563,9 +539,7 @@ class App extends React.Component {
     };
 
     return (
-      <OverlayTooltip tooltip="When you click this, it will send a link to the URL above to any phone number or e-mail address. From there you (or someone else) can tap on it and view your project in the Exponent app on their phone.">
-        <Button bsSize="medium" {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
-      </OverlayTooltip>
+      <Button bsSize="medium" {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
     );
 
   }

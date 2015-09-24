@@ -25,7 +25,6 @@ var Commands = require('./Commands');
 var Exp = require('../application/Exp');
 var fileSystem = require('../application/fileSystem');
 var LoginPane = require('./LoginPane');
-var Menu = require('../application/Menu');
 var NewVersionAvailable = require('./NewVersionAvailable');
 var OverlayTooltip = require('./OverlayTooltip');
 var StyleConstants = require('./StyleConstants');

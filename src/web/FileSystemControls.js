@@ -13,7 +13,6 @@ let Commands = require('./Commands');
 let Exp = require('../application/Exp');
 let fileSystem = require('../application/fileSystem');
 let LoginPane = require('./LoginPane');
-let Menu = require('../application/Menu');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let OverlayTooltip = require('./OverlayTooltip');
 let StyleConstants = require('./StyleConstants');

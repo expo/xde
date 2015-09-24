@@ -3,10 +3,10 @@
 module.exports = {
   // __DEV__: true,
   api: {
-    host: 'exp.host',
-    port: null
+    //host: 'exp.host',
+    //port: null,
+    host: 'localhost',
+    port: 3000
   }
 };
-// host: 'localhost',
-// port: 3000,
 //# sourceMappingURL=sourcemaps/config.js.map
