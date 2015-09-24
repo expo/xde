@@ -1,6 +1,6 @@
 {
   "name": "xde",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "The Exponent Development Environment",
   "main": "build/main.js",
   "scripts": {
