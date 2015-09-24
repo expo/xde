@@ -50,5 +50,8 @@ app.on('ready', function() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+
+    // per @ide's request, we will quit the app here.
+    process.exit();
   });
 });

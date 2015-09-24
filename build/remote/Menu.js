@@ -3,15 +3,19 @@
 var Menu = require('menu');
 
 function setupMenu() {
-  return;
-  var template = [{
-    label: 'Bieber',
-    submenu: [{
-      label: 'What do you do?'
-    }, {
-      label: 'Never say never'
-    }]
-  }, {
+  var template = [
+  // {
+  //   label: 'Bieber',
+  //   submenu: [
+  //     {
+  //       label: 'What do you do?',
+  //     },
+  //     {
+  //       label: 'Never say never',
+  //     },
+  //   ],
+  // },
+  {
     label: 'Electron',
     submenu: [{
       label: 'About Electron',
