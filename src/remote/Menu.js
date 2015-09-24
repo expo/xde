@@ -1,6 +1,7 @@
 let Menu = require('menu');
 
 function setupMenu() {
+  return;
   let template = [
     // {
     //   label: 'Bieber',

@@ -1,4 +1,5 @@
 let jsonFile = require('@exponent/json-file');
+let path = require('path');
 let promiseProps = require('promise-props');
 
 function packageJsonFile() {

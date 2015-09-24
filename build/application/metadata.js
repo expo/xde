@@ -13,6 +13,7 @@ var reactNativeVersionInfoAsync = _asyncToGenerator(function* () {
 });
 
 var jsonFile = require('@exponent/json-file');
+var path = require('path');
 var promiseProps = require('promise-props');
 
 function packageJsonFile() {

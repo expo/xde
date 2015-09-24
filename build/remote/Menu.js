@@ -3,6 +3,7 @@
 var Menu = require('menu');
 
 function setupMenu() {
+  return;
   var template = [
   // {
   //   label: 'Bieber',

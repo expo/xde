@@ -57,6 +57,17 @@ var Simulator = (function (_React$Component) {
       yield simulator.openSimulatorAsync();
     })
   }, {
+    key: '_installAppInSimulator',
+    decorators: [autobind],
+    value: function _installAppInSimulator() {
+      console.log("Trying to install app on simulator");
+      this._installAppInSimulatorAsync().then(function () {
+        console.log("Successfully installed app on simulator");
+      }, function (err) {
+        console.error("Problem installing app on simulator: " + err + "\n" + err.stack);
+      });
+    }
+  }, {
     key: '_installAppInSimulatorAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* () {
@@ -122,7 +133,7 @@ var Simulator = (function (_React$Component) {
           ),
           React.createElement(
             Button,
-            _extends({ bsSizee: buttonSize }, { disabled: !this.state.isSimulatorRunning }, { onClick: this._installAppInSimulatorAsync }),
+            _extends({ bsSizee: buttonSize }, { disabled: !this.state.isSimulatorRunning }, { onClick: this._installAppInSimulator }),
             'Install Exponent on Simulator'
           ),
           React.createElement(

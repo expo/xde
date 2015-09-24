@@ -36,7 +36,7 @@
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
     "@exponent/json-file": "^3.0.0",
-    "@exponent/osascript": "^1.2.0",
+    "@exponent/osascript": "^1.5.1",
     "autobind-decorator": "^1.2.0",
     "download": "^4.2.0",
     "escape-html": "^1.0.2",

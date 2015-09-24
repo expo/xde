@@ -39,6 +39,16 @@ class Simulator extends React.Component {
   }
 
   @autobind
+  _installAppInSimulator() {
+    console.log("Trying to install app on simulator");
+    this._installAppInSimulatorAsync().then(() => {
+      console.log("Successfully installed app on simulator");
+    }, (err) => {
+      console.error("Problem installing app on simulator: " + err + "\n" + err.stack);
+    });
+  }
+
+  @autobind
   async _installAppInSimulatorAsync() {
     return await simulator.installExponentOnSimulatorAsync();
   }
@@ -91,7 +101,7 @@ class Simulator extends React.Component {
         <ButtonToolbar style={this.props.style}>
 
           <Button bsSize={buttonSize} {...{disabled: !this.state.isSimulatorInstalled}} onClick={this._openSimulatorAsync}>Run Simulator</Button>
-          <Button bsSizee={buttonSize} {...{disabled: !this.state.isSimulatorRunning}} onClick={this._installAppInSimulatorAsync}>Install Exponent on Simulator</Button>
+          <Button bsSizee={buttonSize} {...{disabled: !this.state.isSimulatorRunning}} onClick={this._installAppInSimulator}>Install Exponent on Simulator</Button>
           <Button bsSize={buttonSize} {...{disabled: (!this.props.packagerController || !this.state.isSimulatorRunning)}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on Simulator</Button>
 
         </ButtonToolbar>
