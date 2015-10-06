@@ -69,7 +69,7 @@ class PackagerController extends events.EventEmitter {
     // directly doesn't, but maybe not if we
     // switch to chokidar?
     let node = path.resolve(path.join(__dirname, '../../io.js/v2.3.1/bin/node'));
-    let packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--root=" + root, "--assetRoots=" + root,], {
+    let packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--projectRoots=" + root, "--assetRoots=" + root,], {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
         // detached: false,

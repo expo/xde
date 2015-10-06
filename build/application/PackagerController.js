@@ -93,7 +93,7 @@ var PackagerController = (function (_events$EventEmitter) {
       // directly doesn't, but maybe not if we
       // switch to chokidar?
       var node = path.resolve(path.join(__dirname, '../../io.js/v2.3.1/bin/node'));
-      var packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--root=" + root, "--assetRoots=" + root], {
+      var packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--projectRoots=" + root, "--assetRoots=" + root], {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
         // detached: false,
