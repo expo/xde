@@ -38,6 +38,7 @@
     "@exponent/json-file": "^3.0.0",
     "@exponent/osascript": "^1.5.1",
     "autobind-decorator": "^1.2.0",
+    "del": "^2.0.2",
     "download": "^4.2.0",
     "escape-html": "^1.0.2",
     "exec-async": "^2.2.0",

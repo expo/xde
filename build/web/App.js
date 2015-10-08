@@ -17,10 +17,12 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 var React = require('react');
 
 var autobind = require('autobind-decorator');
+var del = require('del');
 var escapeHtml = require('escape-html');
 var execAsync = require('exec-async');
 var gitInfoAsync = require('git-info-async');
 var jsonFile = require('@exponent/json-file');
+var os = require('os');
 var path = require('path');
 
 var Api = require('../application/Api');
@@ -642,6 +644,11 @@ var App = (function (_React$Component) {
           } },
         React.createElement(
           Button,
+          _extends({ style: { marginRight: 5 }, bsSize: 'medium' }, activeProp, { onClick: this._resetPackagerClicked }),
+          'Clear Packager Cache'
+        ),
+        React.createElement(
+          Button,
           _extends({ style: { marginRight: 10 }, bsSize: 'medium' }, activeProp, { onClick: this._restartPackagerClicked }),
           'Restart Packager'
         ),
@@ -687,10 +694,26 @@ var App = (function (_React$Component) {
       });
     }
   }, {
+    key: '_resetPackagerClicked',
+    decorators: [autobind],
+    value: function _resetPackagerClicked() {
+      var _this8 = this;
+
+      console.log("Clearing the packager cache");
+      this._logMetaMessage("Clearing the packager cache");
+      var cacheGlob = path.join(os.tmpdir(), 'react-packager-cache-*');
+      return del(cacheGlob, { force: true }).then(function () {
+        return _this8._restartPackagerClicked();
+      }, function (error) {
+        console.error("Failed to clear the packager cache: " + error.message);
+        _this8._logMetaError("Failed to clear the packager cache: " + error.message);
+      });
+    }
+  }, {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
-      var _this8 = this;
+      var _this9 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting packager...");
@@ -699,7 +722,7 @@ var App = (function (_React$Component) {
           console.log("Packager restarted :)");
         }, function (err) {
           console.error("Failed to restart packager :(");
-          _this8._logMetaError("Failed to restart packager :(");
+          _this9._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
@@ -710,7 +733,7 @@ var App = (function (_React$Component) {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
-      var _this9 = this;
+      var _this10 = this;
 
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
@@ -719,7 +742,7 @@ var App = (function (_React$Component) {
           console.log("ngrok restarted.");
         }, function (err) {
           console.error("Failed to restart ngrok :(");
-          _this9._logMetaError("Failed to restart ngrok :(");
+          _this10._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
@@ -730,20 +753,20 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      var _this10 = this;
+      var _this11 = this;
 
       var url_ = this._computeUrl();
       var sendTo = this.state.sendTo;
       console.log("Send link:", url_, "to", sendTo);
       var message = "Sent link " + url_ + " to " + sendTo;
       Commands.sendAsync(sendTo, url_).then(function () {
-        _this10._logMetaMessage(message);
+        _this11._logMetaMessage(message);
 
         userSettings.updateAsync('sendTo', sendTo)['catch'](function (err) {
-          _this10._logMetaWarning("Couldn't save the number or e-mail you sent do");
+          _this11._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
       }, function (err) {
-        _this10._logMetaError("Sending link failed :( " + err);
+        _this11._logMetaError("Sending link failed :( " + err);
       });
     }
   }, {
@@ -802,7 +825,7 @@ var App = (function (_React$Component) {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this11 = this;
+      var _this12 = this;
 
       this.setState({ env: env });
 
@@ -822,15 +845,15 @@ var App = (function (_React$Component) {
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
       pc.on('ngrok-ready', function () {
-        _this11.setState({ ngrokReady: true });
+        _this12.setState({ ngrokReady: true });
         // this._maybeRecomputeUrl();
-        _this11._logMetaMessage("ngrok ready.");
+        _this12._logMetaMessage("ngrok ready.");
       });
 
       pc.on('packager-ready', function () {
-        _this11.setState({ packagerReady: true });
+        _this12.setState({ packagerReady: true });
         // this._maybeRecomputeUrl();
-        _this11._logMetaMessage("Packager ready.");
+        _this12._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -842,7 +865,7 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this12 = this;
+      var _this13 = this;
 
       if (config.__DEV__) {}
       // With the ability to open recent stuff, not much
@@ -860,20 +883,20 @@ var App = (function (_React$Component) {
 
       // console.log("Getting sendTo");
       userSettings.getAsync('sendTo').then(function (sendTo) {
-        _this12.setState({ sendTo: sendTo });
+        _this13.setState({ sendTo: sendTo });
       }, function (err) {
         // Probably means that there's no saved value here; not a huge deal
         // console.error("Error getting sendTo:", err);
       });
 
       Exp.recentValidExpsAsync().then(function (recentExps) {
-        _this12.setState({ recentExps: recentExps });
+        _this13.setState({ recentExps: recentExps });
       }, function (err) {
         console.error("Couldn't get list of recent Exps :(", err);
       });
 
       this._versionStringAsync().then(function (vs) {
-        _this12.setState({ versionString: vs });
+        _this13.setState({ versionString: vs });
       }, function (err) {
         console.error("Couldn't get version string :(", err);
       });

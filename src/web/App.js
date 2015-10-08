@@ -1,10 +1,12 @@
 let React = require('react');
 
 let autobind = require('autobind-decorator');
+let del = require('del');
 let escapeHtml = require('escape-html');
 let execAsync = require('exec-async');
 let gitInfoAsync = require('git-info-async');
 let jsonFile = require('@exponent/json-file');
+let os = require('os');
 let path = require('path');
 
 let Api = require('../application/Api');
@@ -522,13 +524,12 @@ class App extends React.Component {
       <ButtonToolbar style={{
           marginBottom: 10,
       }}>
+        <Button style={{marginRight: 5}} bsSize='medium' {...activeProp} onClick={this._resetPackagerClicked}>Clear Packager Cache</Button>
         <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
         <Button bsSize='medium' {...activeProp} onClick={
             this._restartNgrokClicked}>Restart ngrok</Button>
       </ButtonToolbar>
     );
-
-
   }
 
   _renderSendLinkButton() {
@@ -555,6 +556,19 @@ class App extends React.Component {
   _openClicked() {
     Commands.openExpAsync().then(this._runPackagerAsync, (err) => {
       this._logMetaError("Failed to open Exp :( " + err);
+    });
+  }
+
+  @autobind
+  _resetPackagerClicked() {
+    console.log("Clearing the packager cache");
+    this._logMetaMessage("Clearing the packager cache");
+    let cacheGlob = path.join(os.tmpdir(), 'react-packager-cache-*');
+    return del(cacheGlob, { force: true }).then(() => {
+      return this._restartPackagerClicked();
+    }, error => {
+      console.error("Failed to clear the packager cache: " + error.message);
+      this._logMetaError("Failed to clear the packager cache: " + error.message);
     });
   }
 
