@@ -8,15 +8,20 @@ var buildPackageAsync = _asyncToGenerator(function* (opts) {
   var electronPackageJsonFile = jsonFile(path.join(XDE_ROOT, 'node_modules', 'electron-prebuilt', 'package.json'));
   var electronVersion = yield electronPackageJsonFile.getAsync('version');
   var iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
-  return yield spawnAsync(electronPackager, ['./', APP_NAME, '--platform=' + PLATFORM, '--arch=' + ARCH, '--version=' + electronVersion, '--prune', '--overwrite', '--icon=' + iconPath, '--sign=Developer ID Application: 650 Industries, Inc. (C8D8QTF339)'], { stdio: 'inherit' });
+  var args = ['./', APP_NAME, '--platform=' + PLATFORM, '--arch=' + ARCH, '--version=' + electronVersion, '--prune', '--overwrite', '--icon=' + iconPath];
+  if (opts && opts.signed) {
+    args.push('--sign=Developer ID Application: 650 Industries, Inc. (C8D8QTF339)');
+  }
+  // console.log("args=", args);
+  return yield spawnAsync(electronPackager, args, { stdio: 'inherit' });
 });
 
-var runAsync = _asyncToGenerator(function* () {
+var runAsync = _asyncToGenerator(function* (opts) {
 
   // Make sure we are using an OK Node version
   dotApp.checkNodeVersion();
 
-  yield buildPackageAsync();
+  yield buildPackageAsync(opts);
   crayon.green.log("Bundled up Electron app");
   // The --icon option handles this now
   // copyIconsSync();
@@ -35,6 +40,7 @@ var compressAsync = _asyncToGenerator(function* (appRoot) {
 var child_process = require('child_process');
 var crayon = require('@ccheever/crayon');
 var jsonFile = require('@exponent/json-file');
+var minimist = require('minimist');
 var path = require('path');
 var spawnAsync = require('@exponent/spawn-async');
 
@@ -60,7 +66,12 @@ function copyIconsSync() {
 }
 
 if (require.main === module) {
-  runAsync().then(console.log, console.error);
+  var args = minimist(process.argv);
+  var opts = {};
+  if (args.signed) {
+    opts.signed = true;
+  }
+  runAsync(opts).then(console.log, console.error);
 }
 
 module.exports = {
