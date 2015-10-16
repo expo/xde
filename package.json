@@ -7,7 +7,8 @@
     "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "node ./build/scripts/postinstall.js",
-    "package": "node ./build/scripts/buildPackage.js"
+    "package": "node ./build/scripts/buildPackage.js",
+    "signed-package": "node ./build/scripts/buildPackage.js --signed"
   },
   "repository": {
     "type": "git",
@@ -49,6 +50,7 @@
     "instapromise": "^2.0.2",
     "lodash-node": "^3.10.1",
     "md5hex": "^1.0.0",
+    "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "my-local-ip": "^1.0.0",
     "ngrok": "^0.1.99",
