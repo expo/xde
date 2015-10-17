@@ -78,6 +78,9 @@ async function simulatorAppForReactNativeVersionAsync(versionPair) {
     let response = await Api.callMethodAsync('simulator.urlForSimulatorAppForReactNativeVersion', []);
     let remoteUrl = response.result;
 
+    console.log("Downloading simulator app from " + remoteUrl);
+    // remoteUrl = 'https://s3.amazonaws.com/exp-us-standard/xde/SimulatorApps/1.0/Exponent.app.zip'
+
     let dir = simulatorAppDirectoryForReactNativeVersion(versionPair);
     let d$ = new download({extract: true}).get(remoteUrl).dest(dir).promise.run();
     await d$;
@@ -108,6 +111,9 @@ function _escapeForFilesystem(list) {
 }
 
 function simulatorAppPathForReactNativeVersion(versionPair) {
+  // For now, something seems broken about downloading over the Internet, so
+  // we'll just copy the Simulator app into this bundle
+  return path.resolve(__dirname, '../../simulator-app/1.1.0/Exponent.app');
   return path.join(simulatorAppDirectoryForReactNativeVersion(versionPair), 'Exponent.app');
 }
 
