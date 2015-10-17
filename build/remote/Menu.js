@@ -1,9 +1,10 @@
 'use strict';
 
+var BrowserWindow = require('browser-window');
 var Menu = require('menu');
 
 function setupMenu() {
-  return;
+  // return;
   var template = [
   // {
   //   label: 'Bieber',
@@ -81,13 +82,13 @@ function setupMenu() {
       label: 'Reload',
       accelerator: 'Command+R',
       click: function click() {
-        getCurrentWindow().reload();
+        BrowserWindow.getFocusedWindow().reload();
       }
     }, {
       label: 'Toggle DevTools',
       accelerator: 'Alt+Command+I',
       click: function click() {
-        getCurrentWindow().toggleDevTools();
+        BrowserWindow.getFocusedWindow().toggleDevTools();
       }
     }]
   }, {
