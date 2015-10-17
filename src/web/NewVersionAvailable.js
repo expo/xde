@@ -81,7 +81,8 @@ class NewVersionAvailable extends React.Component {
 
     Api.callMethodAsync('checkForUpdate', {
       product: 'xde',
-      version: '0.1.0',
+      // TODO: Grab this version from package.json
+      version: '1.0.0',
     }).then((responseData) => {
       let newStatus = STATES.UNKNOWN;
       switch (responseData.updateAvailable) {

@@ -44,7 +44,7 @@ async function isSimulatorRunningAsync() {
 }
 
 async function pathToExponentSimulatorAppDirAsync() {
-  return path.resolve(__dirname, '../../SimulatorApps/1.0/');
+  return path.resolve(__dirname, '../../SimulatorApps/1.1.0/');
 }
 
 async function pathToExponentSimulatorAppAsync() {

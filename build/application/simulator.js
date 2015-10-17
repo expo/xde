@@ -33,7 +33,7 @@ var isSimulatorRunningAsync = _asyncToGenerator(function* () {
 });
 
 var pathToExponentSimulatorAppDirAsync = _asyncToGenerator(function* () {
-  return path.resolve(__dirname, '../../SimulatorApps/1.0/');
+  return path.resolve(__dirname, '../../SimulatorApps/1.1.0/');
 });
 
 var pathToExponentSimulatorAppAsync = _asyncToGenerator(function* () {

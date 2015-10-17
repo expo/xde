@@ -46,7 +46,7 @@ var NewVersionAvailable = (function (_React$Component) {
       if (this.state.responseData && this.state.responseData.updateUrl) {
         return this.state.responseData.updateUrl;
       } else {
-        return 'http://exponentjs.com/docs';
+        return 'http://exponentjs.com/';
       }
     }
   }, {
@@ -110,7 +110,8 @@ var NewVersionAvailable = (function (_React$Component) {
 
       Api.callMethodAsync('checkForUpdate', {
         product: 'xde',
-        version: '0.1.0'
+        // TODO: Grab this version from package.json
+        version: '1.0.0'
       }).then(function (responseData) {
         var newStatus = STATES.UNKNOWN;
         switch (responseData.updateAvailable) {
