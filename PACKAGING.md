@@ -1,45 +1,49 @@
-To package up for distribution:
+### To package up for distribution:
 
 1. Make sure you are using iojs-v2.3.1
 
-```
-    nvm use iojs-v2.3.1
-
-    rm -rf node_modules/
+    ```
+        nvm use iojs-v2.3.1
     
-    npm install
-```
+        rm -rf node_modules/
+        
+        npm install
+    ```
+    
+    The reason for this is that the Chokidar stuff breaks on some later
+    versions of node/iojs, and some native modules fail to build or are weird.
+    
+    Other versions like 2.5.0 might be OK, but let's stick with 2.3.1 until
+    we have time to thoroughly test some other stuff.
 
-The reason for this is that the Chokidar stuff breaks on some later
-versions of node/iojs, and some native modules fail to build or are weird.
+2. Make sure you are on the right branch
 
-Other versions like 2.5.0 might be OK, but let's stick with 2.3.1 until
-we have time to thoroughly test some other stuff.
+    Whatever that is
 
-2. Make sure you have the DeveloperIDApplication.p12 certificate installed
+3. Run `npm run-script package`
 
-It's in Charlie's Dropbox if you need it.
+    This will run electron-packager and create a .app and then also zip that up
+    and create a .zip of the .app
+    
+    These will appear in the folder "Exponent XDE-darwin-x64"
 
-3. Make sure you are on the right branch
+4. Test the .app to make sure it works
 
-Whatever that is
+    This is dumb but you have to move it out of the directory its put in and into
+    a place like /tmp because otherwise it searches for node_modules/ in xde/
+    and gets confused and breaks
 
-4. Run `npm run-script package`
+#### To create a signed version of the app
 
-This will run electron-packager and create a .app and then also zip that up
-and create a .zip of the .app
+1. Make sure you have the DeveloperIDApplication.p12 certificate installed
 
-These will appear in the folder "Exponent XDE-darwin-x64"
+    It's in Charlie's Dropbox if you need it.
 
-5. Test the .app to make sure it works
+2. run `npm run-script signed-package`
 
-This is dumb but you have to move it out of the directory its put in and into
-a place like /tmp because otherwise it searches for node_modules/ in xde/
-and gets confused and breaks
+3. Go to the AWS website and upload the file to S3.
 
-5. Go to the AWS website and upload the file to S3.
-
-6. Update the appropriate links on the website if necessary
+4. Update the appropriate links on the website if necessary
 
 7. If you made changes to one branch, port those changes to other branches as necessary
 

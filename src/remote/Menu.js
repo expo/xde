@@ -1,7 +1,8 @@
+let BrowserWindow = require('browser-window');
 let Menu = require('menu');
 
 function setupMenu() {
-  return;
+  // return;
   let template = [
     // {
     //   label: 'Bieber',
@@ -99,12 +100,12 @@ function setupMenu() {
         {
           label: 'Reload',
           accelerator: 'Command+R',
-          click: function() { getCurrentWindow().reload(); }
+          click: function() { BrowserWindow.getFocusedWindow().reload() }
         },
         {
           label: 'Toggle DevTools',
           accelerator: 'Alt+Command+I',
-          click: function() { getCurrentWindow().toggleDevTools(); }
+          click: function() { BrowserWindow.getFocusedWindow().toggleDevTools(); }
         },
       ]
     },
