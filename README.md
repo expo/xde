@@ -10,14 +10,14 @@ We're going to bundle it up so that you just have to download one standalone app
 
 In the meantime, you can perform the following steps:
   * `git clone` this repository,
-  * Make sure you have iojs version 2.3.1. If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
+  * Make sure you have Node version 4.1.1. If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
 
 ```shell
   touch ~/.profile
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
    [Open a new terminal window]
-  nvm install iojs-v2.3.1
-  nvm use iojs-v2.3.1
+  nvm install v4.1.1
+  nvm use v4.1.1
 ```
 
   * Go into the `xde/` directory where you cloned the Git repo and run `npm install`.
@@ -80,5 +80,3 @@ To publish something you've made, just follow these steps:
   * Once everything looks good, hit the "Publish" button. A few seconds later, you should get a clean URL sent to you that points to the exp.host server where your package was published to.
 
 You can publish as many times as you want and it will replace your old version, so don't worry about making a mistake!
-
-

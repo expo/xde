@@ -5,7 +5,7 @@ var instapromise = require('instapromise');
 var path = require('path');
 
 const APP_NAME = 'Exponent XDE';
-const NODE_VERSION = 'v2.3.1'; // iojs-v2.3.1 since node 4 doesn't build all the native stuff properly
+const NODE_VERSION = 'v4.1.1'; // Match the electron-prebuilt version
 
 var XDE_ROOT = path.resolve(path.join(__dirname, '..', '..', '..'));
 

@@ -27,7 +27,7 @@
     "babel-core": "^5.8.19",
     "babel-runtime": "^5.8.19",
     "electron-packager": "^5.0.2",
-    "electron-prebuilt": "^0.29.2",
+    "electron-prebuilt": "^0.34.0",
     "gulp": "^3.9.0",
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.5.2",

@@ -92,7 +92,7 @@ var PackagerController = (function (_events$EventEmitter) {
       // which packager.sh does but calling the JS
       // directly doesn't, but maybe not if we
       // switch to chokidar?
-      var node = path.resolve(path.join(__dirname, '../../io.js/v2.3.1/bin/node'));
+      var node = path.resolve(path.join(__dirname, '../../node/v4.1.1/bin/node'));
       var packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--projectRoots=" + root, "--assetRoots=" + root], {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',

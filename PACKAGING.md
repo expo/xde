@@ -1,20 +1,17 @@
 ### To package up for distribution:
 
-1. Make sure you are using iojs-v2.3.1
+1. Make sure you are using Node v4.1.1
 
     ```
-        nvm use iojs-v2.3.1
-    
+        nvm use v4.1.1
+
         rm -rf node_modules/
-        
+
         npm install
     ```
-    
+
     The reason for this is that the Chokidar stuff breaks on some later
     versions of node/iojs, and some native modules fail to build or are weird.
-    
-    Other versions like 2.5.0 might be OK, but let's stick with 2.3.1 until
-    we have time to thoroughly test some other stuff.
 
 2. Make sure you are on the right branch
 
@@ -24,7 +21,7 @@
 
     This will run electron-packager and create a .app and then also zip that up
     and create a .zip of the .app
-    
+
     These will appear in the folder "Exponent XDE-darwin-x64"
 
 4. Test the .app to make sure it works
@@ -46,4 +43,3 @@
 4. Update the appropriate links on the website if necessary
 
 7. If you made changes to one branch, port those changes to other branches as necessary
-
