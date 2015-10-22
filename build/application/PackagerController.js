@@ -34,8 +34,7 @@ var PackagerController = (function (_events$EventEmitter) {
 
     var DEFAULT_OPTS = {
       port: undefined,
-      // packagerPath: path.join(__dirname, '..', '..', 'node_modules/react-native/packager/packager.sh'),
-      packagerJSPath: path.join(__dirname, '..', '..', 'node_modules/react-native/packager/packager.js'),
+      cliPath: path.join(__dirname, '..', '..', 'node_modules/react-native/local-cli/cli.js'),
       mainModulePath: 'index.js'
     };
 
@@ -49,23 +48,16 @@ var PackagerController = (function (_events$EventEmitter) {
   _createClass(PackagerController, [{
     key: 'startOrRestartNgrokAsync',
     value: _asyncToGenerator(function* () {
-      var _this = this;
-
       if (this._ngrokUrl) {
         console.log("Waiting for ngrok to disconnect...");
         yield this._stopNgrokAsync();
         console.log("Disconnected ngrok; restarting...");
       }
 
-      this.ngrokReady$ = new _Promise(function (fulfill, reject) {
-        _this._ngrokReadyFulfill = fulfill;
-        _this._ngrokReadyReject = reject;
-      });
-
       this.emit('ngrok-will-start', this.opts.port);
-      this.ngrokReady$ = ngrok.promise.connect(this.opts.port);
-      // this._setCombinedPromises();
-      this._ngrokUrl = yield this.ngrokReady$;
+
+      this._ngrokUrl = yield ngrok.promise.connect(this.opts.port);
+
       this.emit('ngrok-did-start', this.opts.port, this._ngrokUrl);
       this.emit('ngrok-ready', this.opts.port, this._ngrokUrl);
 
@@ -75,7 +67,7 @@ var PackagerController = (function (_events$EventEmitter) {
   }, {
     key: 'startOrRestartPackagerAsync',
     value: _asyncToGenerator(function* () {
-      var _this2 = this;
+      var _this = this;
 
       if (!this.opts.port) {
         throw new Error("`this.opts.port` must be set before starting the packager!");
@@ -88,12 +80,10 @@ var PackagerController = (function (_events$EventEmitter) {
 
       yield this._stopPackagerAsync();
 
-      // TODO: We might need to adjust `ulimit -n 4096`
-      // which packager.sh does but calling the JS
-      // directly doesn't, but maybe not if we
-      // switch to chokidar?
-      var node = path.resolve(path.join(__dirname, '../../node/v4.1.1/bin/node'));
-      var packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--projectRoots=" + root, "--assetRoots=" + root], {
+      // Note: the CLI script sets up graceful-fs and sets ulimit to 4096 in the
+      // child process
+      var nodePath = path.resolve(__dirname, '../../node/v4.1.1/bin/node');
+      var packagerProcess = child_process.spawn(nodePath, [this.opts.cliPath, 'start', '--port', this.opts.port, '--projectRoots', root, '--assetRoots', root], {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
         // detached: false,
@@ -108,38 +98,38 @@ var PackagerController = (function (_events$EventEmitter) {
       this._packager.stdout.setEncoding('utf8');
       this._packager.stderr.setEncoding('utf8');
       this._packager.stdout.on('data', function (data) {
-        _this2.emit('stdout', data);
+        _this.emit('stdout', data);
 
         if (data.match(/React packager ready\./)) {
           // this._packagerReadyFulfill(this._packager);
           // this._packagerReady = true;
-          _this2.emit('packager-ready', _this2._packager);
+          _this.emit('packager-ready', _this._packager);
         }
 
         // crayon.yellow.log("STDOUT:", data);
       });
 
       this._packager.stderr.on('data', function (data) {
-        _this2.emit('stderr', data);
+        _this.emit('stderr', data);
         // crayon.orange.error("STDERR:", data);
       });
 
       this.packagerExited$ = new _Promise(function (fulfill, reject) {
-        _this2._packagerExitedFulfill = fulfill;
-        _this2._packagerExitedReject = reject;
+        _this._packagerExitedFulfill = fulfill;
+        _this._packagerExitedReject = reject;
       });
 
       this._packager.on('exit', function (code) {
         console.log("packager process exited with code", code);
         // console.log("packagerExited$ should fulfill");
-        _this2._packagerExitedFulfill(code);
-        _this2.emit('packager-stopped', code);
+        _this._packagerExitedFulfill(code);
+        _this.emit('packager-stopped', code);
       });
     })
   }, {
     key: '_stopPackagerAsync',
     value: _asyncToGenerator(function* () {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this._packager && (!this._packager.killed && this._packager.exitCode === null)) {
         console.log("Stopping packager...");
@@ -148,7 +138,7 @@ var PackagerController = (function (_events$EventEmitter) {
             console.error("Stopping packager timed out!");
             reject();
           }, 10000);
-          _this3._packager.on('exit', function (exitCode) {
+          _this2._packager.on('exit', function (exitCode) {
             clearTimeout(timeout);
             fulfill(exitCode);
           });

@@ -14,8 +14,7 @@ class PackagerController extends events.EventEmitter {
 
     let DEFAULT_OPTS = {
       port: undefined,
-      // packagerPath: path.join(__dirname, '..', '..', 'node_modules/react-native/packager/packager.sh'),
-      packagerJSPath: path.join(__dirname, '..', '..', 'node_modules/react-native/packager/packager.js'),
+      cliPath: path.join(__dirname, '..', '..', 'node_modules/react-native/local-cli/cli.js'),
       mainModulePath: 'index.js',
       // absolutePath: root,
     };
@@ -24,26 +23,19 @@ class PackagerController extends events.EventEmitter {
     this._givenOpts = opts;
 
     global._PackagerController = this;
-
   }
 
   async startOrRestartNgrokAsync() {
-
     if (this._ngrokUrl) {
       console.log("Waiting for ngrok to disconnect...");
       await this._stopNgrokAsync();
       console.log("Disconnected ngrok; restarting...");
     }
 
-    this.ngrokReady$ = new Promise((fulfill, reject) => {
-      this._ngrokReadyFulfill = fulfill;
-      this._ngrokReadyReject = reject;
-    });
-
     this.emit('ngrok-will-start', this.opts.port);
-    this.ngrokReady$ = ngrok.promise.connect(this.opts.port);
-    // this._setCombinedPromises();
-    this._ngrokUrl = await this.ngrokReady$;
+
+    this._ngrokUrl = await ngrok.promise.connect(this.opts.port);
+
     this.emit('ngrok-did-start', this.opts.port, this._ngrokUrl);
     this.emit('ngrok-ready', this.opts.port, this._ngrokUrl);
 
@@ -64,12 +56,16 @@ class PackagerController extends events.EventEmitter {
 
     await this._stopPackagerAsync();
 
-    // TODO: We might need to adjust `ulimit -n 4096`
-    // which packager.sh does but calling the JS
-    // directly doesn't, but maybe not if we
-    // switch to chokidar?
-    let node = path.resolve(path.join(__dirname, '../../node/v4.1.1/bin/node'));
-    let packagerProcess = child_process.spawn(node, [this.opts.packagerJSPath, "--port=" + this.opts.port, "--projectRoots=" + root, "--assetRoots=" + root,], {
+    // Note: the CLI script sets up graceful-fs and sets ulimit to 4096 in the
+    // child process
+    let nodePath = path.resolve(__dirname, '../../node/v4.1.1/bin/node');
+    let packagerProcess = child_process.spawn(nodePath, [
+      this.opts.cliPath,
+      'start',
+      '--port', this.opts.port,
+      '--projectRoots', root,
+      '--assetRoots', root,
+    ], {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
         // detached: false,
