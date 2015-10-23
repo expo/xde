@@ -1,51 +1,51 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class')['default'];
+var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var _extends = require('babel-runtime/helpers/extends')['default'];
+var _extends = require('babel-runtime/helpers/extends').default;
 
-var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+var _Object$assign = require('babel-runtime/core-js/object/assign').default;
 
-var React = require('react');
+let React = require('react');
 
-var autobind = require('autobind-decorator');
-var del = require('del');
-var escapeHtml = require('escape-html');
-var execAsync = require('exec-async');
-var gitInfoAsync = require('git-info-async');
-var jsonFile = require('@exponent/json-file');
-var os = require('os');
-var path = require('path');
+let autobind = require('autobind-decorator');
+let del = require('del');
+let escapeHtml = require('escape-html');
+let execAsync = require('exec-async');
+let gitInfoAsync = require('git-info-async');
+let jsonFile = require('@exponent/json-file');
+let os = require('os');
+let path = require('path');
 
-var Api = require('../application/Api');
-var config = require('../config');
-var Commands = require('./Commands');
-var Exp = require('../application/Exp');
-var FileSystemControls = require('./FileSystemControls');
-var LoginPane = require('./LoginPane');
-var NewVersionAvailable = require('./NewVersionAvailable');
-var StyleConstants = require('./StyleConstants');
-var urlUtils = require('../application/urlUtils');
-var userSettings = require('../application/userSettings');
-var SimulatorControls = require('./SimulatorControls');
+let Api = require('../application/Api');
+let config = require('../config');
+let Commands = require('./Commands');
+let Exp = require('../application/Exp');
+let FileSystemControls = require('./FileSystemControls');
+let LoginPane = require('./LoginPane');
+let NewVersionAvailable = require('./NewVersionAvailable');
+let StyleConstants = require('./StyleConstants');
+let urlUtils = require('../application/urlUtils');
+let userSettings = require('../application/userSettings');
+let SimulatorControls = require('./SimulatorControls');
 
-var Button = require('react-bootstrap/lib/Button');
-var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+let Button = require('react-bootstrap/lib/Button');
+let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 
 function escapeAndPre(s) {
-  return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, ' ');
+  return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, '\u00a0');
 }
 
-var App = (function (_React$Component) {
+let App = (function (_React$Component) {
   _inherits(App, _React$Component);
 
   function App() {
@@ -80,8 +80,8 @@ var App = (function (_React$Component) {
     key: '_renderUrl',
     value: function _renderUrl() {
 
-      var style = _Object$assign({}, Styles.url);
-      var displayText = this._computeUrl();
+      let style = _Object$assign({}, Styles.url);
+      let displayText = this._computeUrl();
 
       return React.createElement(
         'div',
@@ -115,13 +115,11 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderSendInput',
     value: function _renderSendInput() {
-      var _this = this;
-
       return React.createElement(
         'form',
-        { onSubmit: function (e) {
-            if (_this._isSendToActive()) {
-              _this._sendClicked();
+        { onSubmit: e => {
+            if (this._isSendToActive()) {
+              this._sendClicked();
             }
             e.preventDefault();
           } },
@@ -133,9 +131,9 @@ var App = (function (_React$Component) {
           placeholder: 'Phone number or email',
           name: 'sendInput',
           ref: 'sendInput',
-          onChange: function (event) {
+          onChange: event => {
             // this.setState({value: event.target.value});
-            _this.setState({ sendTo: React.findDOMNode(_this.refs.sendInput).value });
+            this.setState({ sendTo: React.findDOMNode(this.refs.sendInput).value });
           },
           value: this.state.sendTo,
           defaultValue: null
@@ -217,16 +215,14 @@ var App = (function (_React$Component) {
     key: '_renderExp',
     decorators: [autobind],
     value: function _renderExp(exp) {
-      var _this2 = this;
-
       return React.createElement(
         'div',
         {
-          onClick: function () {
-            _this2._runPackagerAsync({
+          onClick: () => {
+            this._runPackagerAsync({
               root: exp.root
-            }, {})['catch'](function (err) {
-              _this2._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
+            }, {}).catch(err => {
+              this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
             });
           },
           style: {
@@ -268,7 +264,6 @@ var App = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
 
       return React.createElement(
         'div',
@@ -298,11 +293,11 @@ var App = (function (_React$Component) {
               } },
             React.createElement(LoginPane, {
               packagerController: this.state.packagerController,
-              onLogin: function (user) {
-                _this3.setState({ user: user });
+              onLogin: user => {
+                this.setState({ user: user });
               },
-              onLogout: function () {
-                _this3.setState({ user: null });
+              onLogout: () => {
+                this.setState({ user: null });
               }
             })
           ),
@@ -319,7 +314,7 @@ var App = (function (_React$Component) {
                 marginLeft: 15,
                 marginTop: 10,
                 cursor: 'pointer'
-              }, onClick: function () {
+              }, onClick: () => {
                 require('shell').openExternal('http://exponentjs.com/');
               } }),
             this._renderAbout(),
@@ -391,14 +386,13 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderButtonGroupSeparator',
     value: function _renderButtonGroupSeparator() {
-      return React.createElement('span', { 'class': 'btn-separator', style: { width: 70 } });
+      return React.createElement('span', { class: 'btn-separator', style: { width: 70 } });
     }
   }, {
     key: '_renderUrlOptionButtons',
     value: function _renderUrlOptionButtons() {
-      var _this4 = this;
 
-      var buttonGroupSpacing = 43;
+      let buttonGroupSpacing = 43;
 
       return React.createElement(
         'div',
@@ -420,24 +414,24 @@ var App = (function (_React$Component) {
             } },
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'ngrok' });
+            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'ngrok' }, { onClick: event => {
+                this.setState({ hostType: 'ngrok' });
                 event.target.blur();
               } }),
             'ngrok'
           ),
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'lan' });
+            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'lan' }, { onClick: event => {
+                this.setState({ hostType: 'lan' });
                 event.target.blur();
               } }),
             'LAN'
           ),
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: function (event) {
-                _this4.setState({ hostType: 'localhost' });
+            _extends({ bsSize: 'small' }, { active: this.state.hostType === 'localhost' }, { onClick: event => {
+                this.setState({ hostType: 'localhost' });
                 event.target.blur();
               } }),
             'localhost'
@@ -450,16 +444,16 @@ var App = (function (_React$Component) {
             } },
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.platform === 'ios' }, { onClick: function (event) {
-                _this4.setState({ platform: 'ios' });
+            _extends({ bsSize: 'small' }, { active: this.state.platform === 'ios' }, { onClick: event => {
+                this.setState({ platform: 'ios' });
                 event.target.blur();
               } }),
             'iOS'
           ),
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.platform === 'android' }, { onClick: function (event) {
-                _this4.setState({ platform: 'android' });
+            _extends({ bsSize: 'small' }, { active: this.state.platform === 'android' }, { onClick: event => {
+                this.setState({ platform: 'android' });
                 event.target.blur();
               } }),
             'Android'
@@ -472,16 +466,16 @@ var App = (function (_React$Component) {
             } },
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: function (event) {
-                _this4.setState({ dev: !_this4.state.dev });
+            _extends({ bsSize: 'small' }, { active: this.state.dev }, { onClick: event => {
+                this.setState({ dev: !this.state.dev });
                 event.target.blur();
               } }),
             'dev'
           ),
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: function (event) {
-                _this4.setState({ minify: !_this4.state.minify });
+            _extends({ bsSize: 'small' }, { active: this.state.minify }, { onClick: event => {
+                this.setState({ minify: !this.state.minify });
                 event.target.blur();
               } }),
             'minify'
@@ -492,24 +486,24 @@ var App = (function (_React$Component) {
           null,
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'exp' }, { onClick: function (event) {
-                _this4.setState({ urlType: 'exp' });
+            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'exp' }, { onClick: event => {
+                this.setState({ urlType: 'exp' });
                 event.target.blur();
               } }),
             'exp'
           ),
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'http' }, { onClick: function (event) {
-                _this4.setState({ urlType: 'http' });
+            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'http' }, { onClick: event => {
+                this.setState({ urlType: 'http' });
                 event.target.blur();
               } }),
             'http'
           ),
           React.createElement(
             Button,
-            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'redirect' }, { onClick: function (event) {
-                _this4.setState({ urlType: 'redirect' });
+            _extends({ bsSize: 'small' }, { active: this.state.urlType === 'redirect' }, { onClick: event => {
+                this.setState({ urlType: 'redirect' });
                 event.target.blur();
               } }),
             'redirect'
@@ -538,8 +532,8 @@ var App = (function (_React$Component) {
   }, {
     key: '_versionStringAsync',
     value: _asyncToGenerator(function* () {
-      var pkgJsonFile = jsonFile(path.join(__dirname, '../../package.json'));
-      var versionString = yield pkgJsonFile.getAsync('version');
+      let pkgJsonFile = jsonFile(path.join(__dirname, '../../package.json'));
+      let versionString = yield pkgJsonFile.getAsync('version');
       // console.log('vs =', vs);
       return versionString;
     })
@@ -547,34 +541,33 @@ var App = (function (_React$Component) {
     key: '_publishClicked',
     decorators: [autobind],
     value: function _publishClicked() {
-      var _this5 = this;
 
       this._logMetaMessage("Publishing...");
 
       Exp.getPublishInfoAsync(this.state.env, {
         packagerController: this.state.packagerController,
         username: this.state.user.username
-      }).then(function (publishInfo) {
-        return Api.callMethodAsync('publish', [publishInfo]).then(function (result) {
+      }).then(publishInfo => {
+        return Api.callMethodAsync('publish', [publishInfo]).then(result => {
           // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
-          _this5._logMetaMessage("Published to " + result.expUrl);
+          this._logMetaMessage("Published to " + result.expUrl);
           console.log("Published", result);
           // TODO: send
 
-          var sendTo = _this5.state.sendTo;
+          let sendTo = this.state.sendTo;
           if (sendTo) {
             console.log("Send link:", result.expUrl, "to", sendTo);
-            Commands.sendAsync(sendTo, result.expUrl).then(function () {
+            Commands.sendAsync(sendTo, result.expUrl).then(() => {
               console.log("Sent link to published package");
-            }, function (err) {
+            }, err => {
               console.error("Sending link to published package failed:", err);
             });
           } else {
             console.log("Not sending link because nowhere to send it to.");
           }
         });
-      })['catch'](function (err) {
-        _this5._logMetaError("Failed to publish package: " + err.message);
+      }).catch(err => {
+        this._logMetaError("Failed to publish package: " + err.message);
       });
     }
   }, {
@@ -631,8 +624,8 @@ var App = (function (_React$Component) {
   }, {
     key: '_renderPackagerButtonToolbar',
     value: function _renderPackagerButtonToolbar() {
-      var restartButtonsActive = !!this.state.packagerController;
-      var activeProp = {
+      let restartButtonsActive = !!this.state.packagerController;
+      let activeProp = {
         // active: restartButtonsActive,
         disabled: !restartButtonsActive
       };
@@ -663,7 +656,7 @@ var App = (function (_React$Component) {
     key: '_renderSendLinkButton',
     value: function _renderSendLinkButton() {
 
-      var sendActiveProp = {
+      let sendActiveProp = {
         disabled: !this._isSendToActive()
       };
 
@@ -677,52 +670,44 @@ var App = (function (_React$Component) {
     key: '_newClicked',
     decorators: [autobind],
     value: function _newClicked() {
-      var _this6 = this;
-
-      Commands.newExpAsync().then(this._runPackagerAsync, function (err) {
-        _this6._logMetaError("Failed to make a new Exp :( " + err);
+      Commands.newExpAsync().then(this._runPackagerAsync, err => {
+        this._logMetaError("Failed to make a new Exp :( " + err);
       });
     }
   }, {
     key: '_openClicked',
     decorators: [autobind],
     value: function _openClicked() {
-      var _this7 = this;
-
-      Commands.openExpAsync().then(this._runPackagerAsync, function (err) {
-        _this7._logMetaError("Failed to open Exp :( " + err);
+      Commands.openExpAsync().then(this._runPackagerAsync, err => {
+        this._logMetaError("Failed to open Exp :( " + err);
       });
     }
   }, {
     key: '_resetPackagerClicked',
     decorators: [autobind],
     value: function _resetPackagerClicked() {
-      var _this8 = this;
-
       console.log("Clearing the packager cache");
       this._logMetaMessage("Clearing the packager cache");
-      var cacheGlob = path.join(os.tmpdir(), 'react-packager-cache-*');
-      return del(cacheGlob, { force: true }).then(function () {
-        return _this8._restartPackagerClicked();
-      }, function (error) {
+      let cacheGlob = path.join(os.tmpdir(), 'react-packager-cache-*');
+      return del(cacheGlob, { force: true }).then(() => {
+        return this._restartPackagerClicked();
+      }, error => {
         console.error("Failed to clear the packager cache: " + error.message);
-        _this8._logMetaError("Failed to clear the packager cache: " + error.message);
+        this._logMetaError("Failed to clear the packager cache: " + error.message);
       });
     }
   }, {
     key: '_restartPackagerClicked',
     decorators: [autobind],
     value: function _restartPackagerClicked() {
-      var _this9 = this;
-
       if (this.state.packagerController) {
         console.log("Restarting packager...");
         this._logMetaMessage("Restarting packager...");
-        this.state.packagerController.startOrRestartPackagerAsync().then(function () {
+        this.state.packagerController.startOrRestartPackagerAsync().then(() => {
           console.log("Packager restarted :)");
-        }, function (err) {
+        }, err => {
           console.error("Failed to restart packager :(");
-          _this9._logMetaError("Failed to restart packager :(");
+          this._logMetaError("Failed to restart packager :(");
         });
       } else {
         console.error("No packager to restart!");
@@ -733,16 +718,14 @@ var App = (function (_React$Component) {
     key: '_restartNgrokClicked',
     decorators: [autobind],
     value: function _restartNgrokClicked() {
-      var _this10 = this;
-
       if (this.state.packagerController) {
         console.log("Restarting ngrok...");
         this._logMetaMessage("Restarting ngrok...");
-        this.state.packagerController.startOrRestartNgrokAsync().then(function () {
+        this.state.packagerController.startOrRestartNgrokAsync().then(() => {
           console.log("ngrok restarted.");
-        }, function (err) {
+        }, err => {
           console.error("Failed to restart ngrok :(");
-          _this10._logMetaError("Failed to restart ngrok :(");
+          this._logMetaError("Failed to restart ngrok :(");
         });
       } else {
         console.error("No ngrok to restart!");
@@ -753,20 +736,18 @@ var App = (function (_React$Component) {
     key: '_sendClicked',
     decorators: [autobind],
     value: function _sendClicked() {
-      var _this11 = this;
-
-      var url_ = this._computeUrl();
-      var sendTo = this.state.sendTo;
+      let url_ = this._computeUrl();
+      let sendTo = this.state.sendTo;
       console.log("Send link:", url_, "to", sendTo);
-      var message = "Sent link " + url_ + " to " + sendTo;
-      Commands.sendAsync(sendTo, url_).then(function () {
-        _this11._logMetaMessage(message);
+      let message = "Sent link " + url_ + " to " + sendTo;
+      Commands.sendAsync(sendTo, url_).then(() => {
+        this._logMetaMessage(message);
 
-        userSettings.updateAsync('sendTo', sendTo)['catch'](function (err) {
-          _this11._logMetaWarning("Couldn't save the number or e-mail you sent do");
+        userSettings.updateAsync('sendTo', sendTo).catch(err => {
+          this._logMetaWarning("Couldn't save the number or e-mail you sent do");
         });
-      }, function (err) {
-        _this11._logMetaError("Sending link failed :( " + err);
+      }, err => {
+        this._logMetaError("Sending link failed :( " + err);
       });
     }
   }, {
@@ -818,14 +799,13 @@ var App = (function (_React$Component) {
     key: '_scrollPackagerLogsToBottom',
     decorators: [autobind],
     value: function _scrollPackagerLogsToBottom() {
-      var ta = React.findDOMNode(this.refs.packagerLogs);
+      let ta = React.findDOMNode(this.refs.packagerLogs);
       ta.scrollTop = ta.scrollHeight;
     }
   }, {
     key: '_runPackagerAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (env, args) {
-      var _this12 = this;
 
       this.setState({ env: env });
 
@@ -835,8 +815,8 @@ var App = (function (_React$Component) {
       }
 
       args = args || {};
-      var runPackager = require('../commands/runPackager');
-      var pc = yield runPackager.runAsync(env, {});
+      let runPackager = require('../commands/runPackager');
+      let pc = yield runPackager.runAsync(env, {});
 
       this.setState({ packagerReady: false, ngrokReady: false });
 
@@ -844,16 +824,16 @@ var App = (function (_React$Component) {
 
       pc.on('stdout', this._appendPackagerLogs);
       pc.on('stderr', this._appendPackagerErrors);
-      pc.on('ngrok-ready', function () {
-        _this12.setState({ ngrokReady: true });
+      pc.on('ngrok-ready', () => {
+        this.setState({ ngrokReady: true });
         // this._maybeRecomputeUrl();
-        _this12._logMetaMessage("ngrok ready.");
+        this._logMetaMessage("ngrok ready.");
       });
 
-      pc.on('packager-ready', function () {
-        _this12.setState({ packagerReady: true });
+      pc.on('packager-ready', () => {
+        this.setState({ packagerReady: true });
         // this._maybeRecomputeUrl();
-        _this12._logMetaMessage("Packager ready.");
+        this._logMetaMessage("Packager ready.");
       });
 
       this.setState({ packagerController: this._packagerController });
@@ -865,7 +845,6 @@ var App = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this13 = this;
 
       if (config.__DEV__) {}
       // With the ability to open recent stuff, not much
@@ -882,22 +861,22 @@ var App = (function (_React$Component) {
       // Menu.setupMenu(this);
 
       // console.log("Getting sendTo");
-      userSettings.getAsync('sendTo').then(function (sendTo) {
-        _this13.setState({ sendTo: sendTo });
-      }, function (err) {
+      userSettings.getAsync('sendTo').then(sendTo => {
+        this.setState({ sendTo: sendTo });
+      }, err => {
         // Probably means that there's no saved value here; not a huge deal
         // console.error("Error getting sendTo:", err);
       });
 
-      Exp.recentValidExpsAsync().then(function (recentExps) {
-        _this13.setState({ recentExps: recentExps });
-      }, function (err) {
+      Exp.recentValidExpsAsync().then(recentExps => {
+        this.setState({ recentExps: recentExps });
+      }, err => {
         console.error("Couldn't get list of recent Exps :(", err);
       });
 
-      this._versionStringAsync().then(function (vs) {
-        _this13.setState({ versionString: vs });
-      }, function (err) {
+      this._versionStringAsync().then(vs => {
+        this.setState({ versionString: vs });
+      }, err => {
         console.error("Couldn't get version string :(", err);
       });
 
@@ -919,7 +898,7 @@ var App = (function (_React$Component) {
         return null;
       }
 
-      var opts = {
+      let opts = {
         http: this.state.urlType === 'http',
         ngrok: this.state.hostType === 'ngrok',
         lan: this.state.hostType === 'lan',
@@ -939,7 +918,7 @@ var App = (function (_React$Component) {
 
 ;
 
-var Styles = {
+let Styles = {
 
   log: {
     width: '100%',
@@ -1010,4 +989,3 @@ module.exports = App;
                                                                                       marginLeft: 8,
                                                                                   }}>{this.state.packagerController.getProjectShortName()}</span>
                                                                                  )} */ /*this.state.gitInfo*/
-//# sourceMappingURL=../sourcemaps/web/App.js.map

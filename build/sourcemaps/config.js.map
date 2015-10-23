@@ -1,1 +1,0 @@
-{"version":3,"sources":["config.js"],"names":[],"mappings":";;AAAA,MAAM,CAAC,OAAO,GAAG;;AAEf,KAAG,EAAE;AACH,QAAI,EAAE,UAAU;AAChB,QAAI,EAAE,IAAI;GAGX;CACF,CAAC","file":"config.js","sourcesContent":["module.exports = {\n  // __DEV__: true,\n  api: {\n    host: 'exp.host',\n    port: null,\n    //host: 'localhost',\n    //port: 3000,\n  },\n};\n"],"sourceRoot":"/source/"}

@@ -1,31 +1,31 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class')['default'];
+var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var React = require('react');
+let React = require('react');
 
-var Button = require('react-bootstrap/lib/Button');
-var ButtonInput = require('react-bootstrap/lib/ButtonInput');
-var Input = require('react-bootstrap/lib/Input');
+let Button = require('react-bootstrap/lib/Button');
+let ButtonInput = require('react-bootstrap/lib/ButtonInput');
+let Input = require('react-bootstrap/lib/Input');
 
-var Api = require('../application/Api');
-var login = require('../application/login');
+let Api = require('../application/Api');
+let login = require('../application/login');
 
-var autobind = require('autobind-decorator');
+let autobind = require('autobind-decorator');
 
-var STATES = {
+let STATES = {
   UNKNOWN: 'UNKNOWN',
   UP_TO_DATE: 'UP_TO_DATE',
   OUT_OF_DATE: 'OUT_OF_DATE'
 };
 
-var NewVersionAvailable = (function (_React$Component) {
+let NewVersionAvailable = (function (_React$Component) {
   _inherits(NewVersionAvailable, _React$Component);
 
   function NewVersionAvailable() {
@@ -106,14 +106,13 @@ var NewVersionAvailable = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this = this;
 
       Api.callMethodAsync('checkForUpdate', {
         product: 'xde',
         // TODO: Grab this version from package.json
         version: '1.0.0'
-      }).then(function (responseData) {
-        var newStatus = STATES.UNKNOWN;
+      }).then(responseData => {
+        let newStatus = STATES.UNKNOWN;
         switch (responseData.updateAvailable) {
 
           case true:
@@ -130,8 +129,8 @@ var NewVersionAvailable = (function (_React$Component) {
 
         }
 
-        _this.setState({ responseData: responseData, status: newStatus });
-      }, function (err) {
+        this.setState({ responseData: responseData, status: newStatus });
+      }, err => {
         console.error("Failed to check to see if updates are available for XDE:", err);
       });
     }
@@ -141,4 +140,3 @@ var NewVersionAvailable = (function (_React$Component) {
 })(React.Component);
 
 module.exports = NewVersionAvailable;
-//# sourceMappingURL=../sourcemaps/web/NewVersionAvailable.js.map

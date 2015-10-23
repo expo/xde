@@ -1,19 +1,19 @@
 'use strict';
 
-var app = require('app'); // Module to control application life.
-var BrowserWindow = require('browser-window'); // Module to create native browser window.
-var events = require('events');
-var path = require('path');
+let app = require('app'); // Module to control application life.
+let BrowserWindow = require('browser-window'); // Module to create native browser window.
+let events = require('events');
+let path = require('path');
 
-var config = require('./config');
+let config = require('./config');
 
 // Report crashes to our server.
 require('crash-reporter').start();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is GCed.
-var mainWindow = null;
-var menuWindow = null;
+let mainWindow = null;
+let menuWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -43,7 +43,7 @@ app.on('ready', function () {
   }
 
   // Setup the menu bar
-  var Menu = require('./remote/Menu');
+  let Menu = require('./remote/Menu');
   Menu.setupMenu();
 
   // Emitted when the window is closed.
@@ -57,4 +57,3 @@ app.on('ready', function () {
     process.exit();
   });
 });
-//# sourceMappingURL=sourcemaps/main.js.map

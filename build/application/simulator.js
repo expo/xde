@@ -1,9 +1,9 @@
 'use strict';
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var isSimulatorInstalledAsync = _asyncToGenerator(function* () {
-  var result = undefined;
+let isSimulatorInstalledAsync = _asyncToGenerator(function* () {
+  let result;
   try {
     result = (yield osascript.execAsync('id of app "Simulator"')).trim();
   } catch (e) {
@@ -18,88 +18,88 @@ var isSimulatorInstalledAsync = _asyncToGenerator(function* () {
   }
 });
 
-var openSimulatorAsync = _asyncToGenerator(function* () {
+let openSimulatorAsync = _asyncToGenerator(function* () {
   return yield spawnAsync('open', ['-a', 'Simulator']);
 });
 
-var installAppOnSimulatorAsync = _asyncToGenerator(function* (pathToApp) {
+let installAppOnSimulatorAsync = _asyncToGenerator(function* (pathToApp) {
   return yield spawnAsync('xcrun', ['simctl', 'install', 'booted', pathToApp]);
 });
 
-var isSimulatorRunningAsync = _asyncToGenerator(function* () {
-  var zeroMeansNo = (yield osascript.execAsync('tell app "System Events" to count processes whose name is "Simulator"')).trim();
+let isSimulatorRunningAsync = _asyncToGenerator(function* () {
+  let zeroMeansNo = (yield osascript.execAsync('tell app "System Events" to count processes whose name is "Simulator"')).trim();
   // console.log("zeroMeansNo=", zeroMeansNo);
   return zeroMeansNo !== '0';
 });
 
-var pathToExponentSimulatorAppDirAsync = _asyncToGenerator(function* () {
+let pathToExponentSimulatorAppDirAsync = _asyncToGenerator(function* () {
   return path.resolve(__dirname, '../../SimulatorApps/1.1.0/');
 });
 
-var pathToExponentSimulatorAppAsync = _asyncToGenerator(function* () {
-  var versionInfo = yield metadata.reactNativeVersionInfoAsync();
-  var versionPair = [versionInfo.versionDescription, versionInfo.versionSpecific];
-  var pkgJson = jsonFile(path.resolve(__dirname, '../../package.json'));
-  var version = yield pkgJson.getAsync('dependencies.react-native');
+let pathToExponentSimulatorAppAsync = _asyncToGenerator(function* () {
+  let versionInfo = yield metadata.reactNativeVersionInfoAsync();
+  let versionPair = [versionInfo.versionDescription, versionInfo.versionSpecific];
+  let pkgJson = jsonFile(path.resolve(__dirname, '../../package.json'));
+  let version = yield pkgJson.getAsync('dependencies.react-native');
   return yield simulatorAppForReactNativeVersionAsync(versionPair);
   // return path.join(await pathToExponentSimulatorAppDirAsync(), 'Exponent.app');
 });
 
-var installExponentOnSimulatorAsync = _asyncToGenerator(function* () {
-  var exponentAppPath = yield pathToExponentSimulatorAppAsync();
+let installExponentOnSimulatorAsync = _asyncToGenerator(function* () {
+  let exponentAppPath = yield pathToExponentSimulatorAppAsync();
   return yield installAppOnSimulatorAsync(exponentAppPath);
 });
 
-var openUrlInSimulatorAsync = _asyncToGenerator(function* (url) {
+let openUrlInSimulatorAsync = _asyncToGenerator(function* (url) {
   return yield spawnAsync('xcrun', ['simctl', 'openurl', 'booted', url]);
 });
 
-var simulatorAppForReactNativeVersionAsync = _asyncToGenerator(function* (versionPair) {
+let simulatorAppForReactNativeVersionAsync = _asyncToGenerator(function* (versionPair) {
   // Will download -- if necessary -- and then return the path to the simulator
 
-  var p = simulatorAppPathForReactNativeVersion(versionPair);
+  let p = simulatorAppPathForReactNativeVersion(versionPair);
   // console.log("path=", p);
   if (yield existsAsync(p)) {
     return p;
   } else {
     console.log("No simulator app for react-native version " + versionPair + " so downloading now");
 
-    var response = yield Api.callMethodAsync('simulator.urlForSimulatorAppForReactNativeVersion', []);
-    var remoteUrl = response.result;
+    let response = yield Api.callMethodAsync('simulator.urlForSimulatorAppForReactNativeVersion', []);
+    let remoteUrl = response.result;
 
     console.log("Downloading simulator app from " + remoteUrl);
     // remoteUrl = 'https://s3.amazonaws.com/exp-us-standard/xde/SimulatorApps/1.0/Exponent.app.zip'
 
-    var dir = simulatorAppDirectoryForReactNativeVersion(versionPair);
-    var d$ = new download({ extract: true }).get(remoteUrl).dest(dir).promise.run();
+    let dir = simulatorAppDirectoryForReactNativeVersion(versionPair);
+    let d$ = new download({ extract: true }).get(remoteUrl).dest(dir).promise.run();
     yield d$;
     return p;
   }
 });
 
-var existsAsync = require('exists-async');
-var download = require('download');
-var fs = require('fs');
-var http = require('http');
-var instapromise = require('instapromise');
-var jsonFile = require('@exponent/json-file');
-var md5hex = require('md5hex');
-var path = require('path');
-var osascript = require('@exponent/osascript');
-var spawnAsync = require('@exponent/spawn-async');
+let existsAsync = require('exists-async');
+let download = require('download');
+let fs = require('fs');
+let http = require('http');
+let instapromise = require('instapromise');
+let jsonFile = require('@exponent/json-file');
+let md5hex = require('md5hex');
+let path = require('path');
+let osascript = require('@exponent/osascript');
+let spawnAsync = require('@exponent/spawn-async');
 
-var Api = require('./Api');
-var metadata = require('./metadata');
-var userSettings = require('./userSettings');
+let Api = require('./Api');
+let metadata = require('./metadata');
+let userSettings = require('./userSettings');
 
 function simulatorCacheDirectory() {
-  var dotExponentDirectory = userSettings.dotExponentDirectory();
+  let dotExponentDirectory = userSettings.dotExponentDirectory();
   return path.join(dotExponentDirectory, 'simulator-app-cache');
 }
 
 function _escapeForFilesystem(s) {
-  var sStripped = s.replace(/[^0-9a-zA-Z]/g, '');
-  var full = sStripped + '-' + md5hex(s, 8);
+  let sStripped = s.replace(/[^0-9a-zA-Z]/g, '');
+  let full = sStripped + '-' + md5hex(s, 8);
   // console.log("full=", full);
   return full;
 }
@@ -109,7 +109,7 @@ function _strip(s) {
 }
 
 function _escapeForFilesystem(list) {
-  var hash = md5hex(JSON.stringify(list), 8);
+  let hash = md5hex(JSON.stringify(list), 8);
   return list.map(_strip).join('.') + '-' + hash;
 }
 
@@ -136,4 +136,3 @@ module.exports = {
   simulatorCacheDirectory: simulatorCacheDirectory,
   simulatorAppForReactNativeVersionAsync: simulatorAppForReactNativeVersionAsync
 };
-//# sourceMappingURL=../sourcemaps/application/simulator.js.map

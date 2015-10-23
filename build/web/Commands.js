@@ -1,27 +1,27 @@
 'use strict';
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var _Promise = require('babel-runtime/core-js/promise')['default'];
+var _Promise = require('babel-runtime/core-js/promise').default;
 
-var showOpenDialog = _asyncToGenerator(function* (opts) {
-  return new _Promise(function (fulfill, reject) {
-    var dialog = require('remote').require('dialog');
+let showOpenDialog = _asyncToGenerator(function* (opts) {
+  return new _Promise((fulfill, reject) => {
+    let dialog = require('remote').require('dialog');
     dialog.showOpenDialog(opts, function (selections) {
       fulfill(selections);
     });
   });
 });
 
-var Api = require('../application/Api');
-var Exp = require('../application/Exp');
+let Api = require('../application/Api');
+let Exp = require('../application/Exp');
 
 module.exports = {
 
   newExpAsync: _asyncToGenerator(function* () {
 
-    var dialog = require('remote').require('dialog');
-    var selections = yield showOpenDialog({
+    let dialog = require('remote').require('dialog');
+    let selections = yield showOpenDialog({
       properties: ['openDirectory', 'createDirectory']
     });
 
@@ -30,9 +30,9 @@ module.exports = {
       return null;
     }
 
-    var selection = selections[0];
+    let selection = selections[0];
 
-    var env = {
+    let env = {
       root: selection
     };
 
@@ -48,8 +48,8 @@ module.exports = {
   }),
 
   openExpAsync: _asyncToGenerator(function* () {
-    var dialog = require('remote').require('dialog');
-    var selections = yield showOpenDialog({
+    let dialog = require('remote').require('dialog');
+    let selections = yield showOpenDialog({
       properties: ['openDirectory']
     });
 
@@ -60,9 +60,9 @@ module.exports = {
       return null;
     }
 
-    var selection = selections[0];
+    let selection = selections[0];
 
-    var env = {
+    let env = {
       root: selection
     };
 
@@ -71,9 +71,8 @@ module.exports = {
 
   sendAsync: _asyncToGenerator(function* (recipient, url_) {
     console.log("sendAsync command");
-    var result = yield Api.callMethodAsync('send', [recipient, url_]);
+    let result = yield Api.callMethodAsync('send', [recipient, url_]);
     return result;
   })
 
 };
-//# sourceMappingURL=../sourcemaps/web/Commands.js.map

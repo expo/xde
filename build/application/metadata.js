@@ -1,10 +1,10 @@
 'use strict';
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var reactNativeVersionInfoAsync = _asyncToGenerator(function* () {
+let reactNativeVersionInfoAsync = _asyncToGenerator(function* () {
 
-  var reactNativePkgJson = jsonFile(path.resolve(__dirname, '../../node_modules/react-native/package.json'));
+  let reactNativePkgJson = jsonFile(path.resolve(__dirname, '../../node_modules/react-native/package.json'));
 
   return yield promiseProps({
     versionDescription: packageJsonFile().getAsync('dependencies.react-native'),
@@ -12,9 +12,9 @@ var reactNativeVersionInfoAsync = _asyncToGenerator(function* () {
   });
 });
 
-var jsonFile = require('@exponent/json-file');
-var path = require('path');
-var promiseProps = require('promise-props');
+let jsonFile = require('@exponent/json-file');
+let path = require('path');
+let promiseProps = require('promise-props');
 
 function packageJsonFile() {
   return jsonFile(path.resolve(__dirname, '..', '..', 'package.json'));
@@ -24,4 +24,3 @@ module.exports = {
   packageJsonFile: packageJsonFile,
   reactNativeVersionInfoAsync: reactNativeVersionInfoAsync
 };
-//# sourceMappingURL=../sourcemaps/application/metadata.js.map

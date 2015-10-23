@@ -1,44 +1,44 @@
 'use strict';
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+var _Object$assign = require('babel-runtime/core-js/object/assign').default;
 
-var _Promise = require('babel-runtime/core-js/promise')['default'];
+var _Promise = require('babel-runtime/core-js/promise').default;
 
-var determineEntryPoint = _asyncToGenerator(function* (root) {
-  var pkgJson = packageJsonForRoot(root);
-  var main = yield pkgJson.getAsync('main', 'index.js');
+let determineEntryPoint = _asyncToGenerator(function* (root) {
+  let pkgJson = packageJsonForRoot(root);
+  let main = yield pkgJson.getAsync('main', 'index.js');
   // console.log("main=", main);
   return main;
 });
 
-var _getReactNativeVersionAsync = _asyncToGenerator(function* () {
-  var xdePackageJson = jsonFile(path.join(__dirname, '../../package.json'));
+let _getReactNativeVersionAsync = _asyncToGenerator(function* () {
+  let xdePackageJson = jsonFile(path.join(__dirname, '../../package.json'));
   return yield xdePackageJson.getAsync(['dependencies', 'react-native']);
 });
 
-var _installReactNativeInNewProjectWithRoot = _asyncToGenerator(function* (root) {
-  var nodeModulesPath = path.join(root, 'node_modules');
+let _installReactNativeInNewProjectWithRoot = _asyncToGenerator(function* (root) {
+  let nodeModulesPath = path.join(root, 'node_modules');
   yield mkdirp.promise(nodeModulesPath);
   yield fsExtra.copy.promise(path.join(__dirname, '../../node_modules/react-native'), path.join(nodeModulesPath, 'react-native'));
 });
 
-var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
+let createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
 
-  var pp = path.parse(root);
-  var name = pp.name;
+  let pp = path.parse(root);
+  let name = pp.name;
 
   // opts = opts || {force: true};
   opts = opts || {};
 
-  var author = yield userSettings.getAsync('email', null);
+  let author = yield userSettings.getAsync('email', null);
 
-  var dependencies = {
+  let dependencies = {
     'react-native': yield _getReactNativeVersionAsync()
   };
 
-  var data = _Object$assign({
+  let data = _Object$assign({
     name: name,
     version: '0.0.0',
     description: "Hello Exponent!",
@@ -51,22 +51,22 @@ var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
   // },
   info);
 
-  var pkgJson = jsonFile(path.join(root, 'package.json'));
+  let pkgJson = jsonFile(path.join(root, 'package.json'));
 
-  var exists = yield existsAsync(pkgJson.file);
+  let exists = yield existsAsync(pkgJson.file);
   if (exists && !opts.force) {
     throw NewExpError('WONT_OVERWRITE_WITHOUT_FORCE', "Refusing to create new Exp because package.json already exists at root");
   }
 
   yield mkdirp.promise(root);
 
-  var result = yield pkgJson.writeAsync(data);
+  let result = yield pkgJson.writeAsync(data);
 
   yield fsExtra.promise.copy(TEMPLATE_ROOT, root);
 
   // Custom code for replacing __NAME__ in main.js
-  var mainJs = yield fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
-  var customMainJs = mainJs.replace(/__NAME__/g, data.name);
+  let mainJs = yield fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
+  let customMainJs = mainJs.replace(/__NAME__/g, data.name);
   result = yield fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
 
   // Intall react-native
@@ -75,10 +75,10 @@ var createNewExpAsync = _asyncToGenerator(function* (root, info, opts) {
   return data;
 });
 
-var saveRecentExpRootAsync = _asyncToGenerator(function* (root) {
+let saveRecentExpRootAsync = _asyncToGenerator(function* (root) {
   // Write the recent Exps JSON file
-  var recentExpsJsonFile = userSettings.recentExpsJsonFile();
-  var recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
+  let recentExpsJsonFile = userSettings.recentExpsJsonFile();
+  let recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
   // Filter out copies of this so we don't get dupes in this list
   recentExps = recentExps.filter(function (x) {
     return x != root;
@@ -87,11 +87,11 @@ var saveRecentExpRootAsync = _asyncToGenerator(function* (root) {
   return yield recentExpsJsonFile.writeAsync(recentExps.slice(0, 100));
 });
 
-var expInfoAsync = _asyncToGenerator(function* (root) {
-  var pkgJson = packageJsonForRoot(root);
-  var pkg = yield pkgJson.readAsync();
-  var name = pkg.name;
-  var description = pkg.description;
+let expInfoAsync = _asyncToGenerator(function* (root) {
+  let pkgJson = packageJsonForRoot(root);
+  let pkg = yield pkgJson.readAsync();
+  let name = pkg.name;
+  let description = pkg.description;
   return {
     readableRoot: makePathReadable(root),
     root: root,
@@ -100,7 +100,7 @@ var expInfoAsync = _asyncToGenerator(function* (root) {
   };
 });
 
-var expInfoSafeAsync = _asyncToGenerator(function* (root) {
+let expInfoSafeAsync = _asyncToGenerator(function* (root) {
   try {
     return yield expInfoAsync(root);
   } catch (e) {
@@ -108,24 +108,24 @@ var expInfoSafeAsync = _asyncToGenerator(function* (root) {
   }
 });
 
-var getPublishInfoAsync = _asyncToGenerator(function* (env, opts) {
+let getPublishInfoAsync = _asyncToGenerator(function* (env, opts) {
 
-  var root = env.root;
-  var pkgJson = packageJsonForRoot(root);
-  var pkg = yield pkgJson.readAsync();
-  var name = pkg.name;
-  var description = pkg.description;
-  var version = pkg.version;
-  var username = opts.username;
-  var packagerController = opts.packagerController;
+  let root = env.root;
+  let pkgJson = packageJsonForRoot(root);
+  let pkg = yield pkgJson.readAsync();
+  let name = pkg.name;
+  let description = pkg.description;
+  let version = pkg.version;
+  let username = opts.username;
+  let packagerController = opts.packagerController;
 
-  var remotePackageName = name;
-  var remoteUsername = username;
-  var remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
-  var localPackageName = name;
-  var packageVersion = version;
+  let remotePackageName = name;
+  let remoteUsername = username;
+  let remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
+  let localPackageName = name;
+  let packageVersion = version;
 
-  var ngrokUrl = urlUtils.constructUrl(packagerController, {
+  let ngrokUrl = urlUtils.constructUrl(packagerController, {
     ngrok: true,
     dev: false,
     minify: true,
@@ -143,35 +143,35 @@ var getPublishInfoAsync = _asyncToGenerator(function* (env, opts) {
   };
 });
 
-var recentValidExpsAsync = _asyncToGenerator(function* () {
-  var recentExpsJsonFile = userSettings.recentExpsJsonFile();
-  var recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
+let recentValidExpsAsync = _asyncToGenerator(function* () {
+  let recentExpsJsonFile = userSettings.recentExpsJsonFile();
+  let recentExps = yield recentExpsJsonFile.readAsync({ cantReadFileDefault: [] });
 
-  var results = yield _Promise.all(recentExps.map(expInfoSafeAsync));
+  let results = yield _Promise.all(recentExps.map(expInfoSafeAsync));
 
   console.log("results=", results);
 
-  var filteredResults = results.filter(function (x) {
+  let filteredResults = results.filter(x => {
     return !!x;
   });
 
   return filteredResults.slice(0, 5);
 });
 
-var jsonFile = require('@exponent/json-file');
-var existsAsync = require('exists-async');
-var fs = require('fs');
-var fsExtra = require('fs-extra');
-var mkdirp = require('mkdirp');
-var path = require('path');
+let jsonFile = require('@exponent/json-file');
+let existsAsync = require('exists-async');
+let fs = require('fs');
+let fsExtra = require('fs-extra');
+let mkdirp = require('mkdirp');
+let path = require('path');
 
-var urlUtils = require('./urlUtils');
-var userSettings = require('./userSettings');
+let urlUtils = require('./urlUtils');
+let userSettings = require('./userSettings');
 
-var TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../template'));
+let TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../template'));
 
 function NewExpError(code, message) {
-  var err = new Error(message);
+  let err = new Error(message);
   err.code = code;
   err._isNewExpError;
   return err;
@@ -186,7 +186,7 @@ function getHomeDir() {
 }
 
 function makePathReadable(pth) {
-  var homedir = getHomeDir();
+  let homedir = getHomeDir();
   if (pth.substr(0, homedir.length) === homedir) {
     return '~' + pth.substr(homedir.length);
   } else {
@@ -202,4 +202,3 @@ module.exports = {
   recentValidExpsAsync: recentValidExpsAsync,
   _getReactNativeVersionAsync: _getReactNativeVersionAsync
 };
-//# sourceMappingURL=../sourcemaps/application/Exp.js.map

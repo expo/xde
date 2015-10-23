@@ -1,21 +1,21 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createClass = require('babel-runtime/helpers/create-class')['default'];
+var _createClass = require('babel-runtime/helpers/create-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var React = require('react');
+let React = require('react');
 
-var autobind = require('autobind-decorator');
-var remote = require('remote');
+let autobind = require('autobind-decorator');
+let remote = require('remote');
 
-var StyleConstants = require('./StyleConstants');
+let StyleConstants = require('./StyleConstants');
 
-var NewExperience = (function (_React$Component) {
+let NewExperience = (function (_React$Component) {
   _inherits(NewExperience, _React$Component);
 
   function NewExperience() {
@@ -45,4 +45,3 @@ var NewExperience = (function (_React$Component) {
 })(React.Component);
 
 module.exports = NewExperience;
-//# sourceMappingURL=../sourcemaps/web/NewExperience.js.map

@@ -1,22 +1,22 @@
 'use strict';
 
-var crayon = require('@ccheever/crayon');
-var fs = require('fs');
-var fsExtra = require('fs-extra');
-var instapromise = require('instapromise');
-var path = require('path');
-var plist = require('plist');
+let crayon = require('@ccheever/crayon');
+let fs = require('fs');
+let fsExtra = require('fs-extra');
+let instapromise = require('instapromise');
+let path = require('path');
+let plist = require('plist');
 
 var _require = require('./lib/dotApp');
 
-var APP_NAME = _require.APP_NAME;
-var XDE_ROOT = _require.XDE_ROOT;
-var copyIconsSync = _require.copyIconsSync;
+let APP_NAME = _require.APP_NAME;
+let XDE_ROOT = _require.XDE_ROOT;
+let copyIconsSync = _require.copyIconsSync;
 
 function renameElectronAppSync(newName) {
   // First move the app folder
   // let appRoot = path.join(XDE_ROOT, './node_modules/electron-prebuilt/dist/' + APP_NAME + '.app');
-  var appRoot = path.join(XDE_ROOT, './node_modules/electron-prebuilt/dist/Electron.app');
+  let appRoot = path.join(XDE_ROOT, './node_modules/electron-prebuilt/dist/Electron.app');
 
   // await fs.promise.rename(path.join(XDE_ROOT, './node_modules/electron-prebuilt/dist/Electron.app'), appRoot);
 
@@ -33,4 +33,3 @@ try {
   crayon.error("Failed to copy icons into electron-prebuilt", err);
   crayon.error(err.stack);
 }
-//# sourceMappingURL=../sourcemaps/scripts/postinstall.js.map

@@ -2,97 +2,8 @@
 <html>
   <head>
     <title>Exponent XDE</title>
-
-    <!-- Latest compiled and minified CSS -->
-    <!-- TODO(ccheever): Make this a local thing -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" href="./bootstrap.min.css">
-
-    <style>
-      BODY {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-        font-family: 'Verdana', 'Helvetica Neue';
-      }
-      PRE {
-        background: #FFF;
-        border: none;
-        color: #000;
-        display: block;
-        font: normal;
-        height: auto;
-        letter-spacing: normal;
-        line-height: normal;
-        margin: 0;
-        padding: 0;
-        text-transform: normal;
-        visibility: visible;
-        width: auto;
-        word-spacing: normal;
-        z-index: auto;
-      }
-      .logs {
-        font-size: 11px;
-        font-family: 'Monaco', 'Menlo', 'Courier', 'Fixed8x14', 'Fixed7x14', 'Fixed8x13', 'Menlo', 'Courier', monospace;
-        line-height: 1.4;
-        font-weight: lighter;
-      }
-      .log-err {
-        color: red;
-        font-weight: 500;
-      }
-      .log-meta {
-        color: #003A6B;
-        font-size: 16px;
-        font-weight: bold;
-        font-family: 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-      }
-      .log-meta-warning {
-        color: #ffcc00;
-        font-size: 14px;
-        font-weight: normal;
-        font-family: 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-      }
-      .log-meta-error {
-        color: red;
-        font-size: 16px;
-        font-weight: bold;
-        font-family: 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-      }
-      #app {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-self: stretch;
-        width: 100vw;
-        height: 100vh;
-      }
-      button:focus {outline:0;}
-
-      #app-loading {
-        display: flex;
-        flex: 1;
-        flex-grow: 1;
-        align-items: center;
-        align-self: center;
-        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-        color: #ddddee;
-        font-size: 24px;
-      }
-
-      .btn-separator:after {
-        content: ' ';
-        display: block;
-        float: left;
-        /*background: #dddddd;*/
-        margin: 0 10px;
-        height: 34px;
-        width: 4px;
-      }
-    </style>
+    <link rel="stylesheet" href="./bootstrap-3.3.5.min.css" />
+    <link rel="stylesheet" href="./xde.css" />
   </head>
   <body>
     <div id="app">
@@ -100,15 +11,14 @@
     </div>
     <script>
       () => {
-        var React = require('react');
-        var ReactDOM = require('react-dom');
         var Remote = require('remote');
-        var App = require('../build/web/App')
-
         document.getElementById('app-loading').addEventListener('click', () => {
           Remote.getCurrentWindow().openDevTools();
         }, false);
 
+        var React = require('react');
+        var ReactDOM = require('react-dom');
+        var App = require('../build/web/App');
         var rootElement = React.createElement(App, {
           emitter: Remote.require('./application/AppEmitter'),
         });

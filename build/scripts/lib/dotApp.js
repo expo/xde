@@ -1,13 +1,13 @@
 'use strict';
 
-var fsExtra = require('fs-extra');
-var instapromise = require('instapromise');
-var path = require('path');
+let fsExtra = require('fs-extra');
+let instapromise = require('instapromise');
+let path = require('path');
 
 const APP_NAME = 'Exponent XDE';
 const NODE_VERSION = 'v4.1.1'; // Match the electron-prebuilt version
 
-var XDE_ROOT = path.resolve(path.join(__dirname, '..', '..', '..'));
+let XDE_ROOT = path.resolve(path.join(__dirname, '..', '..', '..'));
 
 function copyIconsSync(appRoot) {
   fsExtra.copySync(path.join(XDE_ROOT, './dev/Design/xde.icns'), path.join(appRoot, 'Contents/Resources/atom.icns'));
@@ -26,4 +26,3 @@ module.exports = {
   checkNodeVersion: checkNodeVersion,
   copyIconsSync: copyIconsSync
 };
-//# sourceMappingURL=../../sourcemaps/scripts/lib/dotApp.js.map

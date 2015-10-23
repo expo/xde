@@ -1,7 +1,7 @@
 'use strict';
 
-var crypto = require('crypto');
-var salt = 'EXPONENT!';
+let crypto = require('crypto');
+let salt = 'EXPONENT!';
 
 function hashPassword(cleartextPassword) {
   return crypto.createHash('md5').update(salt + cleartextPassword).digest('hex');
@@ -10,4 +10,3 @@ function hashPassword(cleartextPassword) {
 module.exports = {
   hashPassword: hashPassword
 };
-//# sourceMappingURL=../sourcemaps/application/password.js.map

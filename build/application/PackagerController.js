@@ -1,30 +1,30 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createClass = require('babel-runtime/helpers/create-class')['default'];
+var _createClass = require('babel-runtime/helpers/create-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+var _Object$assign = require('babel-runtime/core-js/object/assign').default;
 
-var _Promise = require('babel-runtime/core-js/promise')['default'];
+var _Promise = require('babel-runtime/core-js/promise').default;
 
-var child_process = require('child_process');
-var crayon = require('@ccheever/crayon');
-var freeportAsync = require('freeport-async');
-var instapromise = require('instapromise');
-var ngrok = require('ngrok');
-var path = require('path');
-var events = require('events');
+let child_process = require('child_process');
+let crayon = require('@ccheever/crayon');
+let freeportAsync = require('freeport-async');
+let instapromise = require('instapromise');
+let ngrok = require('ngrok');
+let path = require('path');
+let events = require('events');
 
-var urlUtils = require('./urlUtils');
+let urlUtils = require('./urlUtils');
 
-var PackagerController = (function (_events$EventEmitter) {
+let PackagerController = (function (_events$EventEmitter) {
   _inherits(PackagerController, _events$EventEmitter);
 
   function PackagerController(opts) {
@@ -32,7 +32,7 @@ var PackagerController = (function (_events$EventEmitter) {
 
     _get(Object.getPrototypeOf(PackagerController.prototype), 'constructor', this).call(this, opts);
 
-    var DEFAULT_OPTS = {
+    let DEFAULT_OPTS = {
       port: undefined,
       cliPath: path.join(__dirname, '..', '..', 'node_modules/react-native/local-cli/cli.js'),
       mainModulePath: 'index.js'
@@ -67,13 +67,12 @@ var PackagerController = (function (_events$EventEmitter) {
   }, {
     key: 'startOrRestartPackagerAsync',
     value: _asyncToGenerator(function* () {
-      var _this = this;
 
       if (!this.opts.port) {
         throw new Error("`this.opts.port` must be set before starting the packager!");
       }
 
-      var root = this.opts.absolutePath;
+      let root = this.opts.absolutePath;
       if (!root) {
         throw new Error("`this.opts.absolutePath` must be set to start the packager!");
       }
@@ -82,8 +81,8 @@ var PackagerController = (function (_events$EventEmitter) {
 
       // Note: the CLI script sets up graceful-fs and sets ulimit to 4096 in the
       // child process
-      var nodePath = path.resolve(__dirname, '../../node/v4.1.1/bin/node');
-      var packagerProcess = child_process.spawn(nodePath, [this.opts.cliPath, 'start', '--port', this.opts.port, '--projectRoots', root, '--assetRoots', root], {
+      let nodePath = path.resolve(__dirname, '../../node/v4.1.1/bin/node');
+      let packagerProcess = child_process.spawn(nodePath, [this.opts.cliPath, 'start', '--port', this.opts.port, '--projectRoots', root, '--assetRoots', root], {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
         // detached: false,
@@ -91,54 +90,53 @@ var PackagerController = (function (_events$EventEmitter) {
           NODE_PATH: null
         })
       });
-      process.on('exit', function () {
+      process.on('exit', () => {
         packagerProcess.kill();
       });
       this._packager = packagerProcess;
       this._packager.stdout.setEncoding('utf8');
       this._packager.stderr.setEncoding('utf8');
-      this._packager.stdout.on('data', function (data) {
-        _this.emit('stdout', data);
+      this._packager.stdout.on('data', data => {
+        this.emit('stdout', data);
 
         if (data.match(/React packager ready\./)) {
           // this._packagerReadyFulfill(this._packager);
           // this._packagerReady = true;
-          _this.emit('packager-ready', _this._packager);
+          this.emit('packager-ready', this._packager);
         }
 
         // crayon.yellow.log("STDOUT:", data);
       });
 
-      this._packager.stderr.on('data', function (data) {
-        _this.emit('stderr', data);
+      this._packager.stderr.on('data', data => {
+        this.emit('stderr', data);
         // crayon.orange.error("STDERR:", data);
       });
 
-      this.packagerExited$ = new _Promise(function (fulfill, reject) {
-        _this._packagerExitedFulfill = fulfill;
-        _this._packagerExitedReject = reject;
+      this.packagerExited$ = new _Promise((fulfill, reject) => {
+        this._packagerExitedFulfill = fulfill;
+        this._packagerExitedReject = reject;
       });
 
-      this._packager.on('exit', function (code) {
+      this._packager.on('exit', code => {
         console.log("packager process exited with code", code);
         // console.log("packagerExited$ should fulfill");
-        _this._packagerExitedFulfill(code);
-        _this.emit('packager-stopped', code);
+        this._packagerExitedFulfill(code);
+        this.emit('packager-stopped', code);
       });
     })
   }, {
     key: '_stopPackagerAsync',
     value: _asyncToGenerator(function* () {
-      var _this2 = this;
 
       if (this._packager && (!this._packager.killed && this._packager.exitCode === null)) {
         console.log("Stopping packager...");
-        var stopped$ = new _Promise(function (fulfill, reject) {
-          var timeout = setTimeout(function () {
+        let stopped$ = new _Promise((fulfill, reject) => {
+          let timeout = setTimeout(() => {
             console.error("Stopping packager timed out!");
             reject();
           }, 10000);
-          _this2._packager.on('exit', function (exitCode) {
+          this._packager.on('exit', exitCode => {
             clearTimeout(timeout);
             fulfill(exitCode);
           });
@@ -158,7 +156,7 @@ var PackagerController = (function (_events$EventEmitter) {
         this.emit('ngrok-will-disconnect', this._ngrokUrl);
         try {
           yield ngrok.promise.disconnect(this._ngrokUrl);
-          var oldNgrokUrl = this._ngrokUrl;
+          let oldNgrokUrl = this._ngrokUrl;
           this._ngrokUrl = null;
           // this._ngrokDisconnectedFulfill(oldNgrokUrl);
           // console.log("Disconnected ngrok");
@@ -211,15 +209,14 @@ var PackagerController = (function (_events$EventEmitter) {
 module.exports = PackagerController;
 
 module.exports.testIntance = function (opts) {
-  var pc = new PackagerController(_Object$assign({}, {
+  let pc = new PackagerController(_Object$assign({}, {
     absolutePath: '/Users/ccheever/tmp/icecubetray'
   }, opts));
   pc.on('stdout', crayon.green.log);
   pc.on('stderr', crayon.red.log);
-  pc.on('packager-stopped', function () {
+  pc.on('packager-stopped', () => {
     crayon.orange('packager-stopped');
   });
   pc.startAsync();
   return pc;
 };
-//# sourceMappingURL=../sourcemaps/application/PackagerController.js.map

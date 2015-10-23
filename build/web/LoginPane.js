@@ -1,28 +1,28 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class')['default'];
+var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+var _Object$assign = require('babel-runtime/core-js/object/assign').default;
 
-var React = require('react');
+let React = require('react');
 
-var Button = require('react-bootstrap/lib/Button');
-var ButtonInput = require('react-bootstrap/lib/ButtonInput');
-var Input = require('react-bootstrap/lib/Input');
+let Button = require('react-bootstrap/lib/Button');
+let ButtonInput = require('react-bootstrap/lib/ButtonInput');
+let Input = require('react-bootstrap/lib/Input');
 
-var Api = require('../application/Api');
-var login = require('../application/login');
-var OverlayTooltip = require('./OverlayTooltip');
+let Api = require('../application/Api');
+let login = require('../application/login');
+let OverlayTooltip = require('./OverlayTooltip');
 
-var autobind = require('autobind-decorator');
+let autobind = require('autobind-decorator');
 
-var LoginPane = (function (_React$Component) {
+let LoginPane = (function (_React$Component) {
   _inherits(LoginPane, _React$Component);
 
   function LoginPane() {
@@ -110,29 +110,27 @@ var LoginPane = (function (_React$Component) {
     key: '_renderLoggedOut',
     decorators: [autobind],
     value: function _renderLoggedOut() {
-      var _this = this;
-
       return React.createElement(
         'div',
         null,
         React.createElement(
           'form',
-          { name: 'login', onSubmit: function (e) {
+          { name: 'login', onSubmit: e => {
               e.preventDefault();
-              _this._loginSubmitted();
+              this._loginSubmitted();
             } },
           React.createElement(
             'div',
             null,
-            React.createElement(Input, { type: 'text', bsSize: 'small', style: Styles.input, ref: 'username', onChange: function (event) {
-                _this.setState({ username: event.target.value });
+            React.createElement(Input, { type: 'text', bsSize: 'small', style: Styles.input, ref: 'username', onChange: event => {
+                this.setState({ username: event.target.value });
               }, placeholder: 'username' })
           ),
           React.createElement(
             'div',
             null,
-            React.createElement(Input, { type: 'password', bsSize: 'small', style: Styles.input, ref: 'password', onChange: function (event) {
-                _this.setState({ password: event.target.value });
+            React.createElement(Input, { type: 'password', bsSize: 'small', style: Styles.input, ref: 'password', onChange: event => {
+                this.setState({ password: event.target.value });
               }, placeholder: 'password' })
           ),
           React.createElement(Input, { type: 'submit', bsSize: 'small', value: 'Login or Create Account' })
@@ -143,42 +141,38 @@ var LoginPane = (function (_React$Component) {
     key: '_logoutClicked',
     decorators: [autobind],
     value: function _logoutClicked() {
-      var _this2 = this;
-
       console.log("logout clicked");
-      login.logoutAsync().then(function () {
+      login.logoutAsync().then(() => {
         console.log("logout successful");
-        _this2.setState({ loggedInAs: null, errorMessage: null });
-        if (_this2.props.onLogout) {
-          _this2.props.onLogout();
+        this.setState({ loggedInAs: null, errorMessage: null });
+        if (this.props.onLogout) {
+          this.props.onLogout();
         }
-      }, function (err) {
+      }, err => {
         console.error("logout error:", err);
-        _this2.setState({ errorMessage: err.message });
+        this.setState({ errorMessage: err.message });
       });
     }
   }, {
     key: '_loginSubmitted',
     decorators: [autobind],
     value: function _loginSubmitted() {
-      var _this3 = this;
-
       console.log("login clicked");
       login.loginOrAddUserAsync({
         username: this.state.username,
         password: this.state.password
-      }).then(function (result) {
+      }).then(result => {
         console.log("login successful");
-        _this3.setState({
+        this.setState({
           errorMessage: null,
           loggedInAs: result.user
         });
-        if (_this3.props.onLogin) {
-          _this3.props.onLogin(result.user);
+        if (this.props.onLogin) {
+          this.props.onLogin(result.user);
         }
-      }, function (err) {
+      }, err => {
         console.error("login error:", err);
-        _this3.setState({ errorMessage: err.message });
+        this.setState({ errorMessage: err.message });
         console.error(err);
       });
       // console.log("username=", this.state.username, "password=", this.state.password);
@@ -186,15 +180,13 @@ var LoginPane = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this4 = this;
-
-      Api.callMethodAsync('whoami', []).then(function (result) {
-        _this4.setState({ loggedInAs: result.user });
-        if (result.user && _this4.props.onLogin) {
-          _this4.props.onLogin(result.user);
+      Api.callMethodAsync('whoami', []).then(result => {
+        this.setState({ loggedInAs: result.user });
+        if (result.user && this.props.onLogin) {
+          this.props.onLogin(result.user);
         }
-      }, function (err) {
-        _this4.setState({ errorMessage: err.message });
+      }, err => {
+        this.setState({ errorMessage: err.message });
       });
     }
   }]);
@@ -202,7 +194,7 @@ var LoginPane = (function (_React$Component) {
   return LoginPane;
 })(React.Component);
 
-var Styles = {
+let Styles = {
   pane: {
     backgroundColor: '#eeeeee',
     boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)'
@@ -221,4 +213,3 @@ var Styles = {
 };
 
 module.exports = LoginPane;
-//# sourceMappingURL=../sourcemaps/web/LoginPane.js.map

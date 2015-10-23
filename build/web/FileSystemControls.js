@@ -1,42 +1,42 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class')['default'];
+var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+var _Object$assign = require('babel-runtime/core-js/object/assign').default;
 
-var React = require('react');
+let React = require('react');
 
-var autobind = require('autobind-decorator');
-var escapeHtml = require('escape-html');
-var execAsync = require('exec-async');
-var gitInfoAsync = require('git-info-async');
-var jsonFile = require('@exponent/json-file');
-var path = require('path');
+let autobind = require('autobind-decorator');
+let escapeHtml = require('escape-html');
+let execAsync = require('exec-async');
+let gitInfoAsync = require('git-info-async');
+let jsonFile = require('@exponent/json-file');
+let path = require('path');
 
-var Api = require('../application/Api');
-var config = require('../config');
-var Commands = require('./Commands');
-var Exp = require('../application/Exp');
-var fileSystem = require('../application/fileSystem');
-var LoginPane = require('./LoginPane');
-var NewVersionAvailable = require('./NewVersionAvailable');
-var OverlayTooltip = require('./OverlayTooltip');
-var StyleConstants = require('./StyleConstants');
-var simulator = require('../application/simulator');
-var urlUtils = require('../application/urlUtils');
-var userSettings = require('../application/userSettings');
+let Api = require('../application/Api');
+let config = require('../config');
+let Commands = require('./Commands');
+let Exp = require('../application/Exp');
+let fileSystem = require('../application/fileSystem');
+let LoginPane = require('./LoginPane');
+let NewVersionAvailable = require('./NewVersionAvailable');
+let OverlayTooltip = require('./OverlayTooltip');
+let StyleConstants = require('./StyleConstants');
+let simulator = require('../application/simulator');
+let urlUtils = require('../application/urlUtils');
+let userSettings = require('../application/userSettings');
 
-var Button = require('react-bootstrap/lib/Button');
-var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+let Button = require('react-bootstrap/lib/Button');
+let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 
-var FileSystemControls = (function (_React$Component) {
+let FileSystemControls = (function (_React$Component) {
   _inherits(FileSystemControls, _React$Component);
 
   function FileSystemControls() {
@@ -49,7 +49,7 @@ var FileSystemControls = (function (_React$Component) {
     key: 'render',
     value: function render() {
 
-      var buttonSpacing = 25;
+      let buttonSpacing = 25;
       return React.createElement(
         'div',
         { style: _Object$assign({}, styles.bar, this.props.style) },
@@ -90,9 +90,9 @@ var FileSystemControls = (function (_React$Component) {
     key: '_showProjectInFinder',
     decorators: [autobind],
     value: function _showProjectInFinder() {
-      var dir = this._dir();
+      let dir = this._dir();
       console.log("dir=", dir);
-      fileSystem.openFinderToFolderAsync(this._dir())['catch'](function (err) {
+      fileSystem.openFinderToFolderAsync(this._dir()).catch(err => {
         console.error(err);
       });
     }
@@ -100,7 +100,7 @@ var FileSystemControls = (function (_React$Component) {
     key: '_openProjectFolderInTerminal',
     decorators: [autobind],
     value: function _openProjectFolderInTerminal() {
-      fileSystem.openFolderInItermOrTerminalAsync(this._dir())['catch'](function (err) {
+      fileSystem.openFolderInItermOrTerminalAsync(this._dir()).catch(err => {
         console.error(err);
       });
     }
@@ -108,7 +108,7 @@ var FileSystemControls = (function (_React$Component) {
     key: '_openProjectInEditor',
     decorators: [autobind],
     value: function _openProjectInEditor() {
-      fileSystem.openProjectInEditorAsync(this._dir())['catch'](function (err) {
+      fileSystem.openProjectInEditorAsync(this._dir()).catch(err => {
         console.error(err);
       });
     }
@@ -122,7 +122,7 @@ var FileSystemControls = (function (_React$Component) {
   return FileSystemControls;
 })(React.Component);
 
-var styles = {
+let styles = {
   bar: {
     marginLeft: 15,
     marginTop: 2,
@@ -131,4 +131,3 @@ var styles = {
 };
 
 module.exports = FileSystemControls;
-//# sourceMappingURL=../sourcemaps/web/FileSystemControls.js.map

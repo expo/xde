@@ -1,22 +1,22 @@
 'use strict';
 
-var crayon = require('@ccheever/crayon');
-var myLocalIp = require('my-local-ip');
-var os = require('os');
-var url = require('url');
+let crayon = require('@ccheever/crayon');
+let myLocalIp = require('my-local-ip');
+let os = require('os');
+let url = require('url');
 
 function constructUrl(pc, opts) {
 
   // crayon.blue.log("constructUrl");
   opts = opts || {};
 
-  var protocol = 'exp';
+  let protocol = 'exp';
   if (opts.http) {
     protocol = 'http';
   }
 
-  var hostname = undefined;
-  var port = undefined;
+  let hostname;
+  let port;
 
   if (opts.localhost) {
     hostname = 'localhost';
@@ -28,25 +28,25 @@ function constructUrl(pc, opts) {
     hostname = myLocalIp;
     port = pc.opts.port;
   } else {
-    var ngrokUrl = pc.getNgrokUrl();
+    let ngrokUrl = pc.getNgrokUrl();
     if (!ngrokUrl) {
       throw new Error("Can't get ngrok URL because ngrok not started yet");
     }
 
-    var pnu = url.parse(ngrokUrl);
+    let pnu = url.parse(ngrokUrl);
     hostname = pnu.hostname;
     port = pnu.port;
   }
 
   // console.log("opts=", opts);
 
-  var url_ = protocol + '://' + hostname;
+  let url_ = protocol + '://' + hostname;
   if (port) {
     url_ += ':' + port;
   }
 
-  var entryPoint = pc.opts.entryPoint || 'index.js';
-  var mainModulePath = opts.mainModulePath || guessMainModulePath(entryPoint);
+  let entryPoint = pc.opts.entryPoint || 'index.js';
+  let mainModulePath = opts.mainModulePath || guessMainModulePath(entryPoint);
   // console.log("entryPoint=", entryPoint, "mainModulePath=", mainModulePath);
   url_ += '/' + encodeURIComponent(mainModulePath) + '.';
 
@@ -60,7 +60,7 @@ function constructUrl(pc, opts) {
 
   url_ += 'bundle';
 
-  var platform = opts.platform || 'ios';
+  let platform = opts.platform || 'ios';
   url_ += '?platform=' + encodeURIComponent(platform);
 
   url_ += '&dev=' + encodeURIComponent(!!opts.dev);
@@ -95,4 +95,3 @@ module.exports = {
   httpUrlFromExpUrl: httpUrlFromExpUrl,
   guessMainModulePath: guessMainModulePath
 };
-//# sourceMappingURL=../sourcemaps/application/urlUtils.js.map

@@ -1,11 +1,11 @@
 'use strict';
 
-var BrowserWindow = require('browser-window');
-var Menu = require('menu');
+let BrowserWindow = require('browser-window');
+let Menu = require('menu');
 
 function setupMenu() {
   // return;
-  var template = [
+  let template = [
   // {
   //   label: 'Bieber',
   //   submenu: [
@@ -112,11 +112,10 @@ function setupMenu() {
     submenu: []
   }];
 
-  var menu = Menu.buildFromTemplate(template);
+  let menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 }
 
 module.exports = {
   setupMenu: setupMenu
 };
-//# sourceMappingURL=../sourcemaps/remote/Menu.js.map

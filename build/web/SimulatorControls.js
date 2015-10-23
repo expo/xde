@@ -1,42 +1,42 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class')['default'];
+var _createDecoratedClass = require('babel-runtime/helpers/create-decorated-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator')['default'];
+var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-var _extends = require('babel-runtime/helpers/extends')['default'];
+var _extends = require('babel-runtime/helpers/extends').default;
 
-var React = require('react');
+let React = require('react');
 
-var autobind = require('autobind-decorator');
-var escapeHtml = require('escape-html');
-var execAsync = require('exec-async');
-var gitInfoAsync = require('git-info-async');
-var jsonFile = require('@exponent/json-file');
-var path = require('path');
+let autobind = require('autobind-decorator');
+let escapeHtml = require('escape-html');
+let execAsync = require('exec-async');
+let gitInfoAsync = require('git-info-async');
+let jsonFile = require('@exponent/json-file');
+let path = require('path');
 
-var Api = require('../application/Api');
-var config = require('../config');
-var Commands = require('./Commands');
-var Exp = require('../application/Exp');
-var LoginPane = require('./LoginPane');
-var NewVersionAvailable = require('./NewVersionAvailable');
-var StyleConstants = require('./StyleConstants');
-var simulator = require('../application/simulator');
-var urlUtils = require('../application/urlUtils');
-var userSettings = require('../application/userSettings');
+let Api = require('../application/Api');
+let config = require('../config');
+let Commands = require('./Commands');
+let Exp = require('../application/Exp');
+let LoginPane = require('./LoginPane');
+let NewVersionAvailable = require('./NewVersionAvailable');
+let StyleConstants = require('./StyleConstants');
+let simulator = require('../application/simulator');
+let urlUtils = require('../application/urlUtils');
+let userSettings = require('../application/userSettings');
 
-var Button = require('react-bootstrap/lib/Button');
-var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+let Button = require('react-bootstrap/lib/Button');
+let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 
-var Simulator = (function (_React$Component) {
+let Simulator = (function (_React$Component) {
   _inherits(Simulator, _React$Component);
 
   function Simulator() {
@@ -61,9 +61,9 @@ var Simulator = (function (_React$Component) {
     decorators: [autobind],
     value: function _installAppInSimulator() {
       console.log("Trying to install app on simulator");
-      this._installAppInSimulatorAsync().then(function () {
+      this._installAppInSimulatorAsync().then(() => {
         console.log("Successfully installed app on simulator");
-      }, function (err) {
+      }, err => {
         console.error("Problem installing app on simulator: " + err + "\n" + err.stack);
       });
     }
@@ -77,7 +77,7 @@ var Simulator = (function (_React$Component) {
     key: '_openUrlInSimulatorAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* (url) {
-      var result = yield simulator.openUrlInSimulatorAsync(url);
+      let result = yield simulator.openUrlInSimulatorAsync(url);
       yield simulator.openSimulatorAsync();
       return result;
     })
@@ -85,7 +85,7 @@ var Simulator = (function (_React$Component) {
     key: '_openProjectUrlInSimulatorAsync',
     decorators: [autobind],
     value: _asyncToGenerator(function* () {
-      var projectUrl = this._projectUrl();
+      let projectUrl = this._projectUrl();
       console.log("projectUrl=" + projectUrl);
       return yield this._openUrlInSimulatorAsync(projectUrl);
     })
@@ -111,9 +111,9 @@ var Simulator = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var buttonSize = "medium";
+      let buttonSize = "medium";
 
-      var showSimulatorControls = window.XDE_showSimulatorControls;
+      let showSimulatorControls = window.XDE_showSimulatorControls;
       if (showSimulatorControls == null) {
         showSimulatorControls = !!this.state.isSimulatorInstalled;
       }
@@ -148,24 +148,21 @@ var Simulator = (function (_React$Component) {
     key: '_updateSimulatorRunningState',
     decorators: [autobind],
     value: function _updateSimulatorRunningState() {
-      var _this = this;
-
       // console.log("updateSimulatorRunningState");
-      simulator.isSimulatorRunningAsync().then(function (result) {
+      simulator.isSimulatorRunningAsync().then(result => {
         // console.log("updated simulatorRunningState");
-        _this.setState({ isSimulatorRunning: result });
-      }, function (err) {
+        this.setState({ isSimulatorRunning: result });
+      }, err => {
         console.error("Failed to determine if simulator is running", err);
       });
     }
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
 
-      simulator.isSimulatorInstalledAsync().then(function (result) {
-        _this2.setState({ isSimulatorInstalled: result });
-      }, function (err) {
+      simulator.isSimulatorInstalledAsync().then(result => {
+        this.setState({ isSimulatorInstalled: result });
+      }, err => {
         console.error("Failed to determine if simulator is installed", err);
       });
 
@@ -178,4 +175,3 @@ var Simulator = (function (_React$Component) {
 })(React.Component);
 
 module.exports = Simulator;
-//# sourceMappingURL=../sourcemaps/web/SimulatorControls.js.map

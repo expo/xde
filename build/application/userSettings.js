@@ -1,6 +1,6 @@
 'use strict';
 
-var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+var _Object$assign = require('babel-runtime/core-js/object/assign').default;
 
 var instapromise = require('instapromise');
 var jsonFile = require('@exponent/json-file');
@@ -41,4 +41,3 @@ _Object$assign(module.exports, {
   dotExponentDirectory: dotExponentDirectory,
   recentExpsJsonFile: recentExpsJsonFile
 });
-//# sourceMappingURL=../sourcemaps/application/userSettings.js.map

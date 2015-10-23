@@ -1,20 +1,20 @@
 'use strict';
 
-var _get = require('babel-runtime/helpers/get')['default'];
+var _get = require('babel-runtime/helpers/get').default;
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+var _inherits = require('babel-runtime/helpers/inherits').default;
 
-var _createClass = require('babel-runtime/helpers/create-class')['default'];
+var _createClass = require('babel-runtime/helpers/create-class').default;
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
 
-var React = require('react');
+let React = require('react');
 
-var _ = require('lodash-node');
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
-var Tooltip = require('react-bootstrap/lib/Tooltip');
+let _ = require('lodash-node');
+let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+let Tooltip = require('react-bootstrap/lib/Tooltip');
 
-var OverlayTooltip = (function (_React$Component) {
+let OverlayTooltip = (function (_React$Component) {
   _inherits(OverlayTooltip, _React$Component);
 
   function OverlayTooltip() {
@@ -27,7 +27,7 @@ var OverlayTooltip = (function (_React$Component) {
     key: 'render',
     value: function render() {
 
-      var tooltip = undefined;
+      let tooltip;
       if (_.isString(this.props.tooltip)) {
         tooltip = React.createElement(
           Tooltip,
@@ -51,4 +51,3 @@ var OverlayTooltip = (function (_React$Component) {
 })(React.Component);
 
 module.exports = OverlayTooltip;
-//# sourceMappingURL=../sourcemaps/web/OverlayTooltip.js.map
