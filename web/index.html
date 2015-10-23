@@ -92,31 +92,28 @@
         height: 34px;
         width: 4px;
       }
-
-
     </style>
-
-
-
   </head>
   <body>
-    <script>
-      var React = require('react');
-      var JSXTransformer = require('react/dist/JSXTransformer');
-      var App = require('../build/web/App');
-      function ___openChromeDevTools() {
-        require('remote').getCurrentWindow().openDevTools();
-      }
-    </script>
-
     <div id="app">
-      <a id="app-loading" href="javascript:___openChromeDevTools();">Loading...</a>
+      <a id="app-loading">Loading...</a>
     </div>
-    <script type="text/jsx">
-      React.render(
-        <App emitter={require('remote').require('./application/AppEmitter')} />,
-        document.getElementById('app')
-      );
+    <script>
+      () => {
+        var React = require('react');
+        var ReactDOM = require('react-dom');
+        var Remote = require('remote');
+        var App = require('../build/web/App')
+
+        document.getElementById('app-loading').addEventListener('click', () => {
+          Remote.getCurrentWindow().openDevTools();
+        }, false);
+
+        var rootElement = React.createElement(App, {
+          emitter: Remote.require('./application/AppEmitter'),
+        });
+        ReactDOM.render(rootElement, document.getElementById('app'));
+      }();
     </script>
   </body>
 </html>
