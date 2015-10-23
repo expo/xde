@@ -1,6 +1,7 @@
 import gulp from 'gulp';
 import babel from 'gulp-babel';
 import changed from 'gulp-changed';
+import sourcemaps from 'gulp-sourcemaps';
 import logger from 'gulplog';
 
 import rimraf from 'rimraf';
@@ -16,7 +17,9 @@ let tasks = {
   babel() {
     return gulp.src(paths.source.js)
       .pipe(changed(paths.build))
+      .pipe(sourcemaps.init())
       .pipe(babel(require('./babelrc.json')))
+      .pipe(sourcemaps.write('__sourcemaps__'))
       .pipe(gulp.dest(paths.build));
   },
 

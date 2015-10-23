@@ -4,7 +4,7 @@ class ProcessInfo extends React.Component {
   render() {
     return (
       <div>
-        <span>We are using io.js {process.version} and Electron {process.versions['electron']}</span>
+        <span>We are using Node.js {process.version} and Electron {process.versions['electron']}</span>
       </div>
     );
   }
