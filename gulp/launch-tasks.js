@@ -1,7 +1,6 @@
+import child_process from 'child_process';
 import gulp from 'gulp';
 import logger from 'gulplog';
-
-import child_process from 'child_process';
 
 let tasks = {
   launch(done) {

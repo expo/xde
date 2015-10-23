@@ -3,7 +3,6 @@ import babel from 'gulp-babel';
 import changed from 'gulp-changed';
 import sourcemaps from 'gulp-sourcemaps';
 import logger from 'gulplog';
-
 import rimraf from 'rimraf';
 
 const paths = {
