@@ -8,6 +8,7 @@ let gitInfoAsync = require('git-info-async');
 let jsonFile = require('@exponent/json-file');
 let os = require('os');
 let path = require('path');
+let remote = require('remote');
 
 let Api = require('../application/Api');
 let config = require('../config');
@@ -223,18 +224,14 @@ class App extends React.Component {
 
     return (
       <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          alignItems: 'stretch',
-          height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
       }}>
         <NewVersionAvailable />
         <div style={{
             backgroundColor: '#f6f6f6',
             flexShrink: 0,
             flexGrow: 0,
-            alignSelf: 'stretch',
             boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
             zIndex: 0,
         }}>

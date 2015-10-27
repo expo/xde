@@ -35,23 +35,11 @@ app.on('ready', () => {
   // Setup the menu bar
   Menu.setupMenu();
 
-  // Register for automatic updates
-  if (process.platform === 'darwin') {
-    registerForAutoUpdates();
-  }
-
   mainWindow.on('closed', () => {
+
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
   });
 });
-
-function registerForAutoUpdates() {
-  let platform = `${os.platform()}_${os.arch()}`;
-  let version = app.getVersion();
-  AutoUpdater.setFeedUrl(
-    `http://xde-updates.exponentjs.com/update/${platform}/${version}`
-  );
-}

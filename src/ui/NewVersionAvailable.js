@@ -1,115 +1,196 @@
+let Radium = require('radium');
 let React = require('react');
-
-let Button = require('react-bootstrap/lib/Button');
-let ButtonInput = require('react-bootstrap/lib/ButtonInput');
-let Input = require('react-bootstrap/lib/Input');
-
-let Api = require('../application/Api');
-let login = require('../application/login');
+let { Button } = require('react-bootstrap');
+let LoadingIndicator = require('react-loading-indicator');
 
 let autobind = require('autobind-decorator');
+let remote = require('remote');
 
-let STATES = {
-  UNKNOWN: 'UNKNOWN',
-  UP_TO_DATE: 'UP_TO_DATE',
-  OUT_OF_DATE: 'OUT_OF_DATE',
-};
+let app = remote.require('app');
+let AutoUpdater = remote.require('auto-updater');
 
+@Radium
 class NewVersionAvailable extends React.Component {
-  constructor() {
-    super();
-
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-      status: STATES.UNKNOWN,
-      responseData: null,
+      isVisible: false,
+      isChecking: false,
+      isDownloading: false,
+      errorMessage: null,
+      newVersion: null,
+      quitAndUpdate: null,
     };
-    global._NewVersionAvailable = this;
   }
 
-  _getUpdateUrl() {
-    if (this.state.responseData && this.state.responseData.updateUrl) {
-      return this.state.responseData.updateUrl;
+  render() {
+    if (!this.state.isVisible) {
+      return <div style={styles.hidden} />;
+    }
+
+    let { isChecking, isDownloading, errorMessage, newVersion } = this.state;
+
+    let text;
+    let clickListener;
+    let buttonStyle = 'info';
+    if (errorMessage != null) {
+      text = `An error occurred while checking for a new version of XDE: ${errorMessage}. Click to retry.`;
+      clickListener = this._checkForUpdate;
+      buttonStyle = 'danger';
+    } else if (newVersion != null) {
+      text = `A new version of XDE is available. Click to restart and install XDE ${newVersion}.`;
+      clickListener = this._quitAndUpdate;
+    } else if (isDownloading) {
+      text = 'A new version of XDE is available. You can keep working while it is downloading.';
+    } else if (isChecking) {
+      text = 'Checking if there is a new version of XDE...';
     } else {
-      return 'http://exponentjs.com/';
+      text = 'Click to check for a new version of XDE.';
+    }
+
+    return (
+      <Button
+        disabled={!clickListener}
+        onClick={clickListener}
+        bsStyle={buttonStyle}
+        style={styles.container}>
+        {isChecking ?
+          <LoadingIndicator
+            color={{
+              red: 255,
+              green: 255,
+              blue: 255,
+              alpha: 1,
+            }}
+            style={styles.loadingIndicator}
+          />
+          : null}
+        <span style={styles.text}>{text}</span>
+      </Button>
+    )
+  }
+
+  componentDidMount() {
+    AutoUpdater.on('error', this._handleUpdateError);
+    AutoUpdater.on('checking-for-update', this._handleCheckingForUpdate);
+    AutoUpdater.on('update-available', this._handleUpdateAvailable);
+    AutoUpdater.on('update-not-available', this._handleUpdateNotAvailable);
+    AutoUpdater.on('update-downloaded', this._handleUpdateDownloaded);
+
+    let version = app.getVersion();
+    AutoUpdater.setFeedUrl(
+      `http://xde-updates.exponentjs.com/update/osx_64/${version}`
+    );
+    this._checkForUpdate();
+  }
+
+  componentWillUnmount() {
+    // We need to call removeAllListeners instead of removeListener because
+    // the latter doesn't work over Electron's IPC channel
+    AutoUpdater.removeAllListeners('error');
+    AutoUpdater.removeAllListeners('checking-for-update');
+    AutoUpdater.removeAllListeners('update-available');
+    AutoUpdater.removeAllListeners('update-not-available');
+    AutoUpdater.removeAllListeners('update-downloaded');
+  }
+
+  @autobind
+  _checkForUpdate() {
+    AutoUpdater.checkForUpdates();
+  }
+
+  @autobind
+  _quitAndUpdate() {
+    if (this.state.quitAndUpdate) {
+      this.state.quitAndUpdate();
+    } else {
+      console.error('Do not have a function to quit and update XDE');
     }
   }
 
   @autobind
-  _goToUpdateUrl() {
-    require('shell').openExternal(this._getUpdateUrl());
-  }
-
-  render() {
-
-    switch (this.state.status) {
-
-      case STATES.OUT_OF_DATE:
-        return (
-          <div style={{
-            display: 'flex',
-            alignSelf: 'stretch',
-            flexDirection: 'column',
-            margin: 'auto',
-            height: 30,
-            background: '#fffbe6',
-            margin: 0,
-            padding: 0,
-            cursor: 'pointer',
-          }} onClick={this._goToUpdateUrl} >
-            <center style={{
-              paddingTop: 4,
-              fontWeight: '500',
-              fontFamily: ['Helvetica Neue', 'Sans-serif'],
-              fontSize: 13,
-              color: '#444444',
-            }}>There is a new version of XDE available <a onClick={this._goToUpdateUrl}>here</a></center>
-          </div>
-        );
-        break;
-
-      case STATES.UNKNOWN:
-      case STATES.UP_TO_DATE:
-      default:
-        return (<div style={{
-          display: 'none',
-        }} />);
-        break;
-    }
-  }
-
-  componentDidMount() {
-
-    Api.callMethodAsync('checkForUpdate', {
-      product: 'xde',
-      // TODO: Grab this version from package.json
-      version: '1.0.0',
-    }).then((responseData) => {
-      let newStatus = STATES.UNKNOWN;
-      switch (responseData.updateAvailable) {
-
-        case true:
-          newStatus = STATES.OUT_OF_DATE;
-          break;
-
-        case false:
-          newStatus = STATES.UP_TO_DATE;
-          break;
-
-        default:
-          newStatus = STATES.UNKNOWN;
-          break;
-
-      }
-
-      this.setState({responseData, status: newStatus});
-
-    }, (err) => {
-      console.error("Failed to check to see if updates are available for XDE:", err);
+  _handleUpdateError(event, message) {
+    this.setState({
+      isVisible: true,
+      errorMessage: message,
+      // Not strictly true that an error means we've stopped checking for
+      // updates or downloading. It depends on the error.
+      isChecking: false,
+      isDownloading: false,
     });
-
   }
 
+  @autobind
+  _handleCheckingForUpdate() {
+    this.setState({
+      isChecking: true,
+      isDownloading: false,
+      errorMessage: null,
+    });
+  }
 
+  @autobind
+  _handleUpdateAvailable() {
+    this.setState({
+      isChecking: false,
+      isDownloading: true,
+      errorMessage: null,
+    });
+  }
+
+  @autobind
+  _handleUpdateNotAvailable() {
+    this.setState({
+      isChecking: false,
+      isDownloading: false,
+      errorMessage: null,
+    });
+  }
+
+  @autobind
+  _handleUpdateDownloaded(event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
+    this.setState({
+      isVisible: true,
+      isChecking: false,
+      isDownloading: false,
+      errorMessage: null,
+      newVersion: releaseName,
+      quitAndUpdate,
+    });
+  }
 }
+
+let styles = {
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto',
+    minHeight: 32,
+    margin: 0,
+    padding: 0,
+    borderRadius: 0,
+    whiteSpace: 'normal',
+  },
+  errorContainer: {
+    background: '#ffcdd2',
+  },
+  updateText: {
+    fontWeight: '500',
+    fontFamily: ['Helvetica Neue', 'sans-serif'],
+    fontSize: 13,
+    color: '#444',
+    textAlign: 'center',
+    padding: 4,
+  },
+  loadingIndicator: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  hidden: {
+    display: 'none',
+  },
+};
 
 module.exports = NewVersionAvailable;

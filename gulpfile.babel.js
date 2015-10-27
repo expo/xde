@@ -19,4 +19,4 @@ gulp.task('clean', tasks.clean);
 gulp.task('postinstall', tasks.postInstall);
 gulp.task('run', tasks.launch);
 
-gulp.task('default', gulp.series('clean', 'watch', 'run'));
+gulp.task('default', gulp.series('watch', 'run'));

@@ -22,7 +22,12 @@
         var rootElement = React.createElement(App, {
           emitter: Remote.require('./application/AppEmitter'),
         });
-        ReactDOM.render(rootElement, document.getElementById('app'));
+        var rootNode = document.getElementById('app');
+        ReactDOM.render(rootElement, rootNode);
+
+        window.addEventListener('beforeunload', () => {
+          ReactDOM.unmountComponentAtNode(rootNode);
+        });
       }();
     </script>
   </body>
