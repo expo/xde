@@ -6,8 +6,8 @@
   "scripts": {
     "start": "./node_modules/.bin/electron .",
     "postinstall": "gulp postinstall",
-    "package": "node ./build/scripts/buildPackage.js",
-    "signed-package": "node ./build/scripts/buildPackage.js --signed"
+    "package": "gulp unsigned-release",
+    "signed-package": "gulp release"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,8 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^4.3.4",
     "gulplog": "^1.0.0",
-    "rimraf": "^2.4.3"
+    "rimraf": "^2.4.3",
+    "semver": "^5.0.3"
   },
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",

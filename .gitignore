@@ -28,3 +28,6 @@ node_modules
 
 # Build directory
 build/
+
+# App build directories
+Exponent XDE-*/

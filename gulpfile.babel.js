@@ -19,4 +19,16 @@ gulp.task('clean', tasks.clean);
 gulp.task('postinstall', tasks.postInstall);
 gulp.task('run', tasks.launch);
 
+gulp.task('package', tasks.packageSignedApp);
+gulp.task('unsigned-package', tasks.packageUnsignedApp);
+
+gulp.task('release', gulp.series(
+  tasks.packageSignedApp,
+  tasks.compressApp
+));
+gulp.task('unsigned-release', gulp.series(
+  tasks.packageUnsignedApp,
+  tasks.compressApp
+));
+
 gulp.task('default', gulp.series('watch', 'run'));
