@@ -1,4 +1,5 @@
 let React = require('react');
+let ReactDOM = require('react-dom');
 
 let autobind = require('autobind-decorator');
 let del = require('del');
@@ -111,7 +112,7 @@ class App extends React.Component {
             ref="sendInput"
             onChange={(event) => {
               // this.setState({value: event.target.value});
-              this.setState({sendTo: React.findDOMNode(this.refs.sendInput).value});
+              this.setState({sendTo: ReactDOM.findDOMNode(this.refs.sendInput).value});
             }}
             value={this.state.sendTo}
             defaultValue={null}
@@ -122,7 +123,7 @@ class App extends React.Component {
 
   @autobind
   _selectUrl() {
-    React.findDOMNode(this.refs.urlInput).select();
+    ReactDOM.findDOMNode(this.refs.urlInput).select();
   }
 
   @autobind
@@ -226,12 +227,12 @@ class App extends React.Component {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
+        height: '100%',
       }}>
         <NewVersionAvailable />
         <div style={{
             backgroundColor: '#f6f6f6',
-            flexShrink: 0,
-            flexGrow: 0,
+            flex: 'none',
             boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
             zIndex: 0,
         }}>
@@ -339,7 +340,7 @@ class App extends React.Component {
 
   _renderButtonGroupSeparator() {
     return (
-      <span class="btn-separator" style={{width: 70,}} />
+      <span className="btn-separator" style={{width: 70,}} />
     );
   }
 
@@ -663,7 +664,7 @@ class App extends React.Component {
 
   @autobind
   _scrollPackagerLogsToBottom() {
-    let ta = React.findDOMNode(this.refs.packagerLogs);
+    let ta = ReactDOM.findDOMNode(this.refs.packagerLogs);
     ta.scrollTop = ta.scrollHeight;
   }
 

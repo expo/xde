@@ -4,13 +4,25 @@ let _ = require('lodash-node');
 let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 let Tooltip = require('react-bootstrap/lib/Tooltip');
 
+let nextId = 0;
+
 class OverlayTooltip extends React.Component {
+
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      defaultTooltipId: nextId++,
+    };
+  }
 
   render() {
 
     let tooltip;
     if (_.isString(this.props.tooltip)) {
-      tooltip = (<Tooltip>{this.props.tooltip}</Tooltip>);
+      tooltip =
+        <Tooltip id={`tooltip-${this.state.id}`}>
+          {this.props.tooltip}
+        </Tooltip>;
     } else {
       tooltip = this.props.tooltip;
     }

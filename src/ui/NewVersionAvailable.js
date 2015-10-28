@@ -162,6 +162,7 @@ class NewVersionAvailable extends React.Component {
 
 let styles = {
   container: {
+    flex: 'none',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

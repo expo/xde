@@ -63,6 +63,9 @@ async function packageAppAsync(signed) {
     prune: true,
     sign: signed ? CODE_SIGNING_IDENTITY : null
   });
+
+  
+
   logger.info(`Packaged ${signed ? 'signed' : 'unsigned'} app at ${appPath}`);
   return appPath;
 }

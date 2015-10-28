@@ -69,9 +69,10 @@ class PackagerController extends events.EventEmitter {
         // stdio: [process.stdin, process.stdout, process.stderr],
         // stdio: 'inherit',
         // detached: false,
-        env: Object.assign({}, process.env, {
+        env: {
+          ...process.env,
           NODE_PATH: null,
-        }),
+        },
       });
     process.on('exit', () => {
       packagerProcess.kill();
