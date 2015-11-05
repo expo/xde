@@ -41,7 +41,6 @@ class App extends React.Component {
       packagerErrors: '',
       url: null,
       hostType: 'ngrok',
-      platform: 'ios',
       dev: true,
       minify: false,
       sendInput: null,
@@ -379,18 +378,6 @@ class App extends React.Component {
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: (this.state.platform === 'ios')}} onClick={(event) => {
-              this.setState({platform: 'ios'});
-              event.target.blur();
-          }}>iOS</Button>
-        <Button bsSize="small" {...{active: (this.state.platform === 'android')}} onClick={(event) => {
-              this.setState({platform: 'android'});
-              event.target.blur();
-          }}>Android</Button>
-        </ButtonGroup>
-        <ButtonGroup style={{
-            marginRight: buttonGroupSpacing,
-        }}>
           <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
               this.setState({dev: !this.state.dev});
               event.target.blur();
@@ -441,14 +428,13 @@ class App extends React.Component {
 
   @autobind
   _publishClicked() {
-
     this._logMetaMessage("Publishing...");
 
     Exp.getPublishInfoAsync(this.state.env, {
       packagerController: this.state.packagerController,
       username: this.state.user.username,
     }).then((publishInfo) => {
-      return Api.callMethodAsync('publish', [publishInfo]).then((result) => {
+      return Api.callMethodAsync('publish', [publishInfo.args], 'post', publishInfo.body).then((result) => {
         // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
         this._logMetaMessage("Published to " + result.expUrl);
         console.log("Published", result);
@@ -770,13 +756,12 @@ class App extends React.Component {
       ngrok: (this.state.hostType === 'ngrok'),
       lan: (this.state.hostType === 'lan'),
       localhost: (this.state.hostType === 'localhost'),
-      platform: this.state.platform,
       dev: this.state.dev,
       minify: this.state.minify,
       redirect: (this.state.urlType === 'redirect'),
     };
 
-    return urlUtils.constructUrl(this.state.packagerController, opts);
+    return urlUtils.constructManifestUrl(this.state.packagerController, opts);
   }
 
 };

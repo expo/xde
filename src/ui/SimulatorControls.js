@@ -68,7 +68,7 @@ class Simulator extends React.Component {
   }
 
   _projectUrl() {
-    return urlUtils.constructUrl(this.props.packagerController, {
+    return urlUtils.constructManifestUrl(this.props.packagerController, {
       localhost: true,
       dev: this.props.dev,
       minify: this.props.minify,
