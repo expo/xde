@@ -1,11 +1,14 @@
 let child_process = require('child_process');
 let crayon = require('@ccheever/crayon');
+let express = require('express');
 let freeportAsync = require('freeport-async');
 let instapromise = require('instapromise');
 let ngrok = require('ngrok');
 let path = require('path');
+let proxy = require('express-http-proxy');
 let events = require('events');
 
+let Exp = require('./Exp');
 let urlUtils = require('./urlUtils');
 
 class PackagerController extends events.EventEmitter {
@@ -23,6 +26,57 @@ class PackagerController extends events.EventEmitter {
     this._givenOpts = opts;
 
     global._PackagerController = this;
+  }
+
+  async startOrRestartLocalServerAsync() {
+    if (this._expressServer) {
+      console.log("Waiting for express to close...");
+      await this._expressServer.close();
+      console.log("Closed express; restarting...");
+    }
+
+    let app = express();
+    let self = this;
+
+    // Proxy '/bundle' to the packager.
+    app.use('/bundle', proxy('localhost:' + this.opts.packagerPort, {
+      forwardPath: (req, res) => {
+        let queryString = require('url').parse(req.url).query;
+        let platform = req.headers['exponent-platform'] || 'ios';
+        let path = '/' + urlUtils.guessMainModulePath(self.opts.entryPoint);
+        path += '.bundle';
+        path += '?' + queryString + '&platform=' + platform;
+        return path;
+      },
+    }));
+
+    // Proxy sourcemaps to the packager.
+    app.use('/', proxy('localhost:' + this.opts.packagerPort, {
+      filter: function(req, res) {
+        let path = require('url').parse(req.url).path;
+        return path.indexOf('.map') > -1;
+      },
+    }));
+
+    // Serve the manifest.
+    let manifestHandler = async function(req, res) {
+      let pkg = await Exp.packageJsonForRoot(self.opts.absolutePath).readAsync();
+      let manifest = pkg.exp || {};
+      let queryString = require('url').parse(req.url).query;
+      manifest.bundlePath = 'bundle?' + queryString
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(manifest));
+    };
+
+    app.get('/', manifestHandler);
+    app.get('/manifest', manifestHandler);
+
+    this._expressServer = app.listen(this.opts.port, () => {
+      let host = this._expressServer.address().address;
+      let port = this._expressServer.address().port;
+
+      console.log('Local server listening at http://%s:%s', host, port);
+    });
   }
 
   async startOrRestartNgrokAsync() {
@@ -45,8 +99,8 @@ class PackagerController extends events.EventEmitter {
 
   async startOrRestartPackagerAsync() {
 
-    if (!this.opts.port) {
-      throw new Error("`this.opts.port` must be set before starting the packager!");
+    if (!this.opts.packagerPort) {
+      throw new Error("`this.opts.packagerPort` must be set before starting the packager!");
     }
 
     let root = this.opts.absolutePath;
@@ -62,7 +116,7 @@ class PackagerController extends events.EventEmitter {
     let packagerProcess = child_process.spawn(nodePath, [
       this.opts.cliPath,
       'start',
-      '--port', this.opts.port,
+      '--port', this.opts.packagerPort,
       '--projectRoots', root,
       '--assetRoots', root,
     ], {
@@ -160,16 +214,17 @@ class PackagerController extends events.EventEmitter {
       this.opts.port = await freeportAsync(19000);
     }
 
+    if (!this.opts.packagerPort) {
+      this.opts.packagerPort = await freeportAsync(19001);
+    }
+
     await Promise.all([
+      this.startOrRestartLocalServerAsync(),
       this.startOrRestartPackagerAsync(),
       this.startOrRestartNgrokAsync(),
     ]);
 
     return this;
-  }
-
-  async getUrlAsync(opts) {
-    return urlUtils.constructUrlAsync(this, opts);
   }
 
   async getNgrokUrlAsync() {
