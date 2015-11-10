@@ -210,12 +210,10 @@ class PackagerController extends events.EventEmitter {
   async startAsync() {
 
     // let root = this.opts.absolutePath;
-    if (!this.opts.port) {
-      this.opts.port = await freeportAsync(19000);
-    }
-
-    if (!this.opts.packagerPort) {
-      this.opts.packagerPort = await freeportAsync(19001);
+    if (!this.opts.port || !this.opts.packagerPort) {
+      let ports = await freeportAsync.rangeAsync(2, 19000);
+      this.opts.port = ports[0];
+      this.opts.packagerPort = ports[1];
     }
 
     await Promise.all([
