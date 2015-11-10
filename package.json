@@ -4,7 +4,7 @@
   "description": "The Exponent Development Environment",
   "main": "build/main.js",
   "scripts": {
-    "start": "gulp build && ./node_modules/.bin/electron .",
+    "start": "gulp build && XDE_NPM_START=1 ./node_modules/.bin/electron .",
     "postinstall": "gulp postinstall",
     "package": "gulp unsigned-release",
     "signed-package": "gulp release"
