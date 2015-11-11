@@ -1,22 +1,28 @@
 'use strict';
-var $          = require('./$')
-  , $def       = require('./$.def')
-  , hide       = require('./$.hide')
-  , forOf      = require('./$.for-of')
-  , strictNew  = require('./$.strict-new');
+var $              = require('./$')
+  , global         = require('./$.global')
+  , $export        = require('./$.export')
+  , fails          = require('./$.fails')
+  , hide           = require('./$.hide')
+  , redefineAll    = require('./$.redefine-all')
+  , forOf          = require('./$.for-of')
+  , strictNew      = require('./$.strict-new')
+  , isObject       = require('./$.is-object')
+  , setToStringTag = require('./$.set-to-string-tag')
+  , DESCRIPTORS    = require('./$.descriptors');
 
 module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
-  var Base  = require('./$.global')[NAME]
+  var Base  = global[NAME]
     , C     = Base
     , ADDER = IS_MAP ? 'set' : 'add'
     , proto = C && C.prototype
     , O     = {};
-  if(!require('./$.support-desc') || typeof C != 'function'
-    || !(IS_WEAK || proto.forEach && !require('./$.fails')(function(){ new C().entries().next(); }))
-  ){
+  if(!DESCRIPTORS || typeof C != 'function' || !(IS_WEAK || proto.forEach && !fails(function(){
+    new C().entries().next();
+  }))){
     // create collection constructor
     C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER);
-    require('./$.mix')(C.prototype, methods);
+    redefineAll(C.prototype, methods);
   } else {
     C = wrapper(function(target, iterable){
       strictNew(target, C, NAME);
@@ -24,10 +30,11 @@ module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
       if(iterable != undefined)forOf(iterable, IS_MAP, target[ADDER], target);
     });
     $.each.call('add,clear,delete,forEach,get,has,set,keys,values,entries'.split(','),function(KEY){
-      var chain = KEY == 'add' || KEY == 'set';
+      var IS_ADDER = KEY == 'add' || KEY == 'set';
       if(KEY in proto && !(IS_WEAK && KEY == 'clear'))hide(C.prototype, KEY, function(a, b){
+        if(!IS_ADDER && IS_WEAK && !isObject(a))return KEY == 'get' ? undefined : false;
         var result = this._c[KEY](a === 0 ? 0 : a, b);
-        return chain ? this : result;
+        return IS_ADDER ? this : result;
       });
     });
     if('size' in proto)$.setDesc(C.prototype, 'size', {
@@ -37,10 +44,10 @@ module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
     });
   }
 
-  require('./$.tag')(C, NAME);
+  setToStringTag(C, NAME);
 
   O[NAME] = C;
-  $def($def.G + $def.W + $def.F, O);
+  $export($export.G + $export.W + $export.F, O);
 
   if(!IS_WEAK)common.setStrong(C, NAME, IS_MAP);
 

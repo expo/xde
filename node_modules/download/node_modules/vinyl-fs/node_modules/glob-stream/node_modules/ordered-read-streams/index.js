@@ -1,7 +1,6 @@
-var Readable = require('readable-stream').Readable;
-var isReadable = require('isstream').isReadable;
+var Readable = require('readable-stream/readable');
+var isReadable = require('is-stream').readable;
 var util = require('util');
-
 
 function addStream(streams, stream)
 {

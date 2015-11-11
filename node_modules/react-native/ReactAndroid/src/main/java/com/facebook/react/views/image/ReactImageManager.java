@@ -11,14 +11,18 @@ package com.facebook.react.views.image;
 
 import javax.annotation.Nullable;
 
+import java.util.Map;
+
 import android.graphics.Color;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeControllerBuilder;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ReactProp;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewProps;
+import com.facebook.react.views.image.events.ImageLoadEvent;
 
 public class ReactImageManager extends SimpleViewManager<ReactImageView> {
 
@@ -90,6 +94,23 @@ public class ReactImageManager extends SimpleViewManager<ReactImageView> {
     } else {
       view.setColorFilter(tintColor);
     }
+  }
+
+  @ReactProp(name = "loadHandlersRegistered")
+  public void setloadHandlersRegistered(ReactImageView view, boolean shouldNotifyOnLoadEvents) {
+    view.setShouldNotifyOnLoadEvents(shouldNotifyOnLoadEvents);
+  }
+
+  @Override
+  public @Nullable Map getExportedCustomDirectEventTypeConstants() {
+    return MapBuilder.of(
+      ImageLoadEvent.eventNameForType(ImageLoadEvent.ON_LOAD_START),
+        MapBuilder.of("registrationName", "onLoadStart"),
+      ImageLoadEvent.eventNameForType(ImageLoadEvent.ON_LOAD),
+        MapBuilder.of("registrationName", "onLoad"),
+      ImageLoadEvent.eventNameForType(ImageLoadEvent.ON_LOAD_END),
+        MapBuilder.of("registrationName", "onLoadEnd")
+    );
   }
 
   @Override

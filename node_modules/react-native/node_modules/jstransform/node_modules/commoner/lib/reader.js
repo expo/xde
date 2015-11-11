@@ -4,10 +4,18 @@ var fs = require("fs");
 var Q = require("q");
 var iconv = require("iconv-lite");
 var createHash = require("crypto").createHash;
-var getRequiredIDs = require("install").getRequiredIDs;
+var detective = require("detective");
 var util = require("./util");
 var BuildContext = require("./context").BuildContext;
 var slice = Array.prototype.slice;
+
+function getRequiredIDs(id, source) {
+    var ids = {};
+    detective(source).forEach(function (dep) {
+        ids[path.normalize(path.join(id, "..", dep))] = true;
+    });
+    return Object.keys(ids);
+}
 
 function ModuleReader(context, resolvers, processors) {
     var self = this;

@@ -1,6 +1,6 @@
-## Before opening bug reports/technical issues**:
+## Before opening bug reports/technical issues:
 
-Please provide the following information in your new issue:
+Please provide **all of the following information** in your new issue (use this as a template):
 
 - Which version of electron-packager are you using?
 - What cli arguments are you passing?

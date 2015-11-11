@@ -20,7 +20,7 @@ function readFromFileMap(sm, dir) {
 
   var r = mapFileCommentRx.exec(sm);
   mapFileCommentRx.lastIndex = 0;
-  
+
   // for some odd reason //# .. captures in 1 and /* .. */ in 2
   var filename = r[1] || r[2];
   var filepath = path.join(dir, filename);
@@ -46,7 +46,7 @@ function Converter (sm, opts) {
 function convertFromLargeSource(content){
   var lines = content.split('\n');
   var line;
-  // find first line which contains a source map starting at end of content 
+  // find first line which contains a source map starting at end of content
   for (var i = lines.length - 1; i > 0; i--) {
     line = lines[i]
     if (~line.indexOf('sourceMappingURL=data:')) return exports.fromComment(line);
@@ -113,7 +113,10 @@ exports.fromMapFileComment = function (comment, dir) {
 
 // Finds last sourcemap comment in file or returns null if none was found
 exports.fromSource = function (content, largeSource) {
-  if (largeSource) return convertFromLargeSource(content);
+  if (largeSource) {
+    var res = convertFromLargeSource(content);
+    return res ? res : null;
+  }
 
   var m = content.match(commentRx);
   commentRx.lastIndex = 0;

@@ -273,6 +273,8 @@ var Navigator = React.createClass({
   },
 
   getInitialState: function() {
+    this._navigationBarNavigator = this.props.navigationBarNavigator || this;
+
     this._renderedSceneMap = new Map();
 
     var routeStack = this.props.initialRouteStack || [this.props.initialRoute];
@@ -346,6 +348,12 @@ var Navigator = React.createClass({
       this._navigationContext.dispose();
       this._navigationContext = null;
     }
+
+    this.spring.destroy();
+
+    if (this._interactionHandle) {
+      this.clearInteractionHandle(this._interactionHandle);
+    }
   },
 
   /**
@@ -411,6 +419,9 @@ var Navigator = React.createClass({
    * happening, we only set values for the transition and the gesture will catch up later
    */
   _handleSpringUpdate: function() {
+    if (!this.isMounted()) {
+      return;
+    }
     // Prioritize handling transition in progress over a gesture:
     if (this.state.transitionFromIndex != null) {
       this._transitionBetween(
@@ -432,6 +443,10 @@ var Navigator = React.createClass({
    * This happens at the end of a transition started by transitionTo, and when the spring catches up to a pending gesture
    */
   _completeTransition: function() {
+    if (!this.isMounted()) {
+      return;
+    }
+
     if (this.spring.getCurrentValue() !== 1 && this.spring.getCurrentValue() !== 0) {
       // The spring has finished catching up to a gesture in progress. Remove the pending progress
       // and we will be in a normal activeGesture state
@@ -1073,7 +1088,7 @@ var Navigator = React.createClass({
     }
     return React.cloneElement(this.props.navigationBar, {
       ref: (navBar) => { this._navBar = navBar; },
-      navigator: this,
+      navigator: this._navigationBarNavigator,
       navState: this.state,
     });
   },

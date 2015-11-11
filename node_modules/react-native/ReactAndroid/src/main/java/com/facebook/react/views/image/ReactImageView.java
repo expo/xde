@@ -20,11 +20,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
+import android.os.SystemClock;
 
 import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.controller.AbstractDraweeControllerBuilder;
+import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.controller.ForwardingControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
@@ -32,11 +36,16 @@ import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.PixelUtil;
+import com.facebook.react.uimanager.UIManagerModule;
+import com.facebook.react.uimanager.events.EventDispatcher;
+import com.facebook.react.views.image.events.ImageLoadEvent;
 
 /**
  * Wrapper class around Fresco's GenericDraweeView, enabling persisting props across multiple view
@@ -103,10 +112,11 @@ public class ReactImageView extends GenericDraweeView {
   private ScalingUtils.ScaleType mScaleType;
   private boolean mIsDirty;
   private boolean mIsLocalImage;
+  private boolean mHasRegisteredForOnLoadEvents;
   private final AbstractDraweeControllerBuilder mDraweeControllerBuilder;
   private final RoundedCornerPostprocessor mRoundedCornerPostprocessor;
+  private ForwardingControllerListener mControllerListener;
   private final @Nullable Object mCallerContext;
-  private @Nullable ControllerListener mControllerListener;
   private int mImageFadeDuration = -1;
 
   // We can't specify rounding in XML, so have to do so here
@@ -123,8 +133,57 @@ public class ReactImageView extends GenericDraweeView {
     super(context, buildHierarchy(context));
     mScaleType = ImageResizeMode.defaultValue();
     mDraweeControllerBuilder = draweeControllerBuilder;
+    mControllerListener = new ForwardingControllerListener();
     mRoundedCornerPostprocessor = new RoundedCornerPostprocessor();
     mCallerContext = callerContext;
+  }
+
+  public void setShouldNotifyOnLoadEvents(boolean shouldNotify) {
+    if (!shouldNotify || mHasRegisteredForOnLoadEvents) {
+      return;
+    }
+
+    final EventDispatcher mEventDispatcher = ((ReactContext) getContext()).
+        getNativeModule(UIManagerModule.class).getEventDispatcher();
+
+    setControllerListener(new BaseControllerListener<ImageInfo>() {
+      @Override
+      public void onSubmit(
+          String id,
+          Object callerContext
+      ) {
+        mEventDispatcher.dispatchEvent(
+            new ImageLoadEvent(getId(), SystemClock.uptimeMillis(), ImageLoadEvent.ON_LOAD_START)
+        );
+      }
+
+      @Override
+      public void onFinalImageSet(
+          String id,
+          @Nullable final ImageInfo imageInfo,
+          @Nullable Animatable animatable) {
+        if (imageInfo != null) {
+          mEventDispatcher.dispatchEvent(
+              new ImageLoadEvent(getId(), SystemClock.uptimeMillis(), ImageLoadEvent.ON_LOAD_END)
+          );
+          mEventDispatcher.dispatchEvent(
+              new ImageLoadEvent(getId(), SystemClock.uptimeMillis(), ImageLoadEvent.ON_LOAD)
+          );
+        }
+      }
+
+      @Override
+      public void onFailure(
+          String id,
+          Throwable throwable
+      ) {
+        mEventDispatcher.dispatchEvent(
+            new ImageLoadEvent(getId(), SystemClock.uptimeMillis(), ImageLoadEvent.ON_LOAD_END)
+        );
+      }
+    });
+
+    mHasRegisteredForOnLoadEvents = true;
   }
 
   public void setBorderColor(int borderColor) {
@@ -219,9 +278,7 @@ public class ReactImageView extends GenericDraweeView {
 
   // VisibleForTesting
   public void setControllerListener(ControllerListener controllerListener) {
-    mControllerListener = controllerListener;
-    mIsDirty = true;
-    maybeUpdateView();
+    mControllerListener.addListener(controllerListener);
   }
 
   // VisibleForTesting

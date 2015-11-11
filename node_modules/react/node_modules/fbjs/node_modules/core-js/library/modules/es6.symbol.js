@@ -3,12 +3,12 @@
 var $              = require('./$')
   , global         = require('./$.global')
   , has            = require('./$.has')
-  , SUPPORT_DESC   = require('./$.support-desc')
-  , $def           = require('./$.def')
-  , $redef         = require('./$.redef')
+  , DESCRIPTORS    = require('./$.descriptors')
+  , $export        = require('./$.export')
+  , redefine       = require('./$.redefine')
   , $fails         = require('./$.fails')
   , shared         = require('./$.shared')
-  , setTag         = require('./$.tag')
+  , setToStringTag = require('./$.set-to-string-tag')
   , uid            = require('./$.uid')
   , wks            = require('./$.wks')
   , keyOf          = require('./$.keyof')
@@ -34,7 +34,7 @@ var $              = require('./$')
   , ObjectProto    = Object.prototype;
 
 // fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
-var setSymbolDesc = SUPPORT_DESC && $fails(function(){
+var setSymbolDesc = DESCRIPTORS && $fails(function(){
   return _create(setDesc({}, 'a', {
     get: function(){ return setDesc(this, 'a', {value: 7}).a; }
   })).a != 7;
@@ -48,7 +48,7 @@ var setSymbolDesc = SUPPORT_DESC && $fails(function(){
 var wrap = function(tag){
   var sym = AllSymbols[tag] = _create($Symbol.prototype);
   sym._k = tag;
-  SUPPORT_DESC && setter && setSymbolDesc(ObjectProto, tag, {
+  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
     configurable: true,
     set: function(value){
       if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
@@ -112,6 +112,7 @@ var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
   return result;
 };
 var $stringify = function stringify(it){
+  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
   var args = [it]
     , i    = 1
     , $$   = arguments
@@ -140,7 +141,7 @@ if(!useNative){
     if(isSymbol(this))throw TypeError('Symbol is not a constructor');
     return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
   };
-  $redef($Symbol.prototype, 'toString', function toString(){
+  redefine($Symbol.prototype, 'toString', function toString(){
     return this._k;
   });
 
@@ -156,8 +157,8 @@ if(!useNative){
   $.getNames   = $names.get = $getOwnPropertyNames;
   $.getSymbols = $getOwnPropertySymbols;
 
-  if(SUPPORT_DESC && !require('./$.library')){
-    $redef(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
+  if(DESCRIPTORS && !require('./$.library')){
+    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 }
 
@@ -196,11 +197,11 @@ $.each.call((
 
 setter = true;
 
-$def($def.G + $def.W, {Symbol: $Symbol});
+$export($export.G + $export.W, {Symbol: $Symbol});
 
-$def($def.S, 'Symbol', symbolStatics);
+$export($export.S, 'Symbol', symbolStatics);
 
-$def($def.S + $def.F * !useNative, 'Object', {
+$export($export.S + $export.F * !useNative, 'Object', {
   // 19.1.2.2 Object.create(O [, Properties])
   create: $create,
   // 19.1.2.4 Object.defineProperty(O, P, Attributes)
@@ -216,11 +217,11 @@ $def($def.S + $def.F * !useNative, 'Object', {
 });
 
 // 24.3.2 JSON.stringify(value [, replacer [, space]])
-$JSON && $def($def.S + $def.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
+$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
 
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
-setTag($Symbol, 'Symbol');
+setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
-setTag(Math, 'Math', true);
+setToStringTag(Math, 'Math', true);
 // 24.3.3 JSON[@@toStringTag]
-setTag(global.JSON, 'JSON', true);
+setToStringTag(global.JSON, 'JSON', true);

@@ -1,19 +1,20 @@
 'use strict';
-var $            = require('./$')
-  , ctx          = require('./$.ctx')
-  , $def         = require('./$.def')
-  , createDesc   = require('./$.property-desc')
-  , assign       = require('./$.assign')
-  , keyOf        = require('./$.keyof')
-  , aFunction    = require('./$.a-function')
-  , forOf        = require('./$.for-of')
-  , isIterable   = require('./core.is-iterable')
-  , step         = require('./$.iter-step')
-  , isObject     = require('./$.is-object')
-  , toIObject    = require('./$.to-iobject')
-  , SUPPORT_DESC = require('./$.support-desc')
-  , has          = require('./$.has')
-  , getKeys      = $.getKeys;
+var $           = require('./$')
+  , ctx         = require('./$.ctx')
+  , $export     = require('./$.export')
+  , createDesc  = require('./$.property-desc')
+  , assign      = require('./$.object-assign')
+  , keyOf       = require('./$.keyof')
+  , aFunction   = require('./$.a-function')
+  , forOf       = require('./$.for-of')
+  , isIterable  = require('./core.is-iterable')
+  , $iterCreate = require('./$.iter-create')
+  , step        = require('./$.iter-step')
+  , isObject    = require('./$.is-object')
+  , toIObject   = require('./$.to-iobject')
+  , DESCRIPTORS = require('./$.descriptors')
+  , has         = require('./$.has')
+  , getKeys     = $.getKeys;
 
 // 0 -> Dict.forEach
 // 1 -> Dict.map
@@ -62,7 +63,7 @@ var DictIterator = function(iterated, kind){
   this._i = 0;                   // next index
   this._k = kind;                // kind
 };
-require('./$.iter-create')(DictIterator, 'Dict', function(){
+$iterCreate(DictIterator, 'Dict', function(){
   var that = this
     , O    = that._t
     , keys = that._a
@@ -119,7 +120,7 @@ function get(object, key){
   if(has(object, key))return object[key];
 }
 function set(object, key, value){
-  if(SUPPORT_DESC && key in Object)$.setDesc(object, key, createDesc(0, value));
+  if(DESCRIPTORS && key in Object)$.setDesc(object, key, createDesc(0, value));
   else object[key] = value;
   return object;
 }
@@ -128,9 +129,9 @@ function isDict(it){
   return isObject(it) && $.getProto(it) === Dict.prototype;
 }
 
-$def($def.G + $def.F, {Dict: Dict});
+$export($export.G + $export.F, {Dict: Dict});
 
-$def($def.S, 'Dict', {
+$export($export.S, 'Dict', {
   keys:     createDictIter('keys'),
   values:   createDictIter('values'),
   entries:  createDictIter('entries'),

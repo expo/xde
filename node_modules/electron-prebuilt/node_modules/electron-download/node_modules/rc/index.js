@@ -49,7 +49,7 @@ module.exports = function (name, defaults, argv, parse) {
   return deepExtend.apply(null, configs.concat([
     env,
     argv,
-    configFiles.length ? {configs: configFiles, config: configFiles[configFiles.length - 1]} : null,
+    configFiles.length ? {configs: configFiles, config: configFiles[configFiles.length - 1]} : undefined,
   ]))
 }
 

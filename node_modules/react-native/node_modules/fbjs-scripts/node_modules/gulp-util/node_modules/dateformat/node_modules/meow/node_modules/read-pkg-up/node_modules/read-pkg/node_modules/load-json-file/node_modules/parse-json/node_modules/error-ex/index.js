@@ -1,6 +1,7 @@
 'use strict';
 
 var util = require('util');
+var isArrayish = require('is-arrayish');
 
 var errorEx = function errorEx(name, properties) {
 	if (!name || name.constructor !== String) {
@@ -33,6 +34,9 @@ var errorEx = function errorEx(name, properties) {
 					if (properties.hasOwnProperty(key) && 'message' in properties[key]) {
 						newMessage = properties[key].message(this[key], newMessage) ||
 							newMessage;
+						if (!isArrayish(newMessage)) {
+							newMessage = [newMessage];
+						}
 					}
 				}
 

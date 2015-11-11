@@ -1,37 +1,37 @@
 'use strict';
-var $                = require('./$')
-  , SUPPORT_DESC     = require('./$.support-desc')
-  , createDesc       = require('./$.property-desc')
-  , html             = require('./$.html')
-  , cel              = require('./$.dom-create')
-  , has              = require('./$.has')
-  , cof              = require('./$.cof')
-  , $def             = require('./$.def')
-  , invoke           = require('./$.invoke')
-  , arrayMethod      = require('./$.array-methods')
-  , IE_PROTO         = require('./$.uid')('__proto__')
-  , isObject         = require('./$.is-object')
-  , anObject         = require('./$.an-object')
-  , aFunction        = require('./$.a-function')
-  , toObject         = require('./$.to-object')
-  , toIObject        = require('./$.to-iobject')
-  , toInteger        = require('./$.to-integer')
-  , toIndex          = require('./$.to-index')
-  , toLength         = require('./$.to-length')
-  , IObject          = require('./$.iobject')
-  , fails            = require('./$.fails')
-  , ObjectProto      = Object.prototype
-  , A                = []
-  , _slice           = A.slice
-  , _join            = A.join
-  , defineProperty   = $.setDesc
-  , getOwnDescriptor = $.getDesc
-  , defineProperties = $.setDescs
-  , $indexOf         = require('./$.array-includes')(false)
-  , factories        = {}
+var $                 = require('./$')
+  , $export           = require('./$.export')
+  , DESCRIPTORS       = require('./$.descriptors')
+  , createDesc        = require('./$.property-desc')
+  , html              = require('./$.html')
+  , cel               = require('./$.dom-create')
+  , has               = require('./$.has')
+  , cof               = require('./$.cof')
+  , invoke            = require('./$.invoke')
+  , fails             = require('./$.fails')
+  , anObject          = require('./$.an-object')
+  , aFunction         = require('./$.a-function')
+  , isObject          = require('./$.is-object')
+  , toObject          = require('./$.to-object')
+  , toIObject         = require('./$.to-iobject')
+  , toInteger         = require('./$.to-integer')
+  , toIndex           = require('./$.to-index')
+  , toLength          = require('./$.to-length')
+  , IObject           = require('./$.iobject')
+  , IE_PROTO          = require('./$.uid')('__proto__')
+  , createArrayMethod = require('./$.array-methods')
+  , arrayIndexOf      = require('./$.array-includes')(false)
+  , ObjectProto       = Object.prototype
+  , ArrayProto        = Array.prototype
+  , arraySlice        = ArrayProto.slice
+  , arrayJoin         = ArrayProto.join
+  , defineProperty    = $.setDesc
+  , getOwnDescriptor  = $.getDesc
+  , defineProperties  = $.setDescs
+  , factories         = {}
   , IE8_DOM_DEFINE;
 
-if(!SUPPORT_DESC){
+if(!DESCRIPTORS){
   IE8_DOM_DEFINE = !fails(function(){
     return defineProperty(cel('div'), 'a', {get: function(){ return 7; }}).a != 7;
   });
@@ -59,7 +59,7 @@ if(!SUPPORT_DESC){
     return O;
   };
 }
-$def($def.S + $def.F * !SUPPORT_DESC, 'Object', {
+$export($export.S + $export.F * !DESCRIPTORS, 'Object', {
   // 19.1.2.6 / 15.2.3.3 Object.getOwnPropertyDescriptor(O, P)
   getOwnPropertyDescriptor: $.getDesc,
   // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
@@ -104,13 +104,13 @@ var createGetKeys = function(names, length){
     for(key in O)if(key != IE_PROTO)has(O, key) && result.push(key);
     // Don't enum bug & hidden keys
     while(length > i)if(has(O, key = names[i++])){
-      ~$indexOf(result, key) || result.push(key);
+      ~arrayIndexOf(result, key) || result.push(key);
     }
     return result;
   };
 };
 var Empty = function(){};
-$def($def.S, 'Object', {
+$export($export.S, 'Object', {
   // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
   getPrototypeOf: $.getProto = $.getProto || function(O){
     O = toObject(O);
@@ -146,12 +146,12 @@ var construct = function(F, len, args){
 };
 
 // 19.2.3.2 / 15.3.4.5 Function.prototype.bind(thisArg, args...)
-$def($def.P, 'Function', {
+$export($export.P, 'Function', {
   bind: function bind(that /*, args... */){
     var fn       = aFunction(this)
-      , partArgs = _slice.call(arguments, 1);
+      , partArgs = arraySlice.call(arguments, 1);
     var bound = function(/* args... */){
-      var args = partArgs.concat(_slice.call(arguments));
+      var args = partArgs.concat(arraySlice.call(arguments));
       return this instanceof bound ? construct(fn, args.length, args) : invoke(fn, args, that);
     };
     if(isObject(fn.prototype))bound.prototype = fn.prototype;
@@ -160,16 +160,14 @@ $def($def.P, 'Function', {
 });
 
 // fallback for not array-like ES3 strings and DOM objects
-var buggySlice = fails(function(){
-  if(html)_slice.call(html);
-});
-
-$def($def.P + $def.F * buggySlice, 'Array', {
+$export($export.P + $export.F * fails(function(){
+  if(html)arraySlice.call(html);
+}), 'Array', {
   slice: function(begin, end){
     var len   = toLength(this.length)
       , klass = cof(this);
     end = end === undefined ? len : end;
-    if(klass == 'Array')return _slice.call(this, begin, end);
+    if(klass == 'Array')return arraySlice.call(this, begin, end);
     var start  = toIndex(begin, len)
       , upTo   = toIndex(end, len)
       , size   = toLength(upTo - start)
@@ -181,14 +179,14 @@ $def($def.P + $def.F * buggySlice, 'Array', {
     return cloned;
   }
 });
-$def($def.P + $def.F * (IObject != Object), 'Array', {
-  join: function(){
-    return _join.apply(IObject(this), arguments);
+$export($export.P + $export.F * (IObject != Object), 'Array', {
+  join: function join(separator){
+    return arrayJoin.call(IObject(this), separator === undefined ? ',' : separator);
   }
 });
 
 // 22.1.2.2 / 15.4.3.2 Array.isArray(arg)
-$def($def.S, 'Array', {isArray: require('./$.is-array')});
+$export($export.S, 'Array', {isArray: require('./$.is-array')});
 
 var createArrayReduce = function(isRight){
   return function(callbackfn, memo){
@@ -214,28 +212,30 @@ var createArrayReduce = function(isRight){
     return memo;
   };
 };
+
 var methodize = function($fn){
   return function(arg1/*, arg2 = undefined */){
     return $fn(this, arg1, arguments[1]);
   };
 };
-$def($def.P, 'Array', {
+
+$export($export.P, 'Array', {
   // 22.1.3.10 / 15.4.4.18 Array.prototype.forEach(callbackfn [, thisArg])
-  forEach: $.each = $.each || methodize(arrayMethod(0)),
+  forEach: $.each = $.each || methodize(createArrayMethod(0)),
   // 22.1.3.15 / 15.4.4.19 Array.prototype.map(callbackfn [, thisArg])
-  map: methodize(arrayMethod(1)),
+  map: methodize(createArrayMethod(1)),
   // 22.1.3.7 / 15.4.4.20 Array.prototype.filter(callbackfn [, thisArg])
-  filter: methodize(arrayMethod(2)),
+  filter: methodize(createArrayMethod(2)),
   // 22.1.3.23 / 15.4.4.17 Array.prototype.some(callbackfn [, thisArg])
-  some: methodize(arrayMethod(3)),
+  some: methodize(createArrayMethod(3)),
   // 22.1.3.5 / 15.4.4.16 Array.prototype.every(callbackfn [, thisArg])
-  every: methodize(arrayMethod(4)),
+  every: methodize(createArrayMethod(4)),
   // 22.1.3.18 / 15.4.4.21 Array.prototype.reduce(callbackfn [, initialValue])
   reduce: createArrayReduce(false),
   // 22.1.3.19 / 15.4.4.22 Array.prototype.reduceRight(callbackfn [, initialValue])
   reduceRight: createArrayReduce(true),
   // 22.1.3.11 / 15.4.4.14 Array.prototype.indexOf(searchElement [, fromIndex])
-  indexOf: methodize($indexOf),
+  indexOf: methodize(arrayIndexOf),
   // 22.1.3.14 / 15.4.4.15 Array.prototype.lastIndexOf(searchElement [, fromIndex])
   lastIndexOf: function(el, fromIndex /* = @[*-1] */){
     var O      = toIObject(this)
@@ -249,18 +249,19 @@ $def($def.P, 'Array', {
 });
 
 // 20.3.3.1 / 15.9.4.4 Date.now()
-$def($def.S, 'Date', {now: function(){ return +new Date; }});
+$export($export.S, 'Date', {now: function(){ return +new Date; }});
 
 var lz = function(num){
   return num > 9 ? num : '0' + num;
 };
 
 // 20.3.4.36 / 15.9.5.43 Date.prototype.toISOString()
-// PhantomJS and old webkit had a broken Date implementation.
-var date       = new Date(-5e13 - 1)
-  , brokenDate = !(date.toISOString && date.toISOString() == '0385-07-25T07:06:39.999Z'
-      && fails(function(){ new Date(NaN).toISOString(); }));
-$def($def.P + $def.F * brokenDate, 'Date', {
+// PhantomJS / old WebKit has a broken implementations
+$export($export.P + $export.F * (fails(function(){
+  return new Date(-5e13 - 1).toISOString() != '0385-07-25T07:06:39.999Z';
+}) || !fails(function(){
+  new Date(NaN).toISOString();
+})), 'Date', {
   toISOString: function toISOString(){
     if(!isFinite(this))throw RangeError('Invalid time value');
     var d = this

@@ -3,31 +3,53 @@
 Like [duplexer](https://github.com/Raynos/duplexer) but using Streams3
 
 ```javascript
-const duplexer2 = require(".");
-const {Readable, Writable} = require("stream");
+var stream = require("stream");
 
-const writable = new Writable({
-  write(data, enc, cb) {
-    if (readable.push(data)) {
-      cb();
-      return;
-    }
-    readable.once("drain", cb);
+var duplexer2 = require("duplexer2");
+
+var writable = new stream.Writable({objectMode: true}),
+    readable = new stream.Readable({objectMode: true});
+
+writable._write = function _write(input, encoding, done) {
+  if (readable.push(input)) {
+    return done();
+  } else {
+    readable.once("drain", done);
   }
-});
+};
 
-const readable = new Readable({read() {/* no-op */}});
+readable._read = function _read(n) {
+  // no-op
+};
 
 // simulate the readable thing closing after a bit
-writable.once("finish", () => setTimeout(() => readable.push(null), 300));
+writable.once("finish", function() {
+  setTimeout(function() {
+    readable.push(null);
+  }, 500);
+});
 
-const duplex = duplexer2({}, writable, readable)
-.on("data", data => console.log("got data", data.toString()))
-.on("finish", () => console.log("got finish event"))
-.on("end", () => console.log("got end event"));
+var duplex = duplexer2(writable, readable);
 
-duplex.write("oh, hi there", () => console.log("finished writing"));
-duplex.end(() => console.log("finished ending"));
+duplex.on("data", function(e) {
+  console.log("got data", JSON.stringify(e));
+});
+
+duplex.on("finish", function() {
+  console.log("got finish event");
+});
+
+duplex.on("end", function() {
+  console.log("got end event");
+});
+
+duplex.write("oh, hi there", function() {
+  console.log("finished writing");
+});
+
+duplex.end(function() {
+  console.log("finished ending");
+});
 ```
 
 ```

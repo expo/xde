@@ -2,19 +2,21 @@ var global    = require('./$.global')
   , macrotask = require('./$.task').set
   , Observer  = global.MutationObserver || global.WebKitMutationObserver
   , process   = global.process
+  , Promise   = global.Promise
   , isNode    = require('./$.cof')(process) == 'process'
   , head, last, notify;
 
 var flush = function(){
-  var parent, domain;
+  var parent, domain, fn;
   if(isNode && (parent = process.domain)){
     process.domain = null;
     parent.exit();
   }
   while(head){
     domain = head.domain;
+    fn     = head.fn;
     if(domain)domain.enter();
-    head.fn.call(); // <- currently we use it only for Promise - try / catch not required
+    fn(); // <- currently we use it only for Promise - try / catch not required
     if(domain)domain.exit();
     head = head.next;
   } last = undefined;
@@ -33,6 +35,11 @@ if(isNode){
   new Observer(flush).observe(node, {characterData: true}); // eslint-disable-line no-new
   notify = function(){
     node.data = toggle = -toggle;
+  };
+// environments with maybe non-completely correct, but existent Promise
+} else if(Promise && Promise.resolve){
+  notify = function(){
+    Promise.resolve().then(flush);
   };
 // for other environments - macrotask based on:
 // - setImmediate

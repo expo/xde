@@ -271,7 +271,11 @@ module.exports.evaluate = function(package_json,options) {
         module_main: package_json.main,
         toolset : options.toolset || '' // address https://github.com/mapbox/node-pre-gyp/issues/119
     };
-    opts.host = fix_slashes(eval_template(package_json.binary.host,opts));
+    // support host mirror with npm config `--{module_name}_binary_host_mirror`
+    // e.g.: https://github.com/node-inspector/v8-profiler/blob/master/package.json#L25
+    // > npm install v8-profiler --profiler_binary_host_mirror=https://npm.taobao.org/mirrors/node-inspector/
+    var host = process.env['npm_config_' + opts.module_name + '_binary_host_mirror'] || package_json.binary.host;
+    opts.host = fix_slashes(eval_template(host,opts));
     opts.module_path = eval_template(package_json.binary.module_path,opts);
     // now we resolve the module_path to ensure it is absolute so that binding.gyp variables work predictably
     if (options.module_root) {

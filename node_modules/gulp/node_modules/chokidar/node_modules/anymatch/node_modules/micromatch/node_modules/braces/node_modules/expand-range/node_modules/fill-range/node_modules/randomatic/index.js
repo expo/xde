@@ -1,11 +1,9 @@
 /*!
  * randomatic <https://github.com/jonschlinkert/randomatic>
  *
+ * This was originally inspired by <http://stackoverflow.com/a/10727155/1267639>
  * Copyright (c) 2014-2015, Jon Schlinkert.
  * Licensed under the MIT License (MIT)
- *
- * Many changes have been made, but this was originally
- * inspired by <http://stackoverflow.com/a/10727155/1267639>
  */
 
 'use strict';
@@ -58,7 +56,7 @@ function randomatic(pattern, length, options) {
     }
   }
 
-  if(typeOf(length) === 'object' && length.hasOwnProperty('chars')) {
+  if (typeOf(length) === 'object' && length.hasOwnProperty('chars')) {
     options = length;
     pattern = options.chars;
     length = pattern.length;
@@ -79,8 +77,7 @@ function randomatic(pattern, length, options) {
   if (custom) mask += pattern;
 
   while (length--) {
-    res += mask.charAt(parseInt(Math.random() * mask.length));
+    res += mask.charAt(parseInt(Math.random() * mask.length, 10));
   }
-
   return res;
 };

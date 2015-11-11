@@ -54,10 +54,12 @@ var resolveAssetSource = require('resolveAssetSource');
 var ImageViewAttributes = merge(ReactNativeViewAttributes.UIView, {
   src: true,
   resizeMode: true,
+  loadHandlersRegistered: true,
 });
 
 var Image = React.createClass({
   propTypes: {
+    style: StyleSheetPropType(ImageStylePropTypes),
     /**
      * `uri` is a string representing the resource identifier for the image, which
      * could be an http address, a local file path, or the name of a static image
@@ -70,7 +72,18 @@ var Image = React.createClass({
       // Opaque type returned by require('./image.jpg')
       PropTypes.number,
     ]).isRequired,
-    style: StyleSheetPropType(ImageStylePropTypes),
+    /**
+     * Invoked on load start
+     */
+    onLoadStart: PropTypes.func,
+    /**
+     * Invoked when load completes successfully
+     */
+    onLoad: PropTypes.func,
+    /**
+     * Invoked when load either succeeds or fails
+     */
+    onLoadEnd: PropTypes.func,
     /**
      * Used to locate this view in end-to-end tests.
      */
@@ -128,9 +141,11 @@ var Image = React.createClass({
     if (source && source.uri) {
       var {width, height} = source;
       var style = flattenStyle([{width, height}, styles.base, this.props.style]);
+      var {onLoadStart, onLoad, onLoadEnd} = this.props;
 
       var nativeProps = merge(this.props, {
         style,
+        loadHandlersRegistered: !!(onLoadStart || onLoad || onLoadEnd),
         src: source.uri,
       });
 

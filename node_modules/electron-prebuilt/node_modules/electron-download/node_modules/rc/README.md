@@ -90,7 +90,7 @@ dependsOn=0.10.0
 
 #### Formatted as `json`
 
-```json
+```javascript
 {
   // You can even comment your JSON, if you want
   "dependsOn": "0.10.0",

@@ -6,11 +6,11 @@ var concat = require('concat-stream');
 var JSON = require('./json-buffer');
 
 var inputFile = process.argv[2];
-var ouptutFile = process.argv[3];
+var outputFile = process.argv[3];
 
 var args = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
 function output(result) {
-  fs.writeFileSync(ouptutFile, JSON.stringify(result));
+  fs.writeFileSync(outputFile, JSON.stringify(result));
 }
 
 var child = cp.spawn.apply(cp, args);

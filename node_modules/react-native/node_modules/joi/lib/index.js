@@ -95,20 +95,28 @@ internals.root = function () {
         }
 
         var options = count === 3 ? arguments[2] : {};
-        var schema = Cast.schema(arguments[1]);
+        var schema = root.compile(arguments[1]);
 
         return schema._validateWithOptions(value, options, callback);
     };
 
     root.describe = function () {
 
-        var schema = arguments.length ? Cast.schema(arguments[0]) : any;
+        var schema = arguments.length ? root.compile(arguments[0]) : any;
         return schema.describe();
     };
 
     root.compile = function (schema) {
 
-        return Cast.schema(schema);
+        try {
+            return Cast.schema(schema);
+        }
+        catch (err) {
+            if (err.hasOwnProperty('path')) {
+                err.message += '(' + err.path + ')';
+            }
+            throw err;
+        }
     };
 
     root.assert = function (value, schema, message) {
@@ -122,11 +130,13 @@ internals.root = function () {
         var error = result.error;
         if (error) {
             if (!message) {
-                throw new Error(error.annotate());
+                error.message = error.annotate();
+                throw error;
             }
 
             if (!(message instanceof Error)) {
-                throw new Error(message + ' ' + error.annotate());
+                error.message = message + ' ' + error.annotate();
+                throw error;
             }
 
             throw message;

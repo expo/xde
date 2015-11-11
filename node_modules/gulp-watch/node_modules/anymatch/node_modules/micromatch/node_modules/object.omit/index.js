@@ -7,19 +7,33 @@
 
 'use strict';
 
-var isObject = require('isobject');
+var isObject = require('is-extendable');
 var forOwn = require('for-own');
 
 module.exports = function omit(obj, keys) {
   if (!isObject(obj)) return {};
-  if (!keys) return obj;
 
-  keys = Array.isArray(keys) ? keys : [keys];
-  var res = {};
+  var keys = [].concat.apply([], [].slice.call(arguments, 1));
+  var last = keys[keys.length - 1];
+  var res = {}, fn;
+
+  if (typeof last === 'function') {
+    fn = keys.pop();
+  }
+
+  var isFunction = typeof fn === 'function';
+  if (!keys.length && !isFunction) {
+    return obj;
+  }
 
   forOwn(obj, function (value, key) {
     if (keys.indexOf(key) === -1) {
-      res[key] = value;
+
+      if (!isFunction) {
+        res[key] = value;
+      } else if (fn(value, key, obj)) {
+        res[key] = value;
+      }
     }
   });
   return res;

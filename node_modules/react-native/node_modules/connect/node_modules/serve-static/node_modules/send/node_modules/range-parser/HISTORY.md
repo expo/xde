@@ -1,3 +1,8 @@
+unreleased
+==========
+
+  * perf: enable strict mode
+
 1.0.2 / 2014-09-08
 ==================
 

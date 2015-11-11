@@ -99,7 +99,7 @@ function handleArguments(env) {
   if (opts.verify) {
     var pkgPath = opts.verify !== true ? opts.verify : 'package.json';
     if (path.resolve(pkgPath) !== path.normalize(pkgPath)) {
-      pkgPath = path.join(env.configBase, pkgPath);
+      pkgPath = path.join(env.cwd, pkgPath);
     }
     log.info('Verifying plugins in ' + pkgPath);
     return getBlacklist(function(err, blacklist) {

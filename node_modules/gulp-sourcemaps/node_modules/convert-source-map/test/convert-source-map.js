@@ -193,3 +193,15 @@ test('getting properties', function (t) {
   t.deepEqual(sm.getProperty('sources'), ['foo.js', 'bar.js'], 'gets sources')
   t.end()
 })
+
+test('return null fromSource when largeSource is true', function(t) {
+  var mod = convert.fromSource('', true)
+    , expected = null;
+
+  t.equal(
+      mod
+    , expected
+    , 'return value should be null'
+  )
+  t.end()
+})

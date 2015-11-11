@@ -82,7 +82,7 @@ function spawnSyncFallback(cmd, commandArgs, options) {
   unlink(output);
 
   fs.writeFileSync(input, JSON.stringify(args));
-  invoke('node "' + worker + '" "' + input + '" "' + output + '"');
+  invoke(process.execPath + ' "' + worker + '" "' + input + '" "' + output + '"');
   var res = JSON.parse(fs.readFileSync(output, 'utf8'));
   tryUnlink(input);tryUnlink(output);
   return res;

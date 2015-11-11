@@ -53,7 +53,7 @@ Command Line Utility for Gulp
       <td>Manually set the CWD. The search for the gulpfile, as well as the relativity of all requires will be from here.</td>
     </tr>
     <tr>
-      <td>--verify</td>
+      <td>--verify [path (optional)]</td>
       <td></td>
       <td>Will verify plugins referenced in project's package.json against the plugins blacklist.</td>
     </tr>

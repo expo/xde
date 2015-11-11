@@ -19,6 +19,7 @@ series([
   console.log('Running tests...')
   require('./basic')
   require('./multitarget')
+  require('./win32')
 
   if (process.platform !== 'win32') {
     // Perform additional tests specific to building for OS X
