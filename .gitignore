@@ -27,3 +27,6 @@ build/
 
 # App build directories
 Exponent XDE-*/
+
+# Emacs
+*~
