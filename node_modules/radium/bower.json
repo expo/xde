@@ -1,0 +1,31 @@
+{
+  "name": "radium",
+  "homepage": "https://github.com/FormidableLabs/radium",
+  "description": "A set of tools to manage inline styles on React elements",
+  "main": "dist/radium.js",
+  "keywords": [
+    "react",
+    "style",
+    "inline"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE.md",
+    "README.md",
+    "appveyor.yml",
+    "coverage",
+    "docs",
+    "examples",
+    "karma.conf.coverage.js",
+    "karma.conf.js",
+    "lib",
+    "modules",
+    "node_modules",
+    "package.json",
+    "webpack.config.js",
+    "webpack.config.minified.js"
+  ]
+}

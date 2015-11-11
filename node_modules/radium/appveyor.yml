@@ -1,0 +1,31 @@
+# Test against this version of Node.js
+environment:
+  matrix:
+    - nodejs_version: 0.10
+    - nodejs_version: 0.12
+
+# Install scripts. (runs after repo cloning)
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+  # Install and use local, modern NPM
+  - npm install npm@next
+  # install modules
+  - node_modules\.bin\npm install
+
+# Post-install test scripts.
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - node_modules\.bin\npm --version
+  # run tests
+  - node_modules\.bin\npm run test-ie
+
+# Don't actually build.
+build: off
+
+matrix:
+  fast_finish: true
+
+cache:
+  - node_modules -> package.json   # local npm modules

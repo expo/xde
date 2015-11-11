@@ -1,0 +1,79 @@
+{
+  "name": "vinyl",
+  "description": "A virtual file format",
+  "version": "1.1.0",
+  "homepage": "http://github.com/gulpjs/vinyl",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gulpjs/vinyl.git"
+  },
+  "author": {
+    "name": "Fractal",
+    "email": "contact@wearefractal.com",
+    "url": "http://wearefractal.com/"
+  },
+  "main": "./index.js",
+  "files": [
+    "index.js",
+    "lib"
+  ],
+  "dependencies": {
+    "clone": "^1.0.0",
+    "clone-stats": "^0.0.1",
+    "replace-ext": "0.0.1"
+  },
+  "devDependencies": {
+    "buffer-equal": "0.0.1",
+    "eslint": "^1.7.3",
+    "eslint-config-gulp": "^2.0.0",
+    "event-stream": "^3.1.0",
+    "istanbul": "^0.3.0",
+    "istanbul-coveralls": "^1.0.1",
+    "jscs": "^2.3.5",
+    "jscs-preset-gulp": "^1.0.0",
+    "lodash.templatesettings": "^3.1.0",
+    "mocha": "^2.0.0",
+    "rimraf": "^2.2.5",
+    "should": "^7.0.0"
+  },
+  "scripts": {
+    "lint": "eslint . && jscs *.js lib/ test/",
+    "pretest": "npm run lint",
+    "test": "mocha",
+    "coveralls": "istanbul cover _mocha && istanbul-coveralls"
+  },
+  "engines": {
+    "node": ">= 0.9"
+  },
+  "license": "MIT",
+  "gitHead": "51052add24bb1c771bf5912809b47d4d53288c48",
+  "bugs": {
+    "url": "https://github.com/gulpjs/vinyl/issues"
+  },
+  "_id": "vinyl@1.1.0",
+  "_shasum": "2728846ab3a11946a3cb9cbb94e52cd06fcf3472",
+  "_from": "vinyl@>=1.0.0 <2.0.0",
+  "_npmVersion": "2.14.3",
+  "_nodeVersion": "0.10.36",
+  "_npmUser": {
+    "name": "phated",
+    "email": "blaine@iceddev.com"
+  },
+  "maintainers": [
+    {
+      "name": "fractal",
+      "email": "contact@wearefractal.com"
+    },
+    {
+      "name": "phated",
+      "email": "blaine@iceddev.com"
+    }
+  ],
+  "dist": {
+    "shasum": "2728846ab3a11946a3cb9cbb94e52cd06fcf3472",
+    "tarball": "http://registry.npmjs.org/vinyl/-/vinyl-1.1.0.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/vinyl/-/vinyl-1.1.0.tgz",
+  "readme": "ERROR: No README data found!"
+}

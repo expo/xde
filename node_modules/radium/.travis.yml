@@ -1,0 +1,29 @@
+language: node_js
+
+node_js:
+  - "0.10"
+  - "0.12"
+  - "iojs"
+
+# Use container-based Travis infrastructure.
+sudo: false
+
+before_install:
+  # GUI for real browsers.
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+script:
+  - npm run lint
+  - npm run test-coverage
+  # Upload to coveralls, but don't _fail_ if coveralls is down.
+  - cat coverage/lcov.info | node_modules/.bin/coveralls || echo "Coveralls upload failed"
