@@ -27,3 +27,6 @@ Exponent XDE-*/
 
 # Emacs
 *~
+
+# Ignoring node_modules again because doesn't work unless ignored
+node_modules/
