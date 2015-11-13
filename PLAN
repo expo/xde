@@ -1,0 +1,24 @@
+- Create a stub "react-native" package and put it up on github
+  - It won't contain any real react native code, but will instead include a package like "xde-react-native" or "real-react-native-wrapper" or something like that that it will just require and export
+
+```js
+module.exports = require('real-react-native-wrapper');
+```
+
+- There will be a directory under ~/.exponent like "react-native-versions" or something
+  - It will contain a bunch of subdirectories named after versions of react-native (that work with XDE)
+  - Each of those subdirectories will have a copy of the real-react-native-wrapper module in it, and each of those will just export an actual copy of react-native as the appropriate version
+
+    that is, index.js will be:
+```js
+module.exports = require('react-native');
+```
+
+- When we run the packager, we will give it two roots--the root of the application code (the same in all cases for the same project) and also the root of the appropriate copy of real-react-native-wrapper.
+
+- This way, when we start XDE, we can run instances of the packager, using multiple react-native versions. That way the same XDE can serve and publish to multiple versions of exponent.
+
+
+- Also, TODO: look into bundle splitting, so that we can just have one copy of the application code, but many copies of react-native. This would be closer to ideal. This could even be forwards compatible.
+
+
