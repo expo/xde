@@ -22,6 +22,7 @@ let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
 let SimulatorControls = require('./SimulatorControls');
+let VersionInfo = require('./VersionInfo');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -229,6 +230,7 @@ class App extends React.Component {
         height: '100%',
       }}>
         <NewVersionAvailable />
+        <VersionInfo />
         <div style={{
             backgroundColor: '#f6f6f6',
             flex: 'none',

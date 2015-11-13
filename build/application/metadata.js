@@ -2,12 +2,16 @@
 
 var _asyncToGenerator = require('babel-runtime/helpers/async-to-generator').default;
 
-let reactNativeVersionInfoAsync = _asyncToGenerator(function* () {
+let reactNativeVersionInfoAsync = _asyncToGenerator(function* (rootDir) {
 
-  let reactNativePkgJson = jsonFile(path.resolve(__dirname, '../../node_modules/react-native/package.json'));
+  if (!rootDir) {
+    rootDir = DEFAULT_ROOT;
+  }
+
+  let reactNativePkgJson = jsonFile(path.resolve(rootDir, './node_modules/react-native/package.json'));
 
   return yield promiseProps({
-    versionDescription: packageJsonFile().getAsync('dependencies.react-native'),
+    versionDescription: packageJsonFile(rootDir).getAsync('dependencies.react-native'),
     versionSpecific: reactNativePkgJson.getAsync('version')
   });
 });
@@ -16,8 +20,13 @@ let jsonFile = require('@exponent/json-file');
 let path = require('path');
 let promiseProps = require('promise-props');
 
-function packageJsonFile() {
-  return jsonFile(path.resolve(__dirname, '..', '..', 'package.json'));
+let DEFAULT_ROOT = path.resolve(__dirname, '../../');
+
+function packageJsonFile(rootDir) {
+  if (!rootDir) {
+    rootDir = DEFAULT_ROOT;
+  }
+  return jsonFile(path.resolve(rootDir, 'package.json'));
 }
 
 module.exports = {

@@ -38,6 +38,7 @@ let StyleConstants = require('./StyleConstants');
 let urlUtils = require('../application/urlUtils');
 let userSettings = require('../application/userSettings');
 let SimulatorControls = require('./SimulatorControls');
+let VersionInfo = require('./VersionInfo');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -274,6 +275,7 @@ let App = (function (_React$Component) {
             height: '100%'
           } },
         React.createElement(NewVersionAvailable, null),
+        React.createElement(VersionInfo, null),
         React.createElement(
           'div',
           { style: {
