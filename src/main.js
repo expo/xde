@@ -25,7 +25,7 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1100, height: 600});
-  mainWindow.loadUrl(`file://${path.resolve(__dirname, '../web/index.html')}`);
+  mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
 
   // Open the devtools.
   if (config.__DEV__) {
