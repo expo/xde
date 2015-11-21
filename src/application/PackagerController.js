@@ -63,7 +63,9 @@ class PackagerController extends events.EventEmitter {
       let pkg = await Exp.packageJsonForRoot(self.opts.absolutePath).readAsync();
       let manifest = pkg.exp || {};
       let queryString = require('url').parse(req.url).query;
-      manifest.bundlePath = 'bundle?' + queryString
+      // TODO: remove bundlePath
+      manifest.bundlePath = 'bundle?' + queryString;
+      manifest.bundleUrl = '/bundle?' + queryString;
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(manifest));
     };
