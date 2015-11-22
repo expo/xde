@@ -605,6 +605,7 @@ class App extends React.Component {
 
     }, (err) => {
       this._logMetaError("Sending link failed :( " + err);
+      this._logMetaError("If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number.");
     });
   }
 
