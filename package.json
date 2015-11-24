@@ -50,6 +50,7 @@
     "fs-extra": "^0.26.0",
     "git-info-async": "^1.1.0",
     "instapromise": "^2.0.2",
+    "ip": "^1.1.0",
     "lodash-node": "^3.10.1",
     "md5hex": "^1.0.0",
     "minimist": "^1.2.0",
