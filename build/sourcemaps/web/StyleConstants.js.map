@@ -1,1 +1,0 @@
-{"version":3,"sources":["web/StyleConstants.js"],"names":[],"mappings":";;AAAA,MAAM,CAAC,OAAO,GAAG;AACf,MAAI,EAAE,SAAS;CAChB,CAAC","file":"web/StyleConstants.js","sourcesContent":["module.exports = {\n  navy: '#003A6B',\n};\n"],"sourceRoot":"/source/"}

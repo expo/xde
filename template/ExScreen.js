@@ -10,6 +10,8 @@ let {
 
 let ExHeader = require('./ExHeader');
 
+const STATUS_BAR_HEIGHT = 20;
+
 class ExScreen extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -32,7 +34,7 @@ class ExScreen extends React.Component {
         <ScrollView
           ref={component => { this._scrollView = component; }}
           contentContainerStyle={styles.contentContainer}
-          contentInset={{ top: ExHeader.HEIGHT }}
+          contentInset={{ top: ExHeader.HEIGHT + STATUS_BAR_HEIGHT }}
           scrollEnabled={scrollEnabled}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}

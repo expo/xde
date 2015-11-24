@@ -1,11 +1,22 @@
 let crayon = require('@ccheever/crayon');
+let ip = require('ip');
 let myLocalIp = require('my-local-ip');
 let os = require('os');
 let url = require('url');
 
-function constructUrl(pc, opts) {
+function constructBundleUrl(packageController, opts) {
+  return constructUrl(packageController, opts, 'bundle');
+}
 
-  // crayon.blue.log("constructUrl");
+function constructManifestUrl(packageController, opts) {
+  return constructUrl(packageController, opts, '');
+}
+
+function constructDebuggerHost(packageController) {
+  return ip.address() + ':' + packageController.opts.packagerPort;
+}
+
+function constructUrl(packageController, opts, path) {
   opts = opts || {};
 
   let protocol = 'exp';
@@ -18,15 +29,15 @@ function constructUrl(pc, opts) {
 
   if (opts.localhost) {
     hostname = 'localhost';
-    port = pc.opts.port;
+    port = packageController.opts.port;
   } else if (opts.lan) {
     hostname = os.hostname();
-    port = pc.opts.port;
+    port = packageController.opts.port;
   } else if (opts.lanIp) {
     hostname = myLocalIp;
-    port = pc.opts.port;
+    port = packageController.opts.port;
   } else {
-    let ngrokUrl = pc.getNgrokUrl();
+    let ngrokUrl = packageController.getNgrokUrl();
     if (!ngrokUrl) {
       throw new Error("Can't get ngrok URL because ngrok not started yet");
     }
@@ -36,37 +47,17 @@ function constructUrl(pc, opts) {
     port = pnu.port;
   }
 
-  // console.log("opts=", opts);
-
   let url_ = protocol + '://' + hostname;
   if (port) {
     url_ += ':' + port;
   }
 
-  let entryPoint = pc.opts.entryPoint || 'index.js';
-  let mainModulePath = opts.mainModulePath || guessMainModulePath(entryPoint);
-  // console.log("entryPoint=", entryPoint, "mainModulePath=", mainModulePath);
-  url_ += '/' + encodeURIComponent(mainModulePath) + '.';
+  url_ += '/' + path;
 
-  if (opts.includeRequire) {
-    url_ += encodeURIComponent('includeRequire.');
-  }
-
-  if (opts.runModule) {
-    url_ += encodeURIComponent('runModule.');
-  }
-
-  url_ += 'bundle';
-
-  let platform = opts.platform || 'ios';
-  url_ += '?platform=' + encodeURIComponent(platform);
-
-  url_ += '&dev=' + encodeURIComponent(!!opts.dev);
+  url_ += '?dev=' + encodeURIComponent(!!opts.dev);
   if (opts.minify) {
     url_ += '&minify=' + encodeURIComponent(!!opts.minify);
   }
-
-  // console.log("url_=", url_);
 
   if (opts.redirect) {
     return 'http://exp.host/--/to-exp/' + encodeURIComponent(url_);
@@ -89,7 +80,9 @@ function guessMainModulePath(entryPoint) {
 }
 
 module.exports = {
-  constructUrl,
+  constructBundleUrl,
+  constructManifestUrl,
+  constructDebuggerHost,
   expUrlFromHttpUrl,
   httpUrlFromExpUrl,
   guessMainModulePath,

@@ -29,7 +29,7 @@ async function determineEntryPoint(root) {
 }
 
 async function _getReactNativeVersionAsync() {
-  let xdePackageJson =  jsonFile(path.join(__dirname, '../../package.json'));
+  let xdePackageJson = jsonFile(path.join(__dirname, '../../package.json'));
   return await xdePackageJson.getAsync(['dependencies', 'react-native']);
 }
 
@@ -40,7 +40,6 @@ async function _installReactNativeInNewProjectWithRoot(root) {
 }
 
 async function createNewExpAsync(root, info, opts) {
-
   let pp = path.parse(root);
   let name = pp.name;
 
@@ -88,7 +87,6 @@ async function createNewExpAsync(root, info, opts) {
   await _installReactNativeInNewProjectWithRoot(root);
 
   return data;
-
 }
 
 async function saveRecentExpRootAsync(root) {
@@ -138,7 +136,6 @@ async function expInfoSafeAsync(root) {
 }
 
 async function getPublishInfoAsync(env, opts) {
-
   let root = env.root;
   let pkgJson = packageJsonForRoot(root);
   let pkg = await pkgJson.readAsync();
@@ -159,7 +156,7 @@ async function getPublishInfoAsync(env, opts) {
   let localPackageName = name;
   let packageVersion = version;
 
-  let ngrokUrl = urlUtils.constructUrl(packagerController, {
+  let ngrokUrl = urlUtils.constructBundleUrl(packagerController, {
     ngrok: true,
     dev: false,
     minify: true,
@@ -167,16 +164,18 @@ async function getPublishInfoAsync(env, opts) {
   });
 
   return {
-    username,
-    localPackageName,
-    packageVersion,
-    remoteUsername,
-    remotePackageName,
-    remoteFullPackageName,
-    ngrokUrl,
+    args: {
+      username,
+      localPackageName,
+      packageVersion,
+      remoteUsername,
+      remotePackageName,
+      remoteFullPackageName,
+      ngrokUrl,
+    },
+    body: pkg,
   };
 }
-
 
 async function recentValidExpsAsync() {
   let recentExpsJsonFile = userSettings.recentExpsJsonFile();
@@ -200,5 +199,6 @@ module.exports = {
   getPublishInfoAsync,
   saveRecentExpRootAsync,
   recentValidExpsAsync,
+  packageJsonForRoot,
   _getReactNativeVersionAsync,
 };
