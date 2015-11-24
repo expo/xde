@@ -1,4 +1,5 @@
 let crayon = require('@ccheever/crayon');
+let ip = require('ip');
 let myLocalIp = require('my-local-ip');
 let os = require('os');
 let url = require('url');
@@ -9,6 +10,10 @@ function constructBundleUrl(packageController, opts) {
 
 function constructManifestUrl(packageController, opts) {
   return constructUrl(packageController, opts, '');
+}
+
+function constructDebuggerHost(packageController) {
+  return ip.address() + ':' + packageController.opts.packagerPort;
 }
 
 function constructUrl(packageController, opts, path) {
@@ -77,6 +82,7 @@ function guessMainModulePath(entryPoint) {
 module.exports = {
   constructBundleUrl,
   constructManifestUrl,
+  constructDebuggerHost,
   expUrlFromHttpUrl,
   httpUrlFromExpUrl,
   guessMainModulePath,
