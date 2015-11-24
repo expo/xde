@@ -53,8 +53,8 @@ class PackagerController extends events.EventEmitter {
     // Proxy sourcemaps to the packager.
     app.use('/', proxy('localhost:' + this.opts.packagerPort, {
       filter: function(req, res) {
-        let path = require('url').parse(req.url).path;
-        return path.indexOf('.map') > -1;
+        let path = require('url').parse(req.url).pathname;
+        return path !== '/' && path != '/manifest' && path !== '/bundle';
       },
     }));
 
@@ -66,6 +66,8 @@ class PackagerController extends events.EventEmitter {
       // TODO: remove bundlePath
       manifest.bundlePath = 'bundle?' + queryString;
       manifest.bundleUrl = '/bundle?' + queryString;
+      manifest.debuggerHost = urlUtils.constructDebuggerHost(self);
+      manifest.mainModuleName = urlUtils.guessMainModulePath(self.opts.entryPoint);
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(manifest));
     };
