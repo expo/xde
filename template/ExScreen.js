@@ -34,11 +34,11 @@ class ExScreen extends React.Component {
         <ScrollView
           ref={component => { this._scrollView = component; }}
           contentContainerStyle={styles.contentContainer}
-          contentInset={{ top: ExHeader.HEIGHT + STATUS_BAR_HEIGHT }}
           scrollEnabled={scrollEnabled}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={this._handleScroll.bind(this)}>
+          <View style={{ height: ExHeader.HEIGHT + STATUS_BAR_HEIGHT }} />
           {props.children}
         </ScrollView>
         <ExHeader
@@ -48,10 +48,6 @@ class ExScreen extends React.Component {
         />
       </View>
     );
-  }
-
-  componentDidMount() {
-    this._scrollView.scrollWithoutAnimationTo(-ExHeader.HEIGHT);
   }
 
   _handleScroll(event) {
@@ -66,7 +62,7 @@ class ExScreen extends React.Component {
 
 let styles = StyleSheet.create({
   contentContainer: {
-    paddingTop: 10,
+    paddingTop: 0,
   },
   header: {
     position: 'absolute',
