@@ -24,6 +24,7 @@ class PackagerController extends events.EventEmitter {
 
     this.opts = Object.assign(DEFAULT_OPTS, opts);
     this._givenOpts = opts;
+    this.appOpts = {};
 
     global._PackagerController = this;
   }
@@ -54,7 +55,7 @@ class PackagerController extends events.EventEmitter {
     app.use('/', proxy('localhost:' + this.opts.packagerPort, {
       filter: function(req, res) {
         let path = require('url').parse(req.url).pathname;
-        return path !== '/' && path !== '/manifest' && path !== '/bundle';
+        return path !== '/' && path !== '/manifest' && path !== '/bundle' && path !== '/index.exp';
       },
     }));
 
@@ -62,10 +63,9 @@ class PackagerController extends events.EventEmitter {
     let manifestHandler = async function(req, res) {
       let pkg = await Exp.packageJsonForRoot(self.opts.absolutePath).readAsync();
       let manifest = pkg.exp || {};
-      let queryString = require('url').parse(req.url).query;
       // TODO: remove bundlePath
-      manifest.bundlePath = 'bundle?' + queryString;
-      manifest.bundleUrl = '/bundle?' + queryString;
+      manifest.bundlePath = 'bundle?' + urlUtils.constructBundleQueryParams(self.appOpts);
+      manifest.bundleUrl = '/bundle?' + urlUtils.constructBundleQueryParams(self.appOpts);
       manifest.debuggerHost = urlUtils.constructDebuggerHost(self);
       manifest.mainModuleName = urlUtils.guessMainModulePath(self.opts.entryPoint);
       res.setHeader('Content-Type', 'application/json');
@@ -74,6 +74,7 @@ class PackagerController extends events.EventEmitter {
 
     app.get('/', manifestHandler);
     app.get('/manifest', manifestHandler);
+    app.get('/index.exp', manifestHandler);
 
     this._expressServer = app.listen(this.opts.port, () => {
       let host = this._expressServer.address().address;
