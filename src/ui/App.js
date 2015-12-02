@@ -762,6 +762,7 @@ class App extends React.Component {
       redirect: (this.state.urlType === 'redirect'),
     };
 
+    this.state.packagerController.appOpts = opts;
     return urlUtils.constructManifestUrl(this.state.packagerController, opts);
   }
 

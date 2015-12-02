@@ -16,6 +16,15 @@ function constructDebuggerHost(packageController) {
   return ip.address() + ':' + packageController.opts.packagerPort;
 }
 
+function constructBundleQueryParams(opts) {
+  let queryParams = 'dev=' + encodeURIComponent(!!opts.dev);
+  if (opts.minify) {
+    queryParams += '&minify=' + encodeURIComponent(!!opts.minify);
+  }
+
+  return queryParams;
+}
+
 function constructUrl(packageController, opts, path) {
   opts = opts || {};
 
@@ -52,13 +61,6 @@ function constructUrl(packageController, opts, path) {
     url_ += ':' + port;
   }
 
-  url_ += '/' + path;
-
-  url_ += '?dev=' + encodeURIComponent(!!opts.dev);
-  if (opts.minify) {
-    url_ += '&minify=' + encodeURIComponent(!!opts.minify);
-  }
-
   if (opts.redirect) {
     return 'http://exp.host/--/to-exp/' + encodeURIComponent(url_);
   }
@@ -83,6 +85,7 @@ module.exports = {
   constructBundleUrl,
   constructManifestUrl,
   constructDebuggerHost,
+  constructBundleQueryParams,
   expUrlFromHttpUrl,
   httpUrlFromExpUrl,
   guessMainModulePath,
