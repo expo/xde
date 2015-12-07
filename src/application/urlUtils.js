@@ -9,7 +9,17 @@ function constructBundleUrl(packageController, opts) {
 }
 
 function constructManifestUrl(packageController, opts) {
-  return constructUrl(packageController, opts, '');
+  return constructUrl(packageController, opts, null);
+}
+
+function constructPublishUrl(packageController) {
+  return constructBundleUrl(packageController, {
+    ngrok: true,
+    http: true,
+  }) + '?' + constructBundleQueryParams({
+    dev: false,
+    minify: true,
+  });
 }
 
 function constructDebuggerHost(packageController) {
@@ -61,12 +71,15 @@ function constructUrl(packageController, opts, path) {
     url_ += ':' + port;
   }
 
+  if (path) {
+    url_ += '/' + path;
+  }
+
   if (opts.redirect) {
     return 'http://exp.host/--/to-exp/' + encodeURIComponent(url_);
   }
 
   return url_;
-
 }
 
 function expUrlFromHttpUrl(url_) {
@@ -84,6 +97,7 @@ function guessMainModulePath(entryPoint) {
 module.exports = {
   constructBundleUrl,
   constructManifestUrl,
+  constructPublishUrl,
   constructDebuggerHost,
   constructBundleQueryParams,
   expUrlFromHttpUrl,
