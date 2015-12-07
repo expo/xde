@@ -46,7 +46,11 @@ class PackagerController extends events.EventEmitter {
         let platform = req.headers['exponent-platform'] || 'ios';
         let path = '/' + urlUtils.guessMainModulePath(self.opts.entryPoint);
         path += '.bundle';
-        path += '?' + queryString + '&platform=' + platform;
+        path += '?';
+        if (queryString) {
+         path += queryString + '&';
+        }
+        path += 'platform=' + platform;
         return path;
       },
     }));

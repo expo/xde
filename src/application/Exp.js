@@ -156,13 +156,7 @@ async function getPublishInfoAsync(env, opts) {
   let localPackageName = name;
   let packageVersion = version;
 
-  let ngrokUrl = urlUtils.constructBundleUrl(packagerController, {
-    ngrok: true,
-    dev: false,
-    minify: true,
-    http: true,
-  });
-
+  let ngrokUrl = urlUtils.constructPublishUrl(packagerController);
   return {
     args: {
       username,
