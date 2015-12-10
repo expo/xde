@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/exponentjs/xde#readme",
   "devDependencies": {
-    "@exponent/spawn-async": "^1.1.0",
+    "@exponent/spawn-async": "^1.2.3",
     "babel-core": "^5.8.19",
     "babel-runtime": "^5.8.19",
     "electron-packager": "^5.0.2",
