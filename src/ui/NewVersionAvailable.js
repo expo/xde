@@ -85,7 +85,7 @@ class NewVersionAvailable extends React.Component {
 
     let version = app.getVersion();
     AutoUpdater.setFeedUrl(
-      `http://xde-updates.exponentjs.com/update/osx_64/${version}`
+      `https://xde-updates.exponentjs.com/update/osx_64/${version}`
     );
     this._checkForUpdate();
   }
