@@ -135,6 +135,15 @@ async function expInfoSafeAsync(root) {
   }
 }
 
+async function abiVersionAsync() {
+  let packageJsonFilePath = path.join(__dirname, '../../package.json');
+  let exponent = await jsonFile(packageJsonFilePath).getAsync('exponent');
+  if (!exponent.hasOwnProperty('abiVersion')) {
+    throw new Error(`ABI version is missing from XDE's package.json file`);
+  }
+  return exponent.abiVersion;
+}
+
 async function getPublishInfoAsync(env, opts) {
   let root = env.root;
   let pkgJson = packageJsonForRoot(root);
@@ -155,6 +164,7 @@ async function getPublishInfoAsync(env, opts) {
   let remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
   let localPackageName = name;
   let packageVersion = version;
+  let abiVersion = await abiVersionAsync();
 
   let ngrokUrl = urlUtils.constructPublishUrl(packagerController);
   return {
@@ -166,6 +176,7 @@ async function getPublishInfoAsync(env, opts) {
       remotePackageName,
       remoteFullPackageName,
       ngrokUrl,
+      abiVersion,
     },
     body: pkg,
   };

@@ -3,6 +3,9 @@
   "version": "1.2.0",
   "description": "The Exponent Development Environment",
   "main": "build/main.js",
+  "exponent": {
+    "abiVersion": "4.0.0"
+  },
   "scripts": {
     "start": "gulp build && XDE_NPM_START=1 ./node_modules/.bin/electron .",
     "postinstall": "gulp postinstall",
