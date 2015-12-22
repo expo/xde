@@ -67,7 +67,6 @@
     "react-bootstrap": "^0.27.2",
     "react-dom": "^0.14.0",
     "react-loading-indicator": "^0.1.6",
-    "react-native": "exponentjs/react-native#2015-12-18",
     "request": "^2.61.0",
     "slugid": "^1.0.3",
     "url": "^0.11.0"

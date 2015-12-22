@@ -17,7 +17,7 @@ class PackagerController extends events.EventEmitter {
 
     let DEFAULT_OPTS = {
       port: undefined,
-      cliPath: path.join(__dirname, '..', '..', 'node_modules/react-native/local-cli/cli.js'),
+      cliPath: path.join(__dirname, '..', '..', 'template/node_modules/react-native/local-cli/cli.js'),
       mainModulePath: 'index.js',
       // absolutePath: root,
     };
