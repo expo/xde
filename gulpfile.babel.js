@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 import gulp from 'gulp';
 
 import buildTasks from './gulp/build-tasks';

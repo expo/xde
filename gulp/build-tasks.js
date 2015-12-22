@@ -17,7 +17,7 @@ let tasks = {
     return gulp.src(paths.source.js)
       .pipe(changed(paths.build))
       .pipe(sourcemaps.init())
-      .pipe(babel(require('./babelrc.json')))
+      .pipe(babel())
       .pipe(sourcemaps.write('__sourcemaps__'))
       .pipe(gulp.dest(paths.build));
   },

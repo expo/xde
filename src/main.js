@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 import AutoUpdater from 'auto-updater';
 import BrowserWindow from 'browser-window';
 import CrashReporter from 'crash-reporter';

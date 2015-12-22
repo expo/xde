@@ -11,6 +11,8 @@
     </div>
     <script>
       () => {
+        require('babel-polyfill');
+
         var Remote = require('remote');
         document.getElementById('app-loading').addEventListener('click', () => {
           Remote.getCurrentWindow().openDevTools();
