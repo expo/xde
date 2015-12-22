@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "dependencies": {
+    "react-native": "github:exponentjs/react-native#2015-12-21"
+  }
+}

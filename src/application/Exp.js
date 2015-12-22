@@ -33,18 +33,9 @@ async function _getReactNativeVersionAsync() {
   return await xdePackageJson.getAsync(['dependencies', 'react-native']);
 }
 
-async function _installReactNativeInNewProjectWithRoot(root) {
-  let nodeModulesPath = path.join(root, 'node_modules');
-  await mkdirp.promise(nodeModulesPath);
-  await fsExtra.copy.promise(path.join(__dirname, '../../node_modules/react-native'), path.join(nodeModulesPath, 'react-native'));
-}
-
-async function createNewExpAsync(root, info, opts) {
+async function createNewExpAsync(root, info, opts = {}) {
   let pp = path.parse(root);
   let name = pp.name;
-
-  // opts = opts || {force: true};
-  opts = opts || {};
 
   let author = await userSettings.getAsync('email', null);
 
@@ -76,15 +67,19 @@ async function createNewExpAsync(root, info, opts) {
 
   let result = await pkgJson.writeAsync(data);
 
-  await fsExtra.promise.copy(TEMPLATE_ROOT, root);
+  // Copy the template directory, which contains node_modules, without its
+  // package.json
+  await fsExtra.promise.copy(TEMPLATE_ROOT, root, {
+    filter: filePath => {
+      console.log(filePath);
+      return !/package\.json$/.test(filePath);
+    },
+  });
 
   // Custom code for replacing __NAME__ in main.js
   let mainJs = await fs.readFile.promise(path.join(TEMPLATE_ROOT, 'main.js'), 'utf8');
   let customMainJs = mainJs.replace(/__NAME__/g, data.name);
   result = await fs.writeFile.promise(path.join(root, 'main.js'), customMainJs, 'utf8');
-
-  // Intall react-native
-  await _installReactNativeInNewProjectWithRoot(root);
 
   return data;
 }
