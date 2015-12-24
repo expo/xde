@@ -8,11 +8,12 @@ let path = require('path');
 let proxy = require('express-http-proxy');
 let events = require('events');
 
+let Api = require('./Api');
 let Exp = require('./Exp');
 let urlUtils = require('./urlUtils');
 
 class PackagerController extends events.EventEmitter {
-  constructor(opts) {
+  constructor(opts, app) {
     super(opts);
 
     let DEFAULT_OPTS = {
@@ -24,7 +25,12 @@ class PackagerController extends events.EventEmitter {
 
     this.opts = Object.assign(DEFAULT_OPTS, opts);
     this._givenOpts = opts;
-    this.appOpts = {};
+    this._app = app;
+
+    this._cachedSignedManifest = {
+      manifestString: null,
+      signedManifest: null,
+    };
 
     global._PackagerController = this;
   }
@@ -64,16 +70,30 @@ class PackagerController extends events.EventEmitter {
     }));
 
     // Serve the manifest.
-    let manifestHandler = async function(req, res) {
+    let manifestHandler = async (req, res) => {
       let pkg = await Exp.packageJsonForRoot(self.opts.absolutePath).readAsync();
       let manifest = pkg.exp || {};
       // TODO: remove bundlePath
-      manifest.bundlePath = 'bundle?' + urlUtils.constructBundleQueryParams(self.appOpts);
-      manifest.bundleUrl = '/bundle?' + urlUtils.constructBundleQueryParams(self.appOpts);
+      let queryParams = urlUtils.constructBundleQueryParams(self._app.getPackagerOpts());
+      manifest.bundlePath = 'bundle?' + queryParams;
+      manifest.bundleUrl = self._ngrokUrl + '/bundle?' + queryParams;
       manifest.debuggerHost = urlUtils.constructDebuggerHost(self);
       manifest.mainModuleName = urlUtils.guessMainModulePath(self.opts.entryPoint);
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify(manifest));
+
+      let manifestString = JSON.stringify(manifest);
+      if (req.headers['exponent-accept-signature'] && self._app.state.user) {
+        if (self._cachedSignedManifest.manifestString === manifestString) {
+          manifestString = self._cachedSignedManifest.signedManifest;
+        } else {
+          let publishInfo = await self._app.getPublishInfoAsync();
+          let signedManifest = await Api.callMethodAsync('signManifest', [publishInfo.args], 'post', manifest);
+          self._cachedSignedManifest.manifestString = manifestString;
+          self._cachedSignedManifest.signedManifest = signedManifest.response;
+          manifestString = signedManifest.response;
+        }
+      }
+
+      res.send(manifestString);
     };
 
     app.get('/', manifestHandler);
