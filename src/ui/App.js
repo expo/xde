@@ -196,7 +196,7 @@ class App extends React.Component {
         onClick={() => {
           this._runPackagerAsync({
             root: exp.root,
-          }, {}).catch((err) => {
+          }).catch((err) => {
             this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
           });
         }}
@@ -426,14 +426,18 @@ class App extends React.Component {
     return versionString;
   }
 
+  async getPublishInfoAsync() {
+    return Exp.getPublishInfoAsync(this.state.env, {
+      packagerController: this.state.packagerController,
+      username: this.state.user.username,
+    });
+  }
+
   @autobind
   _publishClicked() {
     this._logMetaMessage("Publishing...");
 
-    Exp.getPublishInfoAsync(this.state.env, {
-      packagerController: this.state.packagerController,
-      username: this.state.user.username,
-    }).then((publishInfo) => {
+    this.getPublishInfoAsync().then((publishInfo) => {
       return Api.callMethodAsync('publish', [publishInfo.args], 'post', publishInfo.body).then((result) => {
         // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
         this._logMetaMessage("Published to " + result.expUrl);
@@ -656,8 +660,7 @@ class App extends React.Component {
   }
 
   @autobind
-  async _runPackagerAsync(env, args) {
-
+  async _runPackagerAsync(env) {
     this.setState({env});
 
     if (!env) {
@@ -665,9 +668,8 @@ class App extends React.Component {
       return null;
     }
 
-    args = args || {};
     let runPackager = require('../commands/runPackager');
-    let pc = await runPackager.runAsync(env, {});
+    let pc = await runPackager.runAsync(env, this);
 
     this.setState({packagerReady: false, ngrokReady: false});
 
@@ -736,13 +738,9 @@ class App extends React.Component {
     // }, (err) => {
     //   console.error("Couldn't get git info :(", err);
     // });
-
-
-
   }
 
   _computeUrl() {
-
     if (!this.state.packagerController) {
       return null;
     }
@@ -751,8 +749,12 @@ class App extends React.Component {
       return null;
     }
 
+    let opts = this.getPackagerOpts();
+    return urlUtils.constructManifestUrl(this.state.packagerController, opts);
+  }
 
-    let opts = {
+  getPackagerOpts() {
+    return {
       http: (this.state.urlType === 'http'),
       ngrok: (this.state.hostType === 'ngrok'),
       lan: (this.state.hostType === 'lan'),
@@ -761,9 +763,6 @@ class App extends React.Component {
       minify: this.state.minify,
       redirect: (this.state.urlType === 'redirect'),
     };
-
-    this.state.packagerController.appOpts = opts;
-    return urlUtils.constructManifestUrl(this.state.packagerController, opts);
   }
 
 };
