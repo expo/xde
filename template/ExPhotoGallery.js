@@ -65,10 +65,6 @@ let styles = StyleSheet.create({
     overflow: 'visible',
   },
   photo: {
-    shadowRadius: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 1 },
     overflow: 'visible',
   },
 });
