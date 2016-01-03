@@ -36,7 +36,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^4.3.5",
     "gulplog": "^1.0.0",
-    "rimraf": "^2.4.4",
+    "rimraf": "^2.5.0",
     "semver": "^5.1.0"
   },
   "dependencies": {
@@ -66,9 +66,9 @@
     "plist": "^1.2.0",
     "promise-props": "^1.0.0",
     "radium": "^0.15.3",
-    "react": "^0.14.3",
+    "react": "^0.14.5",
     "react-bootstrap": "^0.28.1",
-    "react-dom": "^0.14.3",
+    "react-dom": "^0.14.5",
     "react-loading-indicator": "^0.1.6",
     "request": "^2.67.0",
     "slugid": "^1.1.0",
