@@ -29,7 +29,7 @@ async function determineEntryPoint(root) {
 }
 
 async function _getReactNativeVersionAsync() {
-  let xdePackageJson = jsonFile(path.join(__dirname, '../../package.json'));
+  let xdePackageJson = jsonFile(path.join(__dirname, '../../template/package.json'));
   return await xdePackageJson.getAsync(['dependencies', 'react-native']);
 }
 
