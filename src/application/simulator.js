@@ -113,7 +113,7 @@ function _escapeForFilesystem(list) {
 function simulatorAppPathForReactNativeVersion(versionPair) {
   // For now, something seems broken about downloading over the Internet, so
   // we'll just copy the Simulator app into this bundle
-  return path.resolve(__dirname, '../../simulator-app/1.2.0/Exponent.app');
+  return path.resolve(__dirname, '../../simulator-app/1.3.0/Exponent.app');
   return path.join(simulatorAppDirectoryForReactNativeVersion(versionPair), 'Exponent.app');
 }
 
