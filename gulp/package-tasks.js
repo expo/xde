@@ -51,20 +51,18 @@ async function packageAppAsync(signed) {
   let iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
 
   let appPath = await electronPackager.promise({
-    dir: process.cwd(),
+    dir: path.resolve(__dirname, '..'),
     name: APP_NAME,
     platform: PLATFORM,
     arch: ARCH,
     version: electronVersion,
     'app-bundle-id': APP_BUNDLE_ID,
     icon: iconPath,
-    ignore: [/^src\//],
+    ignore: [/^\/src(\/|$)/, /^\/\.babelrc$/],
     overwrite: true,
     prune: true,
     sign: signed ? CODE_SIGNING_IDENTITY : null
   });
-
-  
 
   logger.info(`Packaged ${signed ? 'signed' : 'unsigned'} app at ${appPath}`);
   return appPath;
