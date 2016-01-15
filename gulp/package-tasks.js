@@ -28,7 +28,7 @@ let tasks = {
   },
 
   async compressApp() {
-    await spawnAsync('zip', ['-r', `${APP_NAME}.zip`, `${APP_NAME}.app`], {
+    await spawnAsync('zip', ['-ry', `${APP_NAME}.zip`, `${APP_NAME}.app`], {
       stdio: 'inherit',
       cwd: getOutputDirectory(),
     });
