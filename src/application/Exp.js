@@ -8,7 +8,7 @@ let path = require('path');
 let urlUtils = require('./urlUtils');
 let userSettings = require('./userSettings');
 
-let TEMPLATE_ROOT = path.resolve(path.join(__dirname, '../../template'));
+let TEMPLATE_ROOT = path.resolve(__dirname, '../../template');
 
 function NewExpError(code, message) {
   let err = new Error(message);
@@ -70,10 +70,7 @@ async function createNewExpAsync(root, info, opts = {}) {
   // Copy the template directory, which contains node_modules, without its
   // package.json
   await fsExtra.promise.copy(TEMPLATE_ROOT, root, {
-    filter: filePath => {
-      console.log(filePath);
-      return !/package\.json$/.test(filePath);
-    },
+    filter: filePath => filePath !== path.join(TEMPLATE_ROOT, 'package.json')
   });
 
   // Custom code for replacing __NAME__ in main.js
