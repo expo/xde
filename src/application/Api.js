@@ -1,7 +1,6 @@
-'use strict';
+import 'instapromise';
 
-let _ = require('lodash-node');
-let instapromise = require('instapromise');
+let _ = require('lodash');
 let request = require('request');
 
 let config = require('../config');

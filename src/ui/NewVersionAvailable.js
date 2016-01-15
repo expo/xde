@@ -4,10 +4,11 @@ let { Button } = require('react-bootstrap');
 let LoadingIndicator = require('react-loading-indicator');
 
 let autobind = require('autobind-decorator');
-let remote = require('remote');
+let electron = require('electron');
 
-let app = remote.require('app');
-let AutoUpdater = remote.require('auto-updater');
+const remote = electron.remote;
+const app = remote.require('app');
+const AutoUpdater = remote.require('auto-updater');
 
 @Radium
 class NewVersionAvailable extends React.Component {
@@ -83,7 +84,7 @@ class NewVersionAvailable extends React.Component {
     AutoUpdater.on('update-downloaded', this._handleUpdateDownloaded);
 
     let version = app.getVersion();
-    AutoUpdater.setFeedUrl(
+    AutoUpdater.setFeedURL(
       `https://xde-updates.exponentjs.com/update/osx_64/${version}`
     );
     this._checkForUpdate();

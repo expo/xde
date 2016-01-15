@@ -1,6 +1,6 @@
 let React = require('react');
 
-let _ = require('lodash-node');
+let _ = require('lodash');
 let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 let Tooltip = require('react-bootstrap/lib/Tooltip');
 

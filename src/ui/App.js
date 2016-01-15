@@ -5,13 +5,13 @@ let { StyleRoot } = require('radium');
 
 let autobind = require('autobind-decorator');
 let del = require('del');
+let electron = require('electron');
 let escapeHtml = require('escape-html');
 let execAsync = require('exec-async');
 let gitInfoAsync = require('git-info-async');
 let jsonFile = require('@exponent/json-file');
 let os = require('os');
 let path = require('path');
-let remote = require('remote');
 
 let Api = require('../application/Api');
 let config = require('../config');
@@ -28,6 +28,8 @@ let SimulatorControls = require('./SimulatorControls');
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+
+const remote = electron.remote;
 
 function escapeAndPre(s) {
   return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, '\u00a0');
@@ -468,7 +470,7 @@ class App extends React.Component {
 
   _renderPublishButton() {
     return (
-      <Button bsSize='medium' {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
+      <Button {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
     );
   }
 
@@ -484,18 +486,18 @@ class App extends React.Component {
           marginRight: 10,
           marginLeft: 3,
       }}>
-        <Button bsSize='medium' onClick={this._newClicked}>New Project</Button>
-        <Button bsSize='medium' onClick={this._openClicked}>Open Project</Button>
+        <Button onClick={this._newClicked}>New Project</Button>
+        <Button onClick={this._openClicked}>Open Project</Button>
       </ButtonToolbar>
     );
 
     /*
-    <Button bsSize='medium' disabled style={{
+    <Button disabled style={{
         background: 'green',
     }}>Packager Active</Button>
-    <Button bsSize='medium' active>Button</Button>
-    <Button bsStyle='primary' bsSize='medium' active>Primary button</Button>
-    <Button bsSize='medium' active>Button</Button>
+    <Button active>Button</Button>
+    <Button bsStyle='primary' active>Primary button</Button>
+    <Button active>Button</Button>
     */
 
   }
@@ -515,9 +517,9 @@ class App extends React.Component {
       <ButtonToolbar style={{
           marginBottom: 10,
       }}>
-        <Button style={{marginRight: 5}} bsSize='medium' {...activeProp} onClick={this._resetPackagerClicked}>Clear Packager Cache</Button>
-        <Button style={{marginRight: 10,}} bsSize='medium' {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
-        <Button bsSize='medium' {...activeProp} onClick={
+        <Button style={{marginRight: 5}} {...activeProp} onClick={this._resetPackagerClicked}>Clear Packager Cache</Button>
+        <Button style={{marginRight: 10,}} {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
+        <Button {...activeProp} onClick={
             this._restartNgrokClicked}>Restart ngrok</Button>
       </ButtonToolbar>
     );
@@ -531,7 +533,7 @@ class App extends React.Component {
     };
 
     return (
-      <Button bsSize="medium" {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
+      <Button {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
     );
 
   }

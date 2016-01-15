@@ -7,7 +7,7 @@
     "abiVersion": "4.0.0"
   },
   "scripts": {
-    "start": "gulp build && XDE_NPM_START=1 ./node_modules/.bin/electron .",
+    "start": "gulp build && XDE_NPM_START=1 electron .",
     "postinstall": "gulp postinstall",
     "package": "gulp unsigned-release",
     "signed-package": "gulp release"
@@ -29,7 +29,7 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-1": "^6.3.13",
     "electron-packager": "^5.2.0",
-    "electron-prebuilt": "^0.34.0",
+    "electron-prebuilt": "^0.36.4",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.1",
     "gulp-changed": "^1.3.0",
@@ -57,7 +57,7 @@
     "git-info-async": "^1.1.0",
     "instapromise": "^2.0.2",
     "ip": "^1.1.0",
-    "lodash-node": "^3.10.1",
+    "lodash": "^4.0.0",
     "md5hex": "^1.0.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",

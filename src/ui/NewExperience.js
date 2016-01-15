@@ -1,10 +1,6 @@
 let React = require('react');
 
-let autobind = require('autobind-decorator');
-let remote = require('remote');
-
 let StyleConstants = require('./StyleConstants');
-
 
 class NewExperience extends React.Component {
 
