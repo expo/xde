@@ -1,6 +1,8 @@
 let React = require('react');
 let ReactDOM = require('react-dom');
 
+let { StyleRoot } = require('radium');
+
 let autobind = require('autobind-decorator');
 let del = require('del');
 let escapeHtml = require('escape-html');
@@ -64,7 +66,7 @@ class App extends React.Component {
     let displayText = this._computeUrl();
 
     return (
-      <div style={{
+      <StyleRoot style={{
           marginLeft: 15,
           marginBottom: 0,
           marginRight: 10,
@@ -89,7 +91,7 @@ class App extends React.Component {
           }}
           onClick={this._copyUrlToClipboard}
         />
-      </div>
+      </StyleRoot>
     );
   }
 
