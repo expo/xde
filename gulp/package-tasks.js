@@ -30,7 +30,7 @@ let tasks = {
   async compressApp() {
     let xdePackageJson = jsonFile(path.join(XDE_ROOT, 'package.json'));
     let xdeVersion = await xdePackageJson.getAsync('version');
-    await spawnAsync('zip', ['-ry', `Exponent-XDE-osx-${xdeVersion}.zip`, `${APP_NAME}.app`], {
+    await spawnAsync('zip', ['-rqy', `Exponent-XDE-osx-${xdeVersion}.zip`, `${APP_NAME}.app`], {
       stdio: 'inherit',
       cwd: getOutputDirectory(),
     });
