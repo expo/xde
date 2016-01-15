@@ -85,8 +85,6 @@ class Simulator extends React.Component {
   // }
 
   render() {
-    let buttonSize = "medium";
-
     let showSimulatorControls = window.XDE_showSimulatorControls;
     if (showSimulatorControls == null) {
       showSimulatorControls = !!this.state.isSimulatorInstalled;
@@ -100,9 +98,9 @@ class Simulator extends React.Component {
       return (
         <ButtonToolbar style={this.props.style}>
 
-          <Button bsSize={buttonSize} {...{disabled: !this.state.isSimulatorInstalled}} onClick={this._openSimulatorAsync}>Run Simulator</Button>
-          <Button bsSizee={buttonSize} {...{disabled: !this.state.isSimulatorRunning}} onClick={this._installAppInSimulator}>Install Exponent on Simulator</Button>
-          <Button bsSize={buttonSize} {...{disabled: (!this.props.packagerController || !this.state.isSimulatorRunning)}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on Simulator</Button>
+          <Button {...{disabled: !this.state.isSimulatorInstalled}} onClick={this._openSimulatorAsync}>Run Simulator</Button>
+          <Button {...{disabled: !this.state.isSimulatorRunning}} onClick={this._installAppInSimulator}>Install Exponent on Simulator</Button>
+          <Button {...{disabled: (!this.props.packagerController || !this.state.isSimulatorRunning)}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on Simulator</Button>
 
         </ButtonToolbar>
       );
