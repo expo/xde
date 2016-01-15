@@ -22,7 +22,6 @@ if (config.api.port) {
 API_BASE_URL += '/--/api/';
 
 export default class ApiClient {
-
   static async callMethodAsync(methodName, args, method, requestBody) {
     let url = API_BASE_URL + encodeURIComponent(methodName) + '/' +
       encodeURIComponent(JSON.stringify(args));
@@ -75,3 +74,5 @@ export default class ApiClient {
 
 ApiClient.host = config.api.host;
 ApiClient.port = config.api.port || 80;
+
+module.exports = ApiClient;
