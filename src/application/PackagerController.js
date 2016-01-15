@@ -139,10 +139,11 @@ class PackagerController extends events.EventEmitter {
 
     await this._stopPackagerAsync();
 
+    // Run the copy of Node that's embedded in Electron by setting the
+    // ELECTRON_RUN_AS_NODE environment variable
     // Note: the CLI script sets up graceful-fs and sets ulimit to 4096 in the
     // child process
-    let nodePath = path.resolve(__dirname, '../../node/v4.1.1/bin/node');
-    let packagerProcess = child_process.spawn(nodePath, [
+    let packagerProcess = child_process.spawn(process.execPath, [
       this.opts.cliPath,
       'start',
       '--port', this.opts.packagerPort,
@@ -156,6 +157,7 @@ class PackagerController extends events.EventEmitter {
         env: {
           ...process.env,
           NODE_PATH: null,
+          ELECTRON_RUN_AS_NODE: 1,
         },
       });
     process.on('exit', () => {
