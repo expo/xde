@@ -24,7 +24,6 @@ class NewVersionAvailable extends React.Component {
   }
 
   render() {
-
     // N.B. If you are working on the UI for XDE updates, change this to `true` or else
     // that UI will never show up when running `npm start`
     let WORKING_ON_XDE_UPDATES = false;
