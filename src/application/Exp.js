@@ -179,13 +179,7 @@ async function recentValidExpsAsync() {
   let recentExps = await recentExpsJsonFile.readAsync({cantReadFileDefault: []});
 
   let results = await Promise.all(recentExps.map(expInfoSafeAsync));
-
-  console.log("results=", results);
-
-  let filteredResults = results.filter((x) => {
-    return !!x;
-  });
-
+  let filteredResults = results.filter(result => result);
   return filteredResults.slice(0, 5);
 
 }

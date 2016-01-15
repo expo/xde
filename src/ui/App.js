@@ -192,9 +192,10 @@ class App extends React.Component {
   }
 
   @autobind
-  _renderExp(exp) {
+  _renderExp(exp, index) {
     return (
       <div
+        key={index}
         onClick={() => {
           this._runPackagerAsync({
             root: exp.root,
