@@ -11,7 +11,6 @@ import {
   APP_NAME,
   APP_BUNDLE_ID,
   CODE_SIGNING_IDENTITY,
-  NODE_VERSION,
   XDE_ROOT,
 } from './app-configuration';
 
@@ -37,17 +36,22 @@ let tasks = {
   },
 };
 
-async function checkNodeVersion() {
-  if (!semver.eq(process.version, NODE_VERSION)) {
-    throw new Error(`This version of Electron includes Node ${NODE_VERSION}.` +
-      `In order to ensure binary compatibility please install the npm ` +
-      `dependencies with Node ${process.version}.`
+async function checkNativeModulesVersionAsync() {
+  let localModulesVersion = process.versions.modules;
+  let electronModulesVersion = await getElectronModulesVersionAsync();
+  if (localModulesVersion !== electronModulesVersion) {
+    throw new Error(`The copy of Node included with Electron uses native ` +
+      `modules of version ${electronModulesVersion} but this version of Node ` +
+      `uses native modules of version ${localModulesVersion}. In order to ` +
+      'ensure binary compatibility please install the npm packages with a ' +
+      `version of Node whose native modules are of version ` +
+      `${electronModulesVersion}.`
     );
   }
 }
 
 async function packageAppAsync(signed) {
-  checkNodeVersion();
+  await checkNativeModulesVersionAsync();
 
   let electronVersion = await getElectronVersionAsync();
   let iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
@@ -75,6 +79,20 @@ async function getElectronVersionAsync() {
     path.join(XDE_ROOT, 'node_modules', 'electron-prebuilt', 'package.json')
   );
   return await electronPackageJsonFile.getAsync('version');
+}
+
+async function getElectronModulesVersionAsync() {
+  let electronPath = path.join(XDE_ROOT, 'node_modules', '.bin', 'electron');
+  let electronResult = await spawnAsync(electronPath, [
+    '--eval',
+    'console.log(require("process").versions.modules)',
+  ], {
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: 1,
+    },
+  });
+  return electronResult.stdout.trim();
 }
 
 function getOutputDirectory() {
