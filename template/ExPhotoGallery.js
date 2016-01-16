@@ -63,12 +63,12 @@ let styles = StyleSheet.create({
   photoContainer: {
     marginHorizontal: PHOTO_SPACING / 2,
     overflow: 'visible',
-  },
-  photo: {
     shadowRadius: 3,
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 1 },
+  },
+  photo: {
     overflow: 'visible',
   },
 });
