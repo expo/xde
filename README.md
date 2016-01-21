@@ -1,27 +1,26 @@
 # xde [![Slack](http://slack.exponentjs.com/badge.svg)](http://slack.exponentjs.com)
 The Exponent Development Environment - Beta release
 
-xde is currently in beta but we're really happy for you to try it out!
+XDE is currently in beta but we're really happy for you to try it out! We recommend you download [our latest release here](https://github.com/exponentjs/xde/releases/latest).
 
+For running XDE from source, see the instructions below.
 
 ## Quick Start Instructions
 
-We're going to bundle it up so that you just have to download one standalone application but we haven't had a chance yet.
-
-In the meantime, you can perform the following steps:
-  * `git clone` this repository,
-  * Make sure you have Node version 4.1.1. If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
+- `git clone` this repository,
+- Make sure you have Node version 5.1.1. If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of Node you have and you can choose just to use it for npm installing XDE (which is all you need it for).
 
 ```shell
-  touch ~/.profile
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
-   [Open a new terminal window]
-  nvm install v4.1.1
-  nvm use v4.1.1
+touch ~/.profile
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
+[Open a new terminal window]
+nvm install 5.1.1
+nvm use 5.1.1
 ```
 
-  * Go into the `xde/` directory where you cloned the Git repo and run `npm install`.
-  * Once that completes, run `npm start` to start the GUI.
+- Go into the `xde/` directory where you cloned the Git repo and run `npm install`
+- Go into the `xde/template` directory and run `npm install` there too
+- Once that completes, run `npm start` to start the GUI
 
 ### Making a New Project
 
@@ -35,13 +34,10 @@ Once you create a new project (or open an existing project), you'll see some log
 
 The url that begins with `exp://...` is the URL you can use to access your project while you're developing it. To view this on your phone, do the following:
 
-  * Go get the Exponent app on your iPhone or iPad. It's available [here](https://itunes.com/apps/exponent). We'll produce an Android version as soon as React Native for Android is ready, but for now it's only iOS!
-
-  * Open the Exponent app and put in your e-mail address.
-
-  * Go back to the xde GUI on your computer and put in your phone number or e-mail address into the text box in the header, then hit the "Send Link" button. This will send a link via e-mail or text message, so make sure you use an address or phone number you can access from your phone.
-
-  * Check your e-mail or texts and tap the link. The Exponent app should open and you should be able to view your experience there!
+- Go get the Exponent app on your Android or iOS device. It's available [on the Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) and [on the iOS App Store](https://itunes.com/apps/exponent).
+- Open the Exponent app and put in your e-mail address.
+- Go back to the XDE GUI on your computer and put in your phone number or e-mail address into the text box in the header, then hit the "Send Link" button. This will send a link via e-mail or text message, so make sure you use an address or phone number you can access from your phone.
+- Check your e-mail or texts and tap the link. The Exponent app should open and you should be able to view your experience there!
 
 ### Converting an existing project to work with Exponent
 
@@ -71,7 +67,7 @@ React Native apps that don't use native modules can work with Exponent. To confi
 
 To publish something you've made, just follow these steps:
 
-  * In xde, create an Exponent account or login to an existing one using the pane on the right of the header.
+  * In XDE, create an Exponent account or login to an existing one using the pane on the right of the header.
 
   * Once you're logged in, open the project directory for the thing you want to publish. The packager should start, etc.
 
