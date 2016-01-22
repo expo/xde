@@ -34,3 +34,6 @@ Exponent XDE-*/
 
 # Emacs
 *~
+
+# OSX
+.DS_Store
