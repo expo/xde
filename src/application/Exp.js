@@ -28,28 +28,22 @@ async function determineEntryPoint(root) {
   return main;
 }
 
-async function _getReactNativeVersionAsync() {
-  let xdePackageJson = jsonFile(path.join(__dirname, '../../template/package.json'));
-  return await xdePackageJson.getAsync(['dependencies', 'react-native']);
-}
-
 async function createNewExpAsync(root, info, opts = {}) {
   let pp = path.parse(root);
   let name = pp.name;
 
   let author = await userSettings.getAsync('email', null);
 
-  let dependencies = {
-    'react-native': await _getReactNativeVersionAsync(),
-  };
+  let templatePackageJsonFile = jsonFile(path.join(__dirname, '../../template/package.json'));
+  let templatePackageJson = await templatePackageJsonFile.readAsync();
+
+  info = Object.assign(info, templatePackageJson);
 
   let data = Object.assign({
     name,
     version: '0.0.0',
     description: "Hello Exponent!",
-    main: 'main.js',
     author,
-    dependencies,
     //license: "MIT",
     // scripts: {
     //   "test": "echo \"Error: no test specified\" && exit 1"
@@ -127,15 +121,6 @@ async function expInfoSafeAsync(root) {
   }
 }
 
-async function abiVersionAsync() {
-  let packageJsonFilePath = path.join(__dirname, '../../package.json');
-  let exponent = await jsonFile(packageJsonFilePath).getAsync('exponent');
-  if (!exponent.hasOwnProperty('abiVersion')) {
-    throw new Error(`ABI version is missing from XDE's package.json file`);
-  }
-  return exponent.abiVersion;
-}
-
 async function getPublishInfoAsync(env, opts) {
   let root = env.root;
   let pkgJson = packageJsonForRoot(root);
@@ -144,7 +129,12 @@ async function getPublishInfoAsync(env, opts) {
     name,
     description,
     version,
+    exp,
   } = pkg;
+
+  if (!exp || !exp.abiVersion) {
+    throw new Error(`exp.abiVersion is missing from package.json file`);
+  }
 
   let {
     username,
@@ -156,7 +146,7 @@ async function getPublishInfoAsync(env, opts) {
   let remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
   let localPackageName = name;
   let packageVersion = version;
-  let abiVersion = await abiVersionAsync();
+  let abiVersion = exp.abiVersion;
 
   let ngrokUrl = urlUtils.constructPublishUrl(packagerController);
   return {
@@ -191,5 +181,4 @@ module.exports = {
   saveRecentExpRootAsync,
   recentValidExpsAsync,
   packageJsonForRoot,
-  _getReactNativeVersionAsync,
 };
