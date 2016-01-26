@@ -636,7 +636,7 @@ class App extends React.Component {
 
   @autobind
   _appendPackagerErrors(data) {
-    this._packagerLogsHtml += '<span class="log-err">' + escapeHtml(data) + '</span>';
+    this._packagerLogsHtml += '<div class="log-err">' + escapeHtml(data) + '</div>';
     this._updatePackagerLogState();
   }
 

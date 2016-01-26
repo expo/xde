@@ -32,6 +32,9 @@ PRE {
 .log-err {
   color: red;
   font-weight: 500;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .log-meta {
   color: #003A6B;
