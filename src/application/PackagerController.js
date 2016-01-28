@@ -1,3 +1,4 @@
+let _ = require('lodash');
 let child_process = require('child_process');
 let crayon = require('@ccheever/crayon');
 let express = require('express');
@@ -18,7 +19,7 @@ class PackagerController extends events.EventEmitter {
 
     let DEFAULT_OPTS = {
       port: undefined,
-      cliPath: path.join(__dirname, '..', '..', 'template/node_modules/react-native/local-cli/cli.js'),
+      cliPath: path.join(opts.absolutePath, 'node_modules/react-native/local-cli/cli.js'),
       mainModulePath: 'index.js',
       // absolutePath: root,
     };
@@ -71,6 +72,8 @@ class PackagerController extends events.EventEmitter {
 
     // Serve the manifest.
     let manifestHandler = async (req, res) => {
+      self.validatePackageJsonAsync();
+
       let pkg = await Exp.packageJsonForRoot(self.opts.absolutePath).readAsync();
       let manifest = pkg.exp || {};
       // TODO: remove bundlePath
@@ -194,7 +197,6 @@ class PackagerController extends events.EventEmitter {
   }
 
   async _stopPackagerAsync() {
-
     if (this._packager && (!this._packager.killed && (this._packager.exitCode === null))) {
       console.log("Stopping packager...");
       let stopped$ = new Promise((fulfill, reject) => {
@@ -236,6 +238,7 @@ class PackagerController extends events.EventEmitter {
   }
 
   async startAsync() {
+    this.validatePackageJsonAsync();
 
     // let root = this.opts.absolutePath;
     if (!this.opts.port || !this.opts.packagerPort) {
@@ -265,6 +268,56 @@ class PackagerController extends events.EventEmitter {
     return path.parse(this.opts.absolutePath).base;
   }
 
+  async validatePackageJsonAsync() {
+    let pkg = await Exp.packageJsonForRoot(this.opts.absolutePath).readAsync();
+    if (!pkg) {
+      this.emit('stderr', `Error: Can't find package.json`);
+      return;
+    }
+
+    if (!pkg.dependencies || !pkg.dependencies['react-native']) {
+      this.emit('stderr', `Error: Can't find react-native in package.json dependencies`);
+      return;
+    }
+
+    let reactNative = pkg.dependencies['react-native'];
+    if (reactNative.indexOf('exponentjs/react-native#') === -1) {
+      this.emit('stderr', `Error: Must use Exponent fork of react-native. See https://exponentjs.com/help`);
+      return;
+    }
+
+    if (!pkg.exp || !pkg.exp.abiVersion) {
+      this.emit('stderr', `Error: Can't find key exp.abiVersion in package.json. See https://exponentjs.com/help`);
+      return;
+    }
+
+    let abiVersion = pkg.exp.abiVersion;
+    if (abiVersion === 'UNVERSIONED') {
+      this.emit('stderr', `Warning: Using unversioned ABI. Do not publish until you set abiVersion in package.json`);
+      return;
+    }
+
+    let reactNativeTag = reactNative.substring(reactNative.lastIndexOf('#') + 1);
+
+    let abiVersions = await Api.callPathAsync('/--/abi-versions');
+    if (!abiVersions) {
+      this.emit('stderr', `Error: Couldn't connect to server`);
+      return;
+    }
+
+    if (!abiVersions[abiVersion]) {
+      this.emit('stderr', `Error: Invalid abiVersion. Valid options are ${_.keys(abiVersions).join(', ')}`);
+      return;
+    }
+
+    let abiVersionObject = abiVersions[abiVersion];
+    if (abiVersionObject['exponent-react-native-tag'] !== reactNativeTag) {
+      this.emit('stderr', `Error: Invalid version of react-native for abiVersion ${abiVersion}. Use github:exponentjs/react-native#${abiVersionObject['exponent-react-native-tag']}`);
+      return;
+    }
+
+    // Check any native module versions here
+  }
 }
 
 module.exports = PackagerController;
