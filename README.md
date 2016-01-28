@@ -10,14 +10,16 @@ We're going to bundle it up so that you just have to download one standalone app
 
 In the meantime, you can perform the following steps:
   * `git clone` this repository,
-  * Make sure you have Node version 4.1.1. If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
+  * Make sure you have Node version 5.5.0 (or compatible). If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
 
 ```shell
   touch ~/.profile
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
+
    [Open a new terminal window]
-  nvm install v4.1.1
-  nvm use v4.1.1
+
+  nvm install v5
+  nvm use v5
 ```
 
   * Go into the `xde/` directory where you cloned the Git repo and run `npm install`.
