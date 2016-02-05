@@ -129,7 +129,7 @@ class PackagerController extends events.EventEmitter {
     return this._ngrokUrl;
   }
 
-  async startOrRestartPackagerAsync() {
+  async startOrRestartPackagerAsync(options = {}) {
     if (!this.opts.packagerPort) {
       throw new Error("`this.opts.packagerPort` must be set before starting the packager!");
     }
@@ -141,16 +141,21 @@ class PackagerController extends events.EventEmitter {
 
     await this._stopPackagerAsync();
 
+    let cliOpts = ['start',
+      '--port', this.opts.packagerPort,
+      '--projectRoots', root,
+      '--assetRoots', root,
+    ];
+
+    if (options.reset) {
+      cliOpts.push('--reset-cache');
+    }
+    
     // Run the copy of Node that's embedded in Electron by setting the
     // ELECTRON_RUN_AS_NODE environment variable
     // Note: the CLI script sets up graceful-fs and sets ulimit to 4096 in the
     // child process
-    let packagerProcess = child_process.fork(this.opts.cliPath, [
-      'start',
-      '--port', this.opts.packagerPort,
-      '--projectRoots', root,
-      '--assetRoots', root,
-    ], {
+    let packagerProcess = child_process.fork(this.opts.cliPath, cliOpts, {
       cwd: path.dirname(path.dirname(this.opts.cliPath)),
       env: {
         ...process.env,

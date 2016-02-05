@@ -556,21 +556,15 @@ class App extends React.Component {
   _resetPackagerClicked() {
     console.log("Clearing the packager cache");
     this._logMetaMessage("Clearing the packager cache");
-    let cacheGlob = path.join(os.tmpdir(), 'react-packager-cache-*');
-    return del(cacheGlob, { force: true }).then(() => {
-      return this._restartPackagerClicked();
-    }, error => {
-      console.error("Failed to clear the packager cache: " + error.message);
-      this._logMetaError("Failed to clear the packager cache: " + error.message);
-    });
+    this._restartPackagerClicked({ reset: true });
   }
 
   @autobind
-  _restartPackagerClicked() {
+  _restartPackagerClicked(options) {
     if (this.state.packagerController) {
       console.log("Restarting packager...");
       this._logMetaMessage("Restarting packager...");
-      this.state.packagerController.startOrRestartPackagerAsync().then(() => {
+      this.state.packagerController.startOrRestartPackagerAsync(options).then(() => {
         console.log("Packager restarted :)");
       }, (err) => {
         console.error("Failed to restart packager :(");
