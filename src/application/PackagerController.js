@@ -62,6 +62,21 @@ class PackagerController extends events.EventEmitter {
       },
     }));
 
+    app.use('/map', proxy('localhost:' + this.opts.packagerPort, {
+      forwardPath: (req, res) => {
+        let queryString = require('url').parse(req.url).query;
+        let platform = req.headers['exponent-platform'] || 'ios';
+        let path = '/' + urlUtils.guessMainModulePath(self.opts.entryPoint);
+        path += '.map';
+        path += '?';
+        if (queryString) {
+         path += queryString + '&';
+        }
+        path += 'platform=' + platform;
+        return path;
+      },
+    }));
+
     // Proxy sourcemaps to the packager.
     app.use('/', proxy('localhost:' + this.opts.packagerPort, {
       filter: function(req, res) {
