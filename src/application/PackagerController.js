@@ -97,6 +97,7 @@ class PackagerController extends events.EventEmitter {
       let packagerOpts = self._app.getPackagerOpts();
       packagerOpts.http = true;
       packagerOpts.redirect = false;
+      manifest.xde = true;
       manifest.bundleUrl = urlUtils.constructBundleUrl(self, packagerOpts) + '?' + queryParams;
       manifest.debuggerHost = urlUtils.constructDebuggerHost(self);
       manifest.mainModuleName = urlUtils.guessMainModulePath(self.opts.entryPoint);
