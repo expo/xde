@@ -5,6 +5,7 @@
     "abiVersion": "4.0.0"
   },
   "dependencies": {
-    "react-native": "github:exponentjs/react-native#2016-01-02"
+    "react-native": "github:exponentjs/react-native#2016-02-09",
+    "react": "^0.14.7"
   }
 }
