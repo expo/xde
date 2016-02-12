@@ -2,7 +2,7 @@
   "private": true,
   "main": "main.js",
   "exp": {
-    "abiVersion": "4.0.0"
+    "abiVersion": "5.0.0"
   },
   "dependencies": {
     "react-native": "github:exponentjs/react-native#2016-02-09",
