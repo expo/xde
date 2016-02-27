@@ -46,6 +46,7 @@ class App extends React.Component {
       url: null,
       hostType: 'ngrok',
       dev: true,
+      strict: false,
       minify: false,
       sendInput: null,
       savedSendToValue: null,
@@ -387,6 +388,10 @@ class App extends React.Component {
               this.setState({dev: !this.state.dev});
               event.target.blur();
           }}>dev</Button>
+          <Button bsSize="small" {...{active: this.state.strict}}  onClick={(event) => {
+              this.setState({strict: !this.state.strict});
+              event.target.blur();
+          }}>strict</Button>
           <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
               this.setState({minify: !this.state.minify});
               event.target.blur();
@@ -759,6 +764,7 @@ class App extends React.Component {
       lan: (this.state.hostType === 'lan'),
       localhost: (this.state.hostType === 'localhost'),
       dev: this.state.dev,
+      strict: this.state.strict,
       minify: this.state.minify,
       redirect: (this.state.urlType === 'redirect'),
     };

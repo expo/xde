@@ -28,6 +28,11 @@ function constructDebuggerHost(packageController) {
 
 function constructBundleQueryParams(opts) {
   let queryParams = 'dev=' + encodeURIComponent(!!opts.dev);
+
+  if (opts.hasOwnProperty('strict')) {
+    queryParams += '&strict=' + encodeURIComponent(!!opts.strict);
+  }
+
   if (opts.minify) {
     queryParams += '&minify=' + encodeURIComponent(!!opts.minify);
   }
