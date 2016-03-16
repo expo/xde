@@ -169,7 +169,7 @@ class PackagerController extends events.EventEmitter {
     if (options.reset) {
       cliOpts.push('--reset-cache');
     }
-    
+
     // Run the copy of Node that's embedded in Electron by setting the
     // ELECTRON_RUN_AS_NODE environment variable
     // Note: the CLI script sets up graceful-fs and sets ulimit to 4096 in the
@@ -310,33 +310,33 @@ class PackagerController extends events.EventEmitter {
       return;
     }
 
-    if (!pkg.exp || !pkg.exp.abiVersion) {
-      this.emit('stderr', `Error: Can't find key exp.abiVersion in package.json. See https://exponentjs.com/help`);
+    if (!pkg.exp || !pkg.exp.sdkVersion) {
+      this.emit('stderr', `Error: Can't find key exp.sdkVersion in package.json. See https://exponentjs.com/help`);
       return;
     }
 
-    let abiVersion = pkg.exp.abiVersion;
-    if (abiVersion === 'UNVERSIONED') {
-      this.emit('stderr', `Warning: Using unversioned ABI. Do not publish until you set abiVersion in package.json`);
+    let sdkVersion = pkg.exp.sdkVersion;
+    if (sdkVersion === 'UNVERSIONED') {
+      this.emit('stderr', `Warning: Using unversioned Exponent SDK. Do not publish until you set sdkVersion in package.json`);
       return;
     }
 
     let reactNativeTag = reactNative.substring(reactNative.lastIndexOf('#') + 1);
 
-    let abiVersions = await Api.callPathAsync('/--/abi-versions');
-    if (!abiVersions) {
+    let sdkVersions = await Api.callPathAsync('/--/sdk-versions');
+    if (!sdkVersions) {
       this.emit('stderr', `Error: Couldn't connect to server`);
       return;
     }
 
-    if (!abiVersions[abiVersion]) {
-      this.emit('stderr', `Error: Invalid abiVersion. Valid options are ${_.keys(abiVersions).join(', ')}`);
+    if (!sdkVersions[sdkVersion]) {
+      this.emit('stderr', `Error: Invalid sdkVersion. Valid options are ${_.keys(sdkVersions).join(', ')}`);
       return;
     }
 
-    let abiVersionObject = abiVersions[abiVersion];
-    if (abiVersionObject['exponent-react-native-tag'] !== reactNativeTag) {
-      this.emit('stderr', `Error: Invalid version of react-native for abiVersion ${abiVersion}. Use github:exponentjs/react-native#${abiVersionObject['exponent-react-native-tag']}`);
+    let sdkVersionObject = sdkVersions[sdkVersion];
+    if (sdkVersionObject['exponent-react-native-tag'] !== reactNativeTag) {
+      this.emit('stderr', `Error: Invalid version of react-native for sdkVersion ${sdkVersion}. Use github:exponentjs/react-native#${sdkVersionObject['exponent-react-native-tag']}`);
       return;
     }
 

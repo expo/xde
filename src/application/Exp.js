@@ -132,8 +132,8 @@ async function getPublishInfoAsync(env, opts) {
     exp,
   } = pkg;
 
-  if (!exp || !exp.abiVersion) {
-    throw new Error(`exp.abiVersion is missing from package.json file`);
+  if (!exp || !exp.sdkVersion) {
+    throw new Error(`exp.sdkVersion is missing from package.json file`);
   }
 
   let {
@@ -146,7 +146,7 @@ async function getPublishInfoAsync(env, opts) {
   let remoteFullPackageName = '@' + remoteUsername + '/' + remotePackageName;
   let localPackageName = name;
   let packageVersion = version;
-  let abiVersion = exp.abiVersion;
+  let sdkVersion = exp.sdkVersion;
 
   let ngrokUrl = urlUtils.constructPublishUrl(packagerController);
   return {
@@ -158,7 +158,7 @@ async function getPublishInfoAsync(env, opts) {
       remotePackageName,
       remoteFullPackageName,
       ngrokUrl,
-      abiVersion,
+      sdkVersion,
     },
     body: pkg,
   };
