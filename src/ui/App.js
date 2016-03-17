@@ -371,7 +371,7 @@ class App extends React.Component {
           <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
               this.setState({hostType: 'ngrok'});
               event.target.blur();
-          }}>ngrok</Button>
+          }}>Tunnel</Button>
           <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
               this.setState({hostType: 'lan'});
               event.target.blur();
@@ -524,8 +524,8 @@ class App extends React.Component {
       }}>
         <Button style={{marginRight: 5}} {...activeProp} onClick={this._resetPackagerClicked}>Clear Packager Cache</Button>
         <Button style={{marginRight: 10,}} {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
-        <Button {...activeProp} onClick={
-            this._restartNgrokClicked}>Restart ngrok</Button>
+        {/*<Button {...activeProp} onClick={
+            this._restartNgrokClicked}>Restart Tunnel</Button>*/}
       </ButtonToolbar>
     );
   }

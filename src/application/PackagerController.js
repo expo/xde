@@ -142,17 +142,38 @@ class PackagerController extends events.EventEmitter {
 
     // this._ngrokUrl = await ngrok.promise.connect(this.opts.port);
     console.log("Gonna cconnect to ngrok");
+
+    let username = null;
+    try {
+      let result = await Api.callMethodAsync('whoami', []);
+
+      if (result && result.user && result.user.username) {
+        username = result.user.username;
+      }
+    } catch (e) {
+      console.error("Couldn't determine who you are logged in as: " + e);
+    }
+
+    let hostname = null;
+    if (username) {
+      hostname = urlUtils.randomIdentifierForUser(username) + '.' + config.ngrok.domain;
+    } else {
+      hostname = urlUtils.sevenDigitIdentifier() + '.' + config.ngrok.domain;
+    }
+
+    console.log("hostname=" + hostname);
+
     try {
       this._ngrokUrl = await ngrok.promise.connect({
-        hostname: 'charlie-xde-dev4.exp.direct',
+        hostname,
         authtoken: config.ngrok.authToken,
         port: this.opts.port,
         proto: 'http',
       });
+      console.log("ngrok url = " + this._ngrokUrl);
     } catch (e) {
       console.error("Problem with ngrok: " + e);
     }
-    console.log("ngrok url = " + this._ngrokUrl);
 
     this.emit('ngrok-did-start', this.opts.port, this._ngrokUrl);
     this.emit('ngrok-ready', this.opts.port, this._ngrokUrl);

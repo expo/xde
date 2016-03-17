@@ -99,6 +99,26 @@ function guessMainModulePath(entryPoint) {
   return entryPoint.replace(/\.js$/, '');
 }
 
+function randomIdentifier(length=6) {
+  let alphabet = '23456789qwertyuipasdfghjkzxcvbnm';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    let j = Math.floor(Math.random() * alphabet.length);
+    let c = alphabet.substr(j, 1);
+    result += c;
+  }
+  return result;
+
+}
+
+function sevenDigitIdentifier() {
+  return randomIdentifier(3) + '-' + randomIdentifier(4);
+}
+
+function randomIdentifierForUser(username) {
+  return username + '-' + randomIdentifier(3) + '-' + randomIdentifier(2);
+}
+
 module.exports = {
   constructBundleUrl,
   constructManifestUrl,
@@ -108,4 +128,7 @@ module.exports = {
   expUrlFromHttpUrl,
   httpUrlFromExpUrl,
   guessMainModulePath,
+  randomIdentifier,
+  sevenDigitIdentifier,
+  randomIdentifierForUser,
 };
