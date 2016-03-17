@@ -10,6 +10,7 @@ let proxy = require('express-http-proxy');
 let events = require('events');
 
 let Api = require('./Api');
+let config = require('../config');
 let Exp = require('./Exp');
 let urlUtils = require('./urlUtils');
 
@@ -139,7 +140,19 @@ class PackagerController extends events.EventEmitter {
 
     this.emit('ngrok-will-start', this.opts.port);
 
-    this._ngrokUrl = await ngrok.promise.connect(this.opts.port);
+    // this._ngrokUrl = await ngrok.promise.connect(this.opts.port);
+    console.log("Gonna cconnect to ngrok");
+    try {
+      this._ngrokUrl = await ngrok.promise.connect({
+        hostname: 'charlie-xde-dev4.exp.direct',
+        authtoken: config.ngrok.authToken,
+        port: this.opts.port,
+        proto: 'http',
+      });
+    } catch (e) {
+      console.error("Problem with ngrok: " + e);
+    }
+    console.log("ngrok url = " + this._ngrokUrl);
 
     this.emit('ngrok-did-start', this.opts.port, this._ngrokUrl);
     this.emit('ngrok-ready', this.opts.port, this._ngrokUrl);
