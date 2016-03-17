@@ -59,7 +59,7 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "my-local-ip": "^1.0.0",
-    "ngrok": "^0.1.99",
+    "ngrok": "^2.1.6",
     "plist": "^1.2.0",
     "promise-props": "^1.0.0",
     "radium": "^0.16.6",
