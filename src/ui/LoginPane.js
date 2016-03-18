@@ -4,8 +4,11 @@ let Button = require('react-bootstrap/lib/Button');
 let ButtonInput = require('react-bootstrap/lib/ButtonInput');
 let Input = require('react-bootstrap/lib/Input');
 
-let Api = require('../application/Api');
-let login = require('../application/login');
+import {
+  Api,
+  Login,
+} from 'xdl';
+
 let OverlayTooltip = require('./OverlayTooltip');
 
 let autobind = require('autobind-decorator');
@@ -96,7 +99,7 @@ class LoginPane extends React.Component {
   @autobind
   _logoutClicked() {
     console.log("logout clicked");
-    login.logoutAsync().then(() => {
+    Login.logoutAsync().then(() => {
       console.log("logout successful");
       this.setState({loggedInAs: null, errorMessage: null});
       if (this.props.onLogout) {
@@ -111,7 +114,7 @@ class LoginPane extends React.Component {
   @autobind
   _loginSubmitted() {
     console.log("login clicked");
-    login.loginOrAddUserAsync({
+    Login.loginOrAddUserAsync({
       username: this.state.username,
       password: this.state.password,
     }).then((result) => {

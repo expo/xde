@@ -7,18 +7,17 @@ let gitInfoAsync = require('git-info-async');
 let jsonFile = require('@exponent/json-file');
 let path = require('path');
 
-let Api = require('../application/Api');
-let config = require('../config');
+import {
+  Api,
+  Exp,
+  FileSystem,
+} from 'xdl';
+
 let Commands = require('./Commands');
-let Exp = require('../application/Exp');
-let fileSystem = require('../application/fileSystem');
 let LoginPane = require('./LoginPane');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let OverlayTooltip = require('./OverlayTooltip');
 let StyleConstants = require('./StyleConstants');
-let simulator = require('../application/simulator');
-let urlUtils = require('../application/urlUtils');
-let userSettings = require('../application/userSettings');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -49,21 +48,21 @@ class FileSystemControls extends React.Component {
   _showProjectInFinder() {
     let dir = this._dir();
     console.log("dir=", dir);
-    fileSystem.openFinderToFolderAsync(this._dir()).catch((err) => {
+    FileSystem.openFinderToFolderAsync(this._dir()).catch((err) => {
       console.error(err);
     });
   }
 
   @autobind
   _openProjectFolderInTerminal() {
-    fileSystem.openFolderInItermOrTerminalAsync(this._dir()).catch((err) => {
+    FileSystem.openFolderInItermOrTerminalAsync(this._dir()).catch((err) => {
       console.error(err);
     });
   }
 
   @autobind
   _openProjectInEditor() {
-    fileSystem.openProjectInEditorAsync(this._dir()).catch((err) => {
+    FileSystem.openProjectInEditorAsync(this._dir()).catch((err) => {
       console.error(err);
     });
   }

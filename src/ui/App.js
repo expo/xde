@@ -13,16 +13,19 @@ let jsonFile = require('@exponent/json-file');
 let os = require('os');
 let path = require('path');
 
-let Api = require('../application/Api');
+import {
+  Api,
+  Exp,
+  UrlUtils,
+  UserSettings,
+} from 'xdl';
+
 let config = require('../config');
 let Commands = require('./Commands');
-let Exp = require('../application/Exp');
 let FileSystemControls = require('./FileSystemControls');
 let LoginPane = require('./LoginPane');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
-let urlUtils = require('../application/urlUtils');
-let userSettings = require('../application/userSettings');
 let SimulatorControls = require('./SimulatorControls');
 
 let Button = require('react-bootstrap/lib/Button');
@@ -607,7 +610,7 @@ class App extends React.Component {
     Commands.sendAsync(sendTo, url_).then(() => {
       this._logMetaMessage(message);
 
-      userSettings.updateAsync('sendTo', sendTo).catch((err) => {
+      UserSettings.updateAsync('sendTo', sendTo).catch((err) => {
         this._logMetaWarning("Couldn't save the number or e-mail you sent do");
       });
 
@@ -718,7 +721,7 @@ class App extends React.Component {
     // Menu.setupMenu(this);
 
     // console.log("Getting sendTo");
-    userSettings.getAsync('sendTo').then((sendTo) => {
+    UserSettings.getAsync('sendTo').then((sendTo) => {
       this.setState({sendTo});
     }, (err) => {
       // Probably means that there's no saved value here; not a huge deal
@@ -754,7 +757,7 @@ class App extends React.Component {
     }
 
     let opts = this.getPackagerOpts();
-    return urlUtils.constructManifestUrl(this.state.packagerController, opts);
+    return UrlUtils.constructManifestUrl(this.state.packagerController, opts);
   }
 
   getPackagerOpts() {

@@ -1,8 +1,9 @@
 let path = require('path');
 
-let Exp = require('../application/Exp');
-let PackagerController = require('../application/PackagerController');
-let userSettings = require('../application/userSettings');
+import {
+  Exp,
+  PackagerController,
+} from 'xdl';
 
 module.exports = {
   runAsync: async function (env, app) {

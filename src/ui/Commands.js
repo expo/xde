@@ -1,6 +1,8 @@
 
-let Api = require('../application/Api');
-let Exp = require('../application/Exp');
+import {
+  Api,
+  Exp,
+} from 'xdl';
 
 async function showOpenDialog(opts) {
   return new Promise((fulfill, reject) => {
