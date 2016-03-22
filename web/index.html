@@ -28,6 +28,7 @@
         ReactDOM.render(rootElement, rootNode);
 
         window.addEventListener('beforeunload', () => {
+          require('xdl').PackagerController.exit();
           ReactDOM.unmountComponentAtNode(rootNode);
         });
       })();

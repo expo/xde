@@ -24,7 +24,6 @@ class LoginPane extends React.Component {
     };
 
     global._LoginPane = this;
-
   }
 
   render() {
@@ -136,7 +135,7 @@ class LoginPane extends React.Component {
   }
 
   componentDidMount() {
-    Api.callMethodAsync('whoami', []).then((result) => {
+    Login.whoamiAsync().then((result) => {
       this.setState({loggedInAs: result.user});
       if (result.user && this.props.onLogin) {
         this.props.onLogin(result.user);

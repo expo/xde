@@ -8,8 +8,6 @@ import process from 'process';
 import Menu from './remote/Menu';
 
 import config from './config';
-import { Config as xdlConfig } from 'xdl';
-xdlConfig.api = config.api;
 
 const app = electron.app;
 
