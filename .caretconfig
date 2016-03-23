@@ -1,0 +1,7 @@
+{
+  npmLock: {
+    repo: "git@gitlab.com:exponentjs-npm-lock/xde.git",
+    incrementalInstall: true,
+    crossPlatform: true
+  }
+}

@@ -7,22 +7,23 @@ let gitInfoAsync = require('git-info-async');
 let jsonFile = require('@exponent/json-file');
 let path = require('path');
 
-let Api = require('../application/Api');
-let config = require('../config');
+import {
+  Api,
+  Exp,
+  Simulator,
+  UrlUtils,
+} from 'xdl';
+
 let Commands = require('./Commands');
-let Exp = require('../application/Exp');
 let LoginPane = require('./LoginPane');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
-let simulator = require('../application/simulator');
-let urlUtils = require('../application/urlUtils');
-let userSettings = require('../application/userSettings');
 
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 
-class Simulator extends React.Component {
+class SimulatorControls extends React.Component {
 
   constructor() {
     super();
@@ -35,7 +36,7 @@ class Simulator extends React.Component {
   @autobind
   async _openSimulatorAsync() {
     console.log("openSimulatorAsync");
-    await simulator.openSimulatorAsync();
+    await Simulator.openSimulatorAsync();
   }
 
   @autobind
@@ -50,13 +51,13 @@ class Simulator extends React.Component {
 
   @autobind
   async _installAppInSimulatorAsync() {
-    return await simulator.installExponentOnSimulatorAsync();
+    return await Simulator.installExponentOnSimulatorAsync();
   }
 
   @autobind
   async _openUrlInSimulatorAsync(url) {
-    let result = await simulator.openUrlInSimulatorAsync(url);
-    await simulator.openSimulatorAsync();
+    let result = await Simulator.openUrlInSimulatorAsync(url);
+    await Simulator.openSimulatorAsync();
     return result;
   }
 
@@ -68,7 +69,7 @@ class Simulator extends React.Component {
   }
 
   _projectUrl() {
-    return urlUtils.constructManifestUrl(this.props.packagerController, {
+    return UrlUtils.constructManifestUrl(this.props.packagerController, {
       localhost: true,
       dev: this.props.dev,
       minify: this.props.minify,
@@ -110,7 +111,7 @@ class Simulator extends React.Component {
   @autobind
   _updateSimulatorRunningState() {
     // console.log("updateSimulatorRunningState");
-    simulator.isSimulatorRunningAsync().then((result) => {
+    Simulator.isSimulatorRunningAsync().then((result) => {
       // console.log("updated simulatorRunningState");
       this.setState({isSimulatorRunning: result});
     }, (err) => {
@@ -121,7 +122,7 @@ class Simulator extends React.Component {
   componentDidMount() {
 
 
-    simulator.isSimulatorInstalledAsync().then((result) => {
+    Simulator.isSimulatorInstalledAsync().then((result) => {
       this.setState({isSimulatorInstalled: result});
     }, (err) => {
       console.error("Failed to determine if simulator is installed", err);
@@ -134,4 +135,4 @@ class Simulator extends React.Component {
 
 }
 
-module.exports = Simulator;
+module.exports = SimulatorControls;

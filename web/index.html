@@ -22,12 +22,13 @@
         var ReactDOM = require('react-dom');
         var App = require('../build/ui/App');
         var rootElement = React.createElement(App, {
-          emitter: Remote.require('./application/AppEmitter'),
+          emitter: Remote.require('xdl').AppEmitter,
         });
         var rootNode = document.getElementById('app');
         ReactDOM.render(rootElement, rootNode);
 
         window.addEventListener('beforeunload', () => {
+          require('xdl').PackagerController.exit();
           ReactDOM.unmountComponentAtNode(rootNode);
         });
       })();

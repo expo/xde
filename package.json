@@ -69,6 +69,7 @@
     "react-loading-indicator": "^0.2.0",
     "request": "^2.69.0",
     "slugid": "^1.1.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "xdl": "^0.0.2"
   }
 }

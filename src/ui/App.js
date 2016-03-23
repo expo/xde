@@ -13,16 +13,24 @@ let jsonFile = require('@exponent/json-file');
 let os = require('os');
 let path = require('path');
 
-let Api = require('../application/Api');
+import {
+  Api,
+  Config as xdlConfig,
+  Exp,
+  UrlUtils,
+  UserSettings,
+  ProjectSettings,
+  RunPackager,
+} from 'xdl';
+
 let config = require('../config');
+xdlConfig.api = config.api;
+
 let Commands = require('./Commands');
-let Exp = require('../application/Exp');
 let FileSystemControls = require('./FileSystemControls');
 let LoginPane = require('./LoginPane');
 let NewVersionAvailable = require('./NewVersionAvailable');
 let StyleConstants = require('./StyleConstants');
-let urlUtils = require('../application/urlUtils');
-let userSettings = require('../application/userSettings');
 let SimulatorControls = require('./SimulatorControls');
 
 let Button = require('react-bootstrap/lib/Button');
@@ -44,17 +52,13 @@ class App extends React.Component {
       packagerLogs: '',
       packagerErrors: '',
       url: null,
-      hostType: 'ngrok',
-      dev: true,
-      strict: false,
-      minify: false,
       sendInput: null,
       savedSendToValue: null,
-      minify: false,
       recentExps: null,
-      urlType: 'exp',
       user: null,
       projectUrl: null,
+      projectSettings: null,
+      computedUrl: null,
     }
 
     this._packagerLogsHtml = '';
@@ -64,9 +68,8 @@ class App extends React.Component {
   }
 
   _renderUrl() {
-
     let style = Object.assign({}, Styles.url);
-    let displayText = this._computeUrl();
+    let displayText = this.state.computedUrl;
 
     return (
       <StyleRoot style={{
@@ -138,7 +141,6 @@ class App extends React.Component {
   }
 
   _renderPackagerConsole() {
-
     if (this.state.packagerController) {
       return (
         <div
@@ -154,7 +156,6 @@ class App extends React.Component {
         this._renderNoPackager()
       );
     }
-
   }
 
   _renderNoPackager() {
@@ -203,6 +204,7 @@ class App extends React.Component {
           this._runPackagerAsync({
             root: exp.root,
           }).catch((err) => {
+            console.log("Problem: " + err);
             this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
           });
         }}
@@ -227,7 +229,6 @@ class App extends React.Component {
   }
 
   render() {
-
     return (
       <div style={{
         display: 'flex',
@@ -280,7 +281,7 @@ class App extends React.Component {
             )} */}
           </div>
 
-          {!!this.state.packagerController && (
+          {!!this.state.packagerController && !!this.state.projectSettings && (
             <div>
 
               <FileSystemControls style={{
@@ -289,10 +290,15 @@ class App extends React.Component {
               {this._renderUrl()}
               {this._renderUrlOptionButtons()}
 
-              <SimulatorControls style={{
+              <SimulatorControls
+                style={{
                   marginLeft: 10,
                   marginTop: 10,
-              }} packagerController={this.state.packagerController} dev={this.state.dev} minify={this.state.minify} />
+                }}
+                packagerController={this.state.packagerController}
+                dev={this.state.projectSettings.dev}
+                minify={this.state.projectSettings.minify}
+              />
 
               <div style={{
                   display: 'flex',
@@ -349,7 +355,20 @@ class App extends React.Component {
     );
   }
 
+  @autobind
+  async _setProjectSettingAsync(options) {
+    let projectSettings = await ProjectSettings.setAsync(this.state.env.root, options);
+    let computedUrl = await this._computeUrlAsync();
+    this.setState({
+      projectSettings,
+      computedUrl,
+    });
+  }
+
   _renderUrlOptionButtons() {
+    if (!this.state.projectSettings) {
+      return;
+    }
 
     let buttonGroupSpacing = 43;
 
@@ -368,47 +387,47 @@ class App extends React.Component {
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: (this.state.hostType === 'ngrok')}} onClick={(event) => {
-              this.setState({hostType: 'ngrok'});
+          <Button bsSize="small" {...{active: (this.state.projectSettings.hostType === 'ngrok')}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({hostType: 'ngrok'});
           }}>ngrok</Button>
-          <Button bsSize="small" {...{active: (this.state.hostType === 'lan')}} onClick={(event) => {
-              this.setState({hostType: 'lan'});
+          <Button bsSize="small" {...{active: (this.state.projectSettings.hostType === 'lan')}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({hostType: 'lan'});
           }}>LAN</Button>
-          <Button bsSize="small" {...{active: (this.state.hostType === 'localhost')}} onClick={(event) => {
-              this.setState({hostType: 'localhost'});
+          <Button bsSize="small" {...{active: (this.state.projectSettings.hostType === 'localhost')}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({hostType: 'localhost'});
           }}>localhost</Button>
         </ButtonGroup>
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: this.state.dev}}  onClick={(event) => {
-              this.setState({dev: !this.state.dev});
+          <Button bsSize="small" {...{active: this.state.projectSettings.dev}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({dev: !this.state.projectSettings.dev});
           }}>dev</Button>
-          <Button bsSize="small" {...{active: this.state.strict}}  onClick={(event) => {
-              this.setState({strict: !this.state.strict});
+          <Button bsSize="small" {...{active: this.state.projectSettings.strict}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({strict: !this.state.projectSettings.strict});
           }}>strict</Button>
-          <Button bsSize="small" {...{active: this.state.minify}} onClick={(event) => {
-              this.setState({minify: !this.state.minify});
+          <Button bsSize="small" {...{active: this.state.projectSettings.minify}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({minify: !this.state.projectSettings.minify});
           }}>minify</Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button bsSize="small" {...{active: this.state.urlType === 'exp'}} onClick={(event) => {
-              this.setState({urlType: 'exp'});
+          <Button bsSize="small" {...{active: this.state.projectSettings.urlType === 'exp'}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({urlType: 'exp'});
           }}>exp</Button>
-          <Button bsSize="small" {...{active: this.state.urlType === 'http'}} onClick={(event) => {
-              this.setState({urlType: 'http'});
+          <Button bsSize="small" {...{active: this.state.projectSettings.urlType === 'http'}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({urlType: 'http'});
           }}>http</Button>
-          <Button bsSize="small" {...{active: this.state.urlType === 'redirect'}} onClick={(event) => {
-              this.setState({urlType: 'redirect'});
+          <Button bsSize="small" {...{active: this.state.projectSettings.urlType === 'redirect'}} onClick={(event) => {
               event.target.blur();
+              this._setProjectSettingAsync({urlType: 'redirect'});
           }}>redirect</Button>
         </ButtonGroup>
       </div>
@@ -437,7 +456,7 @@ class App extends React.Component {
   }
 
   async getPublishInfoAsync() {
-    return Exp.getPublishInfoAsync(this.state.env, {
+    return Exp.getPublishInfoAsync({
       packagerController: this.state.packagerController,
       username: this.state.user.username,
     });
@@ -531,8 +550,6 @@ class App extends React.Component {
   }
 
   _renderSendLinkButton() {
-
-
     let sendActiveProp = {
       disabled: !this._isSendToActive(),
     };
@@ -540,7 +557,6 @@ class App extends React.Component {
     return (
       <Button {...sendActiveProp} onClick={this._sendClicked}>Send Link for Phone</Button>
     );
-
   }
 
   @autobind
@@ -600,14 +616,14 @@ class App extends React.Component {
 
   @autobind
   _sendClicked() {
-    let url_ = this._computeUrl();
+    let url_ = this.state.computedUrl;
     let sendTo = this.state.sendTo;
     console.log("Send link:", url_, "to", sendTo);
     let message = "Sent link " + url_ + " to " + sendTo;
     Commands.sendAsync(sendTo, url_).then(() => {
       this._logMetaMessage(message);
 
-      userSettings.updateAsync('sendTo', sendTo).catch((err) => {
+      UserSettings.updateAsync('sendTo', sendTo).catch((err) => {
         this._logMetaWarning("Couldn't save the number or e-mail you sent do");
       });
 
@@ -672,19 +688,21 @@ class App extends React.Component {
       return null;
     }
 
-    let runPackager = require('../commands/runPackager');
-    let pc = await runPackager.runAsync(env, this);
-
-    this.setState({packagerReady: false, ngrokReady: false});
+    let projectSettings = await ProjectSettings.readAsync(env.root);
+    let pc = await RunPackager.runAsync(env);
 
     this._packagerController = pc;
 
     pc.on('stdout', this._appendPackagerLogs);
     pc.on('stderr', this._appendPackagerErrors);
-    pc.on('ngrok-ready', () => {
+    pc.on('ngrok-ready', async () => {
       this.setState({ngrokReady: true});
-      // this._maybeRecomputeUrl();
       this._logMetaMessage("ngrok ready.");
+
+      let computedUrl = await this._computeUrlAsync();
+      this.setState({
+        computedUrl,
+      });
     });
 
     pc.on('packager-ready', () => {
@@ -693,15 +711,24 @@ class App extends React.Component {
       this._logMetaMessage("Packager ready.");
     });
 
-    this.setState({packagerController: this._packagerController});
+    this.setState({
+      packagerReady: false,
+      ngrokReady: false,
+      projectSettings,
+      packagerController: this._packagerController,
+    }, async () => {
+      let computedUrl = await this._computeUrlAsync();
+      this.setState({
+        computedUrl,
+      });
 
-    pc.startAsync();
+      pc.startAsync();
+    });
 
     return pc;
   }
 
   componentDidMount() {
-
     if (config.__DEV__) {
       // With the ability to open recent stuff, not much
       // need to auto run the packager anymore.
@@ -718,7 +745,7 @@ class App extends React.Component {
     // Menu.setupMenu(this);
 
     // console.log("Getting sendTo");
-    userSettings.getAsync('sendTo').then((sendTo) => {
+    UserSettings.getAsync('sendTo').then((sendTo) => {
       this.setState({sendTo});
     }, (err) => {
       // Probably means that there's no saved value here; not a huge deal
@@ -744,32 +771,23 @@ class App extends React.Component {
     // });
   }
 
-  _computeUrl() {
-    if (!this.state.packagerController) {
+  async _computeUrlAsync() {
+    if (!this.state.packagerController || !this.state.projectSettings) {
       return null;
     }
 
-    if ((this.state.hostType === 'ngrok') && (!this.state.packagerController.getNgrokUrl())) {
+    if ((this.state.projectSettings.hostType === 'ngrok') && (!this.state.packagerController.getNgrokUrl())) {
       return null;
     }
 
-    let opts = this.getPackagerOpts();
-    return urlUtils.constructManifestUrl(this.state.packagerController, opts);
-  }
+    let opts = await Exp.getPackagerOptsAsync(this.state.env.root);
 
-  getPackagerOpts() {
-    return {
-      http: (this.state.urlType === 'http'),
-      ngrok: (this.state.hostType === 'ngrok'),
-      lan: (this.state.hostType === 'lan'),
-      localhost: (this.state.hostType === 'localhost'),
-      dev: this.state.dev,
-      strict: this.state.strict,
-      minify: this.state.minify,
-      redirect: (this.state.urlType === 'redirect'),
-    };
+    try {
+      return UrlUtils.constructManifestUrl(this.state.packagerController, opts);
+    } catch (e) {
+      return null;
+    }
   }
-
 };
 
 let Styles = {
