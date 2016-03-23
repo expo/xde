@@ -206,6 +206,7 @@ class App extends React.Component {
           this._runPackagerAsync({
             root: exp.root,
           }).catch((err) => {
+            console.log("Problem: " + err);
             this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
           });
         }}
