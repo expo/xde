@@ -1,36 +1,15 @@
 # xde [![Slack](http://slack.exponentjs.com/badge.svg)](http://slack.exponentjs.com)
 The Exponent Development Environment - Beta release
 
-XDE is currently in beta but we're really happy for you to try it out! We recommend you download [our latest release here](https://github.com/exponentjs/xde/releases/latest).
+We recommend you download [our latest release here](https://github.com/exponentjs/xde/releases/latest).
 
-For running XDE from source, see the instructions below.
-
-## Quick Start Instructions
-
-- `git clone` this repository,
-- Make sure you have Node version 5.5.0 (or compatible). If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
-
-```shell
-touch ~/.profile
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
-
-   [Open a new terminal window]
-
-nvm install v5
-nvm use v5
-```
-
-- Go into the `xde/` directory where you cloned the Git repo and run `npm install`
-- Go into the `xde/template` directory and run `npm install` there too
-- Once that completes, run `npm start` to start the GUI
-
-### Making a New Project
+## Making a New Project
 
 To make a new project, just click the "New" button in the upper left hand corner of the window. Then choose or make an empty directory where you want your project to live and hit OK.
 
 This will setup that directory with a very basic React Native project that will work with Exponent and show off some basic but still cool things about React Native.
 
-### Viewing a Project on Your Phone
+## Viewing a Project on Your Phone
 
 Once you create a new project (or open an existing project), you'll see some log messages that the packager has started and ngrok has started and the URL bar will get populated.
 
@@ -41,7 +20,7 @@ The url that begins with `exp://...` is the URL you can use to access your proje
 - Go back to the XDE GUI on your computer and put in your phone number or e-mail address into the text box in the header, then hit the "Send Link" button. This will send a link via e-mail or text message, so make sure you use an address or phone number you can access from your phone.
 - Check your e-mail or texts and tap the link. The Exponent app should open and you should be able to view your experience there!
 
-### Converting an existing project to work with Exponent
+## Converting an existing project to work with Exponent
 
 React Native apps that don't use native modules can work with Exponent. To configure them, you typically need to do a few quick steps:
 
@@ -65,7 +44,7 @@ React Native apps that don't use native modules can work with Exponent. To confi
 
   Now you can open this directory in xde and send the URL to yourself and view what you've made.
 
-### Publishing a Project
+## Publishing a Project
 
 To publish something you've made, just follow these steps:
 
@@ -78,3 +57,23 @@ To publish something you've made, just follow these steps:
   * Once everything looks good, hit the "Publish" button. A few seconds later, you should get a clean URL sent to you that points to the exp.host server where your package was published to.
 
 You can publish as many times as you want and it will replace your old version, so don't worry about making a mistake!
+
+## Build From Source
+
+- `git clone` this repository,
+- `git checkout` one of the release tags.
+- Make sure you have Node version 5.5.0 (or compatible). If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
+
+```shell
+touch ~/.profile
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
+
+   [Open a new terminal window]
+
+nvm install v5
+nvm use v5
+```
+
+- Go into the `xde/` directory where you cloned the Git repo and run `npm install`
+- Go into the `xde/template` directory and run `npm install` there too
+- Once that completes, run `npm start` to start the GUI
