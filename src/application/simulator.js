@@ -51,9 +51,7 @@ async function pathToExponentSimulatorAppAsync() {
   let versionInfo = await metadata.reactNativeVersionInfoAsync();
   let versionPair = [versionInfo.versionDescription, versionInfo.versionSpecific];
   let pkgJson = jsonFile(path.resolve(__dirname, '../../template/package.json'));
-  let version = await pkgJson.getAsync('dependencies.react-native');
   return await simulatorAppForReactNativeVersionAsync(versionPair)
-  // return path.join(await pathToExponentSimulatorAppDirAsync(), 'Exponent.app');
 }
 
 async function installExponentOnSimulatorAsync() {
