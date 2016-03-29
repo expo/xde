@@ -25,10 +25,14 @@ gulp.task('package', tasks.packageSignedApp);
 gulp.task('unsigned-package', tasks.packageUnsignedApp);
 
 gulp.task('release', gulp.series(
+  tasks.clean,
+  tasks.babel,
   tasks.packageSignedApp,
   tasks.compressApp
 ));
 gulp.task('unsigned-release', gulp.series(
+  tasks.clean,
+  tasks.babel,
   tasks.packageUnsignedApp,
   tasks.compressApp
 ));
