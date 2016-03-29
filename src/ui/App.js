@@ -1,5 +1,6 @@
 let React = require('react');
 let ReactDOM = require('react-dom');
+let JsonFile = require('@exponent/json-file');
 
 let { StyleRoot } = require('radium');
 
@@ -9,7 +10,6 @@ let electron = require('electron');
 let escapeHtml = require('escape-html');
 let execAsync = require('exec-async');
 let gitInfoAsync = require('git-info-async');
-let jsonFile = require('@exponent/json-file');
 let os = require('os');
 let path = require('path');
 
@@ -204,7 +204,7 @@ class App extends React.Component {
           this._runPackagerAsync({
             root: exp.root,
           }).catch((err) => {
-            console.log("Problem: " + err);
+            console.log("Problem: " + err.stack);
             this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
           });
         }}
@@ -449,7 +449,7 @@ class App extends React.Component {
   }
 
   async _versionStringAsync() {
-    let pkgJsonFile = jsonFile(path.join(__dirname, '../../package.json'));
+    let pkgJsonFile = new JsonFile(path.join(__dirname, '../../package.json'));
     let versionString = await pkgJsonFile.getAsync('version');
     // console.log('vs =', vs);
     return versionString;

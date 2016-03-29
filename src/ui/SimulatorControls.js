@@ -4,7 +4,6 @@ let autobind = require('autobind-decorator');
 let escapeHtml = require('escape-html');
 let execAsync = require('exec-async');
 let gitInfoAsync = require('git-info-async');
-let jsonFile = require('@exponent/json-file');
 let path = require('path');
 
 import {

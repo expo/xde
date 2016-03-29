@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@ccheever/crayon": "^5.0.0",
-    "@exponent/json-file": "^3.0.0",
+    "@exponent/json-file": "^4.0.0",
     "@exponent/osascript": "^1.5.1",
     "autobind-decorator": "^1.3.3",
     "babel-polyfill": "^6.7.2",
@@ -59,7 +59,6 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "my-local-ip": "^1.0.0",
-    "ngrok": "^0.1.99",
     "plist": "^1.2.0",
     "promise-props": "^1.0.0",
     "radium": "^0.16.6",
@@ -70,6 +69,6 @@
     "request": "^2.69.0",
     "slugid": "^1.1.0",
     "url": "^0.11.0",
-    "xdl": "^0.0.5"
+    "xdl": "0.0.10"
   }
 }

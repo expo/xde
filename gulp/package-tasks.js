@@ -1,10 +1,11 @@
 import 'instapromise';
 
+import JsonFile from '@exponent/json-file';
+
 import electronPackager from 'electron-packager';
 import logger from 'gulplog';
 import path from 'path';
 import semver from 'semver';
-import jsonFile from '@exponent/json-file';
 import spawnAsync from '@exponent/spawn-async';
 
 import {
@@ -27,7 +28,7 @@ let tasks = {
   },
 
   async compressApp() {
-    let xdePackageJson = jsonFile(path.join(XDE_ROOT, 'package.json'));
+    let xdePackageJson = new JsonFile(path.join(XDE_ROOT, 'package.json'));
     let xdeVersion = await xdePackageJson.getAsync('version');
     await spawnAsync('zip', ['-rqy9', `Exponent-XDE-osx-${xdeVersion}.zip`, `${APP_NAME}.app`], {
       stdio: 'inherit',
@@ -75,7 +76,7 @@ async function packageAppAsync(signed) {
 }
 
 async function getElectronVersionAsync() {
-  let electronPackageJsonFile = jsonFile(
+  let electronPackageJsonFile = new JsonFile(
     path.join(XDE_ROOT, 'node_modules', 'electron-prebuilt', 'package.json')
   );
   return await electronPackageJsonFile.getAsync('version');
