@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/exponentjs/xde#readme",
   "dependencies": {
-    "@exponent/electron-cookies": "^1.0.0",
+    "@exponent/electron-cookies": "^1.0.1",
     "@exponent/json-file": "^4.0.0",
     "autobind-decorator": "^1.3.3",
     "babel-polyfill": "^6.7.4",

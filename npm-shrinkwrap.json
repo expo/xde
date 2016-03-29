@@ -20,8 +20,8 @@
       }
     },
     "@exponent/electron-cookies": {
-      "version": "1.0.0",
-      "from": "@exponent/electron-cookies@>=1.0.0 <2.0.0"
+      "version": "1.0.1",
+      "from": "@exponent/electron-cookies@>=1.0.1 <2.0.0"
     },
     "@exponent/json-file": {
       "version": "4.0.0",
