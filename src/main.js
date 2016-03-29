@@ -1,9 +1,7 @@
 import 'babel-polyfill';
 
 import electron from 'electron';
-import os from 'os';
 import path from 'path';
-import process from 'process';
 
 import Menu from './remote/Menu';
 
