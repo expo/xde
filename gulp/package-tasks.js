@@ -5,7 +5,6 @@ import JsonFile from '@exponent/json-file';
 import electronPackager from 'electron-packager';
 import logger from 'gulplog';
 import path from 'path';
-import semver from 'semver';
 import spawnAsync from '@exponent/spawn-async';
 
 import {
@@ -54,7 +53,10 @@ async function checkNativeModulesVersionAsync() {
 async function packageAppAsync(signed) {
   await checkNativeModulesVersionAsync();
 
-  let electronVersion = await getElectronVersionAsync();
+  let [xdeVersion, electronVersion] = await Promise.all([
+    JsonFile.getAsync(path.join(XDE_ROOT, 'package.json'), 'version'),
+    getElectronVersionAsync(),
+  ]);
   let iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
 
   let appPath = await electronPackager.promise({
@@ -64,11 +66,13 @@ async function packageAppAsync(signed) {
     arch: ARCH,
     version: electronVersion,
     'app-bundle-id': APP_BUNDLE_ID,
+    'app-copyright': `Copyright (c) ${new Date().getFullYear()} Exponent`,
+    'build-version': xdeVersion,
     icon: iconPath,
     ignore: [/^\/src(\/|$)/, /^\/\.babelrc$/],
     overwrite: true,
     prune: true,
-    sign: signed ? CODE_SIGNING_IDENTITY : null
+    'osx-sign': signed ? { identity: CODE_SIGNING_IDENTITY } : null,
   });
 
   logger.info(`Packaged ${signed ? 'signed' : 'unsigned'} app at ${appPath}`);
