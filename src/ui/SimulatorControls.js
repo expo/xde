@@ -63,13 +63,13 @@ class SimulatorControls extends React.Component {
 
   @autobind
   async _openProjectUrlInSimulatorAsync() {
-    let projectUrl = this._projectUrl();
+    let projectUrl = await this._projectUrlAsync();
     console.log("projectUrl=" + projectUrl);
     return await this._openUrlInSimulatorAsync(projectUrl);
   }
 
-  _projectUrl() {
-    return UrlUtils.constructManifestUrl(this.props.packagerController, {
+  async _projectUrlAsync() {
+    return UrlUtils.constructManifestUrlAsync(this.props.packagerController.getRoot(), {
       localhost: true,
       dev: this.props.dev,
       minify: this.props.minify,

@@ -698,16 +698,10 @@ class App extends React.Component {
     pc.on('ngrok-ready', async () => {
       this.setState({ngrokReady: true});
       this._logMetaMessage("ngrok ready.");
-
-      let computedUrl = await this._computeUrlAsync();
-      this.setState({
-        computedUrl,
-      });
     });
 
     pc.on('packager-ready', () => {
       this.setState({packagerReady: true});
-      // this._maybeRecomputeUrl();
       this._logMetaMessage("Packager ready.");
     });
 
@@ -717,12 +711,12 @@ class App extends React.Component {
       projectSettings,
       packagerController: this._packagerController,
     }, async () => {
+      await pc.startAsync();
+
       let computedUrl = await this._computeUrlAsync();
       this.setState({
         computedUrl,
       });
-
-      pc.startAsync();
     });
 
     return pc;
@@ -776,17 +770,7 @@ class App extends React.Component {
       return null;
     }
 
-    if ((this.state.projectSettings.hostType === 'ngrok') && (!this.state.packagerController.getNgrokUrl())) {
-      return null;
-    }
-
-    let opts = await Exp.getPackagerOptsAsync(this.state.env.root);
-
-    try {
-      return UrlUtils.constructManifestUrl(this.state.packagerController, opts);
-    } catch (e) {
-      return null;
-    }
+    return UrlUtils.constructManifestUrlAsync(this.state.packagerController.getRoot());
   }
 };
 
