@@ -4448,9 +4448,8 @@
       "resolved": "https://registry.npmjs.org/wreck/-/wreck-6.3.0.tgz"
     },
     "xdl": {
-      "version": "0.0.4",
-      "from": "xdl@>=0.0.4 <0.0.5",
-      "resolved": "https://registry.npmjs.org/xdl/-/xdl-0.0.4.tgz",
+      "version": "0.0.5",
+      "from": "xdl@>=0.0.5 <0.0.6",
       "dependencies": {
         "@exponent/json-file": {
           "version": "4.0.0",
