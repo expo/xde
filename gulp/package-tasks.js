@@ -72,8 +72,8 @@ async function packageAppAsync(signed) {
     ignore: [/^\/src(\/|$)/, /^\/\.babelrc$/],
     overwrite: true,
     prune: true,
-    // 'osx-sign': signed ? { identity: CODE_SIGNING_IDENTITY } : null,
-    sign: signed ? CODE_SIGNING_IDENTITY : null,
+    'osx-sign': signed ? { identity: CODE_SIGNING_IDENTITY } : null,
+    // sign: signed ? CODE_SIGNING_IDENTITY : null,
   });
 
   logger.info(`Packaged ${signed ? 'signed' : 'unsigned'} app at ${appPath}`);
