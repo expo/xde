@@ -1,4 +1,4 @@
-let React = require('react');
+import React from 'react';
 
 class NewPackageForm extends React.Component {
 

@@ -1,8 +1,8 @@
-let React = require('react');
+import React from 'react';
 
-let _ = require('lodash');
-let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
-let Tooltip = require('react-bootstrap/lib/Tooltip');
+import _ from 'lodash';
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import Tooltip from 'react-bootstrap/lib/Tooltip';
 
 let nextId = 0;
 

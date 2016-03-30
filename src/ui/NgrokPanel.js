@@ -1,6 +1,6 @@
-let React = require('react');
+import React from 'react';
 
-let ProcessInfo = require('./ProcessInfo');
+import ProcessInfo from './ProcessInfo';
 
 class NgrokPanel extends React.Component {
   render() {

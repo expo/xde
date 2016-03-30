@@ -1,19 +1,18 @@
-let React = require('react');
+import React from 'react';
 
-let Button = require('react-bootstrap/lib/Button');
-let ButtonInput = require('react-bootstrap/lib/ButtonInput');
-let Input = require('react-bootstrap/lib/Input');
+import Button from 'react-bootstrap/lib/Button';
+import ButtonInput from 'react-bootstrap/lib/ButtonInput';
+import Input from 'react-bootstrap/lib/Input';
 
 import {
   Api,
   Login,
 } from 'xdl';
 
+import OverlayTooltip from './OverlayTooltip';
 import * as UsernameRules from '../UsernameRules';
 
-let OverlayTooltip = require('./OverlayTooltip');
-
-let autobind = require('autobind-decorator');
+import autobind from 'autobind-decorator';
 
 class LoginPane extends React.Component {
   constructor() {

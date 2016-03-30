@@ -1,10 +1,10 @@
-let Radium = require('radium');
-let React = require('react');
-let { Button } = require('react-bootstrap');
-let LoadingIndicator = require('react-loading-indicator');
+import Radium from 'radium';
+import React from 'react';
+import { Button } from 'react-bootstrap';
+import LoadingIndicator from 'react-loading-indicator';
 
-let autobind = require('autobind-decorator');
-let electron = require('electron');
+import autobind from 'autobind-decorator';
+import electron from 'electron';
 
 const remote = electron.remote;
 const app = remote.require('app');
@@ -27,7 +27,7 @@ class NewVersionAvailable extends React.Component {
   render() {
     // N.B. If you are working on the UI for XDE updates, change this to `true` or else
     // that UI will never show up when running `npm start`
-    let WORKING_ON_XDE_UPDATES = false;
+    let WORKING_ON_XDE_UPDATES = true;
 
     // Should we use NODE_ENV instead of XDE_NPM_START?
     if ((!this.state.isVisible) || (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START)) {
@@ -35,7 +35,7 @@ class NewVersionAvailable extends React.Component {
     }
 
     let { isChecking, isDownloading, errorMessage, newVersion } = this.state;
-
+isChecking = true;
     let text;
     let clickListener;
     let buttonStyle = 'info';
@@ -69,11 +69,11 @@ class NewVersionAvailable extends React.Component {
               alpha: 1,
             }}
             style={styles.loadingIndicator}
-          />
-          : null}
+          /> :
+          null}
         <span style={styles.text}>{text}</span>
       </Button>
-    )
+    );
   }
 
   componentDidMount() {
@@ -172,7 +172,6 @@ let styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 'auto',
     minHeight: 32,
     margin: 0,
     padding: 0,

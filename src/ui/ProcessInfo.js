@@ -1,4 +1,4 @@
-let React = require('react');
+import React from 'react';
 
 class ProcessInfo extends React.Component {
   render() {
@@ -8,6 +8,6 @@ class ProcessInfo extends React.Component {
       </div>
     );
   }
-};
+}
 
 module.exports = ProcessInfo;

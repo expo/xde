@@ -1,5 +1,5 @@
-let BrowserWindow = require('browser-window');
-let Menu = require('menu');
+import BrowserWindow from 'browser-window';
+import Menu from 'menu';
 
 function setupMenu() {
   // return;

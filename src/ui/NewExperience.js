@@ -1,6 +1,6 @@
-let React = require('react');
+import React from 'react';
 
-let StyleConstants = require('./StyleConstants');
+import StyleConstants from './StyleConstants';
 
 class NewExperience extends React.Component {
 

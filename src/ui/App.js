@@ -1,17 +1,17 @@
-let React = require('react');
-let ReactDOM = require('react-dom');
-let JsonFile = require('@exponent/json-file');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import JsonFile from '@exponent/json-file';
 
-let { StyleRoot } = require('radium');
+import { StyleRoot } from 'radium';
 
-let autobind = require('autobind-decorator');
-let del = require('del');
-let electron = require('electron');
-let escapeHtml = require('escape-html');
-let execAsync = require('exec-async');
-let gitInfoAsync = require('git-info-async');
-let os = require('os');
-let path = require('path');
+import autobind from 'autobind-decorator';
+import del from 'del';
+import electron from 'electron';
+import escapeHtml from 'escape-html';
+import execAsync from 'exec-async';
+import gitInfoAsync from 'git-info-async';
+import os from 'os';
+import path from 'path';
 
 import {
   Api,
@@ -23,19 +23,19 @@ import {
   RunPackager,
 } from 'xdl';
 
-let config = require('../config');
+import config from '../config';
 xdlConfig.api = config.api;
 
-let Commands = require('./Commands');
-let FileSystemControls = require('./FileSystemControls');
-let LoginPane = require('./LoginPane');
-let NewVersionAvailable = require('./NewVersionAvailable');
-let StyleConstants = require('./StyleConstants');
-let SimulatorControls = require('./SimulatorControls');
+import Commands from './Commands';
+import FileSystemControls from './FileSystemControls';
+import LoginPane from './LoginPane';
+import NewVersionAvailable from './NewVersionAvailable';
+import StyleConstants from './StyleConstants';
+import SimulatorControls from './SimulatorControls';
 
-let Button = require('react-bootstrap/lib/Button');
-let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+import Button from 'react-bootstrap/lib/Button';
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 const remote = electron.remote;
 
@@ -72,7 +72,7 @@ class App extends React.Component {
     let displayText = this.state.computedUrl;
 
     return (
-      <StyleRoot style={{
+      <div style={{
           marginLeft: 15,
           marginBottom: 0,
           marginRight: 10,
@@ -97,7 +97,7 @@ class App extends React.Component {
           }}
           onClick={this._copyUrlToClipboard}
         />
-      </StyleRoot>
+      </div>
     );
   }
 
@@ -230,7 +230,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div style={{
+      <StyleRoot style={{
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
@@ -334,9 +334,8 @@ class App extends React.Component {
 
         </div>
         {this._renderPackagerConsole()}
-      </div>
+      </StyleRoot>
     );
-
   }
 
   _getProjectName() {
@@ -790,7 +789,7 @@ class App extends React.Component {
 
     return UrlUtils.constructManifestUrlAsync(this.state.packagerController.getRoot());
   }
-};
+}
 
 let Styles = {
 

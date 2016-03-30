@@ -1,10 +1,10 @@
-let React = require('react');
+import React from 'react';
 
-let autobind = require('autobind-decorator');
-let escapeHtml = require('escape-html');
-let execAsync = require('exec-async');
-let gitInfoAsync = require('git-info-async');
-let path = require('path');
+import autobind from 'autobind-decorator';
+import escapeHtml from 'escape-html';
+import execAsync from 'exec-async';
+import gitInfoAsync from 'git-info-async';
+import path from 'path';
 
 import {
   Api,
@@ -12,15 +12,15 @@ import {
   FileSystem,
 } from 'xdl';
 
-let Commands = require('./Commands');
-let LoginPane = require('./LoginPane');
-let NewVersionAvailable = require('./NewVersionAvailable');
-let OverlayTooltip = require('./OverlayTooltip');
-let StyleConstants = require('./StyleConstants');
+import Commands from './Commands';
+import LoginPane from './LoginPane';
+import NewVersionAvailable from './NewVersionAvailable';
+import OverlayTooltip from './OverlayTooltip';
+import StyleConstants from './StyleConstants';
 
-let Button = require('react-bootstrap/lib/Button');
-let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-let ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
+import Button from 'react-bootstrap/lib/Button';
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 class FileSystemControls extends React.Component {
   render() {
