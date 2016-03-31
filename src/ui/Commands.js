@@ -16,7 +16,6 @@ async function showOpenDialog(opts) {
 module.exports = {
 
   newExpAsync: async function () {
-
     let dialog = require('remote').require('dialog');
     let selections = await showOpenDialog({
       properties: ['openDirectory', 'createDirectory'],
@@ -42,7 +41,6 @@ module.exports = {
     await Exp.createNewExpAsync(env.root, {}, {force: true});
 
     return env;
-
   },
 
   openExpAsync: async function () {
@@ -67,11 +65,4 @@ module.exports = {
     return env;
 
   },
-
-  sendAsync: async function (recipient, url_) {
-    console.log("sendAsync command");
-    let result = await Api.callMethodAsync('send', [recipient, url_]);
-    return result;
-  },
-
 };

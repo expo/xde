@@ -455,46 +455,37 @@ class App extends React.Component {
     return versionString;
   }
 
-  async getPublishInfoAsync() {
-    return Exp.getPublishInfoAsync({
-      packagerController: this.state.packagerController,
-      username: this.state.user.username,
-    });
-  }
-
   @autobind
-  _publishClicked() {
+  async _publishClickedAsync() {
     this._logMetaMessage("Publishing...");
 
-    this.getPublishInfoAsync().then((publishInfo) => {
-      return Api.callMethodAsync('publish', [publishInfo.args], 'post', publishInfo.body).then((result) => {
-        // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
-        this._logMetaMessage("Published to " + result.expUrl);
-        console.log("Published", result);
-        // TODO: send
+    try {
+      let result = await Exp.publishAsync(this.state.packagerController.getRoot());
+      // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
+      this._logMetaMessage("Published to " + result.expUrl);
+      console.log("Published", result);
+      // TODO: send
 
-        let sendTo = this.state.sendTo;
-        if (sendTo) {
-          console.log("Send link:", result.expUrl, "to", sendTo);
-          Commands.sendAsync(sendTo, result.expUrl).then(() => {
-            console.log("Sent link to published package");
-          }, (err) => {
-            console.error("Sending link to published package failed:", err);
-          });
-        } else {
-          console.log("Not sending link because nowhere to send it to.");
-        }
-
-      });
-    }).catch((err) => {
+      let sendTo = this.state.sendTo;
+      if (sendTo) {
+        console.log("Send link:", result.expUrl, "to", sendTo);
+        try {
+          await Exp.sendAsync(sendTo, result.expUrl);
+          console.log("Sent link to published package");
+        } catch (err) {
+          console.error("Sending link to published package failed:", err);
+        };
+      } else {
+        console.log("Not sending link because nowhere to send it to.");
+      }
+    } catch (err) {
       this._logMetaError("Failed to publish package: " + err.message);
-    });
-
+    }
   }
 
   _renderPublishButton() {
     return (
-      <Button {...{disabled: !this._isPublishActive()}} onClick={this._publishClicked}>Publish to exp.host</Button>
+      <Button {...{disabled: !this._isPublishActive()}} onClick={this._publishClickedAsync}>Publish to exp.host</Button>
     );
   }
 
@@ -620,7 +611,7 @@ class App extends React.Component {
     let sendTo = this.state.sendTo;
     console.log("Send link:", url_, "to", sendTo);
     let message = "Sent link " + url_ + " to " + sendTo;
-    Commands.sendAsync(sendTo, url_).then(() => {
+    Exp.sendAsync(sendTo, url_).then(() => {
       this._logMetaMessage(message);
 
       UserSettings.updateAsync('sendTo', sendTo).catch((err) => {
