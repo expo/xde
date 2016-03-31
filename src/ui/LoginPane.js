@@ -9,6 +9,8 @@ import {
   Login,
 } from 'xdl';
 
+import * as UsernameRules from '../UsernameRules';
+
 let OverlayTooltip = require('./OverlayTooltip');
 
 let autobind = require('autobind-decorator');
@@ -84,8 +86,9 @@ class LoginPane extends React.Component {
             this._loginSubmitted();
         }}>
           <div><Input type="text" bsSize="small" style={Styles.input} ref="username" onChange={(event) => {
-              this.setState({username: event.target.value});
-          }} placeholder="username" /></div>
+              let newValue = UsernameRules.normalizeUsernameWhileTyping(event.target.value);
+              this.setState({username: newValue});
+          }} placeholder="username" value={this.state.username} /></div>
           <div><Input type="password" bsSize="small" style={Styles.input} ref="password" onChange={(event) => {
             this.setState({password: event.target.value});
           }} placeholder="password" /></div>
