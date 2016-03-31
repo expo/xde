@@ -5532,8 +5532,8 @@
       "resolved": "https://registry.npmjs.org/write/-/write-0.2.1.tgz"
     },
     "xdl": {
-      "version": "0.0.14",
-      "from": "xdl@0.0.14",
+      "version": "0.0.15",
+      "from": "xdl@0.0.15",
       "dependencies": {
         "@exponent/json-file": {
           "version": "5.0.0",
