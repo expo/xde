@@ -3111,7 +3111,14 @@
         "glob": {
           "version": "5.0.15",
           "from": "glob@>=5.0.3 <6.0.0",
-          "resolved": "https://registry.npmjs.org/glob/-/glob-5.0.15.tgz"
+          "resolved": "https://registry.npmjs.org/glob/-/glob-5.0.15.tgz",
+          "dependencies": {
+            "inflight": {
+              "version": "1.0.4",
+              "from": "inflight@>=1.0.4 <2.0.0",
+              "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.4.tgz"
+            }
+          }
         }
       }
     },
@@ -4879,7 +4886,13 @@
         "glob": {
           "version": "7.0.3",
           "from": "glob@>=7.0.0 <8.0.0",
-          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz"
+          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz",
+          "dependencies": {
+            "inflight": {
+              "version": "1.0.4",
+              "from": "inflight@>=1.0.4 <2.0.0"
+            }
+          }
         }
       }
     },
@@ -5519,8 +5532,8 @@
       "resolved": "https://registry.npmjs.org/write/-/write-0.2.1.tgz"
     },
     "xdl": {
-      "version": "0.0.13",
-      "from": "xdl@0.0.13",
+      "version": "0.0.14",
+      "from": "xdl@0.0.14",
       "dependencies": {
         "@exponent/json-file": {
           "version": "5.0.0",

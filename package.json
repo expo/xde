@@ -34,7 +34,7 @@
     "react-bootstrap": "^0.28.4",
     "react-dom": "^0.14.8",
     "react-loading-indicator": "^0.2.0",
-    "xdl": "0.0.13"
+    "xdl": "0.0.14"
   },
   "devDependencies": {
     "@ccheever/crayon": "^5.0.0",
