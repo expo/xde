@@ -749,6 +749,27 @@ class App extends React.Component {
       console.error("Couldn't get version string :(", err);
     });
 
+    let args = [];
+    if (process.env.XDE_CMD_LINE_ARGS) {
+      try {
+        args = JSON.parse(process.env.XDE_CMD_LINE_ARGS);
+      } catch (e) {
+        console.error("Malformed XDE_CMD_LINE_ARGS: " + process.env.XDE_CMD_LINE_ARGS);
+      }
+      if (args.length === 1) {
+        let openPath = path.resolve(process.env.XDE_CMD_LINE_CWD, args[0]);
+
+        console.log("Open project at " + openPath);
+        
+        this._runPackagerAsync({
+          env: {
+            root: args[0],
+          },
+        });
+
+      }
+    }
+
     // gitInfoAsync().then((gitInfo) => {
     //   this.setState({gitInfo});
     // }, (err) => {

@@ -9,6 +9,7 @@
     "package": "gulp unsigned-release",
     "signed-package": "gulp release"
   },
+  "bin": "./build/xde-cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/exponentjs/xde.git"
@@ -29,6 +30,7 @@
     "exec-async": "^2.2.0",
     "git-info-async": "^1.1.0",
     "lodash": "^4.6.1",
+    "promise-print": "^2.3.0",
     "radium": "^0.16.6",
     "react": "^0.14.8",
     "react-bootstrap": "^0.28.4",

@@ -4630,6 +4630,11 @@
       "from": "promise@>=7.0.3 <8.0.0",
       "resolved": "https://registry.npmjs.org/promise/-/promise-7.1.1.tgz"
     },
+    "promise-print": {
+      "version": "2.3.0",
+      "from": "promise-print@latest",
+      "resolved": "https://registry.npmjs.org/promise-print/-/promise-print-2.3.0.tgz"
+    },
     "promise-props": {
       "version": "1.0.0",
       "from": "promise-props@>=1.0.0 <2.0.0",
@@ -4890,7 +4895,8 @@
           "dependencies": {
             "inflight": {
               "version": "1.0.4",
-              "from": "inflight@>=1.0.4 <2.0.0"
+              "from": "inflight@1.0.4",
+              "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.4.tgz"
             }
           }
         }
@@ -5534,6 +5540,7 @@
     "xdl": {
       "version": "0.0.15",
       "from": "xdl@0.0.15",
+      "resolved": "https://registry.npmjs.org/xdl/-/xdl-0.0.15.tgz",
       "dependencies": {
         "@exponent/json-file": {
           "version": "5.0.0",
