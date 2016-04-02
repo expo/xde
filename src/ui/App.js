@@ -284,8 +284,11 @@ class App extends React.Component {
           {!!this.state.packagerController && !!this.state.projectSettings && (
             <div>
 
-              <FileSystemControls style={{
-              }} packagerController={this.state.packagerController} />
+              <FileSystemControls
+                style={{
+                }}
+                packagerController={this.state.packagerController}
+              />
 
               {this._renderUrl()}
               {this._renderUrlOptionButtons()}
@@ -298,6 +301,8 @@ class App extends React.Component {
                 packagerController={this.state.packagerController}
                 dev={this.state.projectSettings.dev}
                 minify={this.state.projectSettings.minify}
+                appendLogs={this._appendPackagerLogs}
+                appendErrors={this._appendPackagerErrors}
               />
 
               <div style={{
