@@ -31,7 +31,7 @@
     "git-info-async": "^1.1.0",
     "lodash": "^4.6.1",
     "promise-print": "^2.3.0",
-    "radium": "^0.16.6",
+    "radium": "^0.17.1",
     "react": "^0.14.8",
     "react-bootstrap": "^0.28.4",
     "react-dom": "^0.14.8",

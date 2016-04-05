@@ -27,7 +27,7 @@ class NewVersionAvailable extends React.Component {
   render() {
     // N.B. If you are working on the UI for XDE updates, change this to `true` or else
     // that UI will never show up when running `npm start`
-    let WORKING_ON_XDE_UPDATES = true;
+    let WORKING_ON_XDE_UPDATES = false;
 
     // Should we use NODE_ENV instead of XDE_NPM_START?
     if ((!this.state.isVisible) || (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START)) {
