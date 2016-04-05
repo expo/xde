@@ -48,7 +48,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "electron-packager": "^6.0.0",
-    "electron-prebuilt": "^0.37.2",
+    "electron-prebuilt": "0.37.3",
     "eslint": "^2.5.3",
     "eslint-config-exponent": "^1.0.8",
     "eslint-plugin-react": "^4.2.3",

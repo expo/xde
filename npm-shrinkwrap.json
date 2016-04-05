@@ -158,10 +158,6 @@
           "version": "2.9.0",
           "from": "commander@>=2.9.0 <3.0.0",
           "resolved": "https://registry.npmjs.org/commander/-/commander-2.9.0.tgz"
-        },
-        "glob": {
-          "version": "6.0.4",
-          "from": "glob@>=6.0.4 <7.0.0"
         }
       }
     },
@@ -2150,9 +2146,9 @@
       }
     },
     "electron-prebuilt": {
-      "version": "0.37.4",
-      "from": "electron-prebuilt@>=0.37.2 <0.38.0",
-      "resolved": "https://registry.npmjs.org/electron-prebuilt/-/electron-prebuilt-0.37.4.tgz"
+      "version": "0.37.3",
+      "from": "electron-prebuilt@0.37.3",
+      "resolved": "https://registry.npmjs.org/electron-prebuilt/-/electron-prebuilt-0.37.3.tgz"
     },
     "end-of-stream": {
       "version": "1.1.0",
@@ -2219,6 +2215,11 @@
       "from": "eslint@>=2.5.3 <3.0.0",
       "resolved": "https://registry.npmjs.org/eslint/-/eslint-2.7.0.tgz",
       "dependencies": {
+        "glob": {
+          "version": "7.0.3",
+          "from": "glob@>=7.0.3 <8.0.0",
+          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz"
+        },
         "globals": {
           "version": "9.3.0",
           "from": "globals@>=9.2.0 <10.0.0",
@@ -3196,9 +3197,9 @@
       "resolved": "https://registry.npmjs.org/git-info-async/-/git-info-async-1.1.0.tgz"
     },
     "glob": {
-      "version": "7.0.3",
-      "from": "glob@>=7.0.0 <8.0.0",
-      "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz"
+      "version": "6.0.4",
+      "from": "glob@>=6.0.1 <7.0.0",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-6.0.4.tgz"
     },
     "glob-base": {
       "version": "0.3.0",
@@ -3235,14 +3236,7 @@
     "globby": {
       "version": "4.0.0",
       "from": "globby@>=4.0.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/globby/-/globby-4.0.0.tgz",
-      "dependencies": {
-        "glob": {
-          "version": "6.0.4",
-          "from": "glob@>=6.0.1 <7.0.0",
-          "resolved": "https://registry.npmjs.org/glob/-/glob-6.0.4.tgz"
-        }
-      }
+      "resolved": "https://registry.npmjs.org/globby/-/globby-4.0.0.tgz"
     },
     "glogg": {
       "version": "1.0.0",
@@ -4514,10 +4508,6 @@
       "from": "mv@>=2.0.3 <3.0.0",
       "resolved": "https://registry.npmjs.org/mv/-/mv-2.1.1.tgz",
       "dependencies": {
-        "glob": {
-          "version": "6.0.4",
-          "from": "glob@>=6.0.1 <7.0.0"
-        },
         "rimraf": {
           "version": "2.4.5",
           "from": "rimraf@>=2.4.0 <2.5.0",
@@ -4846,7 +4836,7 @@
     },
     "radium": {
       "version": "0.17.1",
-      "from": "radium@0.17.1",
+      "from": "radium@>=0.17.1 <0.18.0",
       "resolved": "https://registry.npmjs.org/radium/-/radium-0.17.1.tgz"
     },
     "randomatic": {
@@ -5059,8 +5049,15 @@
     },
     "rimraf": {
       "version": "2.5.2",
-      "from": "rimraf@>=2.4.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.5.2.tgz"
+      "from": "rimraf@>=2.2.8 <3.0.0",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.5.2.tgz",
+      "dependencies": {
+        "glob": {
+          "version": "7.0.3",
+          "from": "glob@>=7.0.0 <8.0.0",
+          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz"
+        }
+      }
     },
     "run-async": {
       "version": "0.1.0",
@@ -5700,7 +5697,14 @@
     "xdl": {
       "version": "0.0.17",
       "from": "xdl@0.0.17",
-      "resolved": "https://registry.npmjs.org/xdl/-/xdl-0.0.17.tgz"
+      "resolved": "https://registry.npmjs.org/xdl/-/xdl-0.0.17.tgz",
+      "dependencies": {
+        "glob": {
+          "version": "7.0.3",
+          "from": "glob@>=7.0.3 <8.0.0",
+          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz"
+        }
+      }
     },
     "xmlbuilder": {
       "version": "4.0.0",
