@@ -25,6 +25,7 @@ import {
 
 import config from '../config';
 xdlConfig.api = config.api;
+xdlConfig.developerTool = 'xde';
 
 import Commands from './Commands';
 import FileSystemControls from './FileSystemControls';
