@@ -3204,7 +3204,14 @@
         "glob": {
           "version": "5.0.15",
           "from": "glob@>=5.0.3 <6.0.0",
-          "resolved": "https://registry.npmjs.org/glob/-/glob-5.0.15.tgz"
+          "resolved": "https://registry.npmjs.org/glob/-/glob-5.0.15.tgz",
+          "dependencies": {
+            "inflight": {
+              "version": "1.0.4",
+              "from": "inflight@>=1.0.4 <2.0.0",
+              "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.4.tgz"
+            }
+          }
         }
       }
     },
@@ -5037,7 +5044,13 @@
         "glob": {
           "version": "7.0.3",
           "from": "glob@>=7.0.0 <8.0.0",
-          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz"
+          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.3.tgz",
+          "dependencies": {
+            "inflight": {
+              "version": "1.0.4",
+              "from": "inflight@>=1.0.4 <2.0.0"
+            }
+          }
         }
       }
     },
@@ -5332,9 +5345,9 @@
       "resolved": "https://registry.npmjs.org/tar/-/tar-2.2.1.tgz"
     },
     "tar-stream": {
-      "version": "1.5.0",
+      "version": "1.5.1",
       "from": "tar-stream@>=1.1.1 <2.0.0",
-      "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-1.5.0.tgz"
+      "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-1.5.1.tgz"
     },
     "tar.gz": {
       "version": "1.0.3",
@@ -5677,8 +5690,8 @@
       "resolved": "https://registry.npmjs.org/write/-/write-0.2.1.tgz"
     },
     "xdl": {
-      "version": "0.0.20",
-      "from": "xdl@0.0.20",
+      "version": "0.0.21",
+      "from": "xdl@0.0.21",
       "dependencies": {
         "glob": {
           "version": "7.0.3",
