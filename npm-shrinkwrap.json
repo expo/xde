@@ -5683,8 +5683,8 @@
       "resolved": "https://registry.npmjs.org/write/-/write-0.2.1.tgz"
     },
     "xdl": {
-      "version": "0.0.22",
-      "from": "xdl@0.0.22",
+      "version": "0.0.23",
+      "from": "xdl@0.0.23",
       "dependencies": {
         "glob": {
           "version": "7.0.3",
