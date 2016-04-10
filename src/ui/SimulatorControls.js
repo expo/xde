@@ -47,7 +47,7 @@ class SimulatorControls extends React.Component {
   render() {
     return (
       <ButtonToolbar style={this.props.style}>
-        <Button {...{disabled: !this.props.packagerController}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on Simulator</Button>
+        <Button {...{disabled: !this.props.packagerController}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on iOS Simulator</Button>
         <Button {...{disabled: !this.props.packagerController}} onClick={this._openProjectUrlOnAndroidAsync}>Open Project in Exponent on Android</Button>
       </ButtonToolbar>
     );
