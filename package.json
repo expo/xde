@@ -5,7 +5,7 @@
   "main": "build/main.js",
   "scripts": {
     "start": "gulp build && XDE_NPM_START=1 electron .",
-    "postinstall": "exit 0;gulp postinstall",
+    "postinstall": "gulp postinstall",
     "package": "gulp unsigned-release",
     "signed-package": "gulp release"
   },
