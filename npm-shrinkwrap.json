@@ -2366,9 +2366,9 @@
       "resolved": "http://registry.npmjs.org/fast-levenshtein/-/fast-levenshtein-1.1.3.tgz"
     },
     "fbjs": {
-      "version": "0.8.0",
+      "version": "0.8.1",
       "from": "fbjs@>=0.8.0 <0.9.0",
-      "resolved": "http://registry.npmjs.org/fbjs/-/fbjs-0.8.0.tgz",
+      "resolved": "http://registry.npmjs.org/fbjs/-/fbjs-0.8.1.tgz",
       "dependencies": {
         "core-js": {
           "version": "1.2.6",
@@ -3250,7 +3250,7 @@
     "gulp": {
       "version": "4.0.0-alpha.2",
       "from": "gulpjs/gulp#4.0",
-      "resolved": "git://github.com/gulpjs/gulp.git#da5a506084a035983c157c357ebb7f0f2867fe40",
+      "resolved": "git://github.com/gulpjs/gulp.git#37dffae33396e67bf8fa01a174d0920f1ff1ae6b",
       "dependencies": {
         "gulp-cli": {
           "version": "1.2.1",
@@ -5676,9 +5676,8 @@
       "resolved": "http://registry.npmjs.org/write/-/write-0.2.1.tgz"
     },
     "xdl": {
-      "version": "0.0.31",
-      "from": "xdl@0.0.31",
-      "resolved": "http://registry.npmjs.org/xdl/-/xdl-0.0.31.tgz",
+      "version": "0.0.32",
+      "from": "xdl@0.0.32",
       "dependencies": {
         "glob": {
           "version": "7.0.3",
