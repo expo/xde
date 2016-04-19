@@ -1,6 +1,6 @@
 {
   "name": "xde",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "dependencies": {
     "@ccheever/crayon": {
       "version": "5.0.0",
