@@ -1,5 +1,6 @@
 import electron from 'electron';
 import path from 'path';
+import process from 'process';
 
 import Menu from './remote/Menu';
 
@@ -16,6 +17,7 @@ let mainWindow = null;
 
 app.on('window-all-closed', () => {
   app.quit();
+  process.exit(0);
 });
 
 app.on('ready', () => {
