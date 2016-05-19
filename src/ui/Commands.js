@@ -1,22 +1,19 @@
-
+import { remote } from 'electron';
 import {
-  Api,
   Exp,
 } from 'xdl';
 
 async function showOpenDialog(opts) {
   return new Promise((fulfill, reject) => {
-    let dialog = require('remote').require('dialog');
-    dialog.showOpenDialog(opts, function (selections) {
+    let { dialog } = remote;
+    dialog.showOpenDialog(opts, (selections) => {
       fulfill(selections);
     });
   });
 }
 
 module.exports = {
-
-  newExpAsync: async function () {
-    let dialog = require('remote').require('dialog');
+  async newExpAsync() {
     let selections = await showOpenDialog({
       properties: ['openDirectory', 'createDirectory'],
     });
@@ -32,7 +29,7 @@ module.exports = {
       root: selection,
     };
 
-    // let init = require('remote').require('./build/commands/init');
+    // let init = remote.require('./build/commands/init');
     // let result = init.runAsync(env, {});
 
     // We'll do a `force` here since if you explicitly choose
@@ -43,8 +40,7 @@ module.exports = {
     return env;
   },
 
-  openExpAsync: async function () {
-    let dialog = require('remote').require('dialog');
+  async openExpAsync() {
     let selections = await showOpenDialog({
       properties: ['openDirectory'],
     });
@@ -63,6 +59,5 @@ module.exports = {
     };
 
     return env;
-
   },
 };

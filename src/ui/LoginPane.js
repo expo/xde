@@ -1,11 +1,9 @@
 import React from 'react';
 
 import Button from 'react-bootstrap/lib/Button';
-import ButtonInput from 'react-bootstrap/lib/ButtonInput';
 import Input from 'react-bootstrap/lib/Input';
 
 import {
-  Api,
   Login,
 } from 'xdl';
 

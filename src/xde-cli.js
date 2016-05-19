@@ -3,7 +3,6 @@
 import child_process from 'child_process';
 import path from 'path';
 import promisePrint from 'promise-print';
-import spawnAsync from '@exponent/spawn-async';
 
 let executable = path.resolve(__dirname, '../node_modules/.bin/electron');
 let electronAppRoot = path.resolve(__dirname, '..');

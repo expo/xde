@@ -1,24 +1,13 @@
 import React from 'react';
+import Button from 'react-bootstrap/lib/Button';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 import autobind from 'autobind-decorator';
-import escapeHtml from 'escape-html';
-import execAsync from 'exec-async';
-import gitInfoAsync from 'git-info-async';
-import path from 'path';
-
 import {
   Android,
   Simulator,
   UrlUtils,
 } from 'xdl';
-
-import Commands from './Commands';
-import LoginPane from './LoginPane';
-import NewVersionAvailable from './NewVersionAvailable';
-import StyleConstants from './StyleConstants';
-
-import Button from 'react-bootstrap/lib/Button';
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 class SimulatorControls extends React.Component {
 

@@ -12,7 +12,7 @@
 
       (() => {
         'use strict';
-        let ElectronCookies = require('@exponent/electron-cookies');
+        const ElectronCookies = require('@exponent/electron-cookies');
         ElectronCookies.enable({ origin: 'https://xde.exp.host' });
 
         ga('create', 'UA-53647600-6', 'auto');
@@ -28,22 +28,23 @@
     </div>
     <script>
       (() => {
-        var Remote = require('remote');
+        'use strict';
+        const { remote } = require('electron');
         document.getElementById('app-loading').addEventListener('click', () => {
-          Remote.getCurrentWindow().openDevTools();
+          remote.getCurrentWindow().openDevTools();
         }, false);
 
-        var React = require('react');
-        var ReactDOM = require('react-dom');
-        var App = require('../build/ui/App');
-        var rootElement = React.createElement(App, {
-          emitter: Remote.require('xdl').AppEmitter,
+        const React = require('react');
+        const ReactDOM = require('react-dom');
+        const App = require('../build/ui/App');
+        let rootElement = React.createElement(App, {
+          emitter: remote.require('xdl').AppEmitter,
         });
-        var rootNode = document.getElementById('app');
+        let rootNode = document.getElementById('app');
         ReactDOM.render(rootElement, rootNode);
 
         window.addEventListener('beforeunload', () => {
-          require('xdl').PackagerController.exit();
+          remote.require('xdl').PackagerController.exit();
           ReactDOM.unmountComponentAtNode(rootNode);
         });
       })();

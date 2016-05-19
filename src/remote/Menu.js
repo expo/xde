@@ -1,5 +1,4 @@
-import BrowserWindow from 'browser-window';
-import Menu from 'menu';
+import { BrowserWindow, Menu } from 'electron';
 
 function setupMenu() {
   // return;

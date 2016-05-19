@@ -1,26 +1,13 @@
 import React from 'react';
+import Button from 'react-bootstrap/lib/Button';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 import autobind from 'autobind-decorator';
-import escapeHtml from 'escape-html';
-import execAsync from 'exec-async';
-import gitInfoAsync from 'git-info-async';
-import path from 'path';
-
 import {
-  Api,
-  Exp,
   FileSystem,
 } from 'xdl';
 
-import Commands from './Commands';
-import LoginPane from './LoginPane';
-import NewVersionAvailable from './NewVersionAvailable';
 import OverlayTooltip from './OverlayTooltip';
-import StyleConstants from './StyleConstants';
-
-import Button from 'react-bootstrap/lib/Button';
-import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 class FileSystemControls extends React.Component {
   render() {
@@ -30,10 +17,14 @@ class FileSystemControls extends React.Component {
       <div style={Object.assign({}, styles.bar, this.props.style)}>
         <ButtonToolbar>
           <OverlayTooltip tooltip="This will open a Finder window at the root of your project">
-            <Button style={{marginRight: buttonSpacing,}} onClick={this._showProjectInFinder}>Show Project in Finder</Button>
+            <Button style={{marginRight: buttonSpacing}} onClick={this._showProjectInFinder}>
+              Show Project in Finder
+            </Button>
           </OverlayTooltip>
           <OverlayTooltip tooltip="This will open an iTerm or Terminal window cd-ed to the root directory of your project">
-            <Button style={{marginRight: buttonSpacing,}} onClick={this._openProjectFolderInTerminal}>Open Project Folder in Terminal</Button>
+            <Button style={{marginRight: buttonSpacing}} onClick={this._openProjectFolderInTerminal}>
+              Open Project Folder in Terminal
+            </Button>
           </OverlayTooltip>
           <OverlayTooltip tooltip="This will open your project in a text editor. It will try to guess what editor you are using by looking at popular text editors that you have open and/or installed (ex. Atom, Sublime Text, TextWrangler, Text Mate, etc.)">
             <Button onClick={this._openProjectInEditor}>Open Project in Editor</Button>

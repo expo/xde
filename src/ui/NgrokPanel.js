@@ -1,7 +1,5 @@
 import React from 'react';
 
-import ProcessInfo from './ProcessInfo';
-
 class NgrokPanel extends React.Component {
   render() {
     return (
@@ -9,7 +7,8 @@ class NgrokPanel extends React.Component {
         border: '0 none',
         width: '100%',
         height: 300,
-      }} />
+      }}
+      />
     );
   }
 }

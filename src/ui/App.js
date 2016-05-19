@@ -2,19 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import JsonFile from '@exponent/json-file';
 
+import { shell } from 'electron';
 import { StyleRoot } from 'radium';
 
 import autobind from 'autobind-decorator';
-import del from 'del';
-import electron from 'electron';
 import escapeHtml from 'escape-html';
-import execAsync from 'exec-async';
-import gitInfoAsync from 'git-info-async';
-import os from 'os';
 import path from 'path';
 
 import {
-  Api,
   Config as xdlConfig,
   Exp,
   UrlUtils,
@@ -38,12 +33,6 @@ import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
-const remote = electron.remote;
-
-function escapeAndPre(s) {
-  return escapeHtml(s).replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/ /g, '\u00a0');
-}
-
 class App extends React.Component {
 
   constructor() {
@@ -60,7 +49,7 @@ class App extends React.Component {
       projectUrl: null,
       projectSettings: null,
       computedUrl: null,
-    }
+    };
 
     this._packagerLogsHtml = '';
     this._packagerLogs = '';
@@ -104,28 +93,28 @@ class App extends React.Component {
 
   _renderSendInput() {
     return (
-        <form onSubmit={(e) => {
-            if (this._isSendToActive()) {
-              this._sendClicked();
-            }
-            e.preventDefault();
-          }}>
-          <input
-            type="text"
-            style={Object.assign({}, Styles.sendInput, {
-              marginTop: 2,
-            })}
-            placeholder="Phone number or email"
-            name="sendInput"
-            ref="sendInput"
-            onChange={(event) => {
-              // this.setState({value: event.target.value});
-              this.setState({sendTo: ReactDOM.findDOMNode(this.refs.sendInput).value});
-            }}
-            value={this.state.sendTo}
-            defaultValue={null}
-          />
-        </form>
+      <form onSubmit={(e) => {
+          if (this._isSendToActive()) {
+            this._sendClicked();
+          }
+          e.preventDefault();
+        }}>
+        <input
+          type="text"
+          style={Object.assign({}, Styles.sendInput, {
+            marginTop: 2,
+          })}
+          placeholder="Phone number or email"
+          name="sendInput"
+          ref="sendInput"
+          onChange={(event) => {
+            // this.setState({value: event.target.value});
+            this.setState({sendTo: ReactDOM.findDOMNode(this.refs.sendInput).value});
+          }}
+          value={this.state.sendTo}
+          defaultValue={null}
+        />
+      </form>
     );
   }
 
@@ -150,7 +139,8 @@ class App extends React.Component {
           style={Object.assign({}, Styles.log, {
             overflow: 'scroll',
           })}
-          dangerouslySetInnerHTML={{__html: this.state.packagerLogs}} />
+          dangerouslySetInnerHTML={{__html: this.state.packagerLogs}}
+        />
       );
     } else {
       return (
@@ -219,13 +209,13 @@ class App extends React.Component {
           maxWidth: 600,
           cursor: 'pointer',
       }}>
-      <div style={{
+        <div style={{
           color: 'rgba(0, 59, 107, 0.5)',
-      }}><strong>{exp.name}</strong> - <small>{exp.description}</small></div>
-      <div style={{
-          fontSize: 11,
-      }}>{exp.readableRoot}</div>
-    </div>
+        }}><strong>{exp.name}</strong> - <small>{exp.description}</small></div>
+        <div style={{
+            fontSize: 11,
+        }}>{exp.readableRoot}</div>
+      </div>
     );
   }
 
@@ -247,11 +237,11 @@ class App extends React.Component {
               position: 'absolute',
               left: 800,
             }}>
-              <LoginPane
-                packagerController={this.state.packagerController}
-                onLogin={(user) => {this.setState({user});}}
-                onLogout={() => {this.setState({user: null});}}
-              />
+            <LoginPane
+              packagerController={this.state.packagerController}
+              onLogin={(user) => {this.setState({user});}}
+              onLogout={() => {this.setState({user: null});}}
+            />
           </div>
 
           <div style={{
@@ -266,8 +256,9 @@ class App extends React.Component {
                 marginTop: 10,
                 cursor: 'pointer',
             }} onClick={() => {
-              require('shell').openExternal('http://exponentjs.com/');
-            }} />
+              shell.openExternal('http://exponentjs.com/');
+            }}
+            />
             {this._renderAbout()}
             {this._renderButtons()}
             {/*
@@ -356,7 +347,7 @@ class App extends React.Component {
 
   _renderButtonGroupSeparator() {
     return (
-      <span className="btn-separator" style={{width: 70,}} />
+      <span className="btn-separator" style={{width: 70}} />
     );
   }
 
@@ -479,7 +470,7 @@ class App extends React.Component {
           console.log("Sent link to published package");
         } catch (err) {
           console.error("Sending link to published package failed:", err);
-        };
+        }
       } else {
         console.log("Not sending link because nowhere to send it to.");
       }
@@ -538,7 +529,7 @@ class App extends React.Component {
           marginBottom: 10,
       }}>
         <Button style={{marginRight: 5}} {...activeProp} onClick={this._resetPackagerClicked}>Clear Packager Cache</Button>
-        <Button style={{marginRight: 10,}} {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
+        <Button style={{marginRight: 10}} {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
         <Button {...activeProp} onClick={
             this._restartNgrokClicked}>Restart ngrok</Button>
       </ButtonToolbar>
@@ -818,7 +809,7 @@ let Styles = {
     width: 674,
     color: '#888888',
     fontSize: 13,
-    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif',],
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
   },
 
   sendInput: {
@@ -829,7 +820,7 @@ let Styles = {
     width: 250,
     color: '#888888',
     fontSize: 16,
-    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif',],
+    fontFamily: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
   },
 
   logotype: {
@@ -844,13 +835,12 @@ let Styles = {
 
 };
 
-global.cl = function (a, b, c) {
+global.cl = function(a, b, c) {
   console.log(a, b, c);
-}
+};
 
-global.ce = function (a, b, c) {
+global.ce = function(a, b, c) {
   console.error(a, b, c);
-}
-
+};
 
 module.exports = App;

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import StyleConstants from './StyleConstants';
-
 class NewExperience extends React.Component {
 
   _renderInput(item) {

@@ -4,11 +4,12 @@ import { Button } from 'react-bootstrap';
 import LoadingIndicator from 'react-loading-indicator';
 
 import autobind from 'autobind-decorator';
-import electron from 'electron';
+import { remote } from 'electron';
 
-const remote = electron.remote;
-const app = remote.require('app');
-const AutoUpdater = remote.require('auto-updater');
+const {
+  app,
+  autoUpdater,
+} = remote;
 
 @Radium
 class NewVersionAvailable extends React.Component {
@@ -35,7 +36,6 @@ class NewVersionAvailable extends React.Component {
     }
 
     let { isChecking, isDownloading, errorMessage, newVersion } = this.state;
-isChecking = true;
     let text;
     let clickListener;
     let buttonStyle = 'info';
@@ -77,14 +77,14 @@ isChecking = true;
   }
 
   componentDidMount() {
-    AutoUpdater.on('error', this._handleUpdateError);
-    AutoUpdater.on('checking-for-update', this._handleCheckingForUpdate);
-    AutoUpdater.on('update-available', this._handleUpdateAvailable);
-    AutoUpdater.on('update-not-available', this._handleUpdateNotAvailable);
-    AutoUpdater.on('update-downloaded', this._handleUpdateDownloaded);
+    autoUpdater.on('error', this._handleUpdateError);
+    autoUpdater.on('checking-for-update', this._handleCheckingForUpdate);
+    autoUpdater.on('update-available', this._handleUpdateAvailable);
+    autoUpdater.on('update-not-available', this._handleUpdateNotAvailable);
+    autoUpdater.on('update-downloaded', this._handleUpdateDownloaded);
 
     let version = app.getVersion();
-    AutoUpdater.setFeedURL(
+    autoUpdater.setFeedURL(
       `https://xde-updates.exponentjs.com/update/osx_64/${version}`
     );
     this._checkForUpdate();
@@ -93,16 +93,16 @@ isChecking = true;
   componentWillUnmount() {
     // We need to call removeAllListeners instead of removeListener because
     // the latter doesn't work over Electron's IPC channel
-    AutoUpdater.removeAllListeners('error');
-    AutoUpdater.removeAllListeners('checking-for-update');
-    AutoUpdater.removeAllListeners('update-available');
-    AutoUpdater.removeAllListeners('update-not-available');
-    AutoUpdater.removeAllListeners('update-downloaded');
+    autoUpdater.removeAllListeners('error');
+    autoUpdater.removeAllListeners('checking-for-update');
+    autoUpdater.removeAllListeners('update-available');
+    autoUpdater.removeAllListeners('update-not-available');
+    autoUpdater.removeAllListeners('update-downloaded');
   }
 
   @autobind
   _checkForUpdate() {
-    AutoUpdater.checkForUpdates();
+    autoUpdater.checkForUpdates();
   }
 
   @autobind

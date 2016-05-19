@@ -6,7 +6,10 @@ import Menu from './remote/Menu';
 
 import config from './config';
 
-const app = electron.app;
+const {
+  BrowserWindow,
+  app,
+} = electron;
 
 // Report crashes to our server.
 // electron.CrashReporter.start();
@@ -22,7 +25,7 @@ app.on('window-all-closed', () => {
 
 app.on('ready', () => {
   // Create the browser window.
-  mainWindow = new electron.BrowserWindow({width: 1100, height: 600});
+  mainWindow = new BrowserWindow({width: 1100, height: 600});
   mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
 
   // Open the devtools.

@@ -1,12 +1,11 @@
 import 'instapromise';
 
 import fs from 'fs-extra';
-import gulp from 'gulp';
 import logger from 'gulplog';
 import path from 'path';
 import crayon from '@ccheever/crayon'
 
-import { APP_NAME, XDE_ROOT } from './app-configuration';
+import { XDE_ROOT } from './app-configuration';
 
 let tasks = {
   async postInstall() {
