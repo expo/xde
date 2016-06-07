@@ -24,6 +24,7 @@ xdlConfig.developerTool = 'xde';
 
 import Commands from './Commands';
 import FileSystemControls from './FileSystemControls';
+import LoginPage from './LoginPage';
 import LoginPane from './LoginPane';
 import NewVersionAvailable from './NewVersionAvailable';
 import StyleConstants from './StyleConstants';
@@ -221,111 +222,116 @@ class App extends React.Component {
 
   render() {
     return (
-      <StyleRoot style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-      }}>
-        <NewVersionAvailable />
-        <div style={{
-            backgroundColor: '#f6f6f6',
-            flex: 'none',
-            boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
-            zIndex: 0,
-        }}>
+      <StyleRoot>
+        <LoginPage loggedInAs={this.state.user}
+          onLogin={(user) => {this.setState({user});}}>
           <div style={{
-              position: 'absolute',
-              left: 800,
-            }}>
-            <LoginPane
-              packagerController={this.state.packagerController}
-              onLogin={(user) => {this.setState({user});}}
-              onLogout={() => {this.setState({user: null});}}
-            />
-          </div>
-
-          <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
           }}>
-            <img src="./ExponentIcon.png" style={{
-                height: 36,
-                width: 36,
-                marginLeft: 15,
-                marginTop: 10,
-                cursor: 'pointer',
-            }} onClick={() => {
-              shell.openExternal('http://exponentjs.com/');
-            }}
-            />
-            {this._renderAbout()}
-            {this._renderButtons()}
-            {/*
-            {!!this.state.packagerController && (
-              <span style={{
-                  color: 'rgba(59, 59, 107, 0.8)',
-                  fontFamily: 'Verdana',
-                  fontWeight: '600',
-                  marginTop: 18,
-                  marginLeft: 8,
-              }}>{this.state.packagerController.getProjectShortName()}</span>
-            )} */}
-          </div>
-
-          {!!this.state.packagerController && !!this.state.projectSettings && (
-            <div>
-
-              <FileSystemControls
-                style={{
-                }}
-                packagerController={this.state.packagerController}
-              />
-
-              {this._renderUrl()}
-              {this._renderUrlOptionButtons()}
-
-              <SimulatorControls
-                style={{
-                  marginLeft: 10,
-                  marginTop: 10,
-                }}
-                packagerController={this.state.packagerController}
-                dev={this.state.projectSettings.dev}
-                minify={this.state.projectSettings.minify}
-                appendLogs={this._appendPackagerLogs}
-                appendErrors={this._appendPackagerErrors}
-              />
+            <NewVersionAvailable />
+            <div style={{
+                backgroundColor: '#f6f6f6',
+                flex: 'none',
+                boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
+                zIndex: 0,
+            }}>
+              <div style={{
+                  position: 'absolute',
+                  left: 800,
+                }}>
+                <LoginPane
+                  loggedInAs={this.state.user}
+                  packagerController={this.state.packagerController}
+                  onLogout={() => {this.setState({user: null});}}
+                />
+              </div>
 
               <div style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'flex-start',
-                  marginTop: 10,
-                  marginLeft: 15,
-                  marginBottom: 10,
-                }}>
-                {this._renderSendLinkButton()}
-                <span style={{
-                    paddingLeft: 6,
-                    paddingRight: 6,
-                    paddingTop: 6,
-                }}>to</span>
-                {this._renderSendInput()}
-                {this._renderButtonGroupSeparator()}
-                {this._renderPublishButton()}
-              </div>
-              <div style={{
-                  marginLeft: 15,
-                  marginBottom: 10,
               }}>
-                {this._renderPackagerButtonToolbar()}
+                <img src="./ExponentIcon.png" style={{
+                    height: 36,
+                    width: 36,
+                    marginLeft: 15,
+                    marginTop: 10,
+                    cursor: 'pointer',
+                }} onClick={() => {
+                  shell.openExternal('http://exponentjs.com/');
+                }}
+                />
+                {this._renderAbout()}
+                {this._renderButtons()}
+                {/*
+                {!!this.state.packagerController && (
+                  <span style={{
+                      color: 'rgba(59, 59, 107, 0.8)',
+                      fontFamily: 'Verdana',
+                      fontWeight: '600',
+                      marginTop: 18,
+                      marginLeft: 8,
+                  }}>{this.state.packagerController.getProjectShortName()}</span>
+                )} */}
               </div>
-            </div>
-          )}
 
-        </div>
-        {this._renderPackagerConsole()}
+              {!!this.state.packagerController && !!this.state.projectSettings && (
+                <div>
+
+                  <FileSystemControls
+                    style={{
+                    }}
+                    packagerController={this.state.packagerController}
+                  />
+
+                  {this._renderUrl()}
+                  {this._renderUrlOptionButtons()}
+
+                  <SimulatorControls
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 10,
+                    }}
+                    packagerController={this.state.packagerController}
+                    dev={this.state.projectSettings.dev}
+                    minify={this.state.projectSettings.minify}
+                    appendLogs={this._appendPackagerLogs}
+                    appendErrors={this._appendPackagerErrors}
+                  />
+
+                  <div style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'flex-start',
+                      marginTop: 10,
+                      marginLeft: 15,
+                      marginBottom: 10,
+                    }}>
+                    {this._renderSendLinkButton()}
+                    <span style={{
+                        paddingLeft: 6,
+                        paddingRight: 6,
+                        paddingTop: 6,
+                    }}>to</span>
+                    {this._renderSendInput()}
+                    {this._renderButtonGroupSeparator()}
+                    {this._renderPublishButton()}
+                  </div>
+                  <div style={{
+                      marginLeft: 15,
+                      marginBottom: 10,
+                  }}>
+                    {this._renderPackagerButtonToolbar()}
+                  </div>
+                </div>
+              )}
+
+            </div>
+            {this._renderPackagerConsole()}
+          </div>
+        </LoginPage>
       </StyleRoot>
     );
   }

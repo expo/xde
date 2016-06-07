@@ -35,6 +35,7 @@
     "react-bootstrap": "^0.29.4",
     "react-dom": "^15.0.2",
     "react-loading-indicator": "^0.2.0",
+    "react-motion": "^0.4.4",
     "xdl": "0.0.35"
   },
   "devDependencies": {
