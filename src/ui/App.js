@@ -228,7 +228,7 @@ class App extends React.Component {
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
+            height: '100vh',
           }}>
             <NewVersionAvailable />
             <div style={{
