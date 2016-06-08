@@ -29,10 +29,13 @@ import LoginPane from './LoginPane';
 import NewVersionAvailable from './NewVersionAvailable';
 import StyleConstants from './StyleConstants';
 import SimulatorControls from './SimulatorControls';
+import ToolBar from './toolbar/ToolBar';
 
 import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+
+const ENABLE_REDESIGN = false;
 
 class App extends React.Component {
 
@@ -50,6 +53,7 @@ class App extends React.Component {
       projectUrl: null,
       projectSettings: null,
       computedUrl: null,
+      openPopover: null, // The currently open popover, represented by ToolBar.POPOVERS
     };
 
     this._packagerLogsHtml = '';
@@ -220,9 +224,18 @@ class App extends React.Component {
     );
   }
 
+  _onTogglePopover = (popover) => {
+    const isAlreadyOpen = this.state.openPopover === popover;
+    this.setState({openPopover: isAlreadyOpen ? null : popover});
+  };
+
+  _closePopover = () => {
+    this.setState({openPopover: null});
+  };
+
   render() {
     return (
-      <StyleRoot>
+      <StyleRoot onClick={this._closePopover}>
         <LoginPage loggedInAs={this.state.user}
           onLogin={(user) => {this.setState({user});}}>
           <div style={{
@@ -231,6 +244,21 @@ class App extends React.Component {
             height: '100vh',
           }}>
             <NewVersionAvailable />
+            {ENABLE_REDESIGN && (
+              <ToolBar
+                isProjectOpen={!!this.state.packagerController && !!this.state.projectSettings}
+                onNewProjectClick={this._newClicked}
+                onOpenProjectClick={this._openClicked}
+                onPublishClick={this._publishClickedAsync}
+                onRestartPackagerClick={this._resetPackagerClicked}
+                onRestartAllClick={this._restartAllClicked}
+                onTogglePopover={this._onTogglePopover}
+                openPopover={this.state.openPopover}
+                packagerController={this.state.packagerController}
+                projectName={this._getProjectName()}
+                userName={this.state.user && this.state.user.username}
+              />
+            )}
             <div style={{
                 backgroundColor: '#f6f6f6',
                 flex: 'none',
@@ -564,6 +592,12 @@ class App extends React.Component {
     Commands.openExpAsync().then(this._runPackagerAsync, (err) => {
       this._logMetaError("Failed to open Exp :( " + err);
     });
+  }
+
+  @autobind
+  _restartAllClicked() {
+    this._resetPackagerClicked();
+    this._restartNgrokClicked();
   }
 
   @autobind
