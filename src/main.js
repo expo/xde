@@ -1,14 +1,16 @@
 import electron from 'electron';
 import path from 'path';
-import process from 'process';
 
 import Menu from './remote/Menu';
 
 import config from './config';
 
+import { Project } from 'xdl';
+
 const {
-  BrowserWindow,
   app,
+  BrowserWindow,
+  ipcMain,
 } = electron;
 
 // Report crashes to our server.
@@ -17,10 +19,29 @@ const {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is GCed.
 let mainWindow = null;
+let projectRoots = [];
+
+ipcMain.on('project-opened', (event, projectRoot) => {
+  console.log(`Opened project at ${projectRoot}`);
+  projectRoots.push(projectRoot);
+});
 
 app.on('window-all-closed', () => {
   app.quit();
-  process.exit(0);
+});
+
+// Clean up all open projects before exiting
+app.on('will-quit', async (event) => {
+  if (projectRoots.length > 0) {
+    event.preventDefault();
+
+    for (let i = 0; i < projectRoots.length; i++) {
+      await Project.stopAsync(projectRoots[i]);
+    }
+    projectRoots = [];
+
+    app.quit();
+  }
 });
 
 app.on('ready', () => {

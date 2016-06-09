@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 import {Motion, spring} from 'react-motion';
-import {Login} from 'xdl';
+import {User} from 'xdl';
 
 import StyleConstants from './StyleConstants';
 import * as UsernameRules from '../UsernameRules';
@@ -93,22 +93,22 @@ class LoginPage extends React.Component {
     event.preventDefault();
 
     this.setState({isLoggingIn: true});
-    Login.loginOrAddUserAsync({
+    User.loginAsync({
       username: this.state.username,
       password: this._passwordInput.value,
-    }).then((result) => {
+    }).then((user) => {
       this.setState({errorMessage: null, isLoggingIn: false});
-      this.props.onLogin(result.user);
+      this.props.onLogin(user);
     }, (err) => {
       this.setState({errorMessage: err.message, isLoggingIn: false});
     });
   };
 
   componentDidMount() {
-    Login.whoamiAsync().then((result) => {
+    User.whoamiAsync().then((user) => {
       this.setState({errorMessage: null, isLoadingUser: false});
-      if (result.user) {
-        this.props.onLogin(result.user);
+      if (user) {
+        this.props.onLogin(user);
       }
     }, (err) => {
       this.setState({errorMessage: err.message, isLoadingUser: false});

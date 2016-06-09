@@ -19,7 +19,7 @@ export default class ToolBar extends React.Component {
     isProjectOpen: PropTypes.bool,
     openPopover: PropTypes.oneOf(Object.keys(POPOVERS).map((k) => POPOVERS[k])),
     onTogglePopover: PropTypes.func.isRequired,
-    packagerController: PropTypes.object,
+    projectRoot: PropTypes.string,
     projectName: PropTypes.string,
     userName: PropTypes.string,
 
@@ -130,7 +130,7 @@ export default class ToolBar extends React.Component {
   }
 
   _projectDir() {
-    return this.props.packagerController.opts.absolutePath;
+    return this.props.projectRoot;
   }
 
   _onShowInFinderClick = () => {

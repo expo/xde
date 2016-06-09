@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
@@ -10,8 +10,11 @@ import {
 import OverlayTooltip from './OverlayTooltip';
 
 class FileSystemControls extends React.Component {
-  render() {
+  static propTypes = {
+    projectRoot: PropTypes.string.isRequired,
+  };
 
+  render() {
     let buttonSpacing = 25;
     return (
       <div style={Object.assign({}, styles.bar, this.props.style)}>
@@ -58,9 +61,8 @@ class FileSystemControls extends React.Component {
   }
 
   _dir() {
-    return this.props.packagerController.opts.absolutePath;
+    return this.props.projectRoot;
   }
-
 }
 
 let styles = {

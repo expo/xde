@@ -36,6 +36,7 @@
     "react-dom": "^15.0.2",
     "react-loading-indicator": "^0.2.0",
     "react-motion": "^0.4.4",
+    "tree-kill": "^1.1.0",
     "xdl": "0.0.35"
   },
   "devDependencies": {

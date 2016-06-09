@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
@@ -10,6 +10,9 @@ import {
 } from 'xdl';
 
 class SimulatorControls extends React.Component {
+  static propTypes = {
+    projectRoot: PropTypes.string,
+  };
 
   @autobind
   async _openProjectUrlInSimulatorAsync() {
@@ -20,13 +23,13 @@ class SimulatorControls extends React.Component {
 
   @autobind
   async _openProjectUrlOnAndroidAsync() {
-    let projectUrl = await UrlUtils.constructManifestUrlAsync(this.props.packagerController.getRoot());
+    let projectUrl = await UrlUtils.constructManifestUrlAsync(this.props.projectRoot);
     console.log("projectUrl=" + projectUrl);
     return await Android.openUrlSafeAsync(projectUrl, this.props.appendLogs, this.props.appendErrors);
   }
 
   async _simulatorProjectUrlAsync() {
-    return UrlUtils.constructManifestUrlAsync(this.props.packagerController.getRoot(), {
+    return UrlUtils.constructManifestUrlAsync(this.props.projectRoot, {
       localhost: true,
       dev: this.props.dev,
       minify: this.props.minify,
@@ -36,8 +39,8 @@ class SimulatorControls extends React.Component {
   render() {
     return (
       <ButtonToolbar style={this.props.style}>
-        <Button {...{disabled: !this.props.packagerController}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on iOS Simulator</Button>
-        <Button {...{disabled: !this.props.packagerController}} onClick={this._openProjectUrlOnAndroidAsync}>Open Project in Exponent on Android</Button>
+        <Button {...{disabled: !this.props.projectRoot}} onClick={this._openProjectUrlInSimulatorAsync}>Open Project in Exponent on iOS Simulator</Button>
+        <Button {...{disabled: !this.props.projectRoot}} onClick={this._openProjectUrlOnAndroidAsync}>Open Project in Exponent on Android</Button>
       </ButtonToolbar>
     );
   }

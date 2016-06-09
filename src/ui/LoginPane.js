@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/lib/Button';
 import Input from 'react-bootstrap/lib/Input';
 
 import {
-  Login,
+  User,
 } from 'xdl';
 
 import OverlayTooltip from './OverlayTooltip';
@@ -76,7 +76,7 @@ class LoginPane extends React.Component {
   @autobind
   _logoutClicked() {
     console.log("logout clicked");
-    Login.logoutAsync().then(() => {
+    User.logoutAsync().then(() => {
       console.log("logout successful");
       this.setState({errorMessage: null});
       this.props.onLogout();

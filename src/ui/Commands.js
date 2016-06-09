@@ -23,21 +23,16 @@ module.exports = {
       return null;
     }
 
-    let selection = selections[0];
-
-    let env = {
-      root: selection,
-    };
-
+    let projectRoot = selections[0];
     // let init = remote.require('./build/commands/init');
     // let result = init.runAsync(env, {});
 
     // We'll do a `force` here since if you explicitly choose
     // a directory from a GUI, you probably mean to overwrite
     // whatever is in it, I think
-    await Exp.createNewExpAsync(env.root, {}, {force: true});
+    await Exp.createNewExpAsync(projectRoot, {}, {force: true});
 
-    return env;
+    return projectRoot;
   },
 
   async openExpAsync() {
@@ -52,12 +47,7 @@ module.exports = {
       return null;
     }
 
-    let selection = selections[0];
-
-    let env = {
-      root: selection,
-    };
-
-    return env;
+    let projectRoot = selections[0];
+    return projectRoot;
   },
 };

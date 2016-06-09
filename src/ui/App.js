@@ -9,13 +9,15 @@ import autobind from 'autobind-decorator';
 import escapeHtml from 'escape-html';
 import path from 'path';
 
+import { ipcRenderer } from 'electron';
+
 import {
   Config as xdlConfig,
   Exp,
   UrlUtils,
   UserSettings,
+  Project,
   ProjectSettings,
-  RunPackager,
 } from 'xdl';
 
 import config from '../config';
@@ -42,7 +44,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      packagerController: null,
+      projectRoot: null,
       packagerLogs: '',
       packagerErrors: '',
       url: null,
@@ -136,7 +138,7 @@ class App extends React.Component {
   }
 
   _renderPackagerConsole() {
-    if (this.state.packagerController) {
+    if (this.state.projectRoot) {
       return (
         <div
           ref="packagerLogs"
@@ -197,9 +199,7 @@ class App extends React.Component {
       <div
         key={index}
         onClick={() => {
-          this._runPackagerAsync({
-            root: exp.root,
-          }).catch((err) => {
+          this._runPackagerAsync(exp.root).catch((err) => {
             console.log("Problem: " + err.stack);
             this._logMetaError("Couldn't open Exp " + exp.name + ": " + err);
           });
@@ -246,7 +246,7 @@ class App extends React.Component {
             <NewVersionAvailable />
             {ENABLE_REDESIGN && (
               <ToolBar
-                isProjectOpen={!!this.state.packagerController && !!this.state.projectSettings}
+                isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
                 onNewProjectClick={this._newClicked}
                 onOpenProjectClick={this._openClicked}
                 onPublishClick={this._publishClickedAsync}
@@ -254,7 +254,7 @@ class App extends React.Component {
                 onRestartAllClick={this._restartAllClicked}
                 onTogglePopover={this._onTogglePopover}
                 openPopover={this.state.openPopover}
-                packagerController={this.state.packagerController}
+                projectRoot={this.state.projectRoot}
                 projectName={this._getProjectName()}
                 userName={this.state.user && this.state.user.username}
               />
@@ -271,7 +271,7 @@ class App extends React.Component {
                 }}>
                 <LoginPane
                   loggedInAs={this.state.user}
-                  packagerController={this.state.packagerController}
+                  projectRoot={this.state.projectRoot}
                   onLogout={() => {this.setState({user: null});}}
                 />
               </div>
@@ -293,25 +293,15 @@ class App extends React.Component {
                 />
                 {this._renderAbout()}
                 {this._renderButtons()}
-                {/*
-                {!!this.state.packagerController && (
-                  <span style={{
-                      color: 'rgba(59, 59, 107, 0.8)',
-                      fontFamily: 'Verdana',
-                      fontWeight: '600',
-                      marginTop: 18,
-                      marginLeft: 8,
-                  }}>{this.state.packagerController.getProjectShortName()}</span>
-                )} */}
               </div>
 
-              {!!this.state.packagerController && !!this.state.projectSettings && (
+              {!!this.state.projectRoot && !!this.state.projectSettings && (
                 <div>
 
                   <FileSystemControls
                     style={{
                     }}
-                    packagerController={this.state.packagerController}
+                    projectRoot={this.state.projectRoot}
                   />
 
                   {this._renderUrl()}
@@ -322,7 +312,7 @@ class App extends React.Component {
                       marginLeft: 10,
                       marginTop: 10,
                     }}
-                    packagerController={this.state.packagerController}
+                    projectRoot={this.state.projectRoot}
                     dev={this.state.projectSettings.dev}
                     minify={this.state.projectSettings.minify}
                     appendLogs={this._appendPackagerLogs}
@@ -366,17 +356,11 @@ class App extends React.Component {
 
   _getProjectName() {
     // TODO: Read the project name
-    if (this.state.packagerController) {
-      return this.state.packagerController.opts.absolutePath;
+    if (this.state.projectRoot) {
+      return this.state.projectroot;
     } else {
       return '';
     }
-    // if (this.state.user && this.state.packagerController) {
-    //   return '@' + this.state.user + '/' + this.state.packagerController.getProjectShortName();
-    // } else {
-    //   if
-    //   return '';
-    // }
   }
 
   _renderButtonGroupSeparator() {
@@ -387,7 +371,7 @@ class App extends React.Component {
 
   @autobind
   async _setProjectSettingAsync(options) {
-    let projectSettings = await ProjectSettings.setAsync(this.state.env.root, options);
+    let projectSettings = await ProjectSettings.setAsync(this.state.projectRoot, options);
     let computedUrl = await this._computeUrlAsync();
     this.setState({
       projectSettings,
@@ -417,10 +401,10 @@ class App extends React.Component {
         <ButtonGroup style={{
             marginRight: buttonGroupSpacing,
         }}>
-          <Button bsSize="small" {...{active: (this.state.projectSettings.hostType === 'ngrok')}} onClick={(event) => {
+          <Button bsSize="small" {...{active: (this.state.projectSettings.hostType === 'tunnel')}} onClick={(event) => {
               event.target.blur();
-              this._setProjectSettingAsync({hostType: 'ngrok'});
-          }}>ngrok</Button>
+              this._setProjectSettingAsync({hostType: 'tunnel'});
+          }}>tunnel</Button>
           <Button bsSize="small" {...{active: (this.state.projectSettings.hostType === 'lan')}} onClick={(event) => {
               event.target.blur();
               this._setProjectSettingAsync({hostType: 'lan'});
@@ -490,17 +474,17 @@ class App extends React.Component {
     this._logMetaMessage("Publishing...");
 
     try {
-      let result = await Exp.publishAsync(this.state.packagerController.getRoot());
-      // this._logMetaMessage("Published " + result.packageFullName + " to " + result.expUrl);
-      this._logMetaMessage("Published to " + result.expUrl);
+      let result = await Exp.publishAsync(this.state.projectRoot);
+      // this._logMetaMessage("Published " + result.packageFullName + " to " + result.url);
+      this._logMetaMessage("Published to " + result.url);
       console.log("Published", result);
       // TODO: send
 
       let sendTo = this.state.sendTo;
       if (sendTo) {
-        console.log("Send link:", result.expUrl, "to", sendTo);
+        console.log("Send link:", result.url, "to", sendTo);
         try {
-          await Exp.sendAsync(sendTo, result.expUrl);
+          await Exp.sendAsync(sendTo, result.url);
           console.log("Sent link to published package");
         } catch (err) {
           console.error("Sending link to published package failed:", err);
@@ -520,7 +504,7 @@ class App extends React.Component {
   }
 
   _isPublishActive() {
-    return (!!this.state.packagerController && !!this.state.user);
+    return (!!this.state.projectRoot && !!this.state.user);
   }
 
   _renderButtons() {
@@ -535,26 +519,15 @@ class App extends React.Component {
         <Button onClick={this._openClicked}>Open Project</Button>
       </ButtonToolbar>
     );
-
-    /*
-    <Button disabled style={{
-        background: 'green',
-    }}>Packager Active</Button>
-    <Button active>Button</Button>
-    <Button bsStyle='primary' active>Primary button</Button>
-    <Button active>Button</Button>
-    */
-
   }
 
   _isSendToActive() {
-    return (!!this.state.packagerController && !!this.state.sendTo);
+    return (!!this.state.projectRoot && !!this.state.sendTo);
   }
 
   _renderPackagerButtonToolbar() {
-    let restartButtonsActive = !!this.state.packagerController;
+    let restartButtonsActive = !!this.state.projectRoot;
     let activeProp = {
-      // active: restartButtonsActive,
       disabled: !restartButtonsActive,
     };
 
@@ -565,7 +538,7 @@ class App extends React.Component {
         <Button style={{marginRight: 5}} {...activeProp} onClick={this._resetPackagerClicked}>Clear Packager Cache</Button>
         <Button style={{marginRight: 10}} {...activeProp} onClick={this._restartPackagerClicked}>Restart Packager</Button>
         <Button {...activeProp} onClick={
-            this._restartNgrokClicked}>Restart ngrok</Button>
+            this._restartNgrokClicked}>Restart tunnel</Button>
       </ButtonToolbar>
     );
   }
@@ -609,10 +582,10 @@ class App extends React.Component {
 
   @autobind
   _restartPackagerClicked(options) {
-    if (this.state.packagerController) {
+    if (this.state.projectRoot) {
       console.log("Restarting packager...");
       this._logMetaMessage("Restarting packager...");
-      this.state.packagerController.startOrRestartPackagerAsync(options).then(() => {
+      Project.startReactNativeServerAsync(this.state.projectRoot, options).then(() => {
         console.log("Packager restarted :)");
       }, (err) => {
         console.error("Failed to restart packager :(");
@@ -626,18 +599,18 @@ class App extends React.Component {
 
   @autobind
   _restartNgrokClicked() {
-    if (this.state.packagerController) {
-      console.log("Restarting ngrok...");
-      this._logMetaMessage("Restarting ngrok...");
-      this.state.packagerController.startOrRestartNgrokAsync().then(() => {
-        console.log("ngrok restarted.");
+    if (this.state.projectRoot) {
+      console.log("Restarting tunnel...");
+      this._logMetaMessage("Restarting tunnel...");
+      Project.startTunnelsAsync(this.state.projectRoot).then(() => {
+        console.log("tunnel restarted.");
       }, (err) => {
-        console.error("Failed to restart ngrok :(");
-        this._logMetaError("Failed to restart ngrok :(");
+        console.error("Failed to restart tunnel :(");
+        this._logMetaError("Failed to restart tunnel :(");
       });
     } else {
-      console.error("No ngrok to restart!");
-      this._logMetaError("ngrok not running; can't restart it.");
+      console.error("No tunnel to restart!");
+      this._logMetaError("tunnel not running; can't restart it.");
     }
   }
 
@@ -663,7 +636,6 @@ class App extends React.Component {
 
   @autobind
   _appendPackagerLogs(data) {
-
     // Remove confusing log information
     // let cleanedData = data.replace("│  Keep this packager running while developing on any JS projects. Feel      │", '').replace("│  free to close this tab and run your own packager instance if you          │", '').replace("│  prefer.                                                                   │", '');
     this._packagerLogsHtml = this._packagerLogsHtml +  escapeHtml(data);
@@ -707,66 +679,40 @@ class App extends React.Component {
   }
 
   @autobind
-  async _runPackagerAsync(env) {
-
-    this.setState({env});
-
-    if (!env) {
-      console.log("Not running packager with empty env");
+  async _runPackagerAsync(projectRoot) {
+    if (!projectRoot) {
+      console.error("Not running packager with empty projectRoot");
       return null;
     }
 
-    let projectSettings = await ProjectSettings.readAsync(env.root);
-    let pc = await RunPackager.runAsync(env);
+    let projectSettings = await ProjectSettings.readAsync(projectRoot);
 
-    this._packagerController = pc;
-
-    pc.on('stdout', this._appendPackagerLogs);
-    pc.on('stderr', this._appendPackagerErrors);
-    pc.on('ngrok-ready', async () => {
-      this.setState({ngrokReady: true});
-      this._logMetaMessage("ngrok ready.");
+    Project.attachLogger(projectRoot, (tag, message) => {
+      if (tag === 'stderr') {
+        this._appendPackagerErrors(message);
+      } else {
+        this._appendPackagerLogs(message);
+      }
     });
 
-    pc.on('packager-ready', () => {
-      this.setState({packagerReady: true});
-      this._logMetaMessage("Packager ready.");
-    });
+    // Send projectRoot to main process. main process will close this project
+    // when XDE is closed.
+    ipcRenderer.send('project-opened', projectRoot);
 
     this.setState({
-      packagerReady: false,
-      ngrokReady: false,
       projectSettings,
-      packagerController: this._packagerController,
+      projectRoot,
     }, async () => {
-      await pc.startAsync();
+      await Project.startAsync(projectRoot);
 
       let computedUrl = await this._computeUrlAsync();
       this.setState({
         computedUrl,
       });
     });
-
-    return pc;
   }
 
   componentDidMount() {
-    if (config.__DEV__) {
-      // With the ability to open recent stuff, not much
-      // need to auto run the packager anymore.
-
-      // this._runPackagerAsync({
-      //   root: '/Users/ccheever/tmp/icecubetray',
-      // }).then(() => {
-      //   console.log("Successfully loaded icecubetray");
-      // }, (err) => {
-      //   console.error("Failed to load icecubetray :(", err);
-      // });
-    }
-
-    // Menu.setupMenu(this);
-
-    // console.log("Getting sendTo");
     UserSettings.getAsync('sendTo').then((sendTo) => {
       this.setState({sendTo});
     }, (err) => {
@@ -797,29 +743,17 @@ class App extends React.Component {
         let openPath = path.resolve(process.env.XDE_CMD_LINE_CWD, args[0]);
 
         console.log("Open project at " + openPath);
-
-        let env = {
-          root: args[0],
-        };
-
-        this._runPackagerAsync(env);
-
+        this._runPackagerAsync(args[0]);
       }
     }
-
-    // gitInfoAsync().then((gitInfo) => {
-    //   this.setState({gitInfo});
-    // }, (err) => {
-    //   console.error("Couldn't get git info :(", err);
-    // });
   }
 
   async _computeUrlAsync() {
-    if (!this.state.packagerController || !this.state.projectSettings) {
+    if (!this.state.projectRoot || !this.state.projectSettings) {
       return null;
     }
 
-    return UrlUtils.constructManifestUrlAsync(this.state.packagerController.getRoot());
+    return UrlUtils.constructManifestUrlAsync(this.state.projectRoot);
   }
 }
 

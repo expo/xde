@@ -37,14 +37,11 @@
         const React = require('react');
         const ReactDOM = require('react-dom');
         const App = require('../build/ui/App');
-        let rootElement = React.createElement(App, {
-          emitter: remote.require('xdl').AppEmitter,
-        });
+        let rootElement = React.createElement(App);
         let rootNode = document.getElementById('app');
         ReactDOM.render(rootElement, rootNode);
 
         window.addEventListener('beforeunload', () => {
-          remote.require('xdl').PackagerController.exit();
           ReactDOM.unmountComponentAtNode(rootNode);
         });
       })();
