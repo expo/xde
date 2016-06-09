@@ -247,15 +247,19 @@ class App extends React.Component {
             {ENABLE_REDESIGN && (
               <ToolBar
                 isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
+                onAppendErrors={this._appendPackagerErrors}
+                onAppendLogs={this._appendPackagerLogs}
                 onNewProjectClick={this._newClicked}
                 onOpenProjectClick={this._openClicked}
                 onPublishClick={this._publishClickedAsync}
                 onRestartPackagerClick={this._resetPackagerClicked}
                 onRestartAllClick={this._restartAllClicked}
+                onSendLinkClick={this._sendClicked}
                 onTogglePopover={this._onTogglePopover}
                 openPopover={this.state.openPopover}
                 projectRoot={this.state.projectRoot}
                 projectName={this._getProjectName()}
+                projectSettings={this.state.projectSettings}
                 userName={this.state.user && this.state.user.username}
               />
             )}
@@ -615,9 +619,9 @@ class App extends React.Component {
   }
 
   @autobind
-  _sendClicked() {
+  _sendClicked(sendInputValue) {
     let url_ = this.state.computedUrl;
-    let sendTo = this.state.sendTo;
+    let sendTo = sendInputValue || this.state.sendTo;
     console.log("Send link:", url_, "to", sendTo);
     let message = "Sent link " + url_ + " to " + sendTo;
     Exp.sendAsync(sendTo, url_).then(() => {

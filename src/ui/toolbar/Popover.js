@@ -3,26 +3,31 @@ import {Motion, spring} from 'react-motion';
 
 import StyleConstants from '../StyleConstants';
 
+// To visually align the popover
+const ARROW_OFFSET = 20;
+const POPOVER_OFFSET = -10;
+
 export default class Popover extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     body: PropTypes.node,
-    left: PropTypes.number,
-  };
-
-  static defaultProps = {
-    left: 0,
+    isToLeft: PropTypes.bool,
   };
 
   render() {
+    const popoverStyle = this.props.isToLeft ?
+      {right: POPOVER_OFFSET} : {left: POPOVER_OFFSET};
+    const arrowStyle = this.props.isToLeft ?
+      {right: ARROW_OFFSET} : {left: ARROW_OFFSET};
+
     return (
       <div style={Styles.container}>
         {this.props.children}
         <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
           {(value) => (
             <div style={{opacity: value.x}}>
-              <div style={{...Styles.popover, left: this.props.left}}>
-                <div style={Styles.arrow}></div>
+              <div style={{...Styles.popover, ...popoverStyle}}>
+                <div style={{...Styles.arrow, ...arrowStyle}}></div>
                 <ul style={Styles.menu}>
                   {this.props.body}
                 </ul>
@@ -38,6 +43,7 @@ export default class Popover extends React.Component {
 const Styles = {
   container: {
     position: 'relative',
+    zIndex: StyleConstants.zIndexPopover,
   },
   popover: {
     position: 'absolute', // For positioning arrow
@@ -54,7 +60,6 @@ const Styles = {
 
     position: 'absolute',
     top: 0,
-    left: 20,
     zIndex: 1,
   },
   menu: {
@@ -66,8 +71,6 @@ const Styles = {
     color: StyleConstants.colorText,
     listStyleType: 'none',
     minWidth: 170,
-    paddingTop: StyleConstants.gutterSm,
-    paddingBottom: StyleConstants.gutterSm,
     paddingLeft: 0,
     zIndex: 2,
 

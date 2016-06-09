@@ -1,5 +1,11 @@
+import Radium from 'radium';
 import React, {PropTypes} from 'react';
-import {FileSystem} from 'xdl';
+import {
+  Android,
+  FileSystem,
+  Simulator,
+  UrlUtils,
+} from 'xdl';
 
 import StyleConstants from '../StyleConstants';
 
@@ -14,6 +20,7 @@ const POPOVERS = {
   USER: 4,
 };
 
+@Radium
 export default class ToolBar extends React.Component {
   static propTypes = {
     isProjectOpen: PropTypes.bool,
@@ -21,13 +28,17 @@ export default class ToolBar extends React.Component {
     onTogglePopover: PropTypes.func.isRequired,
     projectRoot: PropTypes.string,
     projectName: PropTypes.string,
+    projectSettings: PropTypes.object,
     userName: PropTypes.string,
 
+    onAppendErrors: PropTypes.func,
+    onAppendLogs: PropTypes.func,
     onNewProjectClick: PropTypes.func,
     onOpenProjectClick: PropTypes.func,
     onPublishClick: PropTypes.func,
     onRestartPackagerClick: PropTypes.func,
     onRestartAllClick: PropTypes.func,
+    onSendLinkClick: PropTypes.func,
   };
 
   _getTogglePopoverFn = (popover) => {
@@ -42,7 +53,7 @@ export default class ToolBar extends React.Component {
       return null;
     }
     return (
-      <div>
+      <div style={Styles.menu}>
         <MenuItem label="New Project" shortcut="N"
           onClick={this.props.onNewProjectClick}
         />
@@ -71,12 +82,50 @@ export default class ToolBar extends React.Component {
       return null;
     }
     return (
-      <div>
+      <div style={Styles.menu}>
         <MenuItem label="Restart packager" shortcut="O"
           onClick={this.props.onRestartPackagerClick}
         />
         <MenuItem label="Restart all"
           onClick={this.props.onRestartAllClick}
+        />
+      </div>
+    );
+  }
+
+  _onSendLinkClick = (event) => {
+    event.stopPropagation();
+    if (this._sendLinkInput.value) {
+      this.props.onSendLinkClick(this._sendLinkInput.value);
+    }
+  };
+
+  _renderPopoverSendLink() {
+    if (this.props.openPopover !== POPOVERS.SEND_LINK) {
+      return null;
+    }
+    return (
+      <div onClick={this._onSendLinkClick}>
+        <input style={Styles.sendLinkInput}
+          ref={(r) => {this._sendLinkInput = r;}}
+          placeholder="Email or phone"
+        />
+        <a style={Styles.sendLinkSubmit}>Send Link</a>
+      </div>
+    );
+  }
+
+  _renderPopoverSimulator() {
+    if (this.props.openPopover !== POPOVERS.SIMULATOR) {
+      return null;
+    }
+    return (
+      <div style={Styles.menu}>
+        <MenuItem label="Exponent on iOS"
+          onClick={this._simulatorIOSAsync}
+        />
+        <MenuItem label="Exponent on Android"
+          onClick={this._simulatorAndroidAsync}
         />
       </div>
     );
@@ -117,17 +166,23 @@ export default class ToolBar extends React.Component {
             <IconButton iconUrl="./IconArrowRight.png" label="Send Link" color="#383D40"
               isDisabled={!this.props.isProjectOpen}
               onClick={this._getTogglePopoverFn(POPOVERS.SEND_LINK)}
+              popover={this._renderPopoverSendLink()}
+              isPopoverToLeft
               style={Styles.rightSpaced}
             />
             <IconButton iconUrl="./IconPhone.png" label="Simulator" color="#383D40"
               isDisabled={!this.props.isProjectOpen}
-              onClick={() => {}}
+              onClick={this._getTogglePopoverFn(POPOVERS.SIMULATOR)}
+              popover={this._renderPopoverSimulator()}
+              isPopoverToLeft
             />
           </div>
         </div>
       </div>
     );
   }
+
+  // File system methods
 
   _projectDir() {
     return this.props.projectRoot;
@@ -148,6 +203,31 @@ export default class ToolBar extends React.Component {
   _onOpenInEditorClick = () => {
     FileSystem.openProjectInEditorAsync(this._projectDir()).catch((err) => {
       console.error(err);
+    });
+  };
+
+  // Simulator methods
+
+  _simulatorIOSAsync = async () => {
+    let projectUrl = await this._simulatorProjectUrlAsync();
+    console.log("projectUrl=" + projectUrl);
+    return await Simulator.openUrlInSimulatorSafeAsync(
+      projectUrl, this.props.onAppendLogs, this.props.onAppendErrors);
+  };
+
+  _simulatorAndroidAsync = async () => {
+    let projectUrl = await UrlUtils.constructManifestUrlAsync(
+      this.props.projectRoot);
+    console.log("projectUrl=" + projectUrl);
+    return await Android.openUrlSafeAsync(
+      projectUrl, this.props.onAppendLogs, this.props.onAppendErrors);
+  };
+
+  _simulatorProjectUrlAsync = async () => {
+    return UrlUtils.constructManifestUrlAsync(this.props.projectRoot, {
+      localhost: true,
+      dev: this.props.projectSettings.dev,
+      minify: this.props.projectSettings.minify,
     });
   };
 }
@@ -173,6 +253,10 @@ const Styles = {
   rightSpaced: {
     marginRight: StyleConstants.gutterLg,
   },
+  menu: {
+    marginTop: StyleConstants.gutterSm,
+    marginBottom: StyleConstants.gutterSm,
+  },
   projectName: {
     color: StyleConstants.colorText,
     fontSize: StyleConstants.fontSizeLg,
@@ -180,5 +264,32 @@ const Styles = {
   userName: {
     color: StyleConstants.colorSubtitle,
     fontSize: StyleConstants.fontSizeMd,
+  },
+  sendLinkInput: {
+    border: 'none',
+    color: StyleConstants.colorSubtitle,
+    display: 'block',
+    fontSize: StyleConstants.fontSizeMd,
+    margin: StyleConstants.gutterSm,
+    padding: StyleConstants.gutterSm,
+    textAlign: 'center',
+  },
+  sendLinkSubmit: {
+    cursor: 'pointer',
+    display: 'block',
+    borderTop: `1px solid ${StyleConstants.colorBorder}`,
+    padding: StyleConstants.gutterMd,
+    textAlign: 'center',
+    textDecoration: 'none',
+
+    backgroundColor: 'white',
+    color: '#328CE9',
+    ':active': {
+      backgroundColor: StyleConstants.colorBackground,
+      color: '#08509A',
+    },
+  },
+  simulator: {
+    textAlign: 'left',
   },
 };

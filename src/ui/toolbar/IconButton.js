@@ -14,6 +14,7 @@ export default class IconButton extends React.Component {
 
     // If specified, popover appears beneath icon circle on click.
     popover: PropTypes.node,
+    isPopoverToLeft: PropTypes.bool,
   }
 
   _onClick = (event) => {
@@ -30,15 +31,16 @@ export default class IconButton extends React.Component {
     const iconContainerStyle = {
       ...Styles.iconContainer,
       borderColor: this.props.color,
-      ...(this.props.isDisabled ? Styles.iconContainerDisabled : {}),
     };
     const iconEl = (
       <div style={iconContainerStyle}>
         <img src={this.props.iconUrl} style={Styles.icon} />
       </div>
     );
+
     const mainEl = this.props.popover ?
-      <Popover left={-12} body={this.props.popover}>{iconEl}</Popover> :
+      <Popover isToLeft={this.props.isPopoverToLeft}
+        body={this.props.popover}>{iconEl}</Popover> :
       iconEl;
 
     return (
@@ -56,18 +58,20 @@ export default class IconButton extends React.Component {
 const Styles = {
   container: {
     alignItems: 'center',
+    cursor: 'pointer',
     display: 'inline-flex',
     flexDirection: 'column',
     fontSize: StyleConstants.fontSizeMd,
+    verticalAlign: 'middle',
   },
   containerDisabled: {
+    cursor: 'default',
     opacity: 0.3,
   },
   iconContainer: {
     borderRadius: '50%',
     borderStyle: 'solid',
     borderWidth: 2,
-    cursor: 'pointer',
     marginBottom: StyleConstants.gutterSm,
     width: 32,
     height: 32,
@@ -76,9 +80,6 @@ const Styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconContainerDisabled: {
-    cursor: 'default',
   },
   icon: {
     maxHeight: 15,
