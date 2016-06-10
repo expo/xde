@@ -54,6 +54,7 @@ const Styles = {
     color: StyleConstants.colorText,
     cursor: 'pointer',
     display: 'flex',
+    fontSize: StyleConstants.fontSizeMd,
     paddingTop: StyleConstants.gutterSm,
     paddingRight: StyleConstants.gutterMd,
     paddingBottom: StyleConstants.gutterSm,

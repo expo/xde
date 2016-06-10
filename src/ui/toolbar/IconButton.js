@@ -1,8 +1,10 @@
+import Radium from 'radium';
 import React, {PropTypes} from 'react';
 
 import StyleConstants from '../StyleConstants';
 import Popover from './Popover';
 
+@Radium
 export default class IconButton extends React.Component {
   static propTypes = {
     color: PropTypes.string.isRequired,
@@ -16,12 +18,6 @@ export default class IconButton extends React.Component {
     popover: PropTypes.node,
     isPopoverToLeft: PropTypes.bool,
   }
-
-  _onClick = (event) => {
-    if (!this.props.isDisabled) {
-      this.props.onClick(event);
-    }
-  };
 
   render() {
     const containerStyle = {
@@ -44,13 +40,14 @@ export default class IconButton extends React.Component {
       iconEl;
 
     return (
-      <div style={Object.assign({}, containerStyle, this.props.style)}
-        onClick={this._onClick}>
+      <button style={{...containerStyle, ...this.props.style}}
+        disabled={this.props.isDisabled}
+        onClick={this.props.onClick}>
         {mainEl}
         <div style={{color: this.props.color}}>
           {this.props.label}
         </div>
-      </div>
+      </button>
     );
   }
 }
@@ -58,14 +55,17 @@ export default class IconButton extends React.Component {
 const Styles = {
   container: {
     alignItems: 'center',
-    cursor: 'pointer',
     display: 'inline-flex',
     flexDirection: 'column',
     fontSize: StyleConstants.fontSizeMd,
     verticalAlign: 'middle',
+
+    // Override button styles
+    background: 'transparent',
+    border: 'none',
+    textAlign: 'left',
   },
   containerDisabled: {
-    cursor: 'default',
     opacity: 0.3,
   },
   iconContainer: {

@@ -5,6 +5,7 @@ import {
   FileSystem,
   Simulator,
   UrlUtils,
+  User,
 } from 'xdl';
 
 import StyleConstants from '../StyleConstants';
@@ -12,12 +13,14 @@ import StyleConstants from '../StyleConstants';
 import IconButton from './IconButton';
 import MenuItem from './MenuItem';
 import MenuSeparator from './MenuSeparator';
+import Popover from './Popover';
 
 const POPOVERS = {
   PROJECT: 1,
   RESTART: 2,
   SEND_LINK: 3,
-  USER: 4,
+  SIMULATOR: 4,
+  USER: 5,
 };
 
 @Radium
@@ -33,6 +36,7 @@ export default class ToolBar extends React.Component {
 
     onAppendErrors: PropTypes.func,
     onAppendLogs: PropTypes.func,
+    onLogOut: PropTypes.func,
     onNewProjectClick: PropTypes.func,
     onOpenProjectClick: PropTypes.func,
     onPublishClick: PropTypes.func,
@@ -131,15 +135,44 @@ export default class ToolBar extends React.Component {
     );
   }
 
+  _onLogOutClick = async () => {
+    try {
+      await User.logoutAsync();
+      this.props.onLogOut();
+    } catch (error) {
+      console.error("logout error:", error);
+    }
+  };
+
+  _renderUserName() {
+    const popoverBodyEl = (
+      <div style={Styles.menu}>
+        <MenuItem label="Log out" onClick={this._onLogOutClick} />
+      </div>
+    );
+    const userNameEl = (
+      <a style={Styles.userName}
+        onClick={this._getTogglePopoverFn(POPOVERS.USER)}>
+        {this.props.userName}
+      </a>
+    );
+    const userNameWithPopoverEl = (
+      <Popover isToLeft body={popoverBodyEl}>{userNameEl}</Popover>
+    );
+
+    return this.props.openPopover === POPOVERS.USER ?
+      userNameWithPopoverEl : userNameEl;
+  }
+
   render() {
     return (
       <div>
         <div style={Styles.row}>
           <div style={{...Styles.leftCol, ...Styles.projectName}}>
-            Project Name goes here
+            {this.props.projectName}
           </div>
-          <div style={{...Styles.rightCol, ...Styles.userName}}>
-            {this.props.userName}
+          <div style={Styles.rightCol}>
+            {this._renderUserName()}
           </div>
         </div>
         <div style={Styles.separator} />
@@ -235,10 +268,10 @@ export default class ToolBar extends React.Component {
 const Styles = {
   separator: {
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
-    margin: StyleConstants.gutterLg,
+    marginTop: StyleConstants.gutterLg,
+    marginBottom: StyleConstants.gutterLg,
   },
   row: {
-    margin: StyleConstants.gutterLg,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -263,7 +296,9 @@ const Styles = {
   },
   userName: {
     color: StyleConstants.colorSubtitle,
+    cursor: 'pointer',
     fontSize: StyleConstants.fontSizeMd,
+    textDecoration: 'none',
   },
   sendLinkInput: {
     border: 'none',

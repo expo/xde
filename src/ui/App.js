@@ -29,6 +29,8 @@ import FileSystemControls from './FileSystemControls';
 import LoginPage from './LoginPage';
 import LoginPane from './LoginPane';
 import NewVersionAvailable from './NewVersionAvailable';
+import OptionGroup from './OptionGroup';
+import SharedStyles from './Styles';
 import StyleConstants from './StyleConstants';
 import SimulatorControls from './SimulatorControls';
 import ToolBar from './toolbar/ToolBar';
@@ -233,6 +235,67 @@ class App extends React.Component {
     this.setState({openPopover: null});
   };
 
+  _urlInputSelect = () => {
+    this._urlInput.select();
+  };
+
+  _urlInputCopy = () => {
+    this._urlInputSelect();
+    document.execCommand('copy');
+  };
+
+  _renderUrlInput() {
+    return (
+      <div style={Styles.urlInputContainer}>
+        <input
+          ref={(r) => {this._urlInput = r;}}
+          style={Styles.urlInput}
+          value={this.state.computedUrl}
+          placeholder="Waiting for packager and tunnel to start..."
+          onClick={this._urlInputSelect}
+        />
+        <img src="./IconArrowUpRight.png"
+          style={Styles.urlInputCopyIcon}
+          onClick={this._urlInputCopy}
+        />
+      </div>
+    );
+  }
+
+  _renderOptions() {
+    return (
+      <div style={Styles.optionsRow}>
+        <OptionGroup style={Styles.optionsGroup}
+          options={['tunnel', 'lan', 'localhost'].map((option) => ({
+            isSelected: this.state.projectSettings.hostType === option,
+            label: option,
+            onSelect: () => this._setProjectSettingAsync({hostType: option}),
+          }))}
+        />
+        <OptionGroup style={Styles.optionsGroup}
+          options={['dev', 'strict', 'minify'].map((option) => ({
+            isSelected: this.state.projectSettings[option],
+            label: option,
+            onSelect: () => this._setProjectSettingAsync({
+              [option]: !this.state.projectSettings[option],
+            }),
+          }))}
+        />
+        <OptionGroup style={Styles.optionsGroup}
+          options={['exp', 'http', 'redirect'].map((option) => ({
+            isSelected: this.state.projectSettings.urlType === option,
+            label: option,
+            onSelect: () => this._setProjectSettingAsync({urlType: option}),
+          }))}
+        />
+      </div>
+    );
+  }
+
+  _logOut = () => {
+    this.setState({user: null});
+  };
+
   render() {
     return (
       <StyleRoot onClick={this._closePopover}>
@@ -245,23 +308,28 @@ class App extends React.Component {
           }}>
             <NewVersionAvailable />
             {ENABLE_REDESIGN && (
-              <ToolBar
-                isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
-                onAppendErrors={this._appendPackagerErrors}
-                onAppendLogs={this._appendPackagerLogs}
-                onNewProjectClick={this._newClicked}
-                onOpenProjectClick={this._openClicked}
-                onPublishClick={this._publishClickedAsync}
-                onRestartPackagerClick={this._resetPackagerClicked}
-                onRestartAllClick={this._restartAllClicked}
-                onSendLinkClick={this._sendClicked}
-                onTogglePopover={this._onTogglePopover}
-                openPopover={this.state.openPopover}
-                projectRoot={this.state.projectRoot}
-                projectName={this._getProjectName()}
-                projectSettings={this.state.projectSettings}
-                userName={this.state.user && this.state.user.username}
-              />
+              <div style={Styles.topSection}>
+                <ToolBar
+                  isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
+                  onAppendErrors={this._appendPackagerErrors}
+                  onAppendLogs={this._appendPackagerLogs}
+                  onLogOut={this._logOut}
+                  onNewProjectClick={this._newClicked}
+                  onOpenProjectClick={this._openClicked}
+                  onPublishClick={this._publishClickedAsync}
+                  onRestartPackagerClick={this._resetPackagerClicked}
+                  onRestartAllClick={this._restartAllClicked}
+                  onSendLinkClick={this._sendClicked}
+                  onTogglePopover={this._onTogglePopover}
+                  openPopover={this.state.openPopover}
+                  projectRoot={this.state.projectRoot}
+                  projectName={this._getProjectName()}
+                  projectSettings={this.state.projectSettings}
+                  userName={this.state.user && this.state.user.username}
+                />
+                {this.state.projectSettings && this._renderUrlInput()}
+                {this.state.projectSettings && this._renderOptions()}
+              </div>
             )}
             <div style={{
                 backgroundColor: '#f6f6f6',
@@ -276,7 +344,7 @@ class App extends React.Component {
                 <LoginPane
                   loggedInAs={this.state.user}
                   projectRoot={this.state.projectRoot}
-                  onLogout={() => {this.setState({user: null});}}
+                  onLogout={this._logOut}
                 />
               </div>
 
@@ -361,7 +429,7 @@ class App extends React.Component {
   _getProjectName() {
     // TODO: Read the project name
     if (this.state.projectRoot) {
-      return this.state.projectroot;
+      return this.state.projectRoot;
     } else {
       return '';
     }
@@ -762,6 +830,42 @@ class App extends React.Component {
 }
 
 let Styles = {
+  topSection: {
+    margin: StyleConstants.gutterLg,
+  },
+
+  optionsRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: StyleConstants.gutterLg,
+  },
+
+  optionsGroup: {
+    flex: 1,
+  },
+
+  urlInputContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: StyleConstants.gutterLg,
+    position: 'relative', // For positioning copy icon
+  },
+
+  urlInput: {
+    ...SharedStyles.input,
+    flex: 1,
+  },
+
+  urlInputCopyIcon: {
+    cursor: 'pointer',
+    padding: StyleConstants.gutterMd, // Pad clickable area
+
+    position: 'absolute',
+    right: 0,
+    top: '50%',
+    height: (StyleConstants.gutterMd * 2) + 10,
+    marginTop: -((StyleConstants.gutterMd * 2) + 10) / 2,
+  },
 
   log: {
     width: '100%',

@@ -4,6 +4,7 @@ import {Motion, spring} from 'react-motion';
 import {User} from 'xdl';
 
 import StyleConstants from './StyleConstants';
+import SharedStyles from './Styles';
 import * as UsernameRules from '../UsernameRules';
 
 class LoginPage extends React.Component {
@@ -159,11 +160,7 @@ let Styles = {
     width: '100%',
   },
   input: {
-    borderColor: '#DAE3EB',
-    borderWidth: 1,
-    borderRadius: 5,
-    borderStyle: 'solid',
-    padding: 8,
+    ...SharedStyles.input,
 
     display: 'block',
     width: '100%',
