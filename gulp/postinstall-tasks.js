@@ -13,8 +13,8 @@ let tasks = {
       XDE_ROOT,
       'node_modules/electron-prebuilt/dist/Electron.app'
     );
-    let xdeIconsPath = path.join(XDE_ROOT, 'dev/Design/xde.icns');
-    let appIconsPath = path.join(appRoot, 'Contents/Resources/atom.icns');
+    let xdeIconsPath = path.join(XDE_ROOT, 'dev/xde.icns');
+    let appIconsPath = path.join(appRoot, 'Contents/Resources/electron.icns');
     try {
       await fs.promise.copy(xdeIconsPath, appIconsPath);
       logger.info(crayon.green('Copied icons into electron-prebuilt'));
