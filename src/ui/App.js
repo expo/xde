@@ -25,6 +25,7 @@ xdlConfig.api = config.api;
 xdlConfig.developerTool = 'xde';
 
 import Commands from './Commands';
+import ConsoleLog from './ConsoleLog';
 import FileSystemControls from './FileSystemControls';
 import LoginPage from './LoginPage';
 import LoginPane from './LoginPane';
@@ -46,6 +47,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      logs: [],
       projectRoot: null,
       packagerLogs: '',
       packagerErrors: '',
@@ -141,16 +143,20 @@ class App extends React.Component {
 
   _renderPackagerConsole() {
     if (this.state.projectRoot) {
-      return (
-        <div
-          ref="packagerLogs"
-          key="packagerLogs"
-          style={Object.assign({}, Styles.log, {
-            overflow: 'scroll',
-          })}
-          dangerouslySetInnerHTML={{__html: this.state.packagerLogs}}
-        />
-      );
+      if (ENABLE_REDESIGN) {
+        return <ConsoleLog logs={this.state.logs} />;
+      } else {
+        return (
+          <div
+            ref="packagerLogs"
+            key="packagerLogs"
+            style={Object.assign({}, Styles.log, {
+              overflow: 'scroll',
+            })}
+            dangerouslySetInnerHTML={{__html: this.state.packagerLogs}}
+          />
+        );
+      }
     } else {
       return (
         this._renderNoPackager()
@@ -307,7 +313,7 @@ class App extends React.Component {
             height: '100vh',
           }}>
             <NewVersionAvailable />
-            {ENABLE_REDESIGN && (
+            {ENABLE_REDESIGN ? (
               <div style={Styles.topSection}>
                 <ToolBar
                   isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
@@ -325,100 +331,102 @@ class App extends React.Component {
                   projectRoot={this.state.projectRoot}
                   projectName={this._getProjectName()}
                   projectSettings={this.state.projectSettings}
+                  sendTo={this.state.sendTo}
                   userName={this.state.user && this.state.user.username}
                 />
                 {this.state.projectSettings && this._renderUrlInput()}
                 {this.state.projectSettings && this._renderOptions()}
               </div>
-            )}
-            <div style={{
-                backgroundColor: '#f6f6f6',
-                flex: 'none',
-                boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
-                zIndex: 0,
-            }}>
+            ) : (
               <div style={{
-                  position: 'absolute',
-                  left: 800,
-                }}>
-                <LoginPane
-                  loggedInAs={this.state.user}
-                  projectRoot={this.state.projectRoot}
-                  onLogout={this._logOut}
-                />
-              </div>
-
-              <div style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'flex-start',
+                  backgroundColor: '#f6f6f6',
+                  flex: 'none',
+                  boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.3)',
+                  zIndex: 0,
               }}>
-                <img src="./ExponentIcon.png" style={{
-                    height: 36,
-                    width: 36,
-                    marginLeft: 15,
-                    marginTop: 10,
-                    cursor: 'pointer',
-                }} onClick={() => {
-                  shell.openExternal('http://exponentjs.com/');
-                }}
-                />
-                {this._renderAbout()}
-                {this._renderButtons()}
-              </div>
-
-              {!!this.state.projectRoot && !!this.state.projectSettings && (
-                <div>
-
-                  <FileSystemControls
-                    style={{
-                    }}
-                    projectRoot={this.state.projectRoot}
-                  />
-
-                  {this._renderUrl()}
-                  {this._renderUrlOptionButtons()}
-
-                  <SimulatorControls
-                    style={{
-                      marginLeft: 10,
-                      marginTop: 10,
-                    }}
-                    projectRoot={this.state.projectRoot}
-                    dev={this.state.projectSettings.dev}
-                    minify={this.state.projectSettings.minify}
-                    appendLogs={this._appendPackagerLogs}
-                    appendErrors={this._appendPackagerErrors}
-                  />
-
-                  <div style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'flex-start',
-                      marginTop: 10,
-                      marginLeft: 15,
-                      marginBottom: 10,
-                    }}>
-                    {this._renderSendLinkButton()}
-                    <span style={{
-                        paddingLeft: 6,
-                        paddingRight: 6,
-                        paddingTop: 6,
-                    }}>to</span>
-                    {this._renderSendInput()}
-                    {this._renderButtonGroupSeparator()}
-                    {this._renderPublishButton()}
-                  </div>
-                  <div style={{
-                      marginLeft: 15,
-                      marginBottom: 10,
+                <div style={{
+                    position: 'absolute',
+                    left: 800,
                   }}>
-                    {this._renderPackagerButtonToolbar()}
-                  </div>
+                  <LoginPane
+                    loggedInAs={this.state.user}
+                    projectRoot={this.state.projectRoot}
+                    onLogout={this._logOut}
+                  />
                 </div>
-              )}
 
-            </div>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                }}>
+                  <img src="./ExponentIcon.png" style={{
+                      height: 36,
+                      width: 36,
+                      marginLeft: 15,
+                      marginTop: 10,
+                      cursor: 'pointer',
+                  }} onClick={() => {
+                    shell.openExternal('http://exponentjs.com/');
+                  }}
+                  />
+                  {this._renderAbout()}
+                  {this._renderButtons()}
+                </div>
+
+                {!!this.state.projectRoot && !!this.state.projectSettings && (
+                  <div>
+
+                    <FileSystemControls
+                      style={{
+                      }}
+                      projectRoot={this.state.projectRoot}
+                    />
+
+                    {this._renderUrl()}
+                    {this._renderUrlOptionButtons()}
+
+                    <SimulatorControls
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 10,
+                      }}
+                      projectRoot={this.state.projectRoot}
+                      dev={this.state.projectSettings.dev}
+                      minify={this.state.projectSettings.minify}
+                      appendLogs={this._appendPackagerLogs}
+                      appendErrors={this._appendPackagerErrors}
+                    />
+
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'flex-start',
+                        marginTop: 10,
+                        marginLeft: 15,
+                        marginBottom: 10,
+                      }}>
+                      {this._renderSendLinkButton()}
+                      <span style={{
+                          paddingLeft: 6,
+                          paddingRight: 6,
+                          paddingTop: 6,
+                      }}>to</span>
+                      {this._renderSendInput()}
+                      {this._renderButtonGroupSeparator()}
+                      {this._renderPublishButton()}
+                    </div>
+                    <div style={{
+                        marginLeft: 15,
+                        marginBottom: 10,
+                    }}>
+                      {this._renderPackagerButtonToolbar()}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            )}
             {this._renderPackagerConsole()}
           </div>
         </LoginPage>
@@ -708,10 +716,16 @@ class App extends React.Component {
 
   @autobind
   _appendPackagerLogs(data) {
-    // Remove confusing log information
-    // let cleanedData = data.replace("│  Keep this packager running while developing on any JS projects. Feel      │", '').replace("│  free to close this tab and run your own packager instance if you          │", '').replace("│  prefer.                                                                   │", '');
-    this._packagerLogsHtml = this._packagerLogsHtml +  escapeHtml(data);
-    this._updatePackagerLogState();
+    if (ENABLE_REDESIGN) {
+      this.setState({
+        logs: this.state.logs.concat([{type: 'default', message: data}]),
+      });
+    } else {
+      // Remove confusing log information
+      // let cleanedData = data.replace("│  Keep this packager running while developing on any JS projects. Feel      │", '').replace("│  free to close this tab and run your own packager instance if you          │", '').replace("│  prefer.                                                                   │", '');
+      this._packagerLogsHtml = this._packagerLogsHtml +  escapeHtml(data);
+      this._updatePackagerLogState();
+    }
   }
 
   @autobind
@@ -722,26 +736,50 @@ class App extends React.Component {
 
   @autobind
   _appendPackagerErrors(data) {
-    this._packagerLogsHtml += '<div class="log-err">' + escapeHtml(data) + '</div>';
-    this._updatePackagerLogState();
+    if (ENABLE_REDESIGN) {
+      this.setState({
+        logs: this.state.logs.concat([{type: 'error', message: data}]),
+      });
+    } else {
+      this._packagerLogsHtml += '<div class="log-err">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
+    }
   }
 
   @autobind
   _logMetaMessage(data) {
-    this._packagerLogsHtml += '<div class="log-meta">' + escapeHtml(data) + '</div>';
-    this._updatePackagerLogState();
+    if (ENABLE_REDESIGN) {
+      this.setState({
+        logs: this.state.logs.concat([{type: 'meta', message: data}]),
+      });
+    } else {
+      this._packagerLogsHtml += '<div class="log-meta">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
+    }
   }
 
   @autobind
   _logMetaError(data) {
-    this._packagerLogsHtml += '<div class="log-meta-error">' + escapeHtml(data) + '</div>';
-    this._updatePackagerLogState();
+    if (ENABLE_REDESIGN) {
+      this.setState({
+        logs: this.state.logs.concat([{type: 'metaError', message: data}]),
+      });
+    } else {
+      this._packagerLogsHtml += '<div class="log-meta-error">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
+    }
   }
 
   @autobind
   _logMetaWarning(data) {
-    this._packagerLogsHtml += '<div class="log-meta-warning">' + escapeHtml(data) + '</div>';
-    this._updatePackagerLogState();
+    if (ENABLE_REDESIGN) {
+      this.setState({
+        logs: this.state.logs.concat([{type: 'metaWarning', message: data}]),
+      });
+    } else {
+      this._packagerLogsHtml += '<div class="log-meta-warning">' + escapeHtml(data) + '</div>';
+      this._updatePackagerLogState();
+    }
   }
 
   @autobind
@@ -914,7 +952,6 @@ let Styles = {
     lineHeight: 20,
     textTransform: 'uppercase',
   },
-
 };
 
 global.cl = function(a, b, c) {

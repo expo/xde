@@ -32,6 +32,7 @@ export default class ToolBar extends React.Component {
     projectRoot: PropTypes.string,
     projectName: PropTypes.string,
     projectSettings: PropTypes.object,
+    sendTo: PropTypes.string,
     userName: PropTypes.string,
 
     onAppendErrors: PropTypes.func,
@@ -98,8 +99,8 @@ export default class ToolBar extends React.Component {
   }
 
   _onSendLinkClick = (event) => {
-    event.stopPropagation();
     if (this._sendLinkInput.value) {
+      this._getTogglePopoverFn(POPOVERS.SEND_LINK)(event);
       this.props.onSendLinkClick(this._sendLinkInput.value);
     }
   };
@@ -109,12 +110,14 @@ export default class ToolBar extends React.Component {
       return null;
     }
     return (
-      <div onClick={this._onSendLinkClick}>
+      <div onClick={(e) => {e.stopPropagation();}}>
         <input style={Styles.sendLinkInput}
           ref={(r) => {this._sendLinkInput = r;}}
+          defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
-        <a style={Styles.sendLinkSubmit}>Send Link</a>
+        <a onClick={this._onSendLinkClick}
+          style={Styles.sendLinkSubmit}>Send Link</a>
       </div>
     );
   }
