@@ -567,7 +567,7 @@ class App extends React.Component {
     this._logMetaMessage("Publishing...");
 
     try {
-      let result = await Exp.publishAsync(this.state.projectRoot);
+      let result = await Project.publishAsync(this.state.projectRoot);
       // this._logMetaMessage("Published " + result.packageFullName + " to " + result.url);
       this._logMetaMessage("Published to " + result.url);
       console.log("Published", result);
