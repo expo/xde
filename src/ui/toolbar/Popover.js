@@ -67,7 +67,7 @@ const Styles = {
     borderColor: StyleConstants.colorBorder,
     borderStyle: 'solid',
     borderWidth: 1,
-    boxShadow: `0 5px 10px ${StyleConstants.colorBorder}`,
+    boxShadow: `0 5px 10px rgba(0, 0, 0, 0.2)`,
     color: StyleConstants.colorText,
     listStyleType: 'none',
     minWidth: 170,

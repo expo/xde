@@ -42,7 +42,7 @@ export default class ConsoleLog extends React.Component {
         logStyle = Styles.logDefault; break;
     }
     return (
-      <pre style={{...Styles.log, ...logStyle}}>{log.message}</pre>
+      <pre key={index} style={{...Styles.log, ...logStyle}}>{log.message}</pre>
     );
   }
 

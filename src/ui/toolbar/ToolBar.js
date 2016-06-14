@@ -8,6 +8,7 @@ import {
   User,
 } from 'xdl';
 
+import ProjectIcon from '../ProjectIcon';
 import StyleConstants from '../StyleConstants';
 
 import IconButton from './IconButton';
@@ -29,8 +30,8 @@ export default class ToolBar extends React.Component {
     isProjectOpen: PropTypes.bool,
     openPopover: PropTypes.oneOf(Object.keys(POPOVERS).map((k) => POPOVERS[k])),
     onTogglePopover: PropTypes.func.isRequired,
+    packageJson: PropTypes.object,
     projectRoot: PropTypes.string,
-    projectName: PropTypes.string,
     projectSettings: PropTypes.object,
     sendTo: PropTypes.string,
     userName: PropTypes.string,
@@ -44,6 +45,32 @@ export default class ToolBar extends React.Component {
     onRestartPackagerClick: PropTypes.func,
     onRestartAllClick: PropTypes.func,
     onSendLinkClick: PropTypes.func,
+  };
+
+  componentDidMount() {
+    document.body.addEventListener('keydown', this._onKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this._onKeyPress);
+  }
+
+  _onKeyPress = (event) => {
+    if (event.metaKey) {
+      switch (event.key) {
+        case 'n':
+          this.props.onNewProjectClick();
+          break;
+        case 'o':
+          this.props.onOpenProjectClick();
+          break;
+        case 'p':
+          if (this.props.isProjectOpen) {
+            this.props.onRestartPackagerClick();
+          }
+          break;
+      }
+    }
   };
 
   _getTogglePopoverFn = (popover) => {
@@ -88,7 +115,7 @@ export default class ToolBar extends React.Component {
     }
     return (
       <div style={Styles.menu}>
-        <MenuItem label="Restart packager" shortcut="O"
+        <MenuItem label="Restart packager" shortcut="P"
           onClick={this.props.onRestartPackagerClick}
         />
         <MenuItem label="Restart all"
@@ -168,11 +195,18 @@ export default class ToolBar extends React.Component {
   }
 
   render() {
+    const iconUrl = this.props.packageJson && this.props.packageJson.exp &&
+      this.props.packageJson.exp.iconUrl;
+    const projectName =
+      (this.props.packageJson && this.props.packageJson.name) ||
+      this.props.projectRoot;
+
     return (
       <div>
         <div style={Styles.row}>
-          <div style={{...Styles.leftCol, ...Styles.projectName}}>
-            {this.props.projectName}
+          <div style={Styles.leftCol}>
+            <ProjectIcon iconUrl={iconUrl} />
+            <div style={Styles.projectName}>{projectName}</div>
           </div>
           <div style={Styles.rightCol}>
             {this._renderUserName()}
@@ -220,24 +254,20 @@ export default class ToolBar extends React.Component {
 
   // File system methods
 
-  _projectDir() {
-    return this.props.projectRoot;
-  }
-
   _onShowInFinderClick = () => {
-    FileSystem.openFinderToFolderAsync(this._projectDir()).catch((err) => {
+    FileSystem.openFinderToFolderAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
 
   _onOpenInTerminalClick = () => {
-    FileSystem.openFolderInItermOrTerminalAsync(this._projectDir()).catch((err) => {
+    FileSystem.openFolderInItermOrTerminalAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
 
   _onOpenInEditorClick = () => {
-    FileSystem.openProjectInEditorAsync(this._projectDir()).catch((err) => {
+    FileSystem.openProjectInEditorAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
@@ -295,7 +325,10 @@ const Styles = {
   },
   projectName: {
     color: StyleConstants.colorText,
+    display: 'inline-block',
     fontSize: StyleConstants.fontSizeLg,
+    marginLeft: StyleConstants.gutterMd,
+    verticalAlign: 'middle',
   },
   userName: {
     color: StyleConstants.colorSubtitle,

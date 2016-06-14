@@ -31,6 +31,7 @@ import LoginPage from './LoginPage';
 import LoginPane from './LoginPane';
 import NewVersionAvailable from './NewVersionAvailable';
 import OptionGroup from './OptionGroup';
+import ProjectList from './ProjectList';
 import SharedStyles from './Styles';
 import StyleConstants from './StyleConstants';
 import SimulatorControls from './SimulatorControls';
@@ -49,12 +50,13 @@ class App extends React.Component {
     this.state = {
       logs: [],
       projectRoot: null,
+      packageJson: null,
       packagerLogs: '',
       packagerErrors: '',
       url: null,
       sendInput: null,
       savedSendToValue: null,
-      recentExps: null,
+      recentExps: [],
       user: null,
       projectUrl: null,
       projectSettings: null,
@@ -164,7 +166,18 @@ class App extends React.Component {
     }
   }
 
+  _runProject = (project) => {
+    this._runPackagerAsync(project.root).catch((error) => {
+      this._logMetaError("Couldn't open Exp " + project.name + ": " + error);
+    });
+  };
+
   _renderNoPackager() {
+    if (ENABLE_REDESIGN) {
+      return (
+        <ProjectList projects={this.state.recentExps} onSelect={this._runProject} />
+      );
+    }
     return (
       <div style={{
           display: 'flex',
@@ -180,7 +193,7 @@ class App extends React.Component {
             flex: 1,
             textAlign: 'center',
         }}>
-        {this.state.recentExps ? (
+        {this.state.recentExps.length > 0 ? (
           <div>
             {/*<span style={{fontWeight: '500', fontSize: 15,}}>Recently opened Exps</span>*/}
             {this.state.recentExps.map(this._renderExp)}
@@ -328,8 +341,8 @@ class App extends React.Component {
                   onSendLinkClick={this._sendClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
+                  packageJson={this.state.packageJson}
                   projectRoot={this.state.projectRoot}
-                  projectName={this._getProjectName()}
                   projectSettings={this.state.projectSettings}
                   sendTo={this.state.sendTo}
                   userName={this.state.user && this.state.user.username}
@@ -809,9 +822,12 @@ class App extends React.Component {
     // when XDE is closed.
     ipcRenderer.send('project-opened', projectRoot);
 
+    const packageJson = await Exp.packageJsonForRoot(projectRoot).readAsync();
+
     this.setState({
       projectSettings,
       projectRoot,
+      packageJson,
     }, async () => {
       await Project.startAsync(projectRoot);
 
