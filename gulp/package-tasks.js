@@ -57,8 +57,8 @@ async function packageAppAsync(signed) {
     JsonFile.getAsync(path.join(XDE_ROOT, 'package.json'), 'version'),
     getElectronVersionAsync(),
   ]);
-  let iconPath = path.join(XDE_ROOT, 'dev', 'Design', 'xde.icns');
 
+  let iconPath = path.join(XDE_ROOT, 'dev/xde.icns');
   let appPath = await electronPackager.promise({
     dir: path.resolve(__dirname, '..'),
     name: APP_NAME,
