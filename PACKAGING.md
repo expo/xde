@@ -43,9 +43,8 @@ The entry point loads `web/index.html` in the Chromium instance. This is a norma
 
 4. Test the .app to make sure it works
 
-    This is dumb but you have to move it out of the directory its put in and into
-    a place like /tmp because otherwise it searches for node_modules/ in xde/
-    and gets confused and breaks
+    This is dumb but you have to move it out of the directory its put in because
+    otherwise it searches for node_modules/ in xde/ and gets confused and breaks
 
 ### To create a signed version of the app
 
@@ -53,10 +52,17 @@ The entry point loads `web/index.html` in the Chromium instance. This is a norma
 
     It's in Charlie's Dropbox if you need it.
 
+    Make sure it gets installed in the login keychain, NOT the system keychain.
+
 2. run `npm run-script signed-package`
 
-3. Go to the AWS website and upload the file to S3.
+3. Test the .app to make sure it works
 
-4. Update the appropriate links on the website if necessary
+    This is dumb but you have to move it out of the directory its put in because
+    otherwise it searches for node_modules/ in xde/ and gets confused and breaks
 
-7. If you made changes to one branch, port those changes to other branches as necessary
+4. Create a git tag called vX.Y.Z in XDE, not universe. Push the tag to github.
+
+5. Go to github and click on "Draft a new release". Select the tag you just pushed.
+   Title should be same as tag name. Write a short changelog. Make sure to drag
+   the .zip file into the release attachments. Wait for upload and publish release.

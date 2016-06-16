@@ -51,7 +51,6 @@ class App extends React.Component {
       packagerErrors: '',
       url: null,
       sendInput: null,
-      savedSendToValue: null,
       recentExps: [],
       user: null,
       projectUrl: null,
@@ -708,7 +707,12 @@ class App extends React.Component {
   @autobind
   _sendClicked(sendInputValue) {
     let url_ = this.state.computedUrl;
-    let sendTo = sendInputValue || this.state.sendTo;
+    let sendTo;
+    if (typeof sendInputValue === 'string') {
+      sendTo = sendInputValue || this.state.sendTo;
+    } else {
+      sendTo = this.state.sendTo;
+    }
     console.log("Send link:", url_, "to", sendTo);
     let message = "Sent link " + url_ + " to " + sendTo;
     Exp.sendAsync(sendTo, url_).then(() => {
