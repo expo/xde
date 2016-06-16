@@ -1,29 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import JsonFile from '@exponent/json-file';
-
-import { shell } from 'electron';
-import { StyleRoot } from 'radium';
-
-import autobind from 'autobind-decorator';
-import escapeHtml from 'escape-html';
-import path from 'path';
-
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 
 import {
-  Config as xdlConfig,
   Exp,
-  UrlUtils,
-  UserSettings,
   Project,
   ProjectSettings,
+  UrlUtils,
+  UserSettings,
+  Config as xdlConfig,
 } from 'xdl';
+
+import JsonFile from '@exponent/json-file';
+import autobind from 'autobind-decorator';
+import bunyan from 'bunyan';
+import escapeHtml from 'escape-html';
+import path from 'path';
+import { StyleRoot } from 'radium';
+import React from 'react';
+import Button from 'react-bootstrap/lib/Button';
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+import ReactDOM from 'react-dom';
 
 import config from '../config';
 xdlConfig.api = config.api;
 xdlConfig.developerTool = 'xde';
-
 import Commands from './Commands';
 import ConsoleLog from './ConsoleLog';
 import FileSystemControls from './FileSystemControls';
@@ -32,14 +32,10 @@ import LoginPane from './LoginPane';
 import NewVersionAvailable from './NewVersionAvailable';
 import OptionGroup from './OptionGroup';
 import ProjectList from './ProjectList';
-import SharedStyles from './Styles';
-import StyleConstants from './StyleConstants';
 import SimulatorControls from './SimulatorControls';
+import StyleConstants from './StyleConstants';
+import SharedStyles from './Styles';
 import ToolBar from './toolbar/ToolBar';
-
-import Button from 'react-bootstrap/lib/Button';
-import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 const ENABLE_REDESIGN = false;
 
@@ -680,9 +676,10 @@ class App extends React.Component {
       this._logMetaMessage("Restarting packager...");
       Project.startReactNativeServerAsync(this.state.projectRoot, options).then(() => {
         console.log("Packager restarted :)");
+        this._logMetaMessage("Done restarting");
       }, (err) => {
-        console.error("Failed to restart packager :(");
-        this._logMetaError("Failed to restart packager :(");
+        console.error("Failed to restart packager. " + err.toString());
+        this._logMetaError("Failed to restart packager. " + err.toString());
       });
     } else {
       console.error("No packager to restart!");
@@ -697,9 +694,10 @@ class App extends React.Component {
       this._logMetaMessage("Restarting tunnel...");
       Project.startTunnelsAsync(this.state.projectRoot).then(() => {
         console.log("tunnel restarted.");
+        this._logMetaMessage("Done restarting");
       }, (err) => {
-        console.error("Failed to restart tunnel :(");
-        this._logMetaError("Failed to restart tunnel :(");
+        console.error("Failed to restart tunnel. " + err);
+        this._logMetaError("Failed to restart tunnel. " + err);
       });
     } else {
       console.error("No tunnel to restart!");
@@ -810,12 +808,27 @@ class App extends React.Component {
 
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
 
-    Project.attachLogger(projectRoot, (tag, message) => {
-      if (tag === 'stderr') {
-        this._appendPackagerErrors(message);
-      } else {
-        this._appendPackagerLogs(message);
-      }
+    Project.attachLoggerStream(projectRoot, {
+      level: 'info',
+      stream: {
+        write: (chunk) => {
+          // This gets info and error level logs otherwise
+          if (chunk.level === bunyan.INFO) {
+            this._appendPackagerLogs(chunk.msg);
+          }
+        },
+      },
+      type: 'raw',
+    });
+
+    Project.attachLoggerStream(projectRoot, {
+      level: 'error',
+      stream: {
+        write: (chunk) => {
+          this._appendPackagerErrors(chunk.msg);
+        },
+      },
+      type: 'raw',
     });
 
     // Send projectRoot to main process. main process will close this project

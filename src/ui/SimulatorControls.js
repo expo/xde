@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
-import autobind from 'autobind-decorator';
 import {
   Android,
   Simulator,
   UrlUtils,
 } from 'xdl';
+
+import autobind from 'autobind-decorator';
+import Button from 'react-bootstrap/lib/Button';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+
 
 class SimulatorControls extends React.Component {
   static propTypes = {

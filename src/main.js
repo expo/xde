@@ -35,9 +35,7 @@ app.on('will-quit', async (event) => {
   if (projectRoots.length > 0) {
     event.preventDefault();
 
-    for (let i = 0; i < projectRoots.length; i++) {
-      await Project.stopAsync(projectRoots[i]);
-    }
+    await Promise.all(projectRoots.map(root => Project.stopAsync(root)));
     projectRoots = [];
 
     app.quit();
