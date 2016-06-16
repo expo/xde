@@ -30,6 +30,7 @@ import FileSystemControls from './FileSystemControls';
 import LoginPage from './LoginPage';
 import LoginPane from './LoginPane';
 import NewVersionAvailable from './NewVersionAvailable';
+import Notification from './Notification';
 import OptionGroup from './OptionGroup';
 import ProjectList from './ProjectList';
 import SimulatorControls from './SimulatorControls';
@@ -38,6 +39,7 @@ import SharedStyles from './Styles';
 import ToolBar from './toolbar/ToolBar';
 
 const ENABLE_REDESIGN = false;
+const NOTIFICATION_TIMEOUT_MS = 5000;
 
 class App extends React.Component {
 
@@ -62,6 +64,7 @@ class App extends React.Component {
     this._packagerLogsHtml = '';
     this._packagerLogs = '';
     this._packageErrors = '';
+    this._notificationTimeout = null;
     global._App = this;
   }
 
@@ -320,30 +323,35 @@ class App extends React.Component {
             flexDirection: 'column',
             height: '100vh',
           }}>
-            <NewVersionAvailable />
+            <NewVersionAvailable enableRedesign={ENABLE_REDESIGN} />
             {ENABLE_REDESIGN ? (
-              <div style={Styles.topSection}>
-                <ToolBar
-                  isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
-                  onAppendErrors={this._appendPackagerErrors}
-                  onAppendLogs={this._appendPackagerLogs}
-                  onLogOut={this._logOut}
-                  onNewProjectClick={this._newClicked}
-                  onOpenProjectClick={this._openClicked}
-                  onPublishClick={this._publishClickedAsync}
-                  onRestartPackagerClick={this._resetPackagerClicked}
-                  onRestartAllClick={this._restartAllClicked}
-                  onSendLinkClick={this._sendClicked}
-                  onTogglePopover={this._onTogglePopover}
-                  openPopover={this.state.openPopover}
-                  packageJson={this.state.packageJson}
-                  projectRoot={this.state.projectRoot}
-                  projectSettings={this.state.projectSettings}
-                  sendTo={this.state.sendTo}
-                  userName={this.state.user && this.state.user.username}
-                />
-                {this.state.projectSettings && this._renderUrlInput()}
-                {this.state.projectSettings && this._renderOptions()}
+              <div>
+                {this.state.notification && (
+                  <Notification {...this.state.notification} />
+                )}
+                <div style={Styles.topSection}>
+                  <ToolBar
+                    isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
+                    onAppendErrors={this._appendPackagerErrors}
+                    onAppendLogs={this._appendPackagerLogs}
+                    onLogOut={this._logOut}
+                    onNewProjectClick={this._newClicked}
+                    onOpenProjectClick={this._openClicked}
+                    onPublishClick={this._publishClickedAsync}
+                    onRestartPackagerClick={this._resetPackagerClicked}
+                    onRestartAllClick={this._restartAllClicked}
+                    onSendLinkClick={this._sendClicked}
+                    onTogglePopover={this._onTogglePopover}
+                    openPopover={this.state.openPopover}
+                    packageJson={this.state.packageJson}
+                    projectRoot={this.state.projectRoot}
+                    projectSettings={this.state.projectSettings}
+                    sendTo={this.state.sendTo}
+                    userName={this.state.user && this.state.user.username}
+                  />
+                  {this.state.projectSettings && this._renderUrlInput()}
+                  {this.state.projectSettings && this._renderOptions()}
+                </div>
               </div>
             ) : (
               <div style={{
@@ -557,6 +565,20 @@ class App extends React.Component {
     return versionString;
   }
 
+  _showNotification(type, message) {
+    // If there is already a notification showing, cancel its timeout.
+    if (this._notificationTimeout) {
+      clearTimeout(this._notificationTimeout);
+    }
+
+    // Show a notification, then hide it after a while.
+    this.setState({notification: {type, message}});
+    this._notificationTimeout = setTimeout(() => {
+      this._notificationTimeout = null;
+      this.setState({notification: null});
+    }, NOTIFICATION_TIMEOUT_MS);
+  }
+
   @autobind
   async _publishClickedAsync() {
     this._logMetaMessage("Publishing...");
@@ -568,6 +590,8 @@ class App extends React.Component {
       console.log("Published", result);
       // TODO: send
 
+      let notificationMessage = 'Project published successfully.';
+
       let sendTo = this.state.sendTo;
       if (sendTo) {
         console.log("Send link:", result.url, "to", sendTo);
@@ -577,10 +601,14 @@ class App extends React.Component {
         } catch (err) {
           console.error("Sending link to published package failed:", err);
         }
+        notificationMessage = `${notificationMessage} Sent to ${sendTo}`;
       } else {
         console.log("Not sending link because nowhere to send it to.");
       }
+
+      this._showNotification('success', notificationMessage);
     } catch (err) {
+      this._showNotification('error', 'Project failed to publish.');
       this._logMetaError("Failed to publish package: " + err.message);
     }
   }
@@ -888,6 +916,12 @@ class App extends React.Component {
         console.log("Open project at " + openPath);
         this._runPackagerAsync(args[0]);
       }
+    }
+  }
+
+  componentWillUnmount() {
+    if (this._notificationTimeout) {
+      clearTimeout(this._notificationTimeout);
     }
   }
 

@@ -6,6 +6,8 @@ import LoadingIndicator from 'react-loading-indicator';
 import autobind from 'autobind-decorator';
 import { remote } from 'electron';
 
+import Notification from './Notification';
+
 const {
   app,
   autoUpdater,
@@ -52,6 +54,16 @@ class NewVersionAvailable extends React.Component {
       text = 'Checking if there is a new version of XDE...';
     } else {
       text = 'Click to check for a new version of XDE.';
+      clickListener = this._checkForUpdate;
+    }
+
+    if (this.props.enableRedesign) {
+      return (
+        <Notification onClick={clickListener}
+          type={buttonStyle === 'danger' ? 'error' : 'success'}
+          message={text}
+        />
+      );
     }
 
     return (

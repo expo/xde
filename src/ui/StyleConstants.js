@@ -5,7 +5,7 @@ module.exports = {
   colorSubtitle: '#9CA0A6', // light gray
   colorBackground: '#FAFAFA', // off-white
   colorDarkBackground: '#282c34', // slate gray
-  colorError: '#Af503D', // red
+  colorError: '#F6345D', // pink
   colorConfirm: '#269F89', // green
   colorBorder: '#DCE1E6', // light gray
 
