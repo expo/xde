@@ -22,11 +22,12 @@ class Project extends React.Component {
 
   render() {
     return (
-      <div style={Styles.project}
-        onClick={this._onClick}>
-        <ProjectIcon iconUrl={this.props.project.icon} />
-        <div style={Styles.projectName}>{this.props.project.name}</div>
-        <div style={Styles.projectRoot}>{this.props.project.readableRoot}</div>
+      <div style={Styles.project} onClick={this._onClick}>
+        <ProjectIcon size={32} iconUrl={this.props.project.icon} />
+        <div style={Styles.projectDetails}>
+          <div style={Styles.projectName}>{this.props.project.name}</div>
+          <div style={Styles.projectRoot}>{this.props.project.readableRoot}</div>
+        </div>
       </div>
     );
   }
@@ -68,24 +69,29 @@ const Styles = {
   container: {
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
     height: '100%',
-    margin: StyleConstants.gutterLg,
-    marginTop: 0,
     overflowY: 'auto',
-    padding: StyleConstants.gutterLg,
-    textAlign: 'center',
 
     display: 'flex',
-    justifyContent: 'center',
   },
   placeholder: {
-    alignSelf: 'center',
     color: StyleConstants.colorSubtitle,
     fontSize: StyleConstants.fontSizeLg,
     maxWidth: 460,
+    margin: 'auto',
+  },
+  projectList: {
+    flex: 1,
   },
   project: {
     cursor: 'pointer',
     margin: StyleConstants.gutterLg,
+
+    display: 'flex',
+    alignItems: 'center',
+  },
+  projectDetails: {
+    flex: 1,
+    marginLeft: StyleConstants.gutterMd,
   },
   projectName: {
     color: StyleConstants.colorText,
