@@ -42,7 +42,7 @@ import MenuItem from './toolbar/MenuItem';
 import Popover from './toolbar/Popover';
 import ToolBar from './toolbar/ToolBar';
 
-const ENABLE_REDESIGN = false;
+const ENABLE_REDESIGN = true;
 const NOTIFICATION_TIMEOUT_MS = 5000;
 
 class App extends React.Component {
