@@ -25,6 +25,7 @@ import config from '../config';
 xdlConfig.api = config.api;
 xdlConfig.developerTool = 'xde';
 import Commands from './Commands';
+import {PopoverEnum} from './Constants';
 import ConsoleLog from './ConsoleLog';
 import FileSystemControls from './FileSystemControls';
 import LoginPage from './LoginPage';
@@ -36,6 +37,9 @@ import ProjectList from './ProjectList';
 import SimulatorControls from './SimulatorControls';
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
+import Menu from './toolbar/Menu';
+import MenuItem from './toolbar/MenuItem';
+import Popover from './toolbar/Popover';
 import ToolBar from './toolbar/ToolBar';
 
 const ENABLE_REDESIGN = false;
@@ -58,7 +62,7 @@ class App extends React.Component {
       projectUrl: null,
       projectSettings: null,
       computedUrl: null,
-      openPopover: null, // The currently open popover, represented by ToolBar.POPOVERS
+      openPopover: null, // The currently open popover
     };
 
     this._packagerLogsHtml = '';
@@ -261,9 +265,20 @@ class App extends React.Component {
     document.execCommand('copy');
   };
 
+  _toggleOptionsPopover = (event) => {
+    event.stopPropagation();
+    this._onTogglePopover(PopoverEnum.OPTIONS);
+  };
+
   _renderUrlInput() {
     return (
       <div style={Styles.urlInputContainer}>
+        <Popover body={this._renderPopoverOptions()} arrowOffset={6}>
+          <img src="./gear.svg"
+            style={Styles.optionsIcon}
+            onClick={this._toggleOptionsPopover}
+          />
+        </Popover>
         <input
           ref={(r) => {this._urlInput = r;}}
           style={Styles.urlInput}
@@ -279,33 +294,73 @@ class App extends React.Component {
     );
   }
 
-  _renderOptions() {
+  _renderPopoverOptions() {
+    if (this.state.openPopover !== PopoverEnum.OPTIONS) {
+      return null;
+    }
+
+    const hostMenuItems = ['Tunnel', 'LAN', 'localhost'].map((label) => {
+      const option = label.toLowerCase();
+      const checkState = this.state.projectSettings.hostType === option ?
+        'checked' : 'unchecked';
+
+      /* eslint-disable react/jsx-no-bind */
+      return (
+        <MenuItem label={label} key={option} checkState={checkState}
+          onClick={() => this._setProjectSettingAsync({hostType: option})}
+        />
+      );
+      /* eslint-enable react/jsx-no-bind */
+    });
+
+    const protocolMenuItems = ['exp', 'http', 'redirect'].map((option) => {
+      const checkState = this.state.projectSettings.urlType === option ?
+        'checked' : 'unchecked';
+
+      /* eslint-disable react/jsx-no-bind */
+      return (
+        <MenuItem label={option} key={option} checkState={checkState}
+          onClick={() => this._setProjectSettingAsync({urlType: option})}
+        />
+      );
+      /* eslint-enable react/jsx-no-bind */
+    });
+
+    const otherMenuItems = [{
+      label: 'Development Mode',
+      option: 'dev',
+    }, {
+      label: 'Minify',
+      option: 'minify',
+    }].map(({label, option}) => {
+      const isEnabled = this.state.projectSettings[option];
+
+      /* eslint-disable react/jsx-no-bind */
+      return (
+        <MenuItem label={label} key={option}
+          checkState={isEnabled ? 'checked' : 'unchecked'}
+          onClick={() => this._setProjectSettingAsync({[option]: !isEnabled})}
+        />
+      );
+      /* eslint-enable react/jsx-no-bind */
+    });
+
+    // Just for aesthetics, make top-level MenuItems all "unchecked" (so the
+    // beginning of the text lines up)
     return (
-      <div style={Styles.optionsRow}>
-        <OptionGroup style={Styles.optionsGroup}
-          options={['tunnel', 'lan', 'localhost'].map((option) => ({
-            isSelected: this.state.projectSettings.hostType === option,
-            label: option,
-            onSelect: () => this._setProjectSettingAsync({hostType: option}),
-          }))}
-        />
-        <OptionGroup style={Styles.optionsGroup}
-          options={['dev', 'strict', 'minify'].map((option) => ({
-            isSelected: this.state.projectSettings[option],
-            label: option,
-            onSelect: () => this._setProjectSettingAsync({
-              [option]: !this.state.projectSettings[option],
-            }),
-          }))}
-        />
-        <OptionGroup style={Styles.optionsGroup}
-          options={['exp', 'http', 'redirect'].map((option) => ({
-            isSelected: this.state.projectSettings.urlType === option,
-            label: option,
-            onSelect: () => this._setProjectSettingAsync({urlType: option}),
-          }))}
-        />
-      </div>
+      <Menu>
+        <MenuItem label="Host" checkState="unchecked">
+          <Menu>
+            {hostMenuItems}
+          </Menu>
+        </MenuItem>
+        <MenuItem label="Protocol" checkState="unchecked">
+          <Menu>
+            {protocolMenuItems}
+          </Menu>
+        </MenuItem>
+        {otherMenuItems}
+      </Menu>
     );
   }
 
@@ -350,7 +405,6 @@ class App extends React.Component {
                     userName={this.state.user && this.state.user.username}
                   />
                   {this.state.projectSettings && this._renderUrlInput()}
-                  {this.state.projectSettings && this._renderOptions()}
                 </div>
               </div>
             ) : (
@@ -939,16 +993,6 @@ let Styles = {
     margin: StyleConstants.gutterLg,
   },
 
-  optionsRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: StyleConstants.gutterLg,
-  },
-
-  optionsGroup: {
-    flex: 1,
-  },
-
   urlInputContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -1018,6 +1062,16 @@ let Styles = {
     letterSpacing: 4.5,
     lineHeight: 20,
     textTransform: 'uppercase',
+  },
+
+  optionsIcon: {
+    cursor: 'pointer',
+    height: 25,
+    marginRight: StyleConstants.gutterMd,
+
+    // Space the popover slightly away from the gear
+    marginTop: StyleConstants.gutterSm,
+    marginBottom: StyleConstants.gutterSm,
   },
 };
 

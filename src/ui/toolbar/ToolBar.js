@@ -8,27 +8,21 @@ import {
   User,
 } from 'xdl';
 
+import {PopoverEnum} from '../Constants';
 import ProjectIcon from '../ProjectIcon';
 import StyleConstants from '../StyleConstants';
 
 import IconButton from './IconButton';
+import Menu from './Menu';
 import MenuItem from './MenuItem';
 import MenuSeparator from './MenuSeparator';
 import Popover from './Popover';
-
-const POPOVERS = {
-  PROJECT: 1,
-  RESTART: 2,
-  SEND_LINK: 3,
-  SIMULATOR: 4,
-  USER: 5,
-};
 
 @Radium
 export default class ToolBar extends React.Component {
   static propTypes = {
     isProjectOpen: PropTypes.bool,
-    openPopover: PropTypes.oneOf(Object.keys(POPOVERS).map((k) => POPOVERS[k])),
+    openPopover: PropTypes.oneOf(Object.keys(PopoverEnum).map((k) => PopoverEnum[k])),
     onTogglePopover: PropTypes.func.isRequired,
     packageJson: PropTypes.object,
     projectRoot: PropTypes.string,
@@ -81,11 +75,11 @@ export default class ToolBar extends React.Component {
   }
 
   _renderPopoverProject() {
-    if (this.props.openPopover !== POPOVERS.PROJECT) {
+    if (this.props.openPopover !== PopoverEnum.PROJECT) {
       return null;
     }
     return (
-      <div style={Styles.menu}>
+      <Menu>
         <MenuItem label="New Project" shortcut="N"
           onClick={this.props.onNewProjectClick}
         />
@@ -105,39 +99,43 @@ export default class ToolBar extends React.Component {
           isDisabled={!this.props.isProjectOpen}
           onClick={this._onOpenInEditorClick}
         />
-      </div>
+      </Menu>
     );
   }
 
   _renderPopoverRestart() {
-    if (this.props.openPopover !== POPOVERS.RESTART) {
+    if (this.props.openPopover !== PopoverEnum.RESTART) {
       return null;
     }
     return (
-      <div style={Styles.menu}>
+      <Menu>
         <MenuItem label="Restart packager" shortcut="P"
           onClick={this.props.onRestartPackagerClick}
         />
         <MenuItem label="Restart all"
           onClick={this.props.onRestartAllClick}
         />
-      </div>
+      </Menu>
     );
   }
 
   _onSendLinkClick = (event) => {
     if (this._sendLinkInput.value) {
-      this._getTogglePopoverFn(POPOVERS.SEND_LINK)(event);
+      this._getTogglePopoverFn(PopoverEnum.SEND_LINK)(event);
       this.props.onSendLinkClick(this._sendLinkInput.value);
     }
   };
 
+  _onMenuClick = (event) => {
+    event.stopPropagation();
+  };
+
   _renderPopoverSendLink() {
-    if (this.props.openPopover !== POPOVERS.SEND_LINK) {
+    if (this.props.openPopover !== PopoverEnum.SEND_LINK) {
       return null;
     }
     return (
-      <div onClick={(e) => {e.stopPropagation();}}>
+      <Menu onClick={this._onMenuClick}>
         <input style={Styles.sendLinkInput}
           ref={(r) => {this._sendLinkInput = r;}}
           defaultValue={this.props.sendTo}
@@ -145,23 +143,23 @@ export default class ToolBar extends React.Component {
         />
         <a onClick={this._onSendLinkClick}
           style={Styles.sendLinkSubmit}>Send Link</a>
-      </div>
+      </Menu>
     );
   }
 
   _renderPopoverSimulator() {
-    if (this.props.openPopover !== POPOVERS.SIMULATOR) {
+    if (this.props.openPopover !== PopoverEnum.SIMULATOR) {
       return null;
     }
     return (
-      <div style={Styles.menu}>
+      <Menu>
         <MenuItem label="Exponent on iOS"
           onClick={this._simulatorIOSAsync}
         />
         <MenuItem label="Exponent on Android"
           onClick={this._simulatorAndroidAsync}
         />
-      </div>
+      </Menu>
     );
   }
 
@@ -176,21 +174,23 @@ export default class ToolBar extends React.Component {
 
   _renderUserName() {
     const popoverBodyEl = (
-      <div style={Styles.menu}>
+      <Menu>
         <MenuItem label="Log out" onClick={this._onLogOutClick} />
-      </div>
+      </Menu>
     );
     const userNameEl = (
       <a style={Styles.userName}
-        onClick={this._getTogglePopoverFn(POPOVERS.USER)}>
+        onClick={this._getTogglePopoverFn(PopoverEnum.USER)}>
         {this.props.userName}
       </a>
     );
     const userNameWithPopoverEl = (
-      <Popover isToLeft body={popoverBodyEl}>{userNameEl}</Popover>
+      <Popover arrowOffset={10} isToLeft body={popoverBodyEl}>
+        {userNameEl}
+      </Popover>
     );
 
-    return this.props.openPopover === POPOVERS.USER ?
+    return this.props.openPopover === PopoverEnum.USER ?
       userNameWithPopoverEl : userNameEl;
   }
 
@@ -216,7 +216,7 @@ export default class ToolBar extends React.Component {
         <div style={Styles.row}>
           <div style={Styles.leftCol}>
             <IconButton iconUrl="./IconBolt.png" label="Project" color="#8309e0"
-              onClick={this._getTogglePopoverFn(POPOVERS.PROJECT)}
+              onClick={this._getTogglePopoverFn(PopoverEnum.PROJECT)}
               popover={this._renderPopoverProject()}
               style={Styles.rightSpaced}
             />
@@ -227,7 +227,7 @@ export default class ToolBar extends React.Component {
             />
             <IconButton iconUrl="./IconRestart.png" label="Restart" color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
-              onClick={this._getTogglePopoverFn(POPOVERS.RESTART)}
+              onClick={this._getTogglePopoverFn(PopoverEnum.RESTART)}
               popover={this._renderPopoverRestart()}
               style={Styles.rightSpaced}
             />
@@ -235,14 +235,14 @@ export default class ToolBar extends React.Component {
           <div style={Styles.rightCol}>
             <IconButton iconUrl="./IconArrowRight.png" label="Send Link" color="#383D40"
               isDisabled={!this.props.isProjectOpen}
-              onClick={this._getTogglePopoverFn(POPOVERS.SEND_LINK)}
+              onClick={this._getTogglePopoverFn(PopoverEnum.SEND_LINK)}
               popover={this._renderPopoverSendLink()}
               isPopoverToLeft
               style={Styles.rightSpaced}
             />
             <IconButton iconUrl="./IconPhone.png" label="Simulator" color="#383D40"
               isDisabled={!this.props.isProjectOpen}
-              onClick={this._getTogglePopoverFn(POPOVERS.SIMULATOR)}
+              onClick={this._getTogglePopoverFn(PopoverEnum.SIMULATOR)}
               popover={this._renderPopoverSimulator()}
               isPopoverToLeft
             />
@@ -319,10 +319,6 @@ const Styles = {
   rightSpaced: {
     marginRight: StyleConstants.gutterLg,
   },
-  menu: {
-    marginTop: StyleConstants.gutterSm,
-    marginBottom: StyleConstants.gutterSm,
-  },
   projectName: {
     color: StyleConstants.colorText,
     display: 'inline-block',
@@ -359,8 +355,5 @@ const Styles = {
       backgroundColor: StyleConstants.colorBackground,
       color: '#08509A',
     },
-  },
-  simulator: {
-    textAlign: 'left',
   },
 };

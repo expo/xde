@@ -3,38 +3,50 @@ import {Motion, spring} from 'react-motion';
 
 import StyleConstants from '../StyleConstants';
 
-// To visually align the popover
-const ARROW_OFFSET = 20;
-const POPOVER_OFFSET = -10;
-
 export default class Popover extends React.Component {
   static propTypes = {
-    children: PropTypes.node,
+    children: PropTypes.node, // Target over which the popover is shown.
+
+    // Popover contents. If not specified, only the children are shown.
     body: PropTypes.node,
+
     isToLeft: PropTypes.bool,
+    arrowOffset: PropTypes.number,
+    popoverOffset: PropTypes.number,
   };
 
-  render() {
-    const popoverStyle = this.props.isToLeft ?
-      {right: POPOVER_OFFSET} : {left: POPOVER_OFFSET};
-    const arrowStyle = this.props.isToLeft ?
-      {right: ARROW_OFFSET} : {left: ARROW_OFFSET};
+  static defaultProps = {
+    arrowOffset: 0,
+    popoverOffset: 0,
+  };
 
+  _renderPopoverContents() {
+    const popoverStyle = this.props.isToLeft ?
+      {right: this.props.popoverOffset} : {left: this.props.popoverOffset};
+    const arrowStyle = this.props.isToLeft ?
+      {right: this.props.arrowOffset} : {left: this.props.arrowOffset};
+
+    return (
+      <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
+        {(value) => (
+          <div>
+            <div style={{...Styles.popover, ...popoverStyle, opacity: value.x}}>
+              <div style={{...Styles.arrow, ...arrowStyle}}></div>
+              <div style={Styles.content}>
+                {this.props.body}
+              </div>
+            </div>
+          </div>
+        )}
+      </Motion>
+    );
+  }
+
+  render() {
     return (
       <div style={Styles.container}>
         {this.props.children}
-        <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
-          {(value) => (
-            <div style={{opacity: value.x}}>
-              <div style={{...Styles.popover, ...popoverStyle}}>
-                <div style={{...Styles.arrow, ...arrowStyle}}></div>
-                <ul style={Styles.menu}>
-                  {this.props.body}
-                </ul>
-              </div>
-            </div>
-          )}
-        </Motion>
+        {this.props.body && this._renderPopoverContents()}
       </div>
     );
   }
@@ -42,12 +54,13 @@ export default class Popover extends React.Component {
 
 const Styles = {
   container: {
+    display: 'inline-block',
     position: 'relative',
-    zIndex: StyleConstants.zIndexPopover,
   },
   popover: {
-    position: 'absolute', // For positioning arrow
+    position: 'absolute',
     top: '100%',
+    zIndex: StyleConstants.zIndexPopover,
   },
   arrow: {
     backgroundColor: 'white',
@@ -62,19 +75,9 @@ const Styles = {
     top: 0,
     zIndex: 1,
   },
-  menu: {
-    backgroundColor: 'white',
-    borderColor: StyleConstants.colorBorder,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    boxShadow: `0 5px 10px rgba(0, 0, 0, 0.2)`,
-    color: StyleConstants.colorText,
-    listStyleType: 'none',
-    minWidth: 170,
-    paddingLeft: 0,
-    zIndex: 2,
-
+  content: {
     position: 'relative',
     top: 6, // To make room for the arrow
+    zIndex: 2, // Higher than the arrow
   },
 };

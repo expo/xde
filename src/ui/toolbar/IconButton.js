@@ -36,7 +36,8 @@ export default class IconButton extends React.Component {
 
     const mainEl = this.props.popover ?
       <Popover isToLeft={this.props.isPopoverToLeft}
-        body={this.props.popover}>{iconEl}</Popover> :
+        body={this.props.popover}
+        arrowOffset={20} popoverOffset={-10}>{iconEl}</Popover> :
       iconEl;
 
     return (
@@ -63,7 +64,6 @@ const Styles = {
     // Override button styles
     background: 'transparent',
     border: 'none',
-    textAlign: 'left',
   },
   containerDisabled: {
     opacity: 0.3,
