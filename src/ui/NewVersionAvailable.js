@@ -1,7 +1,5 @@
 import Radium from 'radium';
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import LoadingIndicator from 'react-loading-indicator';
 
 import autobind from 'autobind-decorator';
 import { remote } from 'electron';
@@ -57,34 +55,11 @@ class NewVersionAvailable extends React.Component {
       clickListener = this._checkForUpdate;
     }
 
-    if (this.props.enableRedesign) {
-      return (
-        <Notification onClick={clickListener}
-          type={buttonStyle === 'danger' ? 'error' : 'success'}
-          message={text}
-        />
-      );
-    }
-
     return (
-      <Button
-        disabled={!clickListener}
-        onClick={clickListener}
-        bsStyle={buttonStyle}
-        style={styles.container}>
-        {isChecking ?
-          <LoadingIndicator
-            color={{
-              red: 255,
-              green: 255,
-              blue: 255,
-              alpha: 1,
-            }}
-            style={styles.loadingIndicator}
-          /> :
-          null}
-        <span style={styles.text}>{text}</span>
-      </Button>
+      <Notification onClick={clickListener}
+        type={buttonStyle === 'danger' ? 'error' : 'success'}
+        message={text}
+      />
     );
   }
 
@@ -179,33 +154,6 @@ class NewVersionAvailable extends React.Component {
 }
 
 let styles = {
-  container: {
-    flex: 'none',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: 32,
-    margin: 0,
-    padding: 0,
-    borderRadius: 0,
-    whiteSpace: 'normal',
-  },
-  errorContainer: {
-    background: '#ffcdd2',
-  },
-  updateText: {
-    fontWeight: '500',
-    fontFamily: ['Helvetica Neue', 'sans-serif'],
-    fontSize: 13,
-    color: '#444',
-    textAlign: 'center',
-    padding: 4,
-  },
-  loadingIndicator: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
-  },
   hidden: {
     display: 'none',
   },

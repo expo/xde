@@ -23,37 +23,6 @@ PRE {
   word-spacing: normal;
   z-index: auto;
 }
-.logs {
-  font-size: 11px;
-  font-family: 'Monaco', 'Menlo', 'Courier', 'Fixed8x14', 'Fixed7x14', 'Fixed8x13', 'Menlo', 'Courier', monospace;
-  line-height: 1.4;
-  font-weight: lighter;
-}
-.log-err {
-  color: red;
-  font-weight: 500;
-  font-size: 14px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.log-meta {
-  color: #003A6B;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-}
-.log-meta-warning {
-  color: #ffcc00;
-  font-size: 14px;
-  font-weight: normal;
-  font-family: 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-}
-.log-meta-error {
-  color: red;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
-}
 #app {
   display: flex;
   flex-direction: column;
@@ -73,14 +42,4 @@ button:focus {outline:0;}
   font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Sans-serif';
   color: #ddddee;
   font-size: 24px;
-}
-
-.btn-separator:after {
-  content: ' ';
-  display: block;
-  float: left;
-  /*background: #dddddd;*/
-  margin: 0 10px;
-  height: 34px;
-  width: 4px;
 }
