@@ -44,6 +44,7 @@ import ToolBar from './toolbar/ToolBar';
 
 const ENABLE_REDESIGN = true;
 const NOTIFICATION_TIMEOUT_MS = 5000;
+const OPTIONS_ICON_SIZE = 22;
 
 class App extends React.Component {
 
@@ -273,7 +274,7 @@ class App extends React.Component {
   _renderUrlInput() {
     return (
       <div style={Styles.urlInputContainer}>
-        <Popover body={this._renderPopoverOptions()} arrowOffset={6}>
+        <Popover body={this._renderPopoverOptions()} arrowOffset={16}>
           <img src="./gear.svg"
             style={Styles.optionsIcon}
             onClick={this._toggleOptionsPopover}
@@ -1003,6 +1004,7 @@ let Styles = {
   urlInput: {
     ...SharedStyles.input,
     flex: 1,
+    paddingLeft: OPTIONS_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
   },
 
   urlInputCopyIcon: {
@@ -1066,8 +1068,9 @@ let Styles = {
 
   optionsIcon: {
     cursor: 'pointer',
-    height: 25,
-    marginRight: StyleConstants.gutterMd,
+    height: OPTIONS_ICON_SIZE,
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: -(StyleConstants.gutterMd + OPTIONS_ICON_SIZE),
 
     // Space the popover slightly away from the gear
     marginTop: StyleConstants.gutterSm,
