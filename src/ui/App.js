@@ -210,14 +210,14 @@ class App extends React.Component {
               <div style={Styles.topSection}>
                 <ToolBar
                   isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
-                  onAppendErrors={this._appendPackagerErrors}
-                  onAppendLogs={this._appendPackagerLogs}
+                  onAppendErrors={this._logError}
+                  onAppendLogs={this._logInfo}
                   onLogOut={this._logOut}
                   onNewProjectClick={this._newClicked}
                   onOpenProjectClick={this._openClicked}
                   onPublishClick={this._publishClickedAsync}
                   onRestartClick={this._restartClickedAsync}
-                  onSendLinkClick={this._sendClicked}
+                  onSendLinkClick={this._sendClickedAsync}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
                   projectJson={this.state.projectJson}
@@ -269,30 +269,21 @@ class App extends React.Component {
 
   _publishClickedAsync = async () => {
     this._logMetaMessage("Publishing...");
-
     try {
       let result = await Project.publishAsync(this.state.projectRoot);
-      // this._logMetaMessage("Published " + result.packageFullName + " to " + result.url);
       this._logMetaMessage("Published to " + result.url);
-      console.log("Published", result);
-      // TODO: send
 
       let notificationMessage = 'Project published successfully.';
-
       let sendTo = this.state.sendTo;
       if (sendTo) {
-        console.log("Send link:", result.url, "to", sendTo);
         try {
           await Exp.sendAsync(sendTo, result.url);
-          console.log("Sent link to published package");
+          this._logMetaMessage(`Sent link ${result.url} to ${sendTo}.`);
         } catch (err) {
-          console.error("Sending link to published package failed:", err);
+          this._logMetaError(`Could not send link to ${sendTo}: ${err}`);
         }
         notificationMessage = `${notificationMessage} Sent to ${sendTo}`;
-      } else {
-        console.log("Not sending link because nowhere to send it to.");
       }
-
       this._showNotification('success', notificationMessage);
     } catch (err) {
       this._showNotification('error', 'Project failed to publish.');
@@ -302,76 +293,61 @@ class App extends React.Component {
 
   _newClicked = () => {
     Commands.newExpAsync().then(this._runPackagerAsync, (err) => {
-      this._logMetaError("Failed to make a new Exp :( " + err);
+      this._logMetaError("Could not create new project: " + err);
     });
   };
 
   _openClicked = () => {
     Commands.openExpAsync().then(this._runPackagerAsync, (err) => {
-      this._logMetaError("Failed to open Exp :( " + err);
+      this._logMetaError("Could not open project: " + err);
     });
   };
 
   _restartClickedAsync = async () => {
     await this._restartPackagerAsync();
-    this._restartNgrok();
+    this._restartNgrokAsync();
   };
 
   _restartPackagerAsync = async () => {
     if (this.state.projectRoot) {
-      console.log("Clearing the packager cache");
-      this._logMetaMessage("Clearing the packager cache");
-
-      console.log("Restarting packager...");
-      this._logMetaMessage("Restarting packager...");
-
+      this._logMetaMessage("Clearing packager cache and restarting packager...");
       try {
         await Project.startReactNativeServerAsync(
           this.state.projectRoot, {reset:true});
-        console.log("Packager restarted :)");
-        this._logMetaMessage("Done restarting packager");
+        this._logMetaMessage("Restarted packager.");
       } catch (err) {
-        console.error("Failed to restart packager. " + err.toString());
-        this._logMetaError("Failed to restart packager. " + err.toString());
+        this._logMetaError("Could not restart packager: " + err.toString());
       }
     } else {
-      console.error("No packager to restart!");
-      this._logMetaError("Packager not running; can't restart it.");
+      this._logMetaError("Could not restart packager: packager not running.");
     }
   };
 
-  _restartNgrok = () => {
+  _restartNgrokAsync = async () => {
     if (this.state.projectRoot) {
-      console.log("Restarting tunnel...");
       this._logMetaMessage("Restarting tunnel...");
-      Project.startTunnelsAsync(this.state.projectRoot).then(() => {
-        console.log("tunnel restarted.");
-        this._logMetaMessage("Done restarting");
-      }, (err) => {
-        console.error("Failed to restart tunnel. " + err);
-        this._logMetaError("Failed to restart tunnel. " + err);
-      });
+      try {
+        await Project.startTunnelsAsync(this.state.projectRoot);
+        this._logMetaMessage("Restarted tunnel.");
+      } catch (err) {
+        this._logMetaError("Could not restart tunnel: " + err);
+      }
     } else {
-      console.error("No tunnel to restart!");
-      this._logMetaError("tunnel not running; can't restart it.");
+      this._logMetaError("Could not restart tunnel: tunnel not running.");
     }
   };
 
-  _sendClicked = (sendTo) => {
+  _sendClickedAsync = async (sendTo) => {
+    this.setState({sendTo});
     let url_ = this.state.computedUrl;
-    console.log("Send link:", url_, "to", sendTo);
-    let message = "Sent link " + url_ + " to " + sendTo;
-    Exp.sendAsync(sendTo, url_).then(() => {
-      this._logMetaMessage(message);
-
-      UserSettings.updateAsync('sendTo', sendTo).catch((err) => {
-        this._logMetaWarning("Couldn't save the number or e-mail you sent do");
-      });
-
-    }, (err) => {
-      this._logMetaError("Sending link failed :( " + err);
+    try {
+      await Exp.sendAsync(sendTo, url_);
+      this._logMetaMessage(`Sent link ${url_} to ${sendTo}.`);
+      UserSettings.updateAsync('sendTo', sendTo);
+    } catch (err) {
+      this._logMetaError(`Could not send link to ${sendTo}: ${err}`);
       this._logMetaError("If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number.");
-    });
+    }
   };
 
   _appendLogs = (type, data) => {
@@ -380,15 +356,15 @@ class App extends React.Component {
     });
   };
 
-  _appendPackagerLogs = (data) => this._appendLogs('default', data);
-  _appendPackagerErrors = (data) => this._appendLogs('error', data);
+  _logInfo = (data) => this._appendLogs('default', data);
+  _logError = (data) => this._appendLogs('error', data);
   _logMetaMessage = (data) => this._appendLogs('meta', data);
   _logMetaError = (data) => this._appendLogs('metaError', data);
   _logMetaWarning = (data) => this._appendLogs('metaWarning', data);
 
   _runPackagerAsync = async (projectRoot) => {
     if (!projectRoot) {
-      console.error("Not running packager with empty projectRoot");
+      this._logMetaError("Could not open project: empty root.");
       return null;
     }
 
@@ -400,7 +376,7 @@ class App extends React.Component {
         write: (chunk) => {
           // This gets info and error level logs otherwise
           if (chunk.level === bunyan.INFO) {
-            this._appendPackagerLogs(chunk.msg);
+            this._logInfo(chunk.msg);
           }
         },
       },
@@ -411,7 +387,7 @@ class App extends React.Component {
       level: 'error',
       stream: {
         write: (chunk) => {
-          this._appendPackagerErrors(chunk.msg);
+          this._logError(chunk.msg);
         },
       },
       type: 'raw',
@@ -428,12 +404,15 @@ class App extends React.Component {
       projectRoot,
       projectJson,
     }, async () => {
-      await Project.startAsync(projectRoot);
+      try {
+        await Project.startAsync(projectRoot);
+        this._logInfo('Project opened.');
+      } catch (err) {
+        this._logError('Could not open project: ', err);
+      }
 
       let computedUrl = await this._computeUrlAsync();
-      this.setState({
-        computedUrl,
-      });
+      this.setState({computedUrl});
     });
   };
 

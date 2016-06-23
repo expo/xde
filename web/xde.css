@@ -7,21 +7,9 @@ BODY {
   font-family: 'Verdana', 'Helvetica Neue';
 }
 PRE {
-  background: #FFF;
   border: none;
-  color: #000;
-  display: block;
-  font: normal;
-  height: auto;
-  letter-spacing: normal;
-  line-height: normal;
   margin: 0;
   padding: 0;
-  text-transform: normal;
-  visibility: visible;
-  width: auto;
-  word-spacing: normal;
-  z-index: auto;
 }
 #app {
   display: flex;
