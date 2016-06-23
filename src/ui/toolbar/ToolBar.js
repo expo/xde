@@ -36,8 +36,7 @@ export default class ToolBar extends React.Component {
     onNewProjectClick: PropTypes.func,
     onOpenProjectClick: PropTypes.func,
     onPublishClick: PropTypes.func,
-    onRestartPackagerClick: PropTypes.func,
-    onRestartAllClick: PropTypes.func,
+    onRestartClick: PropTypes.func,
     onSendLinkClick: PropTypes.func,
   };
 
@@ -60,7 +59,7 @@ export default class ToolBar extends React.Component {
           break;
         case 'p':
           if (this.props.isProjectOpen) {
-            this.props.onRestartPackagerClick();
+            this.props.onRestartClick();
           }
           break;
       }
@@ -98,22 +97,6 @@ export default class ToolBar extends React.Component {
         <MenuItem label="Open in Editor"
           isDisabled={!this.props.isProjectOpen}
           onClick={this._onOpenInEditorClick}
-        />
-      </Menu>
-    );
-  }
-
-  _renderPopoverRestart() {
-    if (this.props.openPopover !== PopoverEnum.RESTART) {
-      return null;
-    }
-    return (
-      <Menu>
-        <MenuItem label="Restart packager" shortcut="P"
-          onClick={this.props.onRestartPackagerClick}
-        />
-        <MenuItem label="Restart all"
-          onClick={this.props.onRestartAllClick}
         />
       </Menu>
     );
@@ -227,8 +210,7 @@ export default class ToolBar extends React.Component {
             />
             <IconButton iconUrl="./IconRestart.png" label="Restart" color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
-              onClick={this._getTogglePopoverFn(PopoverEnum.RESTART)}
-              popover={this._renderPopoverRestart()}
+              onClick={this.props.onRestartClick}
               style={Styles.rightSpaced}
             />
           </div>

@@ -216,8 +216,7 @@ class App extends React.Component {
                   onNewProjectClick={this._newClicked}
                   onOpenProjectClick={this._openClicked}
                   onPublishClick={this._publishClickedAsync}
-                  onRestartPackagerClick={this._restartPackagerClickedAsync}
-                  onRestartAllClick={this._restartAllClickedAsync}
+                  onRestartClick={this._restartClickedAsync}
                   onSendLinkClick={this._sendClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
@@ -313,12 +312,12 @@ class App extends React.Component {
     });
   };
 
-  _restartAllClickedAsync = async () => {
-    await this._restartPackagerClickedAsync();
-    this._restartNgrokClicked();
+  _restartClickedAsync = async () => {
+    await this._restartPackagerAsync();
+    this._restartNgrok();
   };
 
-  _restartPackagerClickedAsync = async () => {
+  _restartPackagerAsync = async () => {
     if (this.state.projectRoot) {
       console.log("Clearing the packager cache");
       this._logMetaMessage("Clearing the packager cache");
@@ -330,7 +329,7 @@ class App extends React.Component {
         await Project.startReactNativeServerAsync(
           this.state.projectRoot, {reset:true});
         console.log("Packager restarted :)");
-        this._logMetaMessage("Done restarting");
+        this._logMetaMessage("Done restarting packager");
       } catch (err) {
         console.error("Failed to restart packager. " + err.toString());
         this._logMetaError("Failed to restart packager. " + err.toString());
@@ -341,7 +340,7 @@ class App extends React.Component {
     }
   };
 
-  _restartNgrokClicked = () => {
+  _restartNgrok = () => {
     if (this.state.projectRoot) {
       console.log("Restarting tunnel...");
       this._logMetaMessage("Restarting tunnel...");
