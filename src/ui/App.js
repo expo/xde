@@ -216,8 +216,8 @@ class App extends React.Component {
                   onNewProjectClick={this._newClicked}
                   onOpenProjectClick={this._openClicked}
                   onPublishClick={this._publishClickedAsync}
-                  onRestartPackagerClick={this._resetPackagerClicked}
-                  onRestartAllClick={this._restartAllClicked}
+                  onRestartPackagerClick={this._restartPackagerClickedAsync}
+                  onRestartAllClick={this._restartAllClickedAsync}
                   onSendLinkClick={this._sendClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
@@ -313,28 +313,28 @@ class App extends React.Component {
     });
   };
 
-  _restartAllClicked = () => {
-    this._resetPackagerClicked();
+  _restartAllClickedAsync = async () => {
+    await this._restartPackagerClickedAsync();
     this._restartNgrokClicked();
   };
 
-  _resetPackagerClicked = () => {
-    console.log("Clearing the packager cache");
-    this._logMetaMessage("Clearing the packager cache");
-    this._restartPackagerClicked({ reset: true });
-  };
-
-  _restartPackagerClicked = (options) => {
+  _restartPackagerClickedAsync = async () => {
     if (this.state.projectRoot) {
+      console.log("Clearing the packager cache");
+      this._logMetaMessage("Clearing the packager cache");
+
       console.log("Restarting packager...");
       this._logMetaMessage("Restarting packager...");
-      Project.startReactNativeServerAsync(this.state.projectRoot, options).then(() => {
+
+      try {
+        await Project.startReactNativeServerAsync(
+          this.state.projectRoot, {reset:true});
         console.log("Packager restarted :)");
         this._logMetaMessage("Done restarting");
-      }, (err) => {
+      } catch (err) {
         console.error("Failed to restart packager. " + err.toString());
         this._logMetaError("Failed to restart packager. " + err.toString());
-      });
+      }
     } else {
       console.error("No packager to restart!");
       this._logMetaError("Packager not running; can't restart it.");
