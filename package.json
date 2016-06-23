@@ -1,6 +1,6 @@
 {
   "name": "xde",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "description": "The Exponent Development Environment",
   "main": "build/main.js",
   "scripts": {
@@ -36,7 +36,7 @@
     "react-loading-indicator": "^0.2.0",
     "react-motion": "^0.4.4",
     "tree-kill": "^1.1.0",
-    "xdl": "0.1.0"
+    "xdl": "0.3.0"
   },
   "devDependencies": {
     "@ccheever/crayon": "^5.0.0",
