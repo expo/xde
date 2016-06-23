@@ -43,7 +43,7 @@ class App extends React.Component {
     this.state = {
       logs: [],
       projectRoot: null,
-      packageJson: null,
+      projectJson: null,
       recentExps: [],
       user: null,
       projectSettings: null,
@@ -106,7 +106,7 @@ class App extends React.Component {
         <input
           ref={(r) => {this._urlInput = r;}}
           style={Styles.urlInput}
-          value={this.state.computedUrl}
+          value={this.state.computedUrl || ''}
           placeholder="Waiting for packager and tunnel to start..."
           onClick={this._urlInputSelect}
         />
@@ -220,7 +220,7 @@ class App extends React.Component {
                   onSendLinkClick={this._sendClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
-                  packageJson={this.state.packageJson}
+                  projectJson={this.state.projectJson}
                   projectRoot={this.state.projectRoot}
                   projectSettings={this.state.projectSettings}
                   sendTo={this.state.sendTo}
@@ -421,12 +421,12 @@ class App extends React.Component {
     // when XDE is closed.
     ipcRenderer.send('project-opened', projectRoot);
 
-    const packageJson = await Exp.packageJsonForRoot(projectRoot).readAsync();
+    const projectJson = await Exp.expInfoSafeAsync(projectRoot);
 
     this.setState({
       projectSettings,
       projectRoot,
-      packageJson,
+      projectJson,
     }, async () => {
       await Project.startAsync(projectRoot);
 

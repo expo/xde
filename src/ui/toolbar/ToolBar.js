@@ -24,7 +24,7 @@ export default class ToolBar extends React.Component {
     isProjectOpen: PropTypes.bool,
     openPopover: PropTypes.oneOf(Object.keys(PopoverEnum).map((k) => PopoverEnum[k])),
     onTogglePopover: PropTypes.func.isRequired,
-    packageJson: PropTypes.object,
+    projectJson: PropTypes.object,
     projectRoot: PropTypes.string,
     projectSettings: PropTypes.object,
     sendTo: PropTypes.string,
@@ -178,10 +178,9 @@ export default class ToolBar extends React.Component {
   }
 
   render() {
-    const iconUrl = this.props.packageJson && this.props.packageJson.exp &&
-      this.props.packageJson.exp.iconUrl;
+    const iconUrl = this.props.projectJson && this.props.projectJson.icon;
     const projectName =
-      (this.props.packageJson && this.props.packageJson.name) ||
+      (this.props.projectJson && this.props.projectJson.name) ||
       this.props.projectRoot;
 
     return (

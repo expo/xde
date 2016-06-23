@@ -6,6 +6,9 @@ export default {
     borderWidth: 1,
     borderRadius: 5,
     borderStyle: 'solid',
-    padding: 8,
+    paddingTop: 8,
+    paddingRight: 8,
+    paddingBottom: 8,
+    paddingLeft: 8,
   },
 };
