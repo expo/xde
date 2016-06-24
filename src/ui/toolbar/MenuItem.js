@@ -69,7 +69,7 @@ export default class MenuItem extends React.Component {
       ...(this.props.isDisabled ? Styles.menuItemDisabled : {}),
     };
     return (
-      <li style={menuItemStyle}
+      <div style={menuItemStyle}
         onClick={this._onClick}
         onMouseEnter={this._onMouseEnter}
         onMouseLeave={this._onMouseLeave}>
@@ -80,7 +80,7 @@ export default class MenuItem extends React.Component {
         )}
         {isFlyoutMenu && <span>&#x25BA;</span>}
         {isFlyoutMenu && this.state.isHovered && this._renderFlyout()}
-      </li>
+      </div>
     );
   }
 }

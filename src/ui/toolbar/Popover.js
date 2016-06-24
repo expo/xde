@@ -25,6 +25,8 @@ export default class Popover extends React.Component {
       {right: this.props.popoverOffset} : {left: this.props.popoverOffset};
     const arrowStyle = this.props.isToLeft ?
       {right: this.props.arrowOffset} : {left: this.props.arrowOffset};
+    const arrowFillStyle = this.props.isToLeft ?
+      {right: this.props.arrowOffset + 1} : {left: this.props.arrowOffset + 1};
 
     return (
       <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
@@ -32,6 +34,7 @@ export default class Popover extends React.Component {
           <div>
             <div style={{...Styles.popover, ...popoverStyle, opacity: value.x}}>
               <div style={{...Styles.arrow, ...arrowStyle}}></div>
+              <div style={{...Styles.arrowFill, ...arrowFillStyle}}></div>
               <div style={Styles.content}>
                 {this.props.body}
               </div>
@@ -72,12 +75,35 @@ const Styles = {
     height: 12,
 
     position: 'absolute',
-    top: 0,
+    top: 1,
     zIndex: 1,
   },
   content: {
     position: 'relative',
     top: 6, // To make room for the arrow
     zIndex: 2, // Higher than the arrow
+
+    backgroundColor: 'white',
+    borderColor: StyleConstants.colorBorder,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    boxShadow: `0 5px 10px rgba(0, 0, 0, 0.2)`,
+    color: StyleConstants.colorText,
+    listStyleType: 'none',
+    minWidth: 170,
+    paddingLeft: 0,
+    paddingTop: StyleConstants.gutterMd,
+    paddingBottom: StyleConstants.gutterMd,
+  },
+  arrowFill: {
+    backgroundColor: 'white',
+    border: 'none',
+    transform: 'rotate(45deg)',
+    width: 10,
+    height: 10,
+
+    position: 'absolute',
+    top: 2,
+    zIndex: 3, // Higher than content
   },
 };

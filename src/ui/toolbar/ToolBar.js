@@ -13,7 +13,6 @@ import ProjectIcon from '../ProjectIcon';
 import StyleConstants from '../StyleConstants';
 
 import IconButton from './IconButton';
-import Menu from './Menu';
 import MenuItem from './MenuItem';
 import MenuSeparator from './MenuSeparator';
 import Popover from './Popover';
@@ -78,7 +77,7 @@ export default class ToolBar extends React.Component {
       return null;
     }
     return (
-      <Menu>
+      <div>
         <MenuItem label="New Project" shortcut="N"
           onClick={this.props.onNewProjectClick}
         />
@@ -98,7 +97,7 @@ export default class ToolBar extends React.Component {
           isDisabled={!this.props.isProjectOpen}
           onClick={this._onOpenInEditorClick}
         />
-      </Menu>
+      </div>
     );
   }
 
@@ -118,7 +117,7 @@ export default class ToolBar extends React.Component {
       return null;
     }
     return (
-      <Menu onClick={this._onMenuClick}>
+      <div onClick={this._onMenuClick}>
         <input style={Styles.sendLinkInput}
           ref={(r) => {this._sendLinkInput = r;}}
           defaultValue={this.props.sendTo}
@@ -126,7 +125,7 @@ export default class ToolBar extends React.Component {
         />
         <a onClick={this._onSendLinkClick}
           style={Styles.sendLinkSubmit}>Send Link</a>
-      </Menu>
+      </div>
     );
   }
 
@@ -135,14 +134,14 @@ export default class ToolBar extends React.Component {
       return null;
     }
     return (
-      <Menu>
+      <div>
         <MenuItem label="Exponent on iOS"
           onClick={this._simulatorIOSAsync}
         />
         <MenuItem label="Exponent on Android"
           onClick={this._simulatorAndroidAsync}
         />
-      </Menu>
+      </div>
     );
   }
 
@@ -157,9 +156,9 @@ export default class ToolBar extends React.Component {
 
   _renderUserName() {
     const popoverBodyEl = (
-      <Menu>
+      <div>
         <MenuItem label="Log out" onClick={this._onLogOutClick} />
-      </Menu>
+      </div>
     );
     const userNameEl = (
       <a style={Styles.userName}
@@ -318,7 +317,9 @@ const Styles = {
     color: StyleConstants.colorSubtitle,
     display: 'block',
     fontSize: StyleConstants.fontSizeMd,
-    margin: StyleConstants.gutterSm,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: StyleConstants.gutterMd,
     padding: StyleConstants.gutterSm,
     textAlign: 'center',
   },
@@ -326,7 +327,9 @@ const Styles = {
     cursor: 'pointer',
     display: 'block',
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
-    padding: StyleConstants.gutterMd,
+    paddingTop: StyleConstants.gutterMd,
+    paddingRight: StyleConstants.gutterMd,
+    paddingLeft: StyleConstants.gutterMd,
     textAlign: 'center',
     textDecoration: 'none',
 
