@@ -28,7 +28,6 @@ import Notification from './Notification';
 import ProjectList from './ProjectList';
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
-import Menu from './toolbar/Menu';
 import MenuItem from './toolbar/MenuItem';
 import Popover from './toolbar/Popover';
 import ToolBar from './toolbar/ToolBar';
@@ -173,19 +172,19 @@ class App extends React.Component {
     // Just for aesthetics, make top-level MenuItems all "unchecked" (so the
     // beginning of the text lines up)
     return (
-      <Menu>
+      <div>
         <MenuItem label="Host" checkState="unchecked">
-          <Menu>
+          <div style={SharedStyles.hoverBox}>
             {hostMenuItems}
-          </Menu>
+          </div>
         </MenuItem>
         <MenuItem label="Protocol" checkState="unchecked">
-          <Menu>
+          <div style={SharedStyles.hoverBox}>
             {protocolMenuItems}
-          </Menu>
+          </div>
         </MenuItem>
         {otherMenuItems}
-      </Menu>
+      </div>
     );
   }
 

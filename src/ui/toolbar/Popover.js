@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {Motion, spring} from 'react-motion';
 
+import SharedStyles from '../Styles';
 import StyleConstants from '../StyleConstants';
 
 export default class Popover extends React.Component {
@@ -25,6 +26,8 @@ export default class Popover extends React.Component {
       {right: this.props.popoverOffset} : {left: this.props.popoverOffset};
     const arrowStyle = this.props.isToLeft ?
       {right: this.props.arrowOffset} : {left: this.props.arrowOffset};
+    const arrowFillStyle = this.props.isToLeft ?
+      {right: this.props.arrowOffset + 1} : {left: this.props.arrowOffset + 1};
 
     return (
       <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
@@ -32,6 +35,7 @@ export default class Popover extends React.Component {
           <div>
             <div style={{...Styles.popover, ...popoverStyle, opacity: value.x}}>
               <div style={{...Styles.arrow, ...arrowStyle}}></div>
+              <div style={{...Styles.arrowFill, ...arrowFillStyle}}></div>
               <div style={Styles.content}>
                 {this.props.body}
               </div>
@@ -52,6 +56,8 @@ export default class Popover extends React.Component {
   }
 }
 
+const ARROW_SIZE = 12;
+
 const Styles = {
   container: {
     display: 'inline-block',
@@ -68,16 +74,31 @@ const Styles = {
     borderStyle: 'solid',
     borderWidth: 1,
     transform: 'rotate(45deg)',
-    width: 12,
-    height: 12,
+    width: ARROW_SIZE,
+    height: ARROW_SIZE,
 
     position: 'absolute',
-    top: 0,
+    top: 1,
     zIndex: 1,
   },
   content: {
     position: 'relative',
-    top: 6, // To make room for the arrow
+    top: ARROW_SIZE / 2, // To make room for the arrow
     zIndex: 2, // Higher than the arrow
+
+    paddingTop: ARROW_SIZE / 2 + 1,
+    paddingBottom: ARROW_SIZE / 2 + 1,
+    ...SharedStyles.hoverBox,
+  },
+  arrowFill: {
+    backgroundColor: 'white',
+    border: 'none',
+    transform: 'rotate(45deg)',
+    width: 10,
+    height: 10,
+
+    position: 'absolute',
+    top: 2,
+    zIndex: 3, // Higher than content
   },
 };
