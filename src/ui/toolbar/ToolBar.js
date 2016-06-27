@@ -22,6 +22,7 @@ import Popover from './Popover';
 export default class ToolBar extends React.Component {
   static propTypes = {
     isProjectOpen: PropTypes.bool,
+    isProjectRunning: PropTypes.bool,
     openPopover: PropTypes.oneOf(Object.keys(PopoverEnum).map((k) => PopoverEnum[k])),
     onTogglePopover: PropTypes.func.isRequired,
     projectJson: PropTypes.object,
@@ -203,7 +204,7 @@ export default class ToolBar extends React.Component {
               style={Styles.rightSpaced}
             />
             <IconButton iconUrl="./IconArrowUp.png" label="Publish" color="#18B405"
-              isDisabled={!this.props.isProjectOpen}
+              isDisabled={!this.props.isProjectRunning}
               onClick={this.props.onPublishClick}
               style={Styles.rightSpaced}
             />
@@ -215,14 +216,14 @@ export default class ToolBar extends React.Component {
           </div>
           <div style={Styles.rightCol}>
             <IconButton iconUrl="./IconArrowRight.png" label="Send Link" color="#383D40"
-              isDisabled={!this.props.isProjectOpen}
+              isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.SEND_LINK)}
               popover={this._renderPopoverSendLink()}
               isPopoverToLeft
               style={Styles.rightSpaced}
             />
             <IconButton iconUrl="./IconPhone.png" label="Simulator" color="#383D40"
-              isDisabled={!this.props.isProjectOpen}
+              isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.SIMULATOR)}
               popover={this._renderPopoverSimulator()}
               isPopoverToLeft

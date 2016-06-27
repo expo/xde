@@ -42,6 +42,7 @@ class App extends React.Component {
     super();
     this.state = {
       logs: [],
+      isProjectRunning: false,
       projectRoot: null,
       projectJson: null,
       recentExps: [],
@@ -210,6 +211,7 @@ class App extends React.Component {
               <div style={Styles.topSection}>
                 <ToolBar
                   isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
+                  isProjectRunning={this.state.isProjectRunning}
                   onAppendErrors={this._logError}
                   onAppendLogs={this._logInfo}
                   onLogOut={this._logOut}
@@ -304,8 +306,16 @@ class App extends React.Component {
   };
 
   _restartClickedAsync = async () => {
-    await this._restartPackagerAsync();
-    this._restartNgrokAsync();
+    this.setState({
+      isProjectRunning: false,
+    }, async () => {
+      await this._restartPackagerAsync();
+      await this._restartNgrokAsync();
+
+      this.setState({
+        isProjectRunning: true,
+      });
+    });
   };
 
   _restartPackagerAsync = async () => {
@@ -403,6 +413,7 @@ class App extends React.Component {
       projectSettings,
       projectRoot,
       projectJson,
+      isProjectRunning: false,
     }, async () => {
       try {
         await Project.startAsync(projectRoot);
@@ -412,7 +423,10 @@ class App extends React.Component {
       }
 
       let computedUrl = await this._computeUrlAsync();
-      this.setState({computedUrl});
+      this.setState({
+        computedUrl,
+        isProjectRunning: true,
+      });
     });
   };
 
