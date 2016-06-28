@@ -6,6 +6,7 @@ module.exports = {
   colorBackground: '#FAFAFA', // off-white
   colorDarkBackground: '#282c34', // slate gray
   colorError: '#F6345D', // pink
+  colorWarning: '#FF8C00', // orange
   colorConfirm: '#269F89', // green
   colorBorder: '#DCE1E6', // light gray
 

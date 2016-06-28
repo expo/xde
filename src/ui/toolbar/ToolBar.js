@@ -136,10 +136,10 @@ export default class ToolBar extends React.Component {
     }
     return (
       <div>
-        <MenuItem label="Exponent on iOS"
+        <MenuItem label="Open on iOS"
           onClick={this._simulatorIOSAsync}
         />
-        <MenuItem label="Exponent on Android"
+        <MenuItem label="Open on Android"
           onClick={this._simulatorAndroidAsync}
         />
       </div>
@@ -221,7 +221,7 @@ export default class ToolBar extends React.Component {
               isPopoverToLeft
               style={Styles.rightSpaced}
             />
-            <IconButton iconUrl="./IconPhone.png" label="Simulator" color="#383D40"
+            <IconButton iconUrl="./IconPhone.png" label="Device" color="#383D40"
               isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.SIMULATOR)}
               popover={this._renderPopoverSimulator()}
@@ -258,21 +258,19 @@ export default class ToolBar extends React.Component {
   _simulatorIOSAsync = async () => {
     let projectUrl = await this._simulatorProjectUrlAsync();
     console.log("projectUrl=" + projectUrl);
-    return await Simulator.openUrlInSimulatorSafeAsync(
-      projectUrl, this.props.onAppendLogs, this.props.onAppendErrors);
+    return await Simulator.openUrlInSimulatorSafeAsync(projectUrl);
   };
 
   _simulatorAndroidAsync = async () => {
     let projectUrl = await UrlUtils.constructManifestUrlAsync(
       this.props.projectRoot);
     console.log("projectUrl=" + projectUrl);
-    return await Android.openUrlSafeAsync(
-      projectUrl, this.props.onAppendLogs, this.props.onAppendErrors);
+    return await Android.openUrlSafeAsync(projectUrl);
   };
 
   _simulatorProjectUrlAsync = async () => {
     return UrlUtils.constructManifestUrlAsync(this.props.projectRoot, {
-      localhost: true,
+      hostType: 'localhost',
       dev: this.props.projectSettings.dev,
       minify: this.props.projectSettings.minify,
     });

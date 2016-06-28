@@ -1,24 +1,25 @@
-import { ipcRenderer, shell } from 'electron';
+import { ipcRenderer } from 'electron';
 
 import {
+  Android,
+  Config,
+  Env,
   Exp,
+  Logger,
+  NotificationCode,
   Project,
   ProjectSettings,
+  Simulator,
   UrlUtils,
   UserSettings,
-  Config as xdlConfig,
 } from 'xdl';
+Config.developerTool = 'xde';
 
-import JsonFile from '@exponent/json-file';
 import bunyan from 'bunyan';
 import path from 'path';
 import { StyleRoot } from 'radium';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import config from '../config';
-xdlConfig.api = config.api;
-xdlConfig.developerTool = 'xde';
 import Commands from './Commands';
 import {PopoverEnum} from './Constants';
 import ConsoleLog from './ConsoleLog';
@@ -49,6 +50,7 @@ class App extends React.Component {
       projectSettings: null,
       computedUrl: null,
       openPopover: null, // The currently open popover
+      isLoading: false,
     };
 
     this._notificationTimeout = null;
@@ -56,7 +58,7 @@ class App extends React.Component {
   }
 
   _renderPackagerConsole() {
-    return <ConsoleLog logs={this.state.logs} />;
+    return <ConsoleLog logs={this.state.logs} isLoading={this.state.isLoading} />;
   }
 
   _runProject = (project) => {
@@ -197,11 +199,7 @@ class App extends React.Component {
       <StyleRoot onClick={this._closePopover}>
         <LoginPage loggedInAs={this.state.user}
           onLogin={(user) => {this.setState({user});}}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-          }}>
+          <div style={Styles.container}>
             <NewVersionAvailable />
             <div>
               {this.state.notification && (
@@ -254,18 +252,36 @@ class App extends React.Component {
   //   return versionString;
   // }
 
-  _showNotification(type, message) {
+  _showNotification(type, message, onClick) {
     // If there is already a notification showing, cancel its timeout.
     if (this._notificationTimeout) {
       clearTimeout(this._notificationTimeout);
     }
 
+    let clearnNotificationOnClick = onClick ? () => {
+      this._clearNotification();
+      onClick();
+    } : null;
+
     // Show a notification, then hide it after a while.
-    this.setState({notification: {type, message}});
+    this.setState({notification: {
+      type,
+      message,
+      onClick: clearnNotificationOnClick,
+    }});
     this._notificationTimeout = setTimeout(() => {
       this._notificationTimeout = null;
       this.setState({notification: null});
     }, NOTIFICATION_TIMEOUT_MS);
+  }
+
+  _clearNotification() {
+    if (this._notificationTimeout) {
+      clearTimeout(this._notificationTimeout);
+    }
+
+    this._notificationTimeout = null;
+    this.setState({notification: null});
   }
 
   _publishClickedAsync = async () => {
@@ -383,20 +399,11 @@ class App extends React.Component {
       level: 'info',
       stream: {
         write: (chunk) => {
-          // This gets info and error level logs otherwise
-          if (chunk.level === bunyan.INFO) {
+          if (chunk.level <= bunyan.INFO) {
             this._logInfo(chunk.msg);
+          } else {
+            this._logError(chunk.msg);
           }
-        },
-      },
-      type: 'raw',
-    });
-
-    Project.attachLoggerStream(projectRoot, {
-      level: 'error',
-      stream: {
-        write: (chunk) => {
-          this._logError(chunk.msg);
         },
       },
       type: 'raw',
@@ -463,6 +470,8 @@ class App extends React.Component {
         this._runPackagerAsync(args[0]);
       }
     }
+
+    this._registerLogs();
   }
 
   componentWillUnmount() {
@@ -478,9 +487,63 @@ class App extends React.Component {
 
     return UrlUtils.constructManifestUrlAsync(this.state.projectRoot);
   }
+
+  _registerLogs() {
+    Logger.notifications.addStream({
+      level: 'info',
+      stream: {
+        write: (chunk) => {
+          switch (chunk.code) {
+            case NotificationCode.OLD_IOS_APP_VERSION:
+              this._showNotification('warning', 'Exponent app on iOS simulator is out of date. Click to upgrade.', async () => {
+                await Simulator.upgradeExponentOnSimulatorAsync();
+              });
+              break;
+            case NotificationCode.OLD_ANDROID_APP_VERSION:
+              this._showNotification('warning', 'Exponent app on Android device is out of date. Click to upgrade.', async () => {
+                await Android.upgradeExponentAsync();
+              });
+              break;
+            case NotificationCode.START_LOADING:
+              this.setState({
+                isLoading: true,
+              });
+              break;
+            case NotificationCode.STOP_LOADING:
+              this.setState({
+                isLoading: false,
+              });
+              break;
+          }
+        },
+      },
+      type: 'raw',
+    });
+
+    Logger.global.addStream({
+      level: 'info',
+      stream: {
+        write: (chunk) => {
+          if (chunk.level <= bunyan.INFO) {
+            this._logInfo(chunk.msg);
+          } else {
+            this._logError(chunk.msg);
+          }
+        },
+      },
+      type: 'raw',
+    });
+  }
 }
 
 let Styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    backgroundImage: Env.isStaging() ? 'url("./staging.jpg")' : null,
+  },
+
   topSection: {
     margin: StyleConstants.gutterLg,
   },

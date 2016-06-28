@@ -1,3 +1,4 @@
+import LoadingIndicator from 'react-loading-indicator';
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 
@@ -5,6 +6,7 @@ import StyleConstants from './StyleConstants';
 
 export default class ConsoleLog extends React.Component {
   static propTypes = {
+    isLoading: PropTypes.bool,
     logs: PropTypes.arrayOf(PropTypes.shape({
       type: PropTypes.oneOf([
         'default', 'error', 'meta', 'metaError', 'metaWarning',
@@ -46,10 +48,17 @@ export default class ConsoleLog extends React.Component {
     );
   }
 
+  _renderLoading() {
+    return (
+      <LoadingIndicator color={{red: 255, green: 255, blue: 255, alpha: 1}} />
+    );
+  }
+
   render() {
     return (
       <div style={Styles.logs}>
         {this.props.logs.map((log, index) => this._renderLog(log, index))}
+        {this.props.isLoading && this._renderLoading()}
       </div>
     );
   }

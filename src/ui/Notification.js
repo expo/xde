@@ -4,7 +4,7 @@ import StyleConstants from './StyleConstants';
 
 export default class Notification extends React.Component {
   static propTypes = {
-    type: PropTypes.oneOf(['success', 'error']),
+    type: PropTypes.oneOf(['success', 'error', 'warning']),
     message: PropTypes.string.isRequired,
     onClick: PropTypes.func,
   };
@@ -21,6 +21,9 @@ export default class Notification extends React.Component {
     switch (this.props.type) {
       case 'error':
         color = StyleConstants.colorError;
+        break;
+      case 'warning':
+        color = StyleConstants.colorWarning;
         break;
       default:
         color = StyleConstants.colorPrimary;
