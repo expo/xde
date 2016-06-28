@@ -9,6 +9,7 @@ module.exports = {
   colorWarning: '#FF8C00', // orange
   colorConfirm: '#269F89', // green
   colorBorder: '#DCE1E6', // light gray
+  colorCancel: '#DCE1E6', // light gray
 
   fontSizeMd: 12,
   fontSizeLg: 16,

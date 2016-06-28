@@ -1,5 +1,3 @@
-import { ipcRenderer } from 'electron';
-
 import {
   Android,
   Config,
@@ -16,14 +14,20 @@ import {
 Config.developerTool = 'xde';
 
 import bunyan from 'bunyan';
+import { ipcRenderer } from 'electron';
 import path from 'path';
 import { StyleRoot } from 'radium';
 import React from 'react';
 
+import {
+  ModalEnum,
+  PopoverEnum,
+} from './Constants';
+
 import Commands from './Commands';
-import {PopoverEnum} from './Constants';
 import ConsoleLog from './ConsoleLog';
 import LoginPage from './LoginPage';
+import NewProjectModal from './NewProjectModal';
 import NewVersionAvailable from './NewVersionAvailable';
 import Notification from './Notification';
 import ProjectList from './ProjectList';
@@ -48,9 +52,11 @@ class App extends React.Component {
       recentExps: [],
       user: null,
       projectSettings: null,
+      notification: null,
       computedUrl: null,
       openPopover: null, // The currently open popover
       isLoading: false,
+      openModal: null,
     };
 
     this._notificationTimeout = null;
@@ -190,6 +196,28 @@ class App extends React.Component {
     );
   }
 
+  _renderModal() {
+    if (!this.state.openModal) {
+      return null;
+    }
+
+    switch (this.state.openModal) {
+      case ModalEnum.NEW_PROJECT:
+        return (
+          <NewProjectModal
+            onClose={this._closeModal}
+            onSelectProject={this._runPackagerAsync}
+          />
+        );
+    }
+  }
+
+  _closeModal = () => {
+    this.setState({
+      openModal: null,
+    });
+  }
+
   _logOut = () => {
     this.setState({user: null});
   };
@@ -233,6 +261,11 @@ class App extends React.Component {
               this._renderProjectList()}
           </div>
         </LoginPage>
+        {!!this.state.openModal && <div style={Styles.modalOverlay}>
+          <div style={Styles.modalContent}>
+            {this._renderModal()}
+          </div>
+        </div>}
       </StyleRoot>
     );
   }
@@ -309,8 +342,8 @@ class App extends React.Component {
   };
 
   _newClicked = () => {
-    Commands.newExpAsync().then(this._runPackagerAsync, (err) => {
-      this._logMetaError("Could not create new project: " + err);
+    this.setState({
+      openModal: ModalEnum.NEW_PROJECT,
     });
   };
 
@@ -581,6 +614,25 @@ let Styles = {
     // Space the popover slightly away from the gear
     marginTop: StyleConstants.gutterSm,
     marginBottom: StyleConstants.gutterSm,
+  },
+
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  modalContent: {
+    background: StyleConstants.colorBackground,
+    overflow: 'auto',
+    borderRadius: '2px',
+    outline: 'none',
   },
 };
 

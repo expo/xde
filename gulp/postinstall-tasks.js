@@ -3,7 +3,7 @@ import 'instapromise';
 import fs from 'fs-extra';
 import logger from 'gulplog';
 import path from 'path';
-import crayon from '@ccheever/crayon'
+import crayon from '@ccheever/crayon';
 
 import { XDE_ROOT } from './app-configuration';
 

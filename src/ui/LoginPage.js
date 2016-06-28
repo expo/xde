@@ -5,7 +5,7 @@ import {User} from 'xdl';
 
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
-import * as UsernameRules from '../UsernameRules';
+import * as IdentifierRules from '../IdentifierRules';
 
 class LoginPage extends React.Component {
   constructor(props, context) {
@@ -41,7 +41,7 @@ class LoginPage extends React.Component {
 
   _renderErrors() {
     if (this.state.errorMessage) {
-      return <div style={Styles.errorMessage}>{this.state.errorMessage}</div>;
+      return <div style={SharedStyles.errorMessage}>{this.state.errorMessage}</div>;
     } else {
       return null;
     }
@@ -86,7 +86,7 @@ class LoginPage extends React.Component {
   }
 
   _onUsernameChange = (event) => {
-      let newValue = UsernameRules.normalizeUsernameWhileTyping(event.target.value);
+      let newValue = IdentifierRules.normalizeWhileTyping(event.target.value);
       this.setState({username: newValue});
   };
 
@@ -139,13 +139,6 @@ let Styles = {
     height: 100,
     width: 100,
     marginBottom: 40,
-  },
-  errorMessage: {
-    color: StyleConstants.colorError,
-    fontSize: 13,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
   },
   button: {
     backgroundColor: StyleConstants.colorPrimary,

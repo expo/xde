@@ -20,4 +20,11 @@ export default {
     color: StyleConstants.colorText,
     minWidth: 170,
   },
+  errorMessage: {
+    color: StyleConstants.colorError,
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
 };

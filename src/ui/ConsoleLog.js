@@ -58,7 +58,7 @@ export default class ConsoleLog extends React.Component {
     return (
       <div style={Styles.logs}>
         {this.props.logs.map((log, index) => this._renderLog(log, index))}
-        {this.props.isLoading && this._renderLoading()}
+        {(this.props.isLoading || this.props.logs.length === 0) && this._renderLoading()}
       </div>
     );
   }

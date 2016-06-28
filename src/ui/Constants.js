@@ -5,3 +5,7 @@ export const PopoverEnum = {
   USER: 4,
   OPTIONS: 5,
 };
+
+export const ModalEnum = {
+  NEW_PROJECT: 1,
+};
