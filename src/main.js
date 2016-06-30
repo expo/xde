@@ -5,7 +5,7 @@ import Menu from './remote/Menu';
 
 import config from './config';
 
-import { Project } from 'xdl';
+import { Env, Project } from 'xdl';
 
 const {
   app,
@@ -53,7 +53,10 @@ app.on('ready', () => {
   }
 
   // Setup the menu bar
-  Menu.setupMenu();
+  //Menu.setupMenu();
+  if (!Env.isStaging() && !Env.isLocal()) {
+    mainWindow.setMenu(null);
+  }
 
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows

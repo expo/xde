@@ -4,9 +4,9 @@
   "description": "The Exponent Development Environment",
   "main": "build/main.js",
   "scripts": {
-    "start": "gulp build && XDE_NPM_START=1 electron .",
-    "staging": "gulp build && XDE_NPM_START=1 EXPONENT_STAGING=1 electron .",
-    "local": "gulp build && XDE_NPM_START=1 EXPONENT_LOCAL=1 electron .",
+    "start": "gulp build && cross-env XDE_NPM_START=1 electron .",
+    "staging": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_STAGING=1 electron .",
+    "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron .",
     "postinstall": "gulp postinstall",
     "package": "gulp unsigned-release",
     "signed-package": "gulp release"
@@ -29,6 +29,7 @@
     "babel-runtime": "^6.9.2",
     "bunyan": "^1.8.1",
     "exec-async": "^2.2.0",
+    "fs-extra": "^0.30.0",
     "git-info-async": "^1.1.0",
     "lodash": "^4.13.1",
     "promise-print": "^2.3.0",
@@ -49,6 +50,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
+    "cross-env": "^1.0.8",
     "electron-packager": "^7.0.3",
     "electron-prebuilt": "^1.2.2",
     "eslint": "^2.12.0",

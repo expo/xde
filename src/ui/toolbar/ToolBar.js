@@ -136,12 +136,16 @@ export default class ToolBar extends React.Component {
     }
     return (
       <div>
-        <MenuItem label="Open on iOS"
-          onClick={this._simulatorIOSAsync}
-        />
-        <MenuItem label="Open on Android"
-          onClick={this._simulatorAndroidAsync}
-        />
+        {Simulator.isPlatformSupported() && (
+          <MenuItem label="Open on iOS"
+            onClick={this._simulatorIOSAsync}
+          />
+        )}
+        {Android.isPlatformSupported() && (
+          <MenuItem label="Open on Android"
+            onClick={this._simulatorAndroidAsync}
+          />
+        )}
       </div>
     );
   }
