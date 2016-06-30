@@ -11,6 +11,7 @@ module.exports = {
   colorBorder: '#DCE1E6', // light gray
   colorCancel: '#DCE1E6', // light gray
 
+  fontSizeSm: 10,
   fontSizeMd: 12,
   fontSizeLg: 16,
 

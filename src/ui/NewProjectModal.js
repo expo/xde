@@ -59,8 +59,11 @@ class NewProjectModal extends React.Component {
       <form name="newProject"
         style={Styles.form}
         onSubmit={this._onSubmitNewProject}>
-        <div style={Styles.text}>
+        <div style={Styles.largeText}>
           Choose a Project Name
+        </div>
+        <div style={Styles.smallText}>
+          XDE will create a new directory with this name.
         </div>
         {this._renderErrors()}
         <input autoFocus type="text" style={Styles.input} ref="projectName"
@@ -173,6 +176,7 @@ let Styles = {
   },
   loadingContainer: {
     padding: StyleConstants.gutterLg,
+    minWidth: 250,
 
     display: 'flex',
     flexDirection: 'column',
@@ -184,9 +188,14 @@ let Styles = {
     display: 'flex',
     flexDirection: 'column',
   },
-  text: {
+  largeText: {
     color: StyleConstants.colorText,
     fontSize: StyleConstants.fontSizeLg,
+    paddingBottom: StyleConstants.gutterSm,
+  },
+  smallText: {
+    color: StyleConstants.colorSubtitle,
+    fontSize: StyleConstants.fontSizeSm,
     paddingBottom: StyleConstants.gutterLg,
   },
   loadingText: {
