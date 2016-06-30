@@ -76,6 +76,5 @@ nvm use v5
 ```
 
 - Go into the `xde/` directory where you cloned the Git repo and run `npm install`
-- Go into the `xde/template` directory and run `npm install` there too
 - Once that completes, run `npm start` to start the GUI
 - If you get a watchman error, you may need to increase your "max_queued_events" limit. On linux you can find this at /proc/sys/fs/inotify/max_queued_events.

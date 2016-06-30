@@ -63,7 +63,7 @@ class NewProjectModal extends React.Component {
           Choose a Project Name
         </div>
         {this._renderErrors()}
-        <input type="text" style={Styles.input} ref="projectName"
+        <input autoFocus type="text" style={Styles.input} ref="projectName"
           onChange={this._onProjectNameChange}
           value={this.state.projectName}
         />
@@ -150,7 +150,7 @@ class NewProjectModal extends React.Component {
         return;
       }
 
-      this.props.onSelectProject(projectRoot);
+      await this.props.onSelectProject(projectRoot);
       this.props.onClose();
     } catch (e) {
       this.setState({

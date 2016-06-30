@@ -6,6 +6,7 @@
   "scripts": {
     "start": "gulp build && XDE_NPM_START=1 electron .",
     "staging": "gulp build && XDE_NPM_START=1 EXPONENT_STAGING=1 electron .",
+    "local": "gulp build && XDE_NPM_START=1 EXPONENT_LOCAL=1 electron .",
     "postinstall": "gulp postinstall",
     "package": "gulp unsigned-release",
     "signed-package": "gulp release"
