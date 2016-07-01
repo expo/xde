@@ -168,6 +168,7 @@ let Styles = {
   container: {
     fontFamily: 'Verdana',
     padding: StyleConstants.gutterLg,
+    overflowWrap: 'break-word',
 
     display: 'flex',
     flexDirection: 'column',
