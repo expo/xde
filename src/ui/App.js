@@ -354,45 +354,24 @@ class App extends React.Component {
   };
 
   _restartClickedAsync = async () => {
+    this._logInfo('Restarting project.');
     this.setState({
       isProjectRunning: false,
     }, async () => {
-      await this._restartPackagerAsync();
-      await this._restartNgrokAsync();
+      // TODO: refactor this and _runPackagerAsync
+      try {
+        await Project.startAsync(this.state.projectRoot);
+        this._logInfo('Project opened.');
+      } catch (err) {
+        this._logError(`Could not open project: ${err.toString()}`);
+      }
 
+      let computedUrl = await this._computeUrlAsync();
       this.setState({
+        computedUrl,
         isProjectRunning: true,
       });
     });
-  };
-
-  _restartPackagerAsync = async () => {
-    if (this.state.projectRoot) {
-      this._logMetaMessage("Clearing packager cache and restarting packager...");
-      try {
-        await Project.startReactNativeServerAsync(
-          this.state.projectRoot, {reset:true});
-        this._logMetaMessage("Restarted packager.");
-      } catch (err) {
-        this._logMetaError("Could not restart packager: " + err.toString());
-      }
-    } else {
-      this._logMetaError("Could not restart packager: packager not running.");
-    }
-  };
-
-  _restartNgrokAsync = async () => {
-    if (this.state.projectRoot) {
-      this._logMetaMessage("Restarting tunnel...");
-      try {
-        await Project.startTunnelsAsync(this.state.projectRoot);
-        this._logMetaMessage("Restarted tunnel.");
-      } catch (err) {
-        this._logMetaError("Could not restart tunnel: " + err);
-      }
-    } else {
-      this._logMetaError("Could not restart tunnel: tunnel not running.");
-    }
   };
 
   _sendClickedAsync = async (sendTo) => {
@@ -458,7 +437,7 @@ class App extends React.Component {
         await Project.startAsync(projectRoot);
         this._logInfo('Project opened.');
       } catch (err) {
-        this._logError('Could not open project: ', err);
+        this._logError(`Could not open project: ${err.toString()}`);
       }
 
       let computedUrl = await this._computeUrlAsync();
