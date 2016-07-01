@@ -241,7 +241,7 @@ class App extends React.Component {
                   onAppendLogs={this._logInfo}
                   onLogOut={this._logOut}
                   onNewProjectClick={this._newClicked}
-                  onOpenProjectClick={this._openClicked}
+                  onOpenProjectClick={this._openClickedAsync}
                   onPublishClick={this._publishClickedAsync}
                   onRestartClick={this._restartClickedAsync}
                   onSendLinkClick={this._sendClickedAsync}
@@ -347,10 +347,11 @@ class App extends React.Component {
     });
   };
 
-  _openClicked = () => {
-    Commands.openExpAsync().then(this._runPackagerAsync, (err) => {
-      this._logMetaError("Could not open project: " + err);
-    });
+  _openClickedAsync = async () => {
+    let root = await Commands.openExpAsync();
+    if (root) {
+      await this._runPackagerAsync(root);
+    }
   };
 
   _restartClickedAsync = async () => {

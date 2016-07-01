@@ -52,14 +52,29 @@ export default class ToolBar extends React.Component {
     if (event.metaKey) {
       switch (event.key) {
         case 'n':
+          event.preventDefault();
           this.props.onNewProjectClick();
           break;
         case 'o':
+          event.preventDefault();
           this.props.onOpenProjectClick();
           break;
         case 'p':
+          event.preventDefault();
           if (this.props.isProjectOpen) {
             this.props.onRestartClick();
+          }
+          break;
+        case 'i':
+          event.preventDefault();
+          if (this.props.isProjectRunning && Simulator.isPlatformSupported()) {
+            this._simulatorIOSAsync();
+          }
+          break;
+        case 'd':
+          event.preventDefault();
+          if (this.props.isProjectRunning && Android.isPlatformSupported()) {
+            this._simulatorAndroidAsync();
           }
           break;
       }
@@ -137,12 +152,12 @@ export default class ToolBar extends React.Component {
     return (
       <div>
         {Simulator.isPlatformSupported() && (
-          <MenuItem label="Open on iOS"
+          <MenuItem label="Open on iOS" shortcut="I"
             onClick={this._simulatorIOSAsync}
           />
         )}
         {Android.isPlatformSupported() && (
-          <MenuItem label="Open on Android"
+          <MenuItem label="Open on Android" shortcut="D"
             onClick={this._simulatorAndroidAsync}
           />
         )}
