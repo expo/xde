@@ -14,7 +14,7 @@ import {
 Config.developerTool = 'xde';
 
 import bunyan from 'bunyan';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import path from 'path';
 import { StyleRoot } from 'radium';
 import React from 'react';
@@ -318,6 +318,31 @@ class App extends React.Component {
   }
 
   _publishClickedAsync = async () => {
+    let confirmBeforePublish = await UserSettings.getAsync('confirmBeforePublish', true);
+
+    if (confirmBeforePublish) {
+      let { dialog } = remote;
+
+      // Yes = 0
+      // Yes, don't ask again = 1
+      // No = 2
+      var choice = dialog.showMessageBox(
+        remote.getCurrentWindow(),
+        {
+            type: 'question',
+            buttons: ['Yes', `Yes, don't ask again`, 'No'],
+            title: 'Confirm',
+            message: 'This will make your experience publicly accessible. Continue?',
+        }
+      );
+
+      if (choice === 1) {
+        await UserSettings.mergeAsync({'confirmBeforePublish': false});
+      } else if (choice === 2) {
+        return;
+      }
+    }
+
     this._logMetaMessage("Publishing...");
     try {
       let result = await Project.publishAsync(this.state.projectRoot);
