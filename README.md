@@ -63,7 +63,6 @@ You can publish as many times as you want and it will replace your old version, 
 - `git clone` this repository,
 - `git checkout` one of the release tags.
 - `git pull` to make sure it is up to date.
-
 - Make sure you have Node version 5.5.0 (or compatible). If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
 
 ```shell
@@ -77,6 +76,6 @@ nvm use v5
 ```
 
 - Go into the `xde/` directory where you cloned the Git repo and run `npm install`
+- Go into the `xde/template` directory and run `npm install` there too
 - Once that completes, run `npm start` to start the GUI
-
 - If you get a watchman error, you may need to increase your "max_queued_events" limit. On linux you can find this at /proc/sys/fs/inotify/max_queued_events.
