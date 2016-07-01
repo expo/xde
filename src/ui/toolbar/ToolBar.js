@@ -266,10 +266,7 @@ export default class ToolBar extends React.Component {
   };
 
   _simulatorAndroidAsync = async () => {
-    let projectUrl = await UrlUtils.constructManifestUrlAsync(
-      this.props.projectRoot);
-    console.log("projectUrl=" + projectUrl);
-    return await Android.openUrlSafeAsync(projectUrl);
+    return await Android.openProjectAsync(this.props.projectRoot);
   };
 
   _simulatorProjectUrlAsync = async () => {
