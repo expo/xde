@@ -53,7 +53,7 @@ app.on('ready', () => {
   }
 
   // Setup the menu bar
-  //Menu.setupMenu();
+  Menu.setupMenu();
   if (!Env.isStaging() && !Env.isLocal()) {
     mainWindow.setMenu(null);
   }
