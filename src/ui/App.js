@@ -460,17 +460,18 @@ class App extends React.Component {
       isProjectRunning: false,
     }, async () => {
       try {
-        await Project.startAsync(projectRoot);
+        let expJson = await Project.startAsync(projectRoot);
         this._logInfo('Project opened.');
+
+        let computedUrl = await this._computeUrlAsync();
+        this.setState({
+          computedUrl,
+          isProjectRunning: true,
+          expJson,
+        });
       } catch (err) {
         this._logError(`Could not open project: ${err.toString()}`);
       }
-
-      let computedUrl = await this._computeUrlAsync();
-      this.setState({
-        computedUrl,
-        isProjectRunning: true,
-      });
     });
   };
 
