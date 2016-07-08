@@ -103,7 +103,7 @@ class App extends React.Component {
 
   _toggleDeviceLogsPopover = (event) => {
     event.stopPropagation();
-    if (this.state.connectedDevices) {
+    if (this.state.focusedConnectedDeviceId) {
       this._onTogglePopover(PopoverEnum.DEVICE_LOGS);
     }
   };
@@ -584,7 +584,6 @@ class App extends React.Component {
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
 
     Project.attachLoggerStream(projectRoot, {
-      level: 'debug',
       stream: {
         write: (chunk) => {
           if (chunk.tag === 'device') {
@@ -679,7 +678,6 @@ class App extends React.Component {
 
   _registerLogs() {
     Logger.notifications.addStream({
-      level: 'debug',
       stream: {
         write: (chunk) => {
           switch (chunk.code) {
@@ -710,7 +708,6 @@ class App extends React.Component {
     });
 
     Logger.global.addStream({
-      level: 'debug',
       stream: {
         write: (chunk) => {
           this._appendLogChunk(chunk);
