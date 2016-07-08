@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import bunyan from 'bunyan';
 import LoadingIndicator from 'react-loading-indicator';
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
@@ -7,12 +9,7 @@ import StyleConstants from './StyleConstants';
 export default class ConsoleLog extends React.Component {
   static propTypes = {
     isLoading: PropTypes.bool,
-    logs: PropTypes.arrayOf(PropTypes.shape({
-      type: PropTypes.oneOf([
-        'default', 'error', 'meta', 'metaError', 'metaWarning',
-      ]),
-      message: PropTypes.string,
-    })),
+    logs: PropTypes.arrayOf(PropTypes.object),
   };
 
   componentWillUpdate() {
@@ -30,21 +27,54 @@ export default class ConsoleLog extends React.Component {
   }
 
   _renderLog(log, index) {
-    let logStyle;
-    switch (log.type) {
-      case 'error':
-        logStyle = Styles.logError; break;
-      case 'meta':
-        logStyle = Styles.logMeta; break;
-      case 'metaError':
-        logStyle = Styles.logMetaError; break;
-      case 'metaWarning':
-        logStyle = Styles.logMetaWarning; break;
-      default:
-        logStyle = Styles.logDefault; break;
+    if (log.shouldHide) {
+      return null;
     }
+
+    let message = log.msg;
+    let logStyle = Styles.logDefault;
+    if (LOG_LEVEL_TO_STYLE[log.level]) {
+      logStyle = LOG_LEVEL_TO_STYLE[log.level];
+    }
+
+    let time = log.time.toLocaleTimeString();
+
+    message = _.trim(message);
+
+    // Give important messages more space
+    let paddingTop = 0;
+    let paddingBottom = 0;
+    if (log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications') {
+      paddingBottom = 20;
+      if (index > 0 && !this._lastLogHasPadding) {
+        paddingTop = 20;
+      }
+      this._lastLogHasPadding = true;
+    } else {
+      this._lastLogHasPadding = false;
+    }
+
+    // Lower priority of packager logs
+    if (log.tag === 'packager' && log.level === bunyan.INFO) {
+      logStyle = Styles.logDebug;
+    }
+
+    // A big chunk of json is logged right when an app starts. Lower the priority.
+    if (log.tag === 'device' && message.includes('Running application') && message.includes('with appParams')) {
+      logStyle = Styles.logDebug;
+    }
+
+    // console.group
+    let paddingLeft = 0;
+    if (log.groupDepth) {
+      paddingLeft = log.groupDepth * 20;
+    }
+
     return (
-      <pre key={index} style={{...Styles.log, ...logStyle}}>{log.message}</pre>
+      <div key={index} style={{...Styles.logContainer, paddingTop, paddingBottom}}>
+        <span style={Styles.logTime}>{time}</span>
+        <pre style={{...Styles.log, ...logStyle, paddingLeft}}>{message}</pre>
+      </div>
     );
   }
 
@@ -55,6 +85,7 @@ export default class ConsoleLog extends React.Component {
   }
 
   render() {
+    this._lastLogHasPadding = false;
     return (
       <div style={Styles.logs}>
         {this.props.logs.map((log, index) => this._renderLog(log, index))}
@@ -71,21 +102,39 @@ const Styles = {
     height: '100%',
     overflowY: 'auto',
     padding: StyleConstants.gutterLg,
+    flex: '1',
+  },
+  logContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   log: {
     background: StyleConstants.colorDarkBackground,
     whiteSpace: 'pre-wrap',
   },
+  logDebug: {
+    color: StyleConstants.colorDebug,
+  },
   logDefault: {
     color: 'white',
+  },
+  logWarning: {
+    color: StyleConstants.colorWarning,
   },
   logError: {
     color: StyleConstants.colorError,
   },
-  logMeta: {
+  logTime: {
+    fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorSubtitle,
+    width: 85,
+    minWidth: 85,
   },
-  logMetaError: {
-    color: StyleConstants.colorError,
-  },
+};
+
+const LOG_LEVEL_TO_STYLE = {
+  [bunyan.DEBUG]: Styles.logDebug,
+  [bunyan.INFO]: Styles.logDefault,
+  [bunyan.WARN]: Styles.logWarning,
+  [bunyan.ERROR]: Styles.logError,
 };

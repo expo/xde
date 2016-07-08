@@ -4,9 +4,11 @@ module.exports = {
   colorText: '#595C68', // gray
   colorSubtitle: '#9CA0A6', // light gray
   colorBackground: '#FAFAFA', // off-white
+  colorLightBackground: '#DCE1E6', // light gray
   colorDarkBackground: '#282c34', // slate gray
   colorError: '#F6345D', // pink
   colorWarning: '#FF8C00', // orange
+  colorDebug: '#ADB1B7',
   colorConfirm: '#269F89', // green
   colorBorder: '#DCE1E6', // light gray
   colorCancel: '#DCE1E6', // light gray

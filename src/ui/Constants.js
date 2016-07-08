@@ -4,6 +4,7 @@ export const PopoverEnum = {
   SIMULATOR: 3,
   USER: 4,
   OPTIONS: 5,
+  DEVICE_LOGS: 6,
 };
 
 export const ModalEnum = {

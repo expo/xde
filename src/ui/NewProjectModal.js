@@ -30,7 +30,7 @@ class NewProjectModal extends React.Component {
 
   componentDidMount() {
     Logger.notifications.addStream({
-      level: 'info',
+      level: 'debug',
       stream: {
         write: (chunk) => {
           switch (chunk.code) {

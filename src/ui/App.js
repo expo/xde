@@ -10,9 +10,11 @@ import {
   Simulator,
   UrlUtils,
   UserSettings,
+  Versions,
 } from 'xdl';
 Config.developerTool = 'xde';
 
+import _ from 'lodash';
 import bunyan from 'bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
@@ -46,6 +48,8 @@ class App extends React.Component {
     super();
     this.state = {
       logs: [],
+      connectedDevices: {}, // mapping of device id -> {name, logs: array of logs}
+      focusedConnectedDeviceId: null,
       isProjectRunning: false,
       projectRoot: null,
       projectJson: null,
@@ -57,19 +61,110 @@ class App extends React.Component {
       openPopover: null, // The currently open popover
       isLoading: false,
       openModal: null,
+      expJson: null,
     };
 
     this._notificationTimeout = null;
+    this._startTime = new Date();
     global._App = this;
+  }
+
+  _renderTabs() {
+    // Device logs only work >= SDK 7
+    let shouldShowDeviceLogs = false;
+    if (this.state.expJson && Versions.gteSdkVersion(this.state.expJson, '7.0.0')) {
+      shouldShowDeviceLogs = true;
+    }
+
+    return (
+      <div style={Styles.tabsContainer}>
+        {this._renderPackagerConsole()}
+        {shouldShowDeviceLogs && <div style={Styles.verticalSeparator} />}
+        {shouldShowDeviceLogs && this._renderDeviceLogs()}
+      </div>
+    );
   }
 
   _renderPackagerConsole() {
     return <ConsoleLog logs={this.state.logs} isLoading={this.state.isLoading} />;
   }
 
+  _toggleDeviceLogsPopover = (event) => {
+    event.stopPropagation();
+    this._onTogglePopover(PopoverEnum.DEVICE_LOGS);
+  };
+
+  _setSelectedDevice = (deviceId) => {
+    this.setState({
+      focusedConnectedDeviceId: deviceId,
+    });
+  };
+
+  _renderPopoverDeviceLogs() {
+    if (this.state.openPopover !== PopoverEnum.DEVICE_LOGS) {
+      return null;
+    }
+
+    let menuItems = [];
+    _.forEach(this.state.connectedDevices, (device, deviceId) => {
+      const isSelected = this.state.focusedConnectedDeviceId === deviceId;
+
+      /* eslint-disable react/jsx-no-bind */
+      menuItems.push(
+        <MenuItem
+          label={device.name}
+          key={deviceId}
+          checkState={isSelected ? 'checked' : 'unchecked'}
+          onClick={() => this._setSelectedDevice(deviceId)}
+        />
+      );
+      /* eslint-enable react/jsx-no-bind */
+    });
+
+    return (
+      <div>
+        {menuItems}
+      </div>
+    );
+  }
+
+  _renderDeviceLogs() {
+    let {
+      connectedDevices,
+      focusedConnectedDeviceId,
+    } = this.state;
+
+    let device = focusedConnectedDeviceId ? connectedDevices[focusedConnectedDeviceId] : null;
+    let logs = device ? device.logs : [{
+      level: bunyan.INFO,
+      msg: `Logs from devices will appear here`,
+      time: this._startTime,
+    }];
+    // TODO: change gear icon
+    return (
+      <div style={Styles.tabContainer}>
+        <ConsoleLog logs={logs} />
+        <div>
+          {!!device &&
+            <Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
+              <img
+                src="./SelectUpDown.png"
+                style={Styles.optionsIcon}
+                onClick={this._toggleDeviceLogsPopover}
+              />
+            </Popover>
+          }
+          <span style={Styles.deviceSelectText}>
+            {device ? device.name : 'No devices connected'}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   _runProject = (project) => {
     this._runPackagerAsync(project.root).catch((error) => {
-      this._logMetaError("Couldn't open Exp " + project.name + ": " + error);
+      this._logError(`Couldn't open Exp ${project.name}: ${error.toString()}`);
     });
   };
 
@@ -112,7 +207,7 @@ class App extends React.Component {
           />
         </Popover>
         <input
-          ref={(r) => {this._urlInput = r;}}
+          ref={(r) => { this._urlInput = r; }}
           style={Styles.urlInput}
           value={this.state.computedUrl || ''}
           placeholder="Waiting for packager and tunnel to start..."
@@ -223,10 +318,11 @@ class App extends React.Component {
   };
 
   render() {
+    /* eslint-disable react/jsx-no-bind */
     return (
       <StyleRoot onClick={this._closePopover}>
         <LoginPage loggedInAs={this.state.user}
-          onLogin={(user) => {this.setState({user});}}>
+          onLogin={(user) => { this.setState({user}); }}>
           <div style={Styles.container}>
             <NewVersionAvailable />
             <div>
@@ -257,7 +353,7 @@ class App extends React.Component {
               </div>
             </div>
             {this.state.projectRoot ?
-              this._renderPackagerConsole() :
+              this._renderTabs() :
               this._renderProjectList()}
           </div>
         </LoginPage>
@@ -268,6 +364,7 @@ class App extends React.Component {
         </div>}
       </StyleRoot>
     );
+    /* eslint-enable react/jsx-no-bind */
   }
 
   _setProjectSettingAsync = async (options) => {
@@ -343,26 +440,26 @@ class App extends React.Component {
       }
     }
 
-    this._logMetaMessage("Publishing...");
+    this._logInfo("Publishing...");
     try {
       let result = await Project.publishAsync(this.state.projectRoot);
-      this._logMetaMessage("Published to " + result.url);
+      this._logInfo(`Published to ${result.url}`);
 
       let notificationMessage = 'Project published successfully.';
       let sendTo = this.state.sendTo;
       if (sendTo) {
         try {
           await Exp.sendAsync(sendTo, result.url);
-          this._logMetaMessage(`Sent link ${result.url} to ${sendTo}.`);
+          this._logInfo(`Sent link ${result.url} to ${sendTo}.`);
         } catch (err) {
-          this._logMetaError(`Could not send link to ${sendTo}: ${err}`);
+          this._logError(`Could not send link to ${sendTo}: ${err}`);
         }
         notificationMessage = `${notificationMessage} Sent to ${sendTo}`;
       }
       this._showNotification('success', notificationMessage);
     } catch (err) {
       this._showNotification('error', 'Project failed to publish.');
-      this._logMetaError("Failed to publish package: " + err.message);
+      this._logError(`Failed to publish package: ${err.message}`);
     }
   };
 
@@ -405,42 +502,64 @@ class App extends React.Component {
     let url_ = this.state.computedUrl;
     try {
       await Exp.sendAsync(sendTo, url_);
-      this._logMetaMessage(`Sent link ${url_} to ${sendTo}.`);
+      this._logInfo(`Sent link ${url_} to ${sendTo}.`);
       UserSettings.updateAsync('sendTo', sendTo);
     } catch (err) {
-      this._logMetaError(`Could not send link to ${sendTo}: ${err}`);
-      this._logMetaError("If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number.");
+      this._logError(`Could not send link to ${sendTo}: ${err}`);
+      this._logError("If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number.");
     }
   };
 
-  _appendLogs = (type, data) => {
+  _appendLogChunk = (chunk) => {
     this.setState({
-      logs: this.state.logs.concat([{type, message: data}]),
+      logs: this.state.logs.concat([chunk]),
     });
   };
 
-  _logInfo = (data) => this._appendLogs('default', data);
-  _logError = (data) => this._appendLogs('error', data);
-  _logMetaMessage = (data) => this._appendLogs('meta', data);
-  _logMetaError = (data) => this._appendLogs('metaError', data);
-  _logMetaWarning = (data) => this._appendLogs('metaWarning', data);
+  _logInfo = (data) => Project.logInfo(this.state.projectRoot, 'exponent', data);
+  _logError = (data) => Project.logError(this.state.projectRoot, 'exponent', data);
+  _handleDeviceLogs = (chunk) => {
+    this.setState((state) => {
+      let connectedDevices = state.connectedDevices;
+      let focusedConnectedDeviceId = state.focusedConnectedDeviceId;
+      if (!connectedDevices[chunk.deviceId]) {
+        if (!focusedConnectedDeviceId) {
+          focusedConnectedDeviceId = chunk.deviceId;
+        }
+        connectedDevices[chunk.deviceId] = {
+          name: chunk.deviceName,
+          logs: [{
+            level: bunyan.INFO,
+            msg: `Streaming logs from ${chunk.deviceName}...`,
+            time: new Date(),
+          }],
+        };
+      }
+
+      connectedDevices[chunk.deviceId].logs = connectedDevices[chunk.deviceId].logs.concat([chunk]);
+
+      return {
+        focusedConnectedDeviceId,
+        connectedDevices,
+      };
+    });
+  }
 
   _runPackagerAsync = async (projectRoot) => {
     if (!projectRoot) {
-      this._logMetaError("Could not open project: empty root.");
-      return null;
+      throw new Error("Could not open project: empty root.");
     }
 
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
 
     Project.attachLoggerStream(projectRoot, {
-      level: 'info',
+      level: 'debug',
       stream: {
         write: (chunk) => {
-          if (chunk.level <= bunyan.INFO) {
-            this._logInfo(chunk.msg);
+          if (chunk.tag === 'device') {
+            this._handleDeviceLogs(chunk);
           } else {
-            this._logError(chunk.msg);
+            this._appendLogChunk(chunk);
           }
         },
       },
@@ -529,7 +648,7 @@ class App extends React.Component {
 
   _registerLogs() {
     Logger.notifications.addStream({
-      level: 'info',
+      level: 'debug',
       stream: {
         write: (chunk) => {
           switch (chunk.code) {
@@ -560,14 +679,10 @@ class App extends React.Component {
     });
 
     Logger.global.addStream({
-      level: 'info',
+      level: 'debug',
       stream: {
         write: (chunk) => {
-          if (chunk.level <= bunyan.INFO) {
-            this._logInfo(chunk.msg);
-          } else {
-            this._logError(chunk.msg);
-          }
+          this._appendLogChunk(chunk);
         },
       },
       type: 'raw',
@@ -639,6 +754,31 @@ let Styles = {
     overflow: 'auto',
     borderRadius: '2px',
     outline: 'none',
+  },
+
+  tabsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100%',
+  },
+
+  verticalSeparator: {
+    width: 2,
+    display: 'flex',
+    backgroundColor: StyleConstants.colorBackground,
+  },
+
+  tabContainer: {
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
+
+  deviceSelectText: {
+    fontSize: StyleConstants.fontSizeSm,
+    color: StyleConstants.colorText,
+    paddingLeft: OPTIONS_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
   },
 };
 
