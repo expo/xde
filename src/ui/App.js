@@ -41,6 +41,7 @@ import ToolBar from './toolbar/ToolBar';
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
+const DEVICES_ICON_SIZE = 16;
 
 class App extends React.Component {
 
@@ -91,7 +92,9 @@ class App extends React.Component {
 
   _toggleDeviceLogsPopover = (event) => {
     event.stopPropagation();
-    this._onTogglePopover(PopoverEnum.DEVICE_LOGS);
+    if (this.state.connectedDevices) {
+      this._onTogglePopover(PopoverEnum.DEVICE_LOGS);
+    }
   };
 
   _setSelectedDevice = (deviceId) => {
@@ -140,19 +143,17 @@ class App extends React.Component {
       msg: `Logs from devices will appear here`,
       time: this._startTime,
     }];
-    // TODO: change gear icon
     return (
       <div style={Styles.tabContainer}>
         <ConsoleLog logs={logs} />
         <div>
-          {!!device &&
-            <Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
-              <img
-                src="./SelectUpDown.png"
-                style={Styles.optionsIcon}
-                onClick={this._toggleDeviceLogsPopover}
-              />
-            </Popover>
+          {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
+            <img
+              src="./SelectUpDown.png"
+              style={[Styles.iconWithMargin, Styles.deviceSelectIcon]}
+              onClick={this._toggleDeviceLogsPopover}
+            />
+          </Popover>
           }
           <span style={Styles.deviceSelectText}>
             {device ? device.name : 'No devices connected'}
@@ -202,7 +203,7 @@ class App extends React.Component {
       <div style={Styles.urlInputContainer}>
         <Popover body={this._renderPopoverOptions()} arrowOffset={16}>
           <img src="./gear.svg"
-            style={Styles.optionsIcon}
+            style={[Styles.iconWithMargin, Styles.optionsIcon]}
             onClick={this._toggleOptionsPopover}
           />
         </Popover>
@@ -726,15 +727,22 @@ let Styles = {
     marginTop: -((StyleConstants.gutterMd * 2) + 10) / 2,
   },
 
-  optionsIcon: {
+  iconWithMargin: {
     cursor: 'pointer',
+    marginTop: StyleConstants.gutterSm,
+    marginBottom: StyleConstants.gutterSm,
+  },
+
+  optionsIcon: {
     height: OPTIONS_ICON_SIZE,
     marginLeft: StyleConstants.gutterMd,
     marginRight: -(StyleConstants.gutterMd + OPTIONS_ICON_SIZE),
+  },
 
-    // Space the popover slightly away from the gear
-    marginTop: StyleConstants.gutterSm,
-    marginBottom: StyleConstants.gutterSm,
+  deviceSelectIcon: {
+    height: DEVICES_ICON_SIZE,
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: -(StyleConstants.gutterMd + DEVICES_ICON_SIZE),
   },
 
   modalOverlay: {
@@ -778,7 +786,8 @@ let Styles = {
   deviceSelectText: {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
-    paddingLeft: OPTIONS_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
+    paddingLeft: DEVICES_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
+    marginVertical: StyleConstants.gutterSm,
   },
 };
 
