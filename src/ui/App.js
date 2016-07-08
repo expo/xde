@@ -1,4 +1,5 @@
 import {
+  Analytics,
   Android,
   Config,
   Env,
@@ -19,7 +20,8 @@ import bunyan from 'bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
 import { StyleRoot } from 'radium';
-import React from 'react';
+import React, {PropTypes} from 'react';
+import JsonFile from '@exponent/json-file';
 
 import {
   ModalEnum,
@@ -44,9 +46,12 @@ const OPTIONS_ICON_SIZE = 22;
 const DEVICES_ICON_SIZE = 16;
 
 class App extends React.Component {
+  static propTypes = {
+    amplitude: PropTypes.object,
+  };
 
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       logs: [],
       connectedDevices: {}, // mapping of device id -> {name, logs: array of logs}
@@ -68,6 +73,12 @@ class App extends React.Component {
     this._notificationTimeout = null;
     this._startTime = new Date();
     global._App = this;
+
+    if (props.amplitude && !process.env.XDE_NPM_START) {
+      Analytics.setInstance(props.amplitude, 'd7151cf53094d6492c5e085eeb4d8ac4');
+    }
+
+    this._setVersionAsync();
   }
 
   _renderTabs() {
@@ -178,6 +189,12 @@ class App extends React.Component {
   _onTogglePopover = (popover) => {
     const isAlreadyOpen = this.state.openPopover === popover;
     this.setState({openPopover: isAlreadyOpen ? null : popover});
+
+    if (!isAlreadyOpen) {
+      Analytics.logEvent('Open Popover', {
+        popover,
+      });
+    }
   };
 
   _closePopover = () => {
@@ -377,11 +394,16 @@ class App extends React.Component {
     });
   };
 
-  // async _versionStringAsync() {
-  //   let pkgJsonFile = new JsonFile(path.join(__dirname, '../../package.json'));
-  //   let versionString = await pkgJsonFile.getAsync('version');
-  //   return versionString;
-  // }
+  async _versionStringAsync() {
+    let pkgJsonFile = new JsonFile(path.join(__dirname, '../../package.json'));
+    let versionString = await pkgJsonFile.getAsync('version');
+    return versionString;
+  }
+
+  async _setVersionAsync() {
+    let version = await this._versionStringAsync();
+    Analytics.setVersionName(version);
+  }
 
   _showNotification(type, message, onClick) {
     // If there is already a notification showing, cancel its timeout.
@@ -465,12 +487,16 @@ class App extends React.Component {
   };
 
   _newClicked = () => {
+    Analytics.logEvent('Click New');
+
     this.setState({
       openModal: ModalEnum.NEW_PROJECT,
     });
   };
 
   _openClickedAsync = async () => {
+    Analytics.logEvent('Click Open');
+
     let root = await Commands.openExpAsync();
     if (root) {
       await this._runPackagerAsync(root);
@@ -478,6 +504,8 @@ class App extends React.Component {
   };
 
   _restartClickedAsync = async () => {
+    Analytics.logEvent('Click Restart');
+
     this._logInfo('Restarting project.');
     this.setState({
       isProjectRunning: false,
@@ -499,6 +527,8 @@ class App extends React.Component {
   };
 
   _sendClickedAsync = async (sendTo) => {
+    Analytics.logEvent('Click Send');
+
     this.setState({sendTo});
     let url_ = this.state.computedUrl;
     try {

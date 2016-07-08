@@ -1,12 +1,12 @@
 export const PopoverEnum = {
-  PROJECT: 1,
-  SEND_LINK: 2,
-  SIMULATOR: 3,
-  USER: 4,
-  OPTIONS: 5,
-  DEVICE_LOGS: 6,
+  PROJECT: 'Project',
+  SEND_LINK: 'Send Link',
+  DEVICE: 'Device',
+  USER: 'User',
+  OPTIONS: 'Options',
+  DEVICE_LOGS: 'Device Logs',
 };
 
 export const ModalEnum = {
-  NEW_PROJECT: 1,
+  NEW_PROJECT: 'New Project',
 };

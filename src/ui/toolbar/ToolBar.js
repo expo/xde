@@ -1,6 +1,7 @@
 import Radium from 'radium';
 import React, {PropTypes} from 'react';
 import {
+  Analytics,
   Android,
   FileSystem,
   Simulator,
@@ -135,7 +136,7 @@ export default class ToolBar extends React.Component {
     return (
       <div onClick={this._onMenuClick}>
         <input style={Styles.sendLinkInput}
-          ref={(r) => {this._sendLinkInput = r;}}
+          ref={(r) => { this._sendLinkInput = r; }}
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
@@ -146,7 +147,7 @@ export default class ToolBar extends React.Component {
   }
 
   _renderPopoverSimulator() {
-    if (this.props.openPopover !== PopoverEnum.SIMULATOR) {
+    if (this.props.openPopover !== PopoverEnum.DEVICE) {
       return null;
     }
     return (
@@ -242,7 +243,7 @@ export default class ToolBar extends React.Component {
             />
             <IconButton iconUrl="./IconPhone.png" label="Device" color="#383D40"
               isDisabled={!this.props.isProjectRunning}
-              onClick={this._getTogglePopoverFn(PopoverEnum.SIMULATOR)}
+              onClick={this._getTogglePopoverFn(PopoverEnum.DEVICE)}
               popover={this._renderPopoverSimulator()}
               isPopoverToLeft
             />
@@ -255,18 +256,24 @@ export default class ToolBar extends React.Component {
   // File system methods
 
   _onShowInFinderClick = () => {
+    Analytics.logEvent('Click Show in Finder');
+
     FileSystem.openFinderToFolderAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
 
   _onOpenInTerminalClick = () => {
+    Analytics.logEvent('Click Open in Terminal');
+
     FileSystem.openFolderInItermOrTerminalAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
 
   _onOpenInEditorClick = () => {
+    Analytics.logEvent('Click Open in Editor');
+
     FileSystem.openProjectInEditorAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });

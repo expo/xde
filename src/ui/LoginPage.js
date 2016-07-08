@@ -61,7 +61,7 @@ class LoginPage extends React.Component {
             value={this.state.username}
           />
           <input type="password" style={Styles.input}
-            ref={(r) => {this._passwordInput = r;}}
+            ref={(r) => { this._passwordInput = r; }}
             placeholder="password"
           />
           <button type="submit"
