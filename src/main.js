@@ -44,7 +44,12 @@ app.on('will-quit', async (event) => {
 
 app.on('ready', () => {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1100, height: 600});
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    // for windows. osx gets icon from post install task
+    icon: path.resolve(__dirname, '../web/xde.ico'),
+  });
   mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
 
   // Open the devtools.
@@ -54,7 +59,7 @@ app.on('ready', () => {
 
   // Setup the menu bar
   Menu.setupMenu();
-  if (!Env.isStaging() && !Env.isLocal()) {
+  if (!process.env.XDE_NPM_START) {
     mainWindow.setMenu(null);
   }
 
