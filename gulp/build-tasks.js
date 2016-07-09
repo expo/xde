@@ -9,7 +9,7 @@ const paths = {
   source: {
     js: 'src/**/*.js',
   },
-  build: 'build',
+  build: 'app/build',
 };
 
 let tasks = {

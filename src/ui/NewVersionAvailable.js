@@ -3,6 +3,7 @@ import React from 'react';
 
 import autobind from 'autobind-decorator';
 import { remote } from 'electron';
+import os from 'os';
 
 import Notification from './Notification';
 
@@ -72,7 +73,7 @@ class NewVersionAvailable extends React.Component {
 
     let version = app.getVersion();
     autoUpdater.setFeedURL(
-      `https://xde-updates.exponentjs.com/update/osx_64/${version}`
+      `https://xde-updates.exponentjs.com/update/${os.platform()}_${os.arch()}/${version}`
     );
     this._checkForUpdate();
   }

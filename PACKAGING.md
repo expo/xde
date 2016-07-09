@@ -4,6 +4,8 @@
 
 - Gulp CLI: We use Gulp 4, which requires the 4.0 branch of gulp-cli. Install this with `npm install -g gulpjs/gulp-cli#4.0`. It is compatible with Gulp 3 in case you have other projects with Gulpfiles.
 
+- Wine: Needed to build the Windows .exe file. Go here for instructions https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build
+
 Check out this repository and run `npm install`.
 
 ## Running XDE
@@ -26,7 +28,7 @@ The entry point loads `web/index.html` in the Chromium instance. This is a norma
 
     Make sure it gets installed in the login keychain, NOT the system keychain.
 
-2. run `npm run-script signed-package`
+2. run `npm run dist`
 
 3. Test the .app to make sure it works
 
