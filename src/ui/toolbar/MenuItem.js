@@ -76,12 +76,20 @@ export default class MenuItem extends React.Component {
         {this.props.checkState !== 'uncheckable' && this._renderCheck()}
         <div style={Styles.label}>{this.props.label}</div>
         {this.props.shortcut && (
-          <div style={Styles.shortcut}>⌘{this.props.shortcut}</div>
+          <div style={Styles.shortcut}>{this._metaKey()}{this.props.shortcut}</div>
         )}
         {isFlyoutMenu && <span>&#x25BA;</span>}
         {isFlyoutMenu && this.state.isHovered && this._renderFlyout()}
       </div>
     );
+  }
+
+  _metaKey() {
+    if (process.platform === 'darwin') {
+      return '⌘';
+    } else {
+      return 'Ctrl+';
+    }
   }
 }
 

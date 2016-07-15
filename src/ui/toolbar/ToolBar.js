@@ -50,7 +50,12 @@ export default class ToolBar extends React.Component {
   }
 
   _onKeyPress = (event) => {
-    if (event.metaKey) {
+    let metaKey = event.ctrlKey;
+    if (process.platform === 'darwin') {
+      metaKey = event.metaKey;
+    }
+
+    if (metaKey) {
       switch (event.key) {
         case 'n':
           event.preventDefault();
