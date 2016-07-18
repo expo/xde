@@ -32,10 +32,16 @@ export default class Popover extends React.Component {
       popoverStyle.right = this.props.popoverOffset;
       arrowStyle.right = this.props.arrowOffset;
       arrowFillStyle.right = this.props.arrowOffset + 1;
+      popoverStyle.left = null;
+      arrowStyle.left = null;
+      arrowFillStyle.left = null;
     } else {
       popoverStyle.left = this.props.popoverOffset;
       arrowStyle.left = this.props.arrowOffset;
       arrowFillStyle.left = this.props.arrowOffset + 1;
+      popoverStyle.right = null;
+      arrowStyle.right = null;
+      arrowFillStyle.right = null;
     }
 
     return (
