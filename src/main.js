@@ -59,10 +59,7 @@ if (!require('electron-squirrel-startup')) {
     }
 
     // Setup the menu bar
-    Menu.setupMenu();
-    if (!process.env.XDE_NPM_START) {
-      mainWindow.setMenu(null);
-    }
+    Menu.setupMenu(mainWindow);
 
     mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store windows

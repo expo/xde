@@ -1,38 +1,37 @@
-import { BrowserWindow, Menu } from 'electron';
+import {
+  BrowserWindow,
+  Menu,
+} from 'electron';
 
-function setupMenu() {
-  // return;
-  let template = [
-    // {
-    //   label: 'Bieber',
-    //   submenu: [
-    //     {
-    //       label: 'What do you do?',
-    //     },
-    //     {
-    //       label: 'Never say never',
-    //     },
-    //   ],
-    // },
+function _installShellCommands(window) {
+  if (process.platform === 'darwin') {
+    return [{
+      label: 'Install Shell Commands',
+      click: () => { window.webContents.send('menu-item-clicked', 'install-shell-commands'); },
+    },
     {
-      label: 'Electron',
+      type: 'separator',
+    }];
+  } else {
+    return [];
+  }
+}
+
+function setupMenu(window) {
+  let template = [
+    {
+      label: 'Exponent XDE',
       submenu: [
         {
-          label: 'About Electron',
+          label: 'About XDE',
           selector: 'orderFrontStandardAboutPanel:',
         },
         {
           type: 'separator',
         },
+        ..._installShellCommands(window),
         {
-          label: 'Services',
-          submenu: [],
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Hide Electron',
+          label: 'Hide XDE',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
@@ -99,12 +98,12 @@ function setupMenu() {
         {
           label: 'Reload',
           accelerator: 'Command+R',
-          click: function() { BrowserWindow.getFocusedWindow().reload(); },
+          click: () => { BrowserWindow.getFocusedWindow().reload(); },
         },
         {
           label: 'Toggle DevTools',
           accelerator: 'Alt+Command+I',
-          click: function() { BrowserWindow.getFocusedWindow().toggleDevTools(); },
+          click: () => { BrowserWindow.getFocusedWindow().toggleDevTools(); },
         },
       ],
     },
@@ -139,7 +138,6 @@ function setupMenu() {
 
   let menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
 }
 
 module.exports = {

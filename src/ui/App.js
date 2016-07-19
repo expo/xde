@@ -1,6 +1,7 @@
 import {
   Analytics,
   Android,
+  Binaries,
   Config,
   Env,
   Exp,
@@ -660,6 +661,10 @@ class App extends React.Component {
     }
 
     this._registerLogs();
+
+    ipcRenderer.on('menu-item-clicked', (event, item) => {
+      Binaries.installShellCommandsAsync();
+    });
   }
 
   componentWillUnmount() {
@@ -685,22 +690,28 @@ class App extends React.Component {
               this._showNotification('warning', 'Exponent app on iOS simulator is out of date. Click to upgrade.', async () => {
                 await Simulator.upgradeExponentOnSimulatorAsync();
               });
-              break;
+              return;
             case NotificationCode.OLD_ANDROID_APP_VERSION:
               this._showNotification('warning', 'Exponent app on Android device is out of date. Click to upgrade.', async () => {
                 await Android.upgradeExponentAsync();
               });
-              break;
+              return;
             case NotificationCode.START_LOADING:
               this.setState({
                 isLoading: true,
               });
-              break;
+              return;
             case NotificationCode.STOP_LOADING:
               this.setState({
                 isLoading: false,
               });
-              break;
+              return;
+          }
+
+          if (chunk.level <= bunyan.INFO) {
+            this._showNotification('info', chunk.msg);
+          } else {
+            this._showNotification('warning', chunk.msg);
           }
         },
       },
