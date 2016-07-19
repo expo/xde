@@ -29,9 +29,11 @@
     "promise-print": "^2.3.0",
     "radium": "^0.17.1",
     "react": "^15.1.0",
+    "react-addons-shallow-compare": "^15.2.1",
     "react-dom": "^15.1.0",
     "react-loading-indicator": "^0.2.0",
     "react-motion": "^0.4.4",
+    "react-virtualized": "^7.12.2",
     "tree-kill": "^1.1.0",
     "xdl": "0.8.1"
   }

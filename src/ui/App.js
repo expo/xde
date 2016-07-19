@@ -73,6 +73,9 @@ class App extends React.Component {
 
     this._notificationTimeout = null;
     this._startTime = new Date();
+    this._logsToAdd = [];
+    this._deviceLogsToAdd = [];
+    this._deviceIdToName = {};
     global._App = this;
 
     if (props.amplitude && !process.env.XDE_NPM_START) {
@@ -543,37 +546,84 @@ class App extends React.Component {
   };
 
   _appendLogChunk = (chunk) => {
-    this.setState({
-      logs: this.state.logs.concat([chunk]),
-    });
+    if (!chunk.shouldHide) {
+      this._logsToAdd.push(chunk);
+
+      requestAnimationFrame(() => {
+        if (this._logsToAdd.length === 0) {
+          return;
+        }
+
+        let logs = this.state.logs.concat(this._logsToAdd);
+        this._logsToAdd = [];
+        this.setState({
+          logs,
+        });
+      });
+    }
   };
 
   _logInfo = (data) => Project.logInfo(this.state.projectRoot, 'exponent', data);
   _logError = (data) => Project.logError(this.state.projectRoot, 'exponent', data);
+
+  // If multiple devices with the same name are connected, add ' - 1', ' - 2' to their names.
+  _getDeviceName = (id, name) => {
+    if (this._deviceIdToName[id]) {
+      return this._deviceIdToName[id];
+    }
+
+    if (!_.includes(_.values(this._deviceIdToName), name)) {
+      this._deviceIdToName[id] = name;
+      return name;
+    }
+
+    let number = 1;
+    while (_.includes(_.values(this._deviceIdToName), `${name} - ${number}`)) {
+      number++;
+    }
+
+    this._deviceIdToName[id] = `${name} - ${number}`;
+    return this._deviceIdToName[id];
+  }
+
   _handleDeviceLogs = (chunk) => {
-    this.setState((state) => {
-      let connectedDevices = state.connectedDevices;
-      let focusedConnectedDeviceId = state.focusedConnectedDeviceId;
-      if (!connectedDevices[chunk.deviceId]) {
-        if (!focusedConnectedDeviceId) {
-          focusedConnectedDeviceId = chunk.deviceId;
-        }
-        connectedDevices[chunk.deviceId] = {
-          name: chunk.deviceName,
-          logs: [{
-            level: bunyan.INFO,
-            msg: `Streaming logs from ${chunk.deviceName}...`,
-            time: new Date(),
-          }],
-        };
+    this._deviceLogsToAdd.push(chunk);
+
+    requestAnimationFrame(() => {
+      if (this._deviceLogsToAdd.length === 0) {
+        return;
       }
 
-      connectedDevices[chunk.deviceId].logs = connectedDevices[chunk.deviceId].logs.concat([chunk]);
+      this.setState((state) => {
+        let connectedDevices = state.connectedDevices;
+        let focusedConnectedDeviceId = state.focusedConnectedDeviceId;
 
-      return {
-        focusedConnectedDeviceId,
-        connectedDevices,
-      };
+        for (let i = 0; i < this._deviceLogsToAdd.length; i++) {
+          let chunk = this._deviceLogsToAdd[i];
+          if (!connectedDevices[chunk.deviceId]) {
+            let name = this._getDeviceName(chunk.deviceId, chunk.deviceName);
+            if (!focusedConnectedDeviceId) {
+              focusedConnectedDeviceId = chunk.deviceId;
+            }
+            connectedDevices[chunk.deviceId] = {
+              name,
+              logs: [{
+                level: bunyan.INFO,
+                msg: `Streaming logs from ${name}...`,
+                time: new Date(),
+              }],
+            };
+          }
+
+          connectedDevices[chunk.deviceId].logs = connectedDevices[chunk.deviceId].logs.concat([chunk]);
+        }
+        this._deviceLogsToAdd = [];
+
+        return {
+          focusedConnectedDeviceId,
+          connectedDevices,
+        };
+      });
     });
   }
 
