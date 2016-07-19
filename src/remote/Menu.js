@@ -3,11 +3,12 @@ import {
   Menu,
 } from 'electron';
 
-function _installShellCommands(window) {
+function _installShellCommands(window, isProjectOpen) {
   if (process.platform === 'darwin') {
     return [{
       label: 'Install Shell Commands',
       click: () => { window.webContents.send('menu-item-clicked', 'install-shell-commands'); },
+      enabled: isProjectOpen,
     },
     {
       type: 'separator',
@@ -17,7 +18,7 @@ function _installShellCommands(window) {
   }
 }
 
-function setupMenu(window) {
+function setupMenu(window, isProjectOpen) {
   let template = [
     {
       label: 'Exponent XDE',
@@ -29,7 +30,20 @@ function setupMenu(window) {
         {
           type: 'separator',
         },
-        ..._installShellCommands(window),
+        ..._installShellCommands(window, isProjectOpen),
+        {
+          label: 'Install Android App',
+          click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
+          enabled: isProjectOpen,
+        },
+        {
+          label: 'Install iOS Simulator App',
+          click: () => { window.webContents.send('menu-item-clicked', 'install-ios-simulator-app'); },
+          enabled: isProjectOpen,
+        },
+        {
+          type: 'separator',
+        },
         {
           label: 'Hide XDE',
           accelerator: 'Command+H',

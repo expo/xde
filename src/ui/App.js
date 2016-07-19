@@ -662,8 +662,18 @@ class App extends React.Component {
 
     this._registerLogs();
 
-    ipcRenderer.on('menu-item-clicked', (event, item) => {
-      Binaries.installShellCommandsAsync();
+    ipcRenderer.on('menu-item-clicked', async (event, item) => {
+      switch (item) {
+        case 'install-shell-commands':
+          await Binaries.installShellCommandsAsync();
+          break;
+        case 'install-android-app':
+          await Android.upgradeExponentAsync();
+          break;
+        case 'install-ios-simulator-app':
+          await Simulator.upgradeExponentAsync();
+          break;
+      }
     });
   }
 
@@ -688,7 +698,7 @@ class App extends React.Component {
           switch (chunk.code) {
             case NotificationCode.OLD_IOS_APP_VERSION:
               this._showNotification('warning', 'Exponent app on iOS simulator is out of date. Click to upgrade.', async () => {
-                await Simulator.upgradeExponentOnSimulatorAsync();
+                await Simulator.upgradeExponentAsync();
               });
               return;
             case NotificationCode.OLD_ANDROID_APP_VERSION:

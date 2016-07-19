@@ -25,6 +25,8 @@ if (!require('electron-squirrel-startup')) {
   ipcMain.on('project-opened', (event, projectRoot) => {
     console.log(`Opened project at ${projectRoot}`);
     projectRoots.push(projectRoot);
+
+    Menu.setupMenu(mainWindow, true);
   });
 
   app.on('window-all-closed', () => {
@@ -59,7 +61,7 @@ if (!require('electron-squirrel-startup')) {
     }
 
     // Setup the menu bar
-    Menu.setupMenu(mainWindow);
+    Menu.setupMenu(mainWindow, false);
 
     mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store windows
