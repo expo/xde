@@ -18,7 +18,7 @@ function _installShellCommands(window, isProjectOpen) {
   }
 }
 
-function _installIosSimulatorApp() {
+function _installIosSimulatorApp(window, isProjectOpen) {
   if (process.platform === 'darwin') {
     return [{
       label: 'Install iOS Simulator App',
@@ -48,7 +48,7 @@ function setupMenu(window, isProjectOpen) {
           click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
           enabled: isProjectOpen,
         },
-        ..._installIosSimulatorApp(),
+        ..._installIosSimulatorApp(window, isProjectOpen),
         {
           type: 'separator',
         },
