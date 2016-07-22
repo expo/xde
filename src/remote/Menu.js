@@ -18,6 +18,18 @@ function _installShellCommands(window, isProjectOpen) {
   }
 }
 
+function _installIosSimulatorApp() {
+  if (process.platform === 'darwin') {
+    return [{
+      label: 'Install iOS Simulator App',
+      click: () => { window.webContents.send('menu-item-clicked', 'install-ios-simulator-app'); },
+      enabled: isProjectOpen,
+    }];
+  } else {
+    return [];
+  }
+}
+
 function setupMenu(window, isProjectOpen) {
   let template = [
     {
@@ -36,11 +48,7 @@ function setupMenu(window, isProjectOpen) {
           click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
           enabled: isProjectOpen,
         },
-        {
-          label: 'Install iOS Simulator App',
-          click: () => { window.webContents.send('menu-item-clicked', 'install-ios-simulator-app'); },
-          enabled: isProjectOpen,
-        },
+        ..._installIosSimulatorApp(),
         {
           type: 'separator',
         },
