@@ -7,6 +7,7 @@
     "dist": "gulp build && build --mac --win"
   },
   "build": {
+    "asar": false,
     "appId": "host.exp.xde",
     "app-category-type": "public.app-category.developer-tools",
     "dmg": {
@@ -48,7 +49,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "cross-env": "^1.0.8",
-    "electron-builder": "^5.12.1",
+    "electron-builder": "5.12.1",
     "electron-packager": "^7.0.3",
     "electron-prebuilt": "^1.2.2",
     "eslint": "^2.12.0",
