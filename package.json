@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "gulp build && cross-env XDE_NPM_START=1 electron ./app",
+    "start": "printf \"\\e[35mPlease use the nightly builds in slack if you're an Exponent team member.\\e[0m\n\" && gulp build && cross-env XDE_NPM_START=1 electron ./app",
     "staging": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_STAGING=1 electron ./app",
     "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron ./app",
     "pack": "gulp build && build --mac --win --dir",
