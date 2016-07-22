@@ -5,6 +5,7 @@
     "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron ./app",
     "pack": "gulp build && build --mac --win --dir",
     "dist": "gulp build && build --mac --win",
+    "mac": "gulp build && build --mac",
     "win": "gulp build && build --win"
   },
   "build": {
