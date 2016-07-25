@@ -118,7 +118,7 @@ class NewProjectModal extends React.Component {
   }
 
   _onProjectNameChange = (event) => {
-    let newValue = IdentifierRules.normalizeWhileTyping(event.target.value);
+    let newValue = IdentifierRules.normalizeProjectNameWhileTyping(event.target.value);
     this.setState({projectName: newValue});
   };
 
