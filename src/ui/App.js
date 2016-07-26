@@ -9,6 +9,7 @@ import {
   NotificationCode,
   Project,
   ProjectSettings,
+  ProjectUtils,
   Simulator,
   UrlUtils,
   UserSettings,
@@ -563,8 +564,8 @@ class App extends React.Component {
     }
   };
 
-  _logInfo = (data) => Project.logInfo(this.state.projectRoot, 'exponent', data);
-  _logError = (data) => Project.logError(this.state.projectRoot, 'exponent', data);
+  _logInfo = (data) => ProjectUtils.logInfo(this.state.projectRoot, 'exponent', data);
+  _logError = (data) => ProjectUtils.logError(this.state.projectRoot, 'exponent', data);
 
   // If multiple devices with the same name are connected, add ' - 1', ' - 2' to their names.
   _getDeviceName = (id, name) => {
@@ -634,7 +635,7 @@ class App extends React.Component {
 
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
 
-    Project.attachLoggerStream(projectRoot, {
+    ProjectUtils.attachLoggerStream(projectRoot, {
       stream: {
         write: (chunk) => {
           if (chunk.tag === 'device') {
