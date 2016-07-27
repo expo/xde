@@ -38,6 +38,18 @@ export default class ConsoleLog extends React.Component {
     }
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    // When the loading indicator appears or is hidden, force a redraw.
+    let oldIsLoading = this.props.isLoading || this.props.logs.length === 0;
+    let newIsLoading = nextProps.isLoading || nextProps.logs.length === 0;
+    if (oldIsLoading !== newIsLoading && this._grid) {
+      requestAnimationFrame(() => {
+        this._cellMeasurer.resetMeasurements();
+        this._grid.recomputeGridSize();
+      });
+    }
+  }
+
   _logHasPadding = (index) => {
     let log = this.props.logs[index];
     return log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications';
@@ -132,6 +144,7 @@ export default class ConsoleLog extends React.Component {
         <AutoSizer>
           {({ height, width }) => (
             <CellMeasurer
+              ref={(ref) => { this._cellMeasurer = ref; }}
               cellRenderer={this._renderLog}
               columnCount={1}
               rowCount={numRows}

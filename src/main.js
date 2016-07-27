@@ -38,7 +38,12 @@ if (!require('electron-squirrel-startup')) {
     if (projectRoots.length > 0) {
       event.preventDefault();
 
-      await Promise.all(projectRoots.map(root => Project.stopAsync(root)));
+      try {
+        await Promise.all(projectRoots.map(root => Project.stopAsync(root)));
+      } catch (e) {
+        // not much we can do here
+        console.error(e.toString());
+      }
       projectRoots = [];
 
       app.quit();
