@@ -520,7 +520,7 @@ class App extends React.Component {
         await Project.startAsync(this.state.projectRoot);
         this._logInfo('Project opened.');
       } catch (err) {
-        this._logError(`Could not open project: ${err.toString()}`);
+        this._logError(err.message);
       }
 
       let computedUrl = await this._computeUrlAsync();
@@ -671,7 +671,7 @@ class App extends React.Component {
           expJson,
         });
       } catch (err) {
-        this._logError(`Could not open project: ${err.toString()}`);
+        this._logError(err.message);
       }
     });
   };

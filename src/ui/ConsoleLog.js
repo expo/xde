@@ -107,19 +107,24 @@ export default class ConsoleLog extends React.Component {
   }
 
   _renderLoading() {
-    return (
-      <StyleRoot style={Styles.loadingIndicator}>
-        <LoadingIndicator color={{red: 255, green: 255, blue: 255, alpha: 1}} />
-      </StyleRoot>
-    );
+    let isLoading = this.props.isLoading || this.props.logs.length === 0;
+
+    if (isLoading) {
+      return (
+        <StyleRoot style={Styles.loadingIndicator} key={-1}>
+          <LoadingIndicator color={{red: 255, green: 255, blue: 255, alpha: 1}} />
+        </StyleRoot>
+      );
+    } else {
+      return (
+        <div key={-2} />
+      );
+    }
   }
 
   render() {
-    let isLoading = this.props.isLoading || this.props.logs.length === 0;
-    let numRows = this.props.logs.length;
-    if (isLoading) {
-      numRows++;
-    }
+    // add extra row for loading container
+    let numRows = this.props.logs.length + 1;
 
     /* eslint-disable react/jsx-no-bind */
     return (
