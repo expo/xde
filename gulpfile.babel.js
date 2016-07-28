@@ -6,6 +6,9 @@ let tasks = {
   ...buildTasks,
 };
 
-gulp.task('build', tasks.babel);
-gulp.task('watch', gulp.series(tasks.babel, tasks.watchBabel));
+gulp.task('build', gulp.parallel(tasks.buildNativeModules, tasks.babel));
+gulp.task('watch', gulp.parallel(
+  tasks.buildNativeModules,
+  gulp.series(tasks.babel, tasks.watchBabel),
+));
 gulp.task('clean', tasks.clean);
