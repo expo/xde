@@ -64,7 +64,7 @@ if (!require('electron-squirrel-startup')) {
       width: 1200,
       height: 800,
       // for windows. osx gets icon from post install task
-      icon: path.resolve(__dirname, '../web/xde.ico'),
+      icon: path.resolve(__dirname, '../build/xde.ico'),
     });
     mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
 

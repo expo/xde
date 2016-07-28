@@ -10,6 +10,7 @@ import fs from 'fs';
 import gulp from 'gulp';
 import babel from 'gulp-babel';
 import changed from 'gulp-changed';
+import rename from 'gulp-rename';
 import sourcemaps from 'gulp-sourcemaps';
 import logger from 'gulplog';
 import path from 'path';
@@ -22,6 +23,7 @@ const paths = {
   },
   build: 'app/build',
   nodeModules: 'app/node_modules',
+  macIcon: 'build/icon.icns',
 };
 
 let tasks = {
@@ -59,6 +61,14 @@ let tasks = {
   watchBabel(done) {
     gulp.watch(paths.source.js, tasks.babel);
     done();
+  },
+
+  icon() {
+    let contentsPath = path.dirname(path.dirname(electronPrebuilt));
+    let resourcesPath = path.join(contentsPath, 'Resources');
+    return gulp.src(paths.macIcon)
+      .pipe(rename('electron.icns'))
+      .pipe(gulp.dest(resourcesPath));
   },
 
   clean(done) {
