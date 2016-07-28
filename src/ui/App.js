@@ -367,7 +367,7 @@ class App extends React.Component {
                   onAppendErrors={this._logError}
                   onAppendLogs={this._logInfo}
                   onLogOut={this._logOutAsync}
-                  onNewProjectClick={this._newClicked}
+                  onNewProjectClick={this._newClickedAsync}
                   onOpenProjectClick={this._openClickedAsync}
                   onCloseProjectClick={this._closeClickedAsync}
                   onPublishClick={this._publishClickedAsync}
@@ -500,8 +500,10 @@ class App extends React.Component {
     }
   };
 
-  _newClicked = () => {
+  _newClickedAsync = async () => {
     Analytics.logEvent('Click New');
+
+    await this._stopProjectAsync(this.state.projectRoot);
 
     this.setState({
       openModal: ModalEnum.NEW_PROJECT,
@@ -510,6 +512,8 @@ class App extends React.Component {
 
   _openClickedAsync = async () => {
     Analytics.logEvent('Click Open');
+
+    await this._stopProjectAsync(this.state.projectRoot);
 
     let root = await Commands.openExpAsync();
     if (root) {
@@ -715,6 +719,7 @@ class App extends React.Component {
 
     try {
       await Project.stopAsync(projectRoot);
+      this._logInfo('Project closed.');
       this.setState({
         projectSettings: null,
         projectRoot: null,
@@ -727,7 +732,6 @@ class App extends React.Component {
         focusedConnectedDeviceId: null,
       });
       this._resetLocalProperties();
-      this._logInfo('Project closed.');
 
       return true;
     } catch (err) {
