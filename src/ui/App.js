@@ -12,6 +12,7 @@ import {
   ProjectUtils,
   Simulator,
   UrlUtils,
+  User,
   UserSettings,
   Versions,
 } from 'xdl';
@@ -72,11 +73,9 @@ class App extends React.Component {
       expJson: null,
     };
 
+    this._resetLocalProperties();
     this._notificationTimeout = null;
-    this._startTime = new Date();
-    this._logsToAdd = [];
-    this._deviceLogsToAdd = [];
-    this._deviceIdToName = {};
+    this._currentOpenProjectXDEId = 0; // used to avoid logging old projects
     global._App = this;
 
     if (props.amplitude && !process.env.XDE_NPM_START) {
@@ -84,6 +83,13 @@ class App extends React.Component {
     }
 
     this._setVersionAsync();
+  }
+
+  _resetLocalProperties() {
+    this._startTime = new Date();
+    this._logsToAdd = [];
+    this._deviceLogsToAdd = [];
+    this._deviceIdToName = {};
   }
 
   _renderTabs() {
@@ -180,7 +186,7 @@ class App extends React.Component {
   }
 
   _runProject = (project) => {
-    this._runPackagerAsync(project.root).catch((error) => {
+    this._startProjectAsync(project.root).catch((error) => {
       this._logError(`Couldn't open Exp ${project.name}: ${error.toString()}`);
     });
   };
@@ -324,7 +330,7 @@ class App extends React.Component {
         return (
           <NewProjectModal
             onClose={this._closeModal}
-            onSelectProject={this._runPackagerAsync}
+            onSelectProject={this._startProjectAsync}
           />
         );
     }
@@ -336,8 +342,10 @@ class App extends React.Component {
     });
   }
 
-  _logOut = () => {
+  _logOutAsync = async () => {
     this.setState({user: null});
+    await this._stopProjectAsync(this.state.projectRoot);
+    await User.logoutAsync();
   };
 
   render() {
@@ -358,9 +366,10 @@ class App extends React.Component {
                   isProjectRunning={this.state.isProjectRunning}
                   onAppendErrors={this._logError}
                   onAppendLogs={this._logInfo}
-                  onLogOut={this._logOut}
+                  onLogOut={this._logOutAsync}
                   onNewProjectClick={this._newClicked}
                   onOpenProjectClick={this._openClickedAsync}
+                  onCloseProjectClick={this._closeClickedAsync}
                   onPublishClick={this._publishClickedAsync}
                   onRestartClick={this._restartClickedAsync}
                   onSendLinkClick={this._sendClickedAsync}
@@ -392,7 +401,7 @@ class App extends React.Component {
 
   _setProjectSettingAsync = async (options) => {
     let projectSettings = await ProjectSettings.setAsync(this.state.projectRoot, options);
-    let computedUrl = await this._computeUrlAsync();
+    let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
     this.setState({
       projectSettings,
       computedUrl,
@@ -504,8 +513,14 @@ class App extends React.Component {
 
     let root = await Commands.openExpAsync();
     if (root) {
-      await this._runPackagerAsync(root);
+      await this._startProjectAsync(root);
     }
+  };
+
+  _closeClickedAsync = async () => {
+    Analytics.logEvent('Click Close');
+
+    await this._stopProjectAsync(this.state.projectRoot);
   };
 
   _restartClickedAsync = async () => {
@@ -515,7 +530,8 @@ class App extends React.Component {
     this.setState({
       isProjectRunning: false,
     }, async () => {
-      // TODO: refactor this and _runPackagerAsync
+      // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
+      // because they rely on state.
       try {
         await Project.startAsync(this.state.projectRoot);
         this._logInfo('Project opened.');
@@ -628,16 +644,25 @@ class App extends React.Component {
     });
   }
 
-  _runPackagerAsync = async (projectRoot) => {
+  _startProjectAsync = async (projectRoot) => {
+    if (this.state.projectRoot) {
+      return false;
+    }
+
     if (!projectRoot) {
       throw new Error("Could not open project: empty root.");
     }
 
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
+    let xdeProjectId = this._currentOpenProjectXDEId;
 
     ProjectUtils.attachLoggerStream(projectRoot, {
       stream: {
         write: (chunk) => {
+          if (this._currentOpenProjectXDEId !== xdeProjectId) {
+            return;
+          }
+
           if (chunk.tag === 'device') {
             this._handleDeviceLogs(chunk);
           } else {
@@ -664,7 +689,7 @@ class App extends React.Component {
         let expJson = await Project.startAsync(projectRoot);
         this._logInfo('Project opened.');
 
-        let computedUrl = await this._computeUrlAsync();
+        let computedUrl = await this._computeUrlAsync(projectRoot);
         this.setState({
           computedUrl,
           isProjectRunning: true,
@@ -674,6 +699,42 @@ class App extends React.Component {
         this._logError(err.message);
       }
     });
+
+    return true;
+  };
+
+  _stopProjectAsync = async (projectRoot) => {
+    if (!this.state.projectRoot) {
+      return false;
+    }
+
+    this._currentOpenProjectXDEId++;
+
+    // Send projectRoot to main process.
+    ipcRenderer.send('project-closed', projectRoot);
+
+    try {
+      await Project.stopAsync(projectRoot);
+      this.setState({
+        projectSettings: null,
+        projectRoot: null,
+        projectJson: null,
+        computedUrl: null,
+        isProjectRunning: false,
+        expJson: null,
+        logs: [],
+        connectedDevices: {},
+        focusedConnectedDeviceId: null,
+      });
+      this._resetLocalProperties();
+      this._logInfo('Project closed.');
+
+      return true;
+    } catch (err) {
+      this._logError(err.message);
+
+      return false;
+    }
   };
 
   componentDidMount() {
@@ -707,7 +768,7 @@ class App extends React.Component {
         let openPath = path.resolve(process.env.XDE_CMD_LINE_CWD, args[0]);
 
         console.log("Open project at " + openPath);
-        this._runPackagerAsync(args[0]);
+        this._startProjectAsync(args[0]);
       }
     }
 
@@ -734,12 +795,12 @@ class App extends React.Component {
     }
   }
 
-  async _computeUrlAsync() {
-    if (!this.state.projectRoot || !this.state.projectSettings) {
+  async _computeUrlAsync(root) {
+    if (!root) {
       return null;
     }
 
-    return UrlUtils.constructManifestUrlAsync(this.state.projectRoot);
+    return UrlUtils.constructManifestUrlAsync(root);
   }
 
   _registerLogs() {

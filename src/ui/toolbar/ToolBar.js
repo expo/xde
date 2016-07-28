@@ -6,7 +6,6 @@ import {
   FileSystem,
   Simulator,
   UrlUtils,
-  User,
 } from 'xdl';
 
 import {PopoverEnum} from '../Constants';
@@ -36,6 +35,7 @@ export default class ToolBar extends React.Component {
     onLogOut: PropTypes.func,
     onNewProjectClick: PropTypes.func,
     onOpenProjectClick: PropTypes.func,
+    onCloseProjectClick: PropTypes.func,
     onPublishClick: PropTypes.func,
     onRestartClick: PropTypes.func,
     onSendLinkClick: PropTypes.func,
@@ -106,6 +106,10 @@ export default class ToolBar extends React.Component {
         <MenuItem label="Open Project" shortcut="O"
           onClick={this.props.onOpenProjectClick}
         />
+        <MenuItem label="Close Project"
+          isDisabled={!this.props.isProjectOpen}
+          onClick={this.props.onCloseProjectClick}
+        />
         <MenuSeparator />
         <MenuItem label="Show in Finder"
           isDisabled={!this.props.isProjectOpen}
@@ -173,7 +177,6 @@ export default class ToolBar extends React.Component {
 
   _onLogOutClick = async () => {
     try {
-      await User.logoutAsync();
       this.props.onLogOut();
     } catch (error) {
       console.error("logout error:", error);

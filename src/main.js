@@ -1,5 +1,6 @@
 import electron from 'electron';
 import path from 'path';
+import _ from 'lodash';
 
 import Menu from './remote/Menu';
 
@@ -27,6 +28,13 @@ if (!require('electron-squirrel-startup')) {
     projectRoots.push(projectRoot);
 
     Menu.setupMenu(mainWindow, true);
+  });
+
+  ipcMain.on('project-closed', (event, projectRoot) => {
+    console.log(`Closed project at ${projectRoot}`);
+    projectRoots = _.without(projectRoots, projectRoot);
+
+    Menu.setupMenu(mainWindow, false);
   });
 
   app.on('window-all-closed', () => {
