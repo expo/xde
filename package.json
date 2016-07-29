@@ -5,10 +5,10 @@
     "staging": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_STAGING=1 electron ./app",
     "lint": "eslint src",
     "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron ./app",
-    "pack": "gulp build && build --mac --win --dir",
-    "dist": "gulp build && build --mac --win",
-    "mac": "gulp build && build --mac",
-    "win": "gulp build && build --win"
+    "pack": "gulp build:deploy && build --mac --win --dir",
+    "dist": "gulp build:deploy && build --mac --win",
+    "mac": "gulp build:deploy && build --mac",
+    "win": "gulp build:deploy && build --win"
   },
   "build": {
     "asar": false,
