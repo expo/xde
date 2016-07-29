@@ -76,11 +76,17 @@ class LoginPage extends React.Component {
                   width: 15, height: 15, opacity: 0,
                 }}
                 />, // Purely for spacing
-                <div key="button-text" style={{flex: 1}}>Continue</div>,
+                <div key="button-text" style={{flex: 1}}>Sign in (or register)</div>,
                 <img key="button-icon" src="./arrow.svg" style={{width: 15, height: 15}} />,
               ]}
           </button>
         </form>
+
+        <p style={Styles.signInNote}>
+          If you don&#39;t have an account yet, just fill in your preferred
+          username and password above and we will create the account and sign
+          you in if the username is still available.
+        </p>
       </div>
     );
   }
@@ -151,6 +157,12 @@ let Styles = {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  signInNote: {
+    width: 350,
+    marginTop: 30,
+    color: '#ccc',
+    fontStyle: 'italic',
   },
   input: {
     ...SharedStyles.input,
