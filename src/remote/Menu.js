@@ -33,11 +33,76 @@ function _installIosSimulatorApp(window, isProjectOpen) {
 function setupMenu(window, isProjectOpen) {
   let template = [
     {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo',
+        },
+        {
+          role: 'redo',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'cut',
+        },
+        {
+          role: 'copy',
+        },
+        {
+          role: 'paste',
+        },
+        {
+          role: 'selectall',
+        },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => { BrowserWindow.getFocusedWindow().reload(); },
+        },
+        {
+          label: 'Toggle DevTools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+          click: () => { BrowserWindow.getFocusedWindow().toggleDevTools(); },
+        },
+      ],
+    },
+    {
+      label: 'Window',
+      role: 'window',
+      submenu: [
+        {
+          role: 'minimize',
+        },
+        {
+          role: 'close',
+        },
+      ],
+    },
+    {
+      label: 'Help',
+      role: 'help',
+      submenu: [
+        {
+          label: 'Exponent Documentation',
+          click: () => { require('electron').shell.openExternal('https://docs.getexponent.com/'); },
+        },
+      ],
+    },
+  ];
+
+  if (process.platform === 'darwin') {
+    template.unshift({
       label: 'Exponent XDE',
       submenu: [
         {
-          label: 'About XDE',
-          selector: 'orderFrontStandardAboutPanel:',
+          role: 'about',
         },
         {
           type: 'separator',
@@ -53,110 +118,67 @@ function setupMenu(window, isProjectOpen) {
           type: 'separator',
         },
         {
-          label: 'Hide XDE',
-          accelerator: 'Command+H',
-          selector: 'hide:',
-        },
-        {
-          label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
-          selector: 'hideOtherApplications:',
-        },
-        {
-          label: 'Show All',
-          selector: 'unhideAllApplications:',
+          role: 'services',
+          submenu: [],
         },
         {
           type: 'separator',
         },
         {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          selector: 'terminate:',
-        },
-      ],
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Undo',
-          accelerator: 'Command+Z',
-          selector: 'undo:',
+          role: 'hide',
         },
         {
-          label: 'Redo',
-          accelerator: 'Shift+Command+Z',
-          selector: 'redo:',
+          role: 'hideothers',
+        },
+        {
+          role: 'unhide',
         },
         {
           type: 'separator',
         },
         {
-          label: 'Cut',
-          accelerator: 'Command+X',
-          selector: 'cut:',
-        },
-        {
-          label: 'Copy',
-          accelerator: 'Command+C',
-          selector: 'copy:',
-        },
-        {
-          label: 'Paste',
-          accelerator: 'Command+V',
-          selector: 'paste:',
-        },
-        {
-          label: 'Select All',
-          accelerator: 'Command+A',
-          selector: 'selectAll:',
+          role: 'quit',
         },
       ],
-    },
-    {
-      label: 'View',
+    });
+    // Window menu.
+    template[3].submenu = [
+      {
+        label: 'Close',
+        accelerator: 'CmdOrCtrl+W',
+        role: 'close',
+      },
+      {
+        label: 'Minimize',
+        accelerator: 'CmdOrCtrl+M',
+        role: 'minimize',
+      },
+      {
+        label: 'Zoom',
+        role: 'zoom',
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Bring All to Front',
+        role: 'front',
+      },
+    ];
+  } else {
+    template.unshift({
+      label: 'Exponent XDE',
       submenu: [
+        ..._installShellCommands(window, isProjectOpen),
         {
-          label: 'Reload',
-          accelerator: 'Command+R',
-          click: () => { BrowserWindow.getFocusedWindow().reload(); },
+          label: 'Install Android App',
+          click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
+          enabled: isProjectOpen,
         },
-        {
-          label: 'Toggle DevTools',
-          accelerator: 'Alt+Command+I',
-          click: () => { BrowserWindow.getFocusedWindow().toggleDevTools(); },
-        },
+        ..._installIosSimulatorApp(window, isProjectOpen),
       ],
-    },
-    {
-      label: 'Window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'Command+M',
-          selector: 'performMiniaturize:',
-        },
-        {
-          label: 'Close',
-          accelerator: 'Command+W',
-          selector: 'performClose:',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Bring All to Front',
-          selector: 'arrangeInFront:',
-        },
-      ],
-    },
-    {
-      label: 'Help',
-      submenu: [],
-    },
-
-  ];
+    });
+  }
 
   let menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
