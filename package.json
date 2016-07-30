@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "printf \"\\e[35mPlease use the nightly builds in Slack if you're an Exponent team member.\\e[0m\n\" && gulp build && cross-env XDE_NPM_START=1 electron ./app",
+    "start": "gulp build && cross-env XDE_NPM_START=1 electron ./app",
     "staging": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_STAGING=1 electron ./app",
     "lint": "eslint src",
     "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron ./app",
