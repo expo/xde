@@ -1,3 +1,4 @@
+import Radium from 'radium';
 import React from 'react';
 
 import autobind from 'autobind-decorator';
@@ -11,6 +12,7 @@ const {
   autoUpdater,
 } = remote;
 
+@Radium
 class NewVersionAvailable extends React.Component {
   constructor(props, context) {
     super(props, context);

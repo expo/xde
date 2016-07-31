@@ -22,6 +22,7 @@ import _ from 'lodash';
 import bunyan from 'bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
+import { StyleRoot } from 'radium';
 import React, {PropTypes} from 'react';
 import JsonFile from '@exponent/json-file';
 
@@ -350,7 +351,7 @@ class App extends React.Component {
   render() {
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div onClick={this._closePopover}>
+      <StyleRoot onClick={this._closePopover}>
         <LoginPage loggedInAs={this.state.user}
           onLogin={(user) => { this.setState({user}); }}>
           <div style={Styles.container}>
@@ -393,7 +394,7 @@ class App extends React.Component {
             {this._renderModal()}
           </div>
         </div>}
-      </div>
+      </StyleRoot>
     );
     /* eslint-enable react/jsx-no-bind */
   }

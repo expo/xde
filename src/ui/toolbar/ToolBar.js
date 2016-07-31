@@ -1,3 +1,4 @@
+import Radium from 'radium';
 import React, {PropTypes} from 'react';
 import {
   Analytics,
@@ -16,6 +17,7 @@ import MenuItem from './MenuItem';
 import MenuSeparator from './MenuSeparator';
 import Popover from './Popover';
 
+@Radium
 export default class ToolBar extends React.Component {
   static propTypes = {
     isProjectOpen: PropTypes.bool,

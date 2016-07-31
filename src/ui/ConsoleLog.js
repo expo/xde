@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import bunyan from 'bunyan';
+import { StyleRoot } from 'radium';
 import LoadingIndicator from 'react-loading-indicator';
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
@@ -122,9 +123,9 @@ export default class ConsoleLog extends React.Component {
 
     if (isLoading) {
       return (
-        <div style={Styles.loadingIndicator} key={-1}>
+        <StyleRoot style={Styles.loadingIndicator} key={-1}>
           <LoadingIndicator color={{red: 255, green: 255, blue: 255, alpha: 1}} />
-        </div>
+        </StyleRoot>
       );
     } else {
       return (

@@ -1,8 +1,10 @@
+import Radium from 'radium';
 import React, {PropTypes} from 'react';
 
 import StyleConstants from '../StyleConstants';
 import Popover from './Popover';
 
+@Radium
 export default class IconButton extends React.Component {
   static propTypes = {
     color: PropTypes.string.isRequired,
