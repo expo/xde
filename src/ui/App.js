@@ -346,6 +346,7 @@ class App extends React.Component {
     this.setState({user: null});
     await this._stopProjectAsync(this.state.projectRoot);
     await User.logoutAsync();
+    bootIntercom();
   };
 
   render() {
@@ -353,7 +354,10 @@ class App extends React.Component {
     return (
       <StyleRoot onClick={this._closePopover}>
         <LoginPage loggedInAs={this.state.user}
-          onLogin={(user) => { this.setState({user}); }}>
+          onLogin={(user) => {
+            this.setState({user});
+            bootIntercom(user.username);
+          }}>
           <div style={Styles.container}>
             <NewVersionAvailable />
             <div>
@@ -772,6 +776,7 @@ class App extends React.Component {
         let openPath = path.resolve(process.env.XDE_CMD_LINE_CWD, args[0]);
 
         console.log("Open project at " + openPath);
+
         this._startProjectAsync(args[0]);
       }
     }
@@ -791,6 +796,16 @@ class App extends React.Component {
           break;
       }
     });
+
+
+    User.whoamiAsync().then((user) => {
+      if (user) {
+        bootIntercom(user.username);
+      } else {
+        bootIntercom(undefined);
+      }
+    });
+
   }
 
   componentWillUnmount() {
@@ -853,6 +868,15 @@ class App extends React.Component {
       type: 'raw',
     });
   }
+}
+
+function bootIntercom(user_id, otherData) {
+  window.Intercom('shutdown');
+  window.Intercom('boot', {
+    app_id: 'j3i1r6vl',
+    user_id,
+    ...otherData,
+  });
 }
 
 let Styles = {
@@ -962,5 +986,7 @@ global.cl = function(a, b, c) {
 global.ce = function(a, b, c) {
   console.error(a, b, c);
 };
+
+
 
 module.exports = App;
