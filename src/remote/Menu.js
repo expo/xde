@@ -63,7 +63,7 @@ function setupMenu(window, isProjectOpen) {
       submenu: [
         {
           label: 'Reload',
-          accelerator: 'CmdOrCtrl+R',
+          accelerator: 'CmdOrCtrl+Shift+R',
           click: () => { BrowserWindow.getFocusedWindow().reload(); },
         },
         {

@@ -66,6 +66,7 @@ export default class ToolBar extends React.Component {
           this.props.onOpenProjectClick();
           break;
         case 'p':
+        case 'r':
           event.preventDefault();
           if (this.props.isProjectOpen) {
             this.props.onRestartClick();
@@ -225,31 +226,46 @@ export default class ToolBar extends React.Component {
         <div style={Styles.separator} />
         <div style={Styles.row}>
           <div style={Styles.leftCol}>
-            <IconButton iconUrl="./IconBolt.png" label="Project" color="#8309e0"
+            <IconButton
+              iconUrl="./IconBolt.png"
+              label="Project"
+              color="#8309e0"
               onClick={this._getTogglePopoverFn(PopoverEnum.PROJECT)}
               popover={this._renderPopoverProject()}
               style={Styles.rightSpaced}
             />
-            <IconButton iconUrl="./IconArrowUp.png" label="Publish" color="#18B405"
-              isDisabled={!this.props.isProjectRunning}
-              onClick={this.props.onPublishClick}
-              style={Styles.rightSpaced}
-            />
-            <IconButton iconUrl="./IconRestart.png" label="Restart" color="#328CE9"
+            <IconButton
+              iconUrl="./IconRestart.png"
+              label="Restart"
+              color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
               onClick={this.props.onRestartClick}
               style={Styles.rightSpaced}
             />
           </div>
           <div style={Styles.rightCol}>
-            <IconButton iconUrl="./IconArrowRight.png" label="Send Link" color="#383D40"
+            <IconButton
+              iconUrl="./IconArrowUp.png"
+              label="Publish"
+              color="#18B405"
+              isDisabled={!this.props.isProjectRunning}
+              onClick={this.props.onPublishClick}
+              style={Styles.rightSpaced}
+            />
+            <IconButton
+              iconUrl="./IconArrowRight.png"
+              label="Send Link"
+              color="#383D40"
               isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.SEND_LINK)}
               popover={this._renderPopoverSendLink()}
               isPopoverToLeft
               style={Styles.rightSpaced}
             />
-            <IconButton iconUrl="./IconPhone.png" label="Device" color="#383D40"
+            <IconButton
+              iconUrl="./IconPhone.png"
+              label="Device"
+              color="#383D40"
               isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.DEVICE)}
               popover={this._renderPopoverSimulator()}
