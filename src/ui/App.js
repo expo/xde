@@ -5,6 +5,7 @@ import {
   Config,
   Env,
   Exp,
+  Intercom,
   Logger,
   NotificationCode,
   Project,
@@ -346,7 +347,7 @@ class App extends React.Component {
     this.setState({user: null});
     await this._stopProjectAsync(this.state.projectRoot);
     await User.logoutAsync();
-    bootIntercom();
+    Intercom.boot();
   };
 
   render() {
@@ -356,7 +357,7 @@ class App extends React.Component {
         <LoginPage loggedInAs={this.state.user}
           onLogin={(user) => {
             this.setState({user});
-            bootIntercom(user.username);
+            Intercom.boot(user.username);
           }}>
           <div style={Styles.container}>
             <NewVersionAvailable />
@@ -798,11 +799,14 @@ class App extends React.Component {
     });
 
 
+    // TODO: Avoid making this additional call to get the
+    // logged in user, when we could probably just get this
+    // info from xdl
     User.whoamiAsync().then((user) => {
       if (user) {
-        bootIntercom(user.username);
+        Intercom.boot(user.username);
       } else {
-        bootIntercom(undefined);
+        Intercom.boot(undefined);
       }
     });
 
@@ -868,15 +872,6 @@ class App extends React.Component {
       type: 'raw',
     });
   }
-}
-
-function bootIntercom(user_id, otherData) {
-  window.Intercom('shutdown');
-  window.Intercom('boot', {
-    app_id: 'j3i1r6vl',
-    user_id,
-    ...otherData,
-  });
 }
 
 let Styles = {
