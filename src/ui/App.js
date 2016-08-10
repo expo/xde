@@ -537,6 +537,7 @@ class App extends React.Component {
 
     this._logInfo('Restarting project.');
     this.setState({
+      computedUrl: null,
       isProjectRunning: false,
     }, async () => {
       // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
@@ -548,7 +549,7 @@ class App extends React.Component {
         this._logError(err.message);
       }
 
-      let computedUrl = await this._computeUrlAsync();
+      let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
       this.setState({
         computedUrl,
         isProjectRunning: true,
