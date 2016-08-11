@@ -541,7 +541,7 @@ class App extends React.Component {
       isProjectRunning: false,
     }, async () => {
       // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
-      // because they rely on state.
+      // because they rely on setState calls that work asynchronously.
       try {
         await Project.startAsync(this.state.projectRoot);
         this._logInfo('Project opened.');
