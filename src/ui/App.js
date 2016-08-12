@@ -378,6 +378,8 @@ class App extends React.Component {
                   onPublishClick={this._publishClickedAsync}
                   onRestartClick={this._restartClickedAsync}
                   onSendLinkClick={this._sendClickedAsync}
+                  onDocsClicked={this._docsClicked}
+                  onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
                   projectJson={this.state.projectJson}
@@ -403,6 +405,18 @@ class App extends React.Component {
     );
     /* eslint-enable react/jsx-no-bind */
   }
+
+  _docsClicked = () => {
+    if (this.state.expJson && this.state.expJson.sdkVersion) {
+      require('electron').shell.openExternal(`https://docs.getexponent.com/versions/v${this.state.expJson.sdkVersion}/`);
+    } else {
+      require('electron').shell.openExternal('https://docs.getexponent.com/');
+    }
+  };
+
+  _joinUsOnSlackClicked = () => {
+    require('electron').shell.openExternal('https://slack.exponentjs.com/');
+  };
 
   _setProjectSettingAsync = async (options) => {
     let projectSettings = await ProjectSettings.setAsync(this.state.projectRoot, options);

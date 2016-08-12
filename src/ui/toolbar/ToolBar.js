@@ -39,6 +39,8 @@ export default class ToolBar extends React.Component {
     onPublishClick: PropTypes.func,
     onRestartClick: PropTypes.func,
     onSendLinkClick: PropTypes.func,
+    onDocsClicked: PropTypes.func,
+    onJoinUsOnSlackClicked: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -148,6 +150,22 @@ export default class ToolBar extends React.Component {
         <MenuItem label="Open in Editor"
           isDisabled={!this.props.isProjectOpen}
           onClick={this._onOpenInEditorClick}
+        />
+      </div>
+    );
+  }
+
+  _renderPopoverHelp() {
+    if (this.props.openPopover !== PopoverEnum.HELP) {
+      return null;
+    }
+    return (
+      <div>
+        <MenuItem label="Exponent Docs"
+          onClick={this.props.onDocsClicked}
+        />
+        <MenuItem label="Join us on Slack"
+          onClick={this.props.onJoinUsOnSlackClicked}
         />
       </div>
     );
@@ -265,6 +283,14 @@ export default class ToolBar extends React.Component {
               color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
               onClick={this._restartClicked}
+              style={Styles.rightSpaced}
+            />
+            <IconButton
+              iconUrl="./IconHelp.png"
+              label="Help"
+              color="#383D40"
+              onClick={this._getTogglePopoverFn(PopoverEnum.HELP)}
+              popover={this._renderPopoverHelp()}
               style={Styles.rightSpaced}
             />
           </div>
