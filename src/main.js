@@ -63,6 +63,8 @@ if (!require('electron-squirrel-startup')) {
     mainWindow = new BrowserWindow({
       width: 1200,
       height: 800,
+      minWidth: 700,
+      minHeight: 500,
       // for windows. osx gets icon from post install task
       icon: path.resolve(__dirname, '../build/xde.ico'),
     });
