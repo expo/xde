@@ -21,20 +21,14 @@ export default class ConsoleLog extends React.Component {
   componentWillUpdate() {
     // Don't keep scrolling down, unless already scrolled to bottom.
     // From http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
-    let node = this._grid;
-    if (node && node._scrollingContainer) {
-      let element = ReactDOM.findDOMNode(node._scrollingContainer);
-      this.shouldScrollBottom = element.scrollTop + element.offsetHeight === element.scrollHeight;
-    }
+    const node = ReactDOM.findDOMNode(this);
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
   }
 
   componentDidUpdate() {
     if (this.shouldScrollBottom) {
-      let node = this._grid;
-      if (node && node._scrollingContainer) {
-        let element = ReactDOM.findDOMNode(node._scrollingContainer);
-        element.scrollTop = element.scrollHeight;
-      }
+      const node = ReactDOM.findDOMNode(this);
+      node.scrollTop = node.scrollHeight;
     }
   }
 
@@ -140,31 +134,8 @@ export default class ConsoleLog extends React.Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div style={Styles.container}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <CellMeasurer
-              ref={(ref) => { this._cellMeasurer = ref; }}
-              cellRenderer={this._renderLog}
-              columnCount={1}
-              rowCount={numRows}
-              width={width}>
-              {({ getRowHeight }) => (
-                <Grid
-                  ref={(ref) => { this._grid = ref; }}
-                  columnCount={1}
-                  columnWidth={width}
-                  width={width}
-                  height={height}
-                  rowCount={numRows}
-                  rowHeight={getRowHeight}
-                  cellRenderer={this._renderLog}
-                  style={Styles.logs}
-                />
-              )}
-            </CellMeasurer>
-          )}
-        </AutoSizer>
+      <div style={Styles.logs}>
+        {_.range(numRows).map(rowIndex => this._renderLog({rowIndex}))}
       </div>
     );
     /* eslint-enable react/jsx-no-bind */
@@ -172,18 +143,17 @@ export default class ConsoleLog extends React.Component {
 }
 
 const Styles = {
-  container: {
-    flex: '1 1 auto',
-  },
   logs: {
     background: StyleConstants.colorDarkBackground,
     fontSize: StyleConstants.fontSizeMd,
+    height: '100%',
+    overflowY: 'auto',
+    padding: StyleConstants.gutterLg,
+    flex: '1',
   },
   logContainer: {
     display: 'flex',
     flexDirection: 'row',
-    paddingLeft: StyleConstants.gutterLg,
-    paddingRight: StyleConstants.gutterLg,
   },
   log: {
     background: StyleConstants.colorDarkBackground,
