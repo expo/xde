@@ -3,6 +3,7 @@ import {
   Android,
   Binaries,
   Config,
+  Doctor,
   Env,
   Exp,
   Intercom,
@@ -72,6 +73,7 @@ class App extends React.Component {
       isLoading: false,
       openModal: null,
       expJson: null,
+      exponentSdkStatus: Doctor.EXPONENT_SDK_INSTALLED_AND_IMPORTED,
     };
 
     this._resetLocalProperties();
@@ -154,18 +156,38 @@ class App extends React.Component {
     );
   }
 
-  _renderDeviceLogs() {
+  _defaultDeviceLogs = () => {
+    let logs = [{
+      level: bunyan.INFO,
+      msg: `Logs from devices will appear here`,
+      time: this._startTime,
+    }];
+
+    if (this.state.exponentSdkStatus === Doctor.EXPONENT_SDK_NOT_INSTALLED) {
+      logs.push({
+        level: bunyan.WARN,
+        msg: `Please run \`npm install --save exponent\` and add \`import 'exponent'\` to the top of your main file to see device logs.`,
+        time: this._startTime,
+      });
+    } else if (this.state.exponentSdkStatus === Doctor.EXPONENT_SDK_NOT_IMPORTED) {
+      logs.push({
+        level: bunyan.WARN,
+        msg: `Add \`import 'exponent'\` to the top of your main file to see device logs.`,
+        time: this._startTime,
+      });
+    }
+
+    return logs;
+  };
+
+  _renderDeviceLogs = () => {
     let {
       connectedDevices,
       focusedConnectedDeviceId,
     } = this.state;
 
     let device = focusedConnectedDeviceId ? connectedDevices[focusedConnectedDeviceId] : null;
-    let logs = device ? device.logs : [{
-      level: bunyan.INFO,
-      msg: `Logs from devices will appear here`,
-      time: this._startTime,
-    }];
+    let logs = device ? device.logs : this._defaultDeviceLogs();
     return (
       <div style={Styles.tabContainer}>
         <ConsoleLog logs={logs} />
@@ -184,7 +206,7 @@ class App extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 
   _runProject = (project) => {
     this._startProjectAsync(project.root).catch((error) => {
@@ -564,8 +586,10 @@ class App extends React.Component {
       }
 
       let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
+      let exponentSdkStatus = await Doctor.getExponentSdkStatus(this.state.projectRoot);
       this.setState({
         computedUrl,
+        exponentSdkStatus,
         isProjectRunning: true,
       });
     });
@@ -714,10 +738,12 @@ class App extends React.Component {
         this._logInfo('Project opened.');
 
         let computedUrl = await this._computeUrlAsync(projectRoot);
+        let exponentSdkStatus = await Doctor.getExponentSdkStatus(projectRoot);
         this.setState({
           computedUrl,
           isProjectRunning: true,
           expJson,
+          exponentSdkStatus,
         });
       } catch (err) {
         this._logError(err.message);
