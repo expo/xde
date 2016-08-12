@@ -2,6 +2,8 @@ import React, {PropTypes} from 'react';
 
 import StyleConstants from './StyleConstants';
 
+let MAX_LENGTH = 150;
+
 export default class Notification extends React.Component {
   static propTypes = {
     type: PropTypes.oneOf(['success', 'error', 'warning']),
@@ -30,13 +32,19 @@ export default class Notification extends React.Component {
         break;
     }
 
+    let message = this.props.message;
+    if (message.length > MAX_LENGTH) {
+      message = `${message.substring(0, MAX_LENGTH)}...`;
+    }
+
     return (
-      <div style={{
-        ...Styles.container,
-        backgroundColor: color,
-        cursor: this.props.onClick ? 'pointer' : 'default',
-      }} onClick={this._onClick}>
-        {this.props.message}
+      <div
+        style={{
+          ...Styles.container,
+          backgroundColor: color,
+          cursor: this.props.onClick ? 'pointer' : 'default',
+        }} onClick={this._onClick}>
+        {message}
       </div>
     );
   }
