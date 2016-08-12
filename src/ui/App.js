@@ -532,10 +532,10 @@ class App extends React.Component {
     await this._stopProjectAsync(this.state.projectRoot);
   };
 
-  _restartClickedAsync = async () => {
+  _restartClickedAsync = async (reset = true) => {
     Analytics.logEvent('Click Restart');
 
-    this._logInfo('Restarting project.');
+    this._logInfo(`Restarting project${(reset ? ' and clearing packager cache (Hold shift while clicking restart to avoid clearing cache).' : '.')}`);
     this.setState({
       computedUrl: null,
       isProjectRunning: false,
@@ -543,7 +543,7 @@ class App extends React.Component {
       // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
       // because they rely on setState calls that work asynchronously.
       try {
-        await Project.startAsync(this.state.projectRoot);
+        await Project.startAsync(this.state.projectRoot, { reset });
         this._logInfo('Project opened.');
       } catch (err) {
         this._logError(err.message);

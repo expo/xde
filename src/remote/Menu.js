@@ -63,7 +63,7 @@ function setupMenu(window, isProjectOpen) {
       submenu: [
         {
           label: 'Reload',
-          accelerator: 'CmdOrCtrl+Shift+R',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+R' : 'Ctrl+Shift+R',
           click: () => { BrowserWindow.getFocusedWindow().reload(); },
         },
         {

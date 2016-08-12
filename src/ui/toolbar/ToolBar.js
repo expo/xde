@@ -41,19 +41,32 @@ export default class ToolBar extends React.Component {
     onSendLinkClick: PropTypes.func,
   };
 
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      shiftSelected: false,
+    };
+  }
+
   componentDidMount() {
-    document.body.addEventListener('keydown', this._onKeyPress);
+    document.body.addEventListener('keydown', this._onKeyDown);
+    document.body.addEventListener('keyup', this._onKeyUp);
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('keydown', this._onKeyPress);
+    document.body.removeEventListener('keydown', this._onKeyDown);
+    document.body.removeEventListener('keyup', this._onKeyUp);
   }
 
-  _onKeyPress = (event) => {
+  _onKeyDown = (event) => {
     let metaKey = event.ctrlKey;
     if (process.platform === 'darwin') {
       metaKey = event.metaKey;
     }
+
+    this.setState({
+      shiftSelected: !!event.shiftKey,
+    });
 
     if (metaKey) {
       switch (event.key) {
@@ -69,7 +82,13 @@ export default class ToolBar extends React.Component {
         case 'r':
           event.preventDefault();
           if (this.props.isProjectOpen) {
-            this.props.onRestartClick();
+            this.props.onRestartClick(true);
+          }
+          break;
+        case 'R':
+          event.preventDefault();
+          if (this.props.isProjectOpen) {
+            this.props.onRestartClick(false);
           }
           break;
         case 'i':
@@ -87,6 +106,12 @@ export default class ToolBar extends React.Component {
       }
     }
   };
+
+  _onKeyUp = (event) => {
+    this.setState({
+      shiftSelected: !!event.shiftKey,
+    });
+  }
 
   _getTogglePopoverFn = (popover) => {
     return (event) => {
@@ -239,7 +264,7 @@ export default class ToolBar extends React.Component {
               label="Restart"
               color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
-              onClick={this.props.onRestartClick}
+              onClick={this._restartClicked}
               style={Styles.rightSpaced}
             />
           </div>
@@ -275,6 +300,11 @@ export default class ToolBar extends React.Component {
         </div>
       </div>
     );
+  }
+
+  _restartClicked = () => {
+    let reset = !this.state.shiftSelected;
+    this.props.onRestartClick(reset);
   }
 
   // File system methods
