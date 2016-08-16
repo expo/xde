@@ -1,7 +1,7 @@
 # xde [![Slack](http://slack.exponentjs.com/badge.svg)](http://slack.exponentjs.com)
-The Exponent Development Environment - Beta release
+The Exponent Development Environment
 
-We recommend you download [our latest release here](https://github.com/exponentjs/xde/releases/latest).
+Download the latest version of [XDE for macOS (stable)](https://xde-updates.exponentjs.com/download/mac) or [XDE for Windows (alpha)](https://xde-updates.exponentjs.com/download/win32).
 
 ## Making a New Project
 
