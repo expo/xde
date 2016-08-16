@@ -37,13 +37,13 @@
           if (frame) {
             let intercomContainer = frame.contentDocument.querySelector('#intercom-container');
             if (intercomContainer) {
-              intercomContainer.style.opacity = 0.2;
+              intercomContainer.style.opacity = 0.5;
               intercomContainer.onmouseover = function () {
                 intercomContainer.style.transition = 'opacity 0.2s';
                 intercomContainer.style.opacity = 1.0;
               };
               intercomContainer.onmouseout = function () {
-                intercomContainer.style.opacity = 0.2;
+                intercomContainer.style.opacity = 0.5;
               };
               clearInterval(intercomStyleInterval);
             }
