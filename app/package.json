@@ -35,6 +35,6 @@
     "react-motion": "^0.4.4",
     "react-virtualized": "^7.12.2",
     "tree-kill": "^1.1.0",
-    "xdl": "0.17.4"
+    "xdl": "0.17.5"
   }
 }
