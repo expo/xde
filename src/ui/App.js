@@ -49,6 +49,7 @@ import ToolBar from './toolbar/ToolBar';
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
 const DEVICES_ICON_SIZE = 16;
+const PROJECT_OPENED_MESSAGE = 'Project opened! You can now use the "Send Link" or "Device" buttons to view your project.';
 
 class App extends React.Component {
   static propTypes = {
@@ -579,7 +580,7 @@ class App extends React.Component {
       // because they rely on setState calls that work asynchronously.
       try {
         await Project.startAsync(this.state.projectRoot, { reset });
-        this._logInfo('Project opened.');
+        this._logInfo(PROJECT_OPENED_MESSAGE);
       } catch (err) {
         this._logError(err.message);
       }
@@ -734,7 +735,7 @@ class App extends React.Component {
     }, async () => {
       try {
         let expJson = await Project.startAsync(projectRoot);
-        this._logInfo('Project opened.');
+        this._logInfo(PROJECT_OPENED_MESSAGE);
 
         let computedUrl = await this._computeUrlAsync(projectRoot);
         let exponentSdkStatus = await Doctor.getExponentSdkStatus(projectRoot);
