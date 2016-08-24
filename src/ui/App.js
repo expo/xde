@@ -82,7 +82,7 @@ class App extends React.Component {
     global._App = this;
 
     if (props.amplitude && !process.env.XDE_NPM_START) {
-      Analytics.setInstance(props.amplitude, 'd7151cf53094d6492c5e085eeb4d8ac4');
+      Analytics.setAmplitudeInstance(props.amplitude, 'd7151cf53094d6492c5e085eeb4d8ac4');
     }
 
     this._setVersionAsync();
