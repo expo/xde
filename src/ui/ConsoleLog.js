@@ -4,11 +4,6 @@ import { StyleRoot } from 'radium';
 import LoadingIndicator from 'react-loading-indicator';
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-import {
-  AutoSizer,
-  CellMeasurer,
-  Grid,
-} from 'react-virtualized';
 
 import StyleConstants from './StyleConstants';
 
@@ -104,10 +99,15 @@ export default class ConsoleLog extends React.Component {
       paddingLeft = log.groupDepth * 20;
     }
 
+    let otherStyles = {};
+    if (message.includes('Project opened!')) {
+      otherStyles = Styles.bigLog;
+    }
+
     return (
       <div key={index} style={{...Styles.logContainer, paddingTop, paddingBottom}}>
         <span style={Styles.logTime}>{time}</span>
-        <pre style={{...Styles.log, ...logStyle, paddingLeft}}>{message}</pre>
+        <pre style={{...Styles.log, ...logStyle, paddingLeft, ...otherStyles}}>{message}</pre>
       </div>
     );
   }
@@ -158,6 +158,9 @@ const Styles = {
   log: {
     background: StyleConstants.colorDarkBackground,
     whiteSpace: 'pre-wrap',
+  },
+  bigLog: {
+    fontSize: StyleConstants.fontSizeLg,
   },
   logDebug: {
     color: StyleConstants.colorDebug,
