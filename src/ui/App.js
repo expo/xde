@@ -369,7 +369,6 @@ class App extends React.Component {
     this.setState({user: null});
     await this._stopProjectAsync(this.state.projectRoot);
     await User.logoutAsync();
-    Intercom.boot();
   };
 
   render() {
@@ -379,7 +378,6 @@ class App extends React.Component {
         <LoginPage loggedInAs={this.state.user}
           onLogin={(user) => {
             this.setState({user});
-            Intercom.boot(user.username);
           }}>
           <div style={Styles.container}>
             <NewVersionAvailable />
@@ -838,19 +836,6 @@ class App extends React.Component {
           break;
       }
     });
-
-
-    // TODO: Avoid making this additional call to get the
-    // logged in user, when we could probably just get this
-    // info from xdl
-    User.whoamiAsync().then((user) => {
-      if (user) {
-        Intercom.boot(user.username);
-      } else {
-        Intercom.boot(undefined);
-      }
-    });
-
   }
 
   componentWillUnmount() {
