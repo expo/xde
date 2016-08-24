@@ -456,6 +456,7 @@ class App extends React.Component {
   async _setVersionAsync() {
     let version = await this._versionStringAsync();
     Analytics.setVersionName(version);
+    Intercom.setVersionName(version);
   }
 
   _showNotification(type, message, onClick) {
