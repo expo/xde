@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 import {Motion, spring} from 'react-motion';
+import Radium from 'radium';
 import {User} from 'xdl';
 
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
 import * as IdentifierRules from '../IdentifierRules';
 
+@Radium
 class LoginPage extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -30,13 +32,7 @@ class LoginPage extends React.Component {
     if (this.state.isLoadingUser) {
       return null;
     }
-    return (
-      <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
-        {(value) => <div style={{opacity: value.x}}>
-          {this.props.loggedInAs ? this.props.children : this._renderLoggedOut()}
-        </div>}
-      </Motion>
-    );
+    return this.props.loggedInAs ? this.props.children : this._renderLoggedOut();
   }
 
   _renderErrors() {
@@ -47,14 +43,10 @@ class LoginPage extends React.Component {
     }
   }
 
-  _renderLoggedOut() {
+  _renderUsernamePasswordForm() {
     return (
-      <div style={Styles.container}>
-        <img src="./ExponentLogoCircle.png" style={Styles.icon} />
-        <form name="login"
-          style={Styles.form}
-          onSubmit={this._onSubmitLogin}>
-          {this._renderErrors()}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ width: 270 }}>
           <input type="text" style={Styles.input} ref="username"
             onChange={this._onUsernameChange}
             placeholder="username"
@@ -64,7 +56,7 @@ class LoginPage extends React.Component {
             ref={(r) => { this._passwordInput = r; }}
             placeholder="password"
           />
-          <button type="submit"
+          <button key="signInButton" type="submit"
             block
             bsStyle="primary"
             disabled={this.state.isLoggingIn}
@@ -76,17 +68,45 @@ class LoginPage extends React.Component {
                   width: 15, height: 15, opacity: 0,
                 }}
                 />, // Purely for spacing
-                <div key="button-text" style={{flex: 1}}>Sign in (or register)</div>,
+                <div key="button-text" style={{flex: 1}}>Sign In</div>,
                 <img key="button-icon" src="./arrow.svg" style={{width: 15, height: 15}} />,
               ]}
           </button>
-        </form>
+        </div>
+        <div style={{ width: 270, marginTop: 20, display: 'flex', flex: 1, flexDirection: 'row', }}>
+          <p style={{ fontSize: 12, color: StyleConstants.colorText, display: 'flex', flex: 1, flexGrow: 2 }}>Forgot your password?</p>
+          <p style={{ fontSize: 12, color: StyleConstants.colorText, display: 'flex', flex: 1, justifyContent: 'flex-end' }}>Register</p>
+        </div>
+      </div>
+    )
+  }
 
-        <p style={Styles.signInNote}>
-          If you don&#39;t have an account yet, just fill in your preferred
-          username and password above and we will create the account and sign
-          you in if the username is still available.
+  _renderSocialLoginForm() {
+    return (
+      <div style={{ flex: 1, marginBottom: 20, }}>
+        <div style={Styles.socialLoginButtons}>
+          <a key="fb" href="javascript:;" style={[Styles.socialLoginButton, Styles.facebookButton]} />
+          <a key="github" href="javascript:;" style={[Styles.socialLoginButton, Styles.githubButton]} />
+          <a key="google" href="javascript:;" style={[Styles.socialLoginButton, Styles.googleButton]} />
+        </div>
+        <p style={Styles.separator}>
+          or
         </p>
+      </div>
+    )
+  }
+
+  _renderLoggedOut() {
+    return (
+      <div style={Styles.container}>
+        <img src="./ExponentLogoTrans.png" style={Styles.icon} />
+        <form name="login"
+          style={Styles.form}
+          onSubmit={this._onSubmitLogin}>
+          {this._renderErrors()}
+          {this._renderSocialLoginForm()}
+          {this._renderUsernamePasswordForm()}
+        </form>
       </div>
     );
   }
@@ -139,15 +159,19 @@ let Styles = {
     left: 0,
   },
   form: {
-    width: 250,
+    width: 550,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   icon: {
-    height: 100,
-    width: 100,
-    marginBottom: 40,
+    height: 125,
+    width: 125,
+    marginBottom: 60,
   },
   button: {
     backgroundColor: StyleConstants.colorPrimary,
+    opacity: .9,
     border: 'none',
     borderRadius: 5,
     color: 'white',
@@ -157,6 +181,16 @@ let Styles = {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    transition: 'opacity .5s ease',
+    ':hover': {
+      opacity: 1,
+    }
+  },
+  registerButton: {
+    marginTop: 15,
+    backgroundColor: StyleConstants.colorLightBackground,
+    color: 'black',
+    opacity: .85,
   },
   signInNote: {
     width: 350,
@@ -170,6 +204,57 @@ let Styles = {
     display: 'block',
     width: '100%',
     marginBottom: 20,
+  },
+
+  // social login
+  separator: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    height: 12,
+    marginTop: 20,
+    marginBottom: 10,
+    width: '100%',
+    color: 'rgba(0,0,0,.55)',
+  },
+
+  socialLoginButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+
+  socialLoginButton: {
+    display: 'flex',
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    backgroundColor: 'transparent',
+    backgroundSize: '100%',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
+    width: 45,
+    height: 45,
+    borderRadius: '100%',
+    transition: 'opacity .5s ease',
+    opacity: .85,
+    ':hover': {
+      opacity: 1,
+    }
+  },
+
+  facebookButton: {
+    backgroundImage: 'url(./facebook.png)',
+    backgroundColor: 'rgba(62, 92, 151, 1.0)',
+  },
+
+  githubButton: {
+    backgroundImage: 'url(./github.png)',
+    backgroundColor: 'rgba(54, 54, 54, 1.0)',
+  },
+
+  googleButton: {
+    backgroundImage: 'url(./google-plus.png)',
+    backgroundColor: 'rgba(201, 76, 56, 1.0)',
   },
 };
 
