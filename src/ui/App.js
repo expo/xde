@@ -578,8 +578,9 @@ class App extends React.Component {
     }, async () => {
       // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
       // because they rely on setState calls that work asynchronously.
+      let expJson;
       try {
-        await Project.startAsync(this.state.projectRoot, { reset });
+        expJson = await Project.startAsync(this.state.projectRoot, { reset });
         this._logInfo(PROJECT_OPENED_MESSAGE);
       } catch (err) {
         this._logError(err.message);
@@ -589,8 +590,9 @@ class App extends React.Component {
       let exponentSdkStatus = await Doctor.getExponentSdkStatus(this.state.projectRoot);
       this.setState({
         computedUrl,
-        exponentSdkStatus,
         isProjectRunning: true,
+        expJson,
+        exponentSdkStatus,
       });
     });
   };
