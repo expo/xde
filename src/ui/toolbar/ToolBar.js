@@ -71,7 +71,7 @@ export default class ToolBar extends React.Component {
     });
 
     if (metaKey) {
-      switch (event.key) {
+      switch (event.key.toLowerCase()) {
         case 'n':
           event.preventDefault();
           this.props.onNewProjectClick();
@@ -81,16 +81,9 @@ export default class ToolBar extends React.Component {
           this.props.onOpenProjectClick();
           break;
         case 'p':
-        case 'r':
           event.preventDefault();
           if (this.props.isProjectOpen) {
             this.props.onRestartClick(true);
-          }
-          break;
-        case 'R':
-          event.preventDefault();
-          if (this.props.isProjectOpen) {
-            this.props.onRestartClick(false);
           }
           break;
         case 'i':
