@@ -1950,7 +1950,7 @@ radium@^0.17.1:
     exenv "^1.2.0"
     inline-style-prefixer "^1.0.3"
     rimraf "^2.4.0"
-radium@latest:
+radium@^0.18.1:
   version "0.18.1"
   resolved radium-0.18.1.tgz#a01db9b4c6e6364de3b02d5976adf28d0b98351d
   dependencies:
