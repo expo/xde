@@ -568,10 +568,18 @@ class App extends React.Component {
     await this._stopProjectAsync(this.state.projectRoot);
   };
 
-  _restartClickedAsync = async (reset = true) => {
+  _restartClickedAsync = async (isShiftSelected = false) => {
     Analytics.logEvent('Click Restart');
 
-    this._logInfo(`Restarting project${(reset ? ' and clearing packager cache (Hold shift while clicking restart to avoid clearing cache).' : '.')}`);
+    let clearCacheByDefault = await UserSettings.getAsync('clearCacheByDefault', true);
+    let reset = clearCacheByDefault ? !isShiftSelected : isShiftSelected;
+
+    let shiftMessage = '';
+    if (!isShiftSelected) {
+      shiftMessage = clearCacheByDefault ? ' (Hold shift while clicking restart to avoid clearing cache)' : ' (Hold shift while clicking restart to clear packager cache)';
+    }
+
+    this._logInfo(`Restarting project${(reset ? ' and clearing packager cache' : '')}${shiftMessage}.`);
     this.setState({
       computedUrl: null,
       isProjectRunning: false,

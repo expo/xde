@@ -83,7 +83,7 @@ export default class ToolBar extends React.Component {
         case 'p':
           event.preventDefault();
           if (this.props.isProjectOpen) {
-            this.props.onRestartClick(true);
+            this.props.onRestartClick(!!event.shiftKey);
           }
           break;
         case 'i':
@@ -335,8 +335,7 @@ export default class ToolBar extends React.Component {
   }
 
   _restartClicked = () => {
-    let reset = !this.state.shiftSelected;
-    this.props.onRestartClick(reset);
+    this.props.onRestartClick(this.state.shiftSelected);
   }
 
   // File system methods
