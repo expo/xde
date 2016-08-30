@@ -65,8 +65,6 @@ class LoginPage extends React.Component {
             placeholder="password"
           />
           <button type="submit"
-            block
-            bsStyle="primary"
             disabled={this.state.isLoggingIn}
             style={Styles.button}>
             {this.state.isLoggingIn ?
