@@ -131,21 +131,34 @@ export default class ToolBar extends React.Component {
           isDisabled={!this.props.isProjectOpen}
           onClick={this.props.onCloseProjectClick}
         />
-        <MenuSeparator />
-        <MenuItem label="Show in Finder"
-          isDisabled={!this.props.isProjectOpen}
-          onClick={this._onShowInFinderClick}
-        />
-        <MenuItem label="Open in Terminal"
-          isDisabled={!this.props.isProjectOpen}
-          onClick={this._onOpenInTerminalClick}
-        />
-        <MenuItem label="Open in Editor"
-          isDisabled={!this.props.isProjectOpen}
-          onClick={this._onOpenInEditorClick}
-        />
+        {this._renderOpenLinks()}
       </div>
     );
+  }
+
+  _renderOpenLinks() {
+    if (process.platform === 'darwin' || process.platform === 'win32') {
+      return (
+        <div>
+          <MenuSeparator />
+          <MenuItem label={FileSystem.openFolderName()}
+            isDisabled={!this.props.isProjectOpen}
+            onClick={this._onShowInFinderClick}
+          />
+          <MenuItem label={FileSystem.openConsoleName()}
+            isDisabled={!this.props.isProjectOpen}
+            onClick={this._onOpenInTerminalClick}
+          />
+          {process.platform === 'darwin' ?
+            <MenuItem label="Open in Editor"
+              isDisabled={!this.props.isProjectOpen}
+              onClick={this._onOpenInEditorClick}
+            /> : null}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 
   _renderPopoverHelp() {
@@ -331,7 +344,7 @@ export default class ToolBar extends React.Component {
   _onShowInFinderClick = () => {
     Analytics.logEvent('Click Show in Finder');
 
-    FileSystem.openFinderToFolderAsync(this.props.projectRoot).catch((err) => {
+    FileSystem.openFolderAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
@@ -339,7 +352,7 @@ export default class ToolBar extends React.Component {
   _onOpenInTerminalClick = () => {
     Analytics.logEvent('Click Open in Terminal');
 
-    FileSystem.openFolderInItermOrTerminalAsync(this.props.projectRoot).catch((err) => {
+    FileSystem.openConsoleAsync(this.props.projectRoot).catch((err) => {
       console.error(err);
     });
   };
