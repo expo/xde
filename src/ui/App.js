@@ -452,7 +452,7 @@ class App extends React.Component {
       uploadLogs: true,
     });
     Intercom.trackEvent('diagnostics', deviceInfo);
-    Intercom.showNewMessage(`Please explain what went wrong and we'll look at your diagnostics report:`);
+    Intercom.showNewMessage(`Please explain what went wrong and we'll look at your diagnostics report: `);
     Logger.notifications.info('Uploaded report!');
   }
 
