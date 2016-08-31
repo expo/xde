@@ -6,7 +6,7 @@ let MAX_LENGTH = 150;
 
 export default class Notification extends React.Component {
   static propTypes = {
-    type: PropTypes.oneOf(['success', 'error', 'warning']),
+    type: PropTypes.oneOf(['success', 'error', 'warning', 'info']),
     message: PropTypes.string.isRequired,
     onClick: PropTypes.func,
   };

@@ -3,6 +3,7 @@ import {
   Android,
   Binaries,
   Config,
+  Diagnostics,
   Doctor,
   Env,
   Exp,
@@ -401,6 +402,7 @@ class App extends React.Component {
                   onSendLinkClick={this._sendClickedAsync}
                   onDocsClicked={this._docsClicked}
                   onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
+                  onSendDiagnosticsReportClicked={this._sendDiagnosticsReportClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
                   projectJson={this.state.projectJson}
@@ -439,6 +441,16 @@ class App extends React.Component {
     require('electron').shell.openExternal('https://slack.exponentjs.com/');
   };
 
+  _sendDiagnosticsReportClicked = async () => {
+    Logger.notifications.info({indefinite: true}, 'Generating diagnostics report...');
+    let deviceInfo = await Diagnostics.getDeviceInfoAsync({
+      uploadLogs: true,
+    });
+    Intercom.trackEvent('diagnostics', deviceInfo);
+    Intercom.showNewMessage(`Please explain what went wrong and we'll look at your diagnostics report:`);
+    Logger.notifications.info('Uploaded report!');
+  }
+
   _setProjectSettingAsync = async (options) => {
     let projectSettings = await ProjectSettings.setAsync(this.state.projectRoot, options);
     let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
@@ -460,7 +472,7 @@ class App extends React.Component {
     Intercom.setVersionName(version);
   }
 
-  _showNotification(type, message, onClick) {
+  _showNotification(type, message, options, onClick) {
     // If there is already a notification showing, cancel its timeout.
     if (this._notificationTimeout) {
       clearTimeout(this._notificationTimeout);
@@ -477,10 +489,13 @@ class App extends React.Component {
       message,
       onClick: clearnNotificationOnClick,
     }});
-    this._notificationTimeout = setTimeout(() => {
-      this._notificationTimeout = null;
-      this.setState({notification: null});
-    }, NOTIFICATION_TIMEOUT_MS);
+
+    if (!options.indefinite) {
+      this._notificationTimeout = setTimeout(() => {
+        this._notificationTimeout = null;
+        this.setState({notification: null});
+      }, NOTIFICATION_TIMEOUT_MS);
+    }
   }
 
   _clearNotification() {
@@ -870,12 +885,12 @@ class App extends React.Component {
         write: (chunk) => {
           switch (chunk.code) {
             case NotificationCode.OLD_IOS_APP_VERSION:
-              this._showNotification('warning', 'Exponent app on iOS simulator is out of date. Click to upgrade.', async () => {
+              this._showNotification('warning', 'Exponent app on iOS simulator is out of date. Click to upgrade.', {}, async () => {
                 await Simulator.upgradeExponentAsync();
               });
               return;
             case NotificationCode.OLD_ANDROID_APP_VERSION:
-              this._showNotification('warning', 'Exponent app on Android device is out of date. Click to upgrade.', async () => {
+              this._showNotification('warning', 'Exponent app on Android device is out of date. Click to upgrade.', {}, async () => {
                 await Android.upgradeExponentAsync();
               });
               return;
@@ -891,10 +906,13 @@ class App extends React.Component {
               return;
           }
 
+          let notificationOptions = {
+            indefinite: !!chunk.indefinite,
+          };
           if (chunk.level <= bunyan.INFO) {
-            this._showNotification('info', chunk.msg);
+            this._showNotification('info', chunk.msg, notificationOptions);
           } else {
-            this._showNotification('warning', chunk.msg);
+            this._showNotification('warning', chunk.msg, notificationOptions);
           }
         },
       },
