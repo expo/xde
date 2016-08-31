@@ -41,6 +41,7 @@ export default class ToolBar extends React.Component {
     onSendLinkClick: PropTypes.func,
     onDocsClicked: PropTypes.func,
     onJoinUsOnSlackClicked: PropTypes.func,
+    onChatWithUsOnIntercomClicked: PropTypes.func,
     onSendDiagnosticsReportClicked: PropTypes.func,
   };
 
@@ -173,6 +174,9 @@ export default class ToolBar extends React.Component {
         />
         <MenuItem label="Join us on Slack"
           onClick={this.props.onJoinUsOnSlackClicked}
+        />
+        <MenuItem label="Chat with us on Intercom"
+          onClick={this.props.onChatWithUsOnIntercomClicked}
         />
         <MenuItem label="Send Diagnostics Report"
           onClick={this.props.onSendDiagnosticsReportClicked}

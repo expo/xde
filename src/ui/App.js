@@ -402,6 +402,7 @@ class App extends React.Component {
                   onSendLinkClick={this._sendClickedAsync}
                   onDocsClicked={this._docsClicked}
                   onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
+                  onChatWithUsOnIntercomClicked={this._chatWithUsOnIntercomClicked}
                   onSendDiagnosticsReportClicked={this._sendDiagnosticsReportClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
@@ -439,6 +440,10 @@ class App extends React.Component {
 
   _joinUsOnSlackClicked = () => {
     require('electron').shell.openExternal('https://slack.exponentjs.com/');
+  };
+
+  _chatWithUsOnIntercomClicked = () => {
+    Intercom.showNewMessage();
   };
 
   _sendDiagnosticsReportClicked = async () => {
