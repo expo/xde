@@ -72,12 +72,10 @@ class NewProjectModal extends React.Component {
         <div style={Styles.buttonsContainer}>
           <button onClick={this._onClickCancel}
             type="button"
-            block
             style={Styles.cancelButton}>
             <div key="button-text" style={{flex: 1}}>Cancel</div>
           </button>
           <button type="submit"
-            block
             style={Styles.submitButton}>
             <div key="button-text" style={{flex: 1}}>Create</div>
           </button>

@@ -12,6 +12,8 @@ const {
   autoUpdater,
 } = remote;
 
+const NOTIFICATION_TIMEOUT_MS = 5000;
+
 @Radium
 class NewVersionAvailable extends React.Component {
   constructor(props, context) {
@@ -112,6 +114,10 @@ class NewVersionAvailable extends React.Component {
       isChecking: false,
       isDownloading: false,
     });
+
+    setTimeout(() => {
+      this.setState({isVisible: false});
+    }, NOTIFICATION_TIMEOUT_MS);
   }
 
   @autobind
