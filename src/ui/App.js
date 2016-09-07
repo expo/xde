@@ -189,22 +189,29 @@ class App extends React.Component {
     } = this.state;
 
     let device = focusedConnectedDeviceId ? connectedDevices[focusedConnectedDeviceId] : null;
-    let logs = device ? device.logs : this._defaultDeviceLogs();
+    let logs = (device && device.logs.length) ? device.logs : this._defaultDeviceLogs();
     return (
       <div style={Styles.tabContainer}>
         <ConsoleLog logs={logs} />
-        <div>
-          {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
-            <img
-              src="./SelectUpDown.png"
-              style={[Styles.iconWithMargin, Styles.deviceSelectIcon]}
-              onClick={this._toggleDeviceLogsPopover}
-            />
-          </Popover>
-          }
-          <span style={Styles.deviceSelectText}>
-            {device ? device.name : 'No devices connected'}
-          </span>
+        <div style={Styles.tabBottomBar}>
+          <div style={{flex: 1}}>
+            {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
+              <img
+                src="./SelectUpDown.png"
+                style={[Styles.iconWithMargin, Styles.deviceSelectIcon]}
+                onClick={this._toggleDeviceLogsPopover}
+              />
+            </Popover>
+            }
+            <span style={Styles.deviceSelectText}>
+              {device ? device.name : 'No devices connected'}
+            </span>
+          </div>
+          <div style={Styles.tabBottomBarRight}>
+            <a style={Styles.clearLogButton} onClick={this._onClickClearLogs}>
+              Clear Logs
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -640,6 +647,17 @@ class App extends React.Component {
     }
   };
 
+  _onClickClearLogs = () => {
+    let {
+      connectedDevices,
+      focusedConnectedDeviceId,
+    } = this.state;
+
+    if (focusedConnectedDeviceId && connectedDevices[focusedConnectedDeviceId]) {
+      connectedDevices[focusedConnectedDeviceId].logs = [];
+    }
+  };
+
   _appendLogChunk = (chunk) => {
     if (!chunk.shouldHide) {
       this._logsToAdd.push(chunk);
@@ -1027,11 +1045,31 @@ let Styles = {
     height: '100%',
   },
 
+  tabBottomBar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
   deviceSelectText: {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
     paddingLeft: DEVICES_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
     marginVertical: StyleConstants.gutterSm,
+  },
+
+  tabBottomBarRight: {
+    flex: 1,
+    textAlign: 'right',
+    paddingRight: StyleConstants.gutterMd,
+    marginVertical: StyleConstants.gutterSm,
+  },
+
+  clearLogButton: {
+    cursor: 'pointer',
+    fontSize: StyleConstants.fontSizeSm,
+    color: StyleConstants.colorText,
+    textDecoration: 'none',
   },
 };
 
