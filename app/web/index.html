@@ -38,6 +38,7 @@
             let intercomContainer = frame.contentDocument.querySelector('#intercom-container');
             if (intercomContainer) {
               intercomContainer.style.opacity = 0.5;
+              frame.style.transform = 'translate(0, -24px)';
               intercomContainer.onmouseover = function () {
                 intercomContainer.style.transition = 'opacity 0.2s';
                 intercomContainer.style.opacity = 1.0;
