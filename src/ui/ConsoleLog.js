@@ -156,8 +156,8 @@ export default class ConsoleLog extends React.Component {
             {bottomBarContent}
           </div>
           <div style={Styles.bottomBarRight}>
-            <a style={Styles.clearLogButton} onClick={this.props.onClickClearLogs}>
-              Clear Logs
+            <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
+              <img src="./IconTrash.png" style={Styles.clearButton} />
             </a>
           </div>
         </div>
@@ -229,11 +229,16 @@ const Styles = {
     paddingRight: StyleConstants.gutterLg,
     marginVertical: StyleConstants.gutterSm,
   },
-  clearLogButton: {
+  clearButtonLink: {
     cursor: 'pointer',
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
     textDecoration: 'none',
+  },
+  clearButton: {
+    maxHeight: 14,
+    maxWidth: 14,
+    margin: 4,
   },
 };
 
