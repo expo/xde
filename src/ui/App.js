@@ -114,7 +114,15 @@ class App extends React.Component {
   }
 
   _renderPackagerConsole() {
-    return <ConsoleLog logs={this.state.logs} isLoading={this.state.isLoading} />;
+    return (
+      <div style={Styles.tabContainer}>
+        <ConsoleLog
+          logs={this.state.logs}
+          isLoading={this.state.isLoading}
+          onClickClearLogs={this._onClickClearLogs}
+        />
+      </div>
+    );
   }
 
   _toggleDeviceLogsPopover = (event) => {
@@ -192,30 +200,32 @@ class App extends React.Component {
     let logs = (device && device.logs.length) ? device.logs : this._defaultDeviceLogs();
     return (
       <div style={Styles.tabContainer}>
-        <ConsoleLog logs={logs} />
-        <div style={Styles.tabBottomBar}>
-          <div style={{flex: 1}}>
-            {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
-              <img
-                src="./SelectUpDown.png"
-                style={[Styles.iconWithMargin, Styles.deviceSelectIcon]}
-                onClick={this._toggleDeviceLogsPopover}
-              />
-            </Popover>
-            }
-            <span style={Styles.deviceSelectText}>
-              {device ? device.name : 'No devices connected'}
-            </span>
-          </div>
-          <div style={Styles.tabBottomBarRight}>
-            <a style={Styles.clearLogButton} onClick={this._onClickClearLogs}>
-              Clear Logs
-            </a>
-          </div>
-        </div>
+        <ConsoleLog
+          logs={logs}
+          bottomBarContent={this._renderDeviceSwitcher(device)}
+          onClickClearLogs={this._onClickClearDeviceLogs}
+        />
       </div>
     );
   };
+
+  _renderDeviceSwitcher = (device) => {
+    return (
+      <div>
+        {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
+          <img
+            src="./SelectUpDown.png"
+            style={[Styles.iconWithMargin, Styles.deviceSelectIcon]}
+            onClick={this._toggleDeviceLogsPopover}
+          />
+        </Popover>
+        }
+        <span style={Styles.deviceSelectText}>
+          {device ? device.name : 'No devices connected'}
+        </span>
+      </div>
+    );
+  }
 
   _runProject = (project) => {
     this._startProjectAsync(project.root).catch((error) => {
@@ -647,7 +657,7 @@ class App extends React.Component {
     }
   };
 
-  _onClickClearLogs = () => {
+  _onClickClearDeviceLogs = () => {
     let {
       connectedDevices,
       focusedConnectedDeviceId,
@@ -657,6 +667,10 @@ class App extends React.Component {
       connectedDevices[focusedConnectedDeviceId].logs = [];
     }
   };
+
+  _onClickClearLogs = () => {
+    this.setState({ logs: [] });
+  }
 
   _appendLogChunk = (chunk) => {
     if (!chunk.shouldHide) {
@@ -1045,31 +1059,11 @@ let Styles = {
     height: '100%',
   },
 
-  tabBottomBar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
   deviceSelectText: {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
     paddingLeft: DEVICES_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
     marginVertical: StyleConstants.gutterSm,
-  },
-
-  tabBottomBarRight: {
-    flex: 1,
-    textAlign: 'right',
-    paddingRight: StyleConstants.gutterMd,
-    marginVertical: StyleConstants.gutterSm,
-  },
-
-  clearLogButton: {
-    cursor: 'pointer',
-    fontSize: StyleConstants.fontSizeSm,
-    color: StyleConstants.colorText,
-    textDecoration: 'none',
   },
 };
 

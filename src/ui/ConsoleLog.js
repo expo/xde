@@ -11,19 +11,25 @@ export default class ConsoleLog extends React.Component {
   static propTypes = {
     isLoading: PropTypes.bool,
     logs: PropTypes.arrayOf(PropTypes.object),
+    bottomBarContent: PropTypes.node,
+    onClickClearLogs: PropTypes.func,
   };
 
   componentWillUpdate() {
     // Don't keep scrolling down, unless already scrolled to bottom.
     // From http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
-    const node = ReactDOM.findDOMNode(this);
-    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+    const node = this._scrollContainerRef;
+    if (node) {
+      this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+    }
   }
 
   componentDidUpdate() {
     if (this.shouldScrollBottom) {
-      const node = ReactDOM.findDOMNode(this);
-      node.scrollTop = node.scrollHeight;
+      const node = this._scrollContainerRef;
+      if (node) {
+        node.scrollTop = node.scrollHeight;
+      }
     }
   }
 
@@ -132,10 +138,29 @@ export default class ConsoleLog extends React.Component {
     // add extra row for loading container
     let numRows = this.props.logs.length + 1;
 
+    let { bottomBarContent } = this.props;
+    if (!bottomBarContent) {
+      bottomBarContent = (<div />);
+    }
+
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div style={Styles.logs}>
-        {_.range(numRows).map(rowIndex => this._renderLog({rowIndex}))}
+      <div style={Styles.container}>
+        <div
+          style={Styles.logs}
+          ref={(c) => { this._scrollContainerRef = c; }}>
+          {_.range(numRows).map(rowIndex => this._renderLog({rowIndex}))}
+        </div>
+        <div style={Styles.bottomBar}>
+          <div style={Styles.bottomBarLeft}>
+            {bottomBarContent}
+          </div>
+          <div style={Styles.bottomBarRight}>
+            <a style={Styles.clearLogButton} onClick={this.props.onClickClearLogs}>
+              Clear Logs
+            </a>
+          </div>
+        </div>
       </div>
     );
     /* eslint-enable react/jsx-no-bind */
@@ -143,6 +168,11 @@ export default class ConsoleLog extends React.Component {
 }
 
 const Styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
   logs: {
     background: StyleConstants.colorDarkBackground,
     fontSize: StyleConstants.fontSizeMd,
@@ -183,6 +213,27 @@ const Styles = {
   loadingIndicator: {
     paddingLeft: StyleConstants.gutterLg,
     paddingTop: StyleConstants.gutterLg,
+  },
+  bottomBar: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 24,
+    display: 'flex',
+  },
+  bottomBarLeft: {
+    flex: 1,
+  },
+  bottomBarRight: {
+    flex: 1,
+    textAlign: 'right',
+    paddingRight: StyleConstants.gutterLg,
+    marginVertical: StyleConstants.gutterSm,
+  },
+  clearLogButton: {
+    cursor: 'pointer',
+    fontSize: StyleConstants.fontSizeSm,
+    color: StyleConstants.colorText,
+    textDecoration: 'none',
   },
 };
 
