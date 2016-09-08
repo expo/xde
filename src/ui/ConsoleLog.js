@@ -3,7 +3,6 @@ import bunyan from 'bunyan';
 import { StyleRoot } from 'radium';
 import LoadingIndicator from 'react-loading-indicator';
 import React, {PropTypes} from 'react';
-import ReactDOM from 'react-dom';
 
 import StyleConstants from './StyleConstants';
 
@@ -35,8 +34,8 @@ export default class ConsoleLog extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     // When the loading indicator appears or is hidden, force a redraw.
-    let oldIsLoading = this.props.isLoading || this.props.logs.length === 0;
-    let newIsLoading = nextProps.isLoading || nextProps.logs.length === 0;
+    let oldIsLoading = this.props.isLoading;
+    let newIsLoading = nextProps.isLoading;
     if (oldIsLoading !== newIsLoading && this._grid) {
       requestAnimationFrame(() => {
         this._cellMeasurer.resetMeasurements();
@@ -119,7 +118,7 @@ export default class ConsoleLog extends React.Component {
   }
 
   _renderLoading() {
-    let isLoading = this.props.isLoading || this.props.logs.length === 0;
+    let { isLoading } = this.props;
 
     if (isLoading) {
       return (
