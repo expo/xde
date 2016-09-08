@@ -13,20 +13,17 @@ async function showOpenDialog(opts) {
 }
 
 module.exports = {
-  async newExpAsync(name) {
+  async getDirectoryAsync(currentDirectory) {
     let selections = await showOpenDialog({
+      defaultPath: currentDirectory,
       properties: ['openDirectory', 'createDirectory'],
     });
 
     if (selections == null) {
-      console.log("No selections; cancelled New Exp");
       return null;
     }
 
-    let selectedDir = selections[0];
-    let root = await Exp.createNewExpAsync(selectedDir, {}, {name});
-
-    return root;
+    return selections[0];
   },
 
   async openExpAsync() {

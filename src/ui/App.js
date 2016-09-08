@@ -620,6 +620,7 @@ class App extends React.Component {
     this.setState({
       computedUrl: null,
       isProjectRunning: false,
+      isLoading: true,
     }, async () => {
       // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
       // because they rely on setState calls that work asynchronously.
@@ -638,6 +639,7 @@ class App extends React.Component {
         isProjectRunning: true,
         expJson,
         exponentSdkStatus,
+        isLoading: false,
       });
     });
   };
@@ -794,6 +796,7 @@ class App extends React.Component {
       projectRoot,
       projectJson,
       isProjectRunning: false,
+      isLoading: true,
     }, async () => {
       try {
         let expJson = await Project.startAsync(projectRoot);
@@ -806,6 +809,7 @@ class App extends React.Component {
           isProjectRunning: true,
           expJson,
           exponentSdkStatus,
+          isLoading: false,
         });
       } catch (err) {
         this._logError(err.message);

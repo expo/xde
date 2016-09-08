@@ -1,8 +1,13 @@
 import {
+  Api,
+  Exp,
   Logger,
   NotificationCode,
+  UserSettings,
 } from 'xdl';
 
+import _ from 'lodash';
+import os from 'os';
 import React, { PropTypes } from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 
@@ -11,15 +16,20 @@ import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
 import * as IdentifierRules from '../IdentifierRules';
 
+const ICON_SIZE = 120;
+
 class NewProjectModal extends React.Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      isLoading: false,
-      projectName: '',
+      isLoading: true,
+      projectName: 'my-new-project',
+      projectDirectory: null,
       errorMessage: null,
       loadingMessage: null,
+      templates: null,
+      selectedTemplate: null,
     };
   }
 
@@ -43,6 +53,20 @@ class NewProjectModal extends React.Component {
       },
       type: 'raw',
     });
+
+    this._loadTemplatesAsync();
+  }
+
+  _loadTemplatesAsync = async () => {
+    let versions = await Api.versionsAsync();
+    let dir = await UserSettings.getAsync('defaultNewProjectDir', os.homedir());
+
+    this.setState({
+      isLoading: false,
+      templates: versions.templates,
+      selectedTemplate: versions.templates[0],
+      projectDirectory: dir,
+    });
   }
 
   render() {
@@ -53,22 +77,69 @@ class NewProjectModal extends React.Component {
     );
   }
 
-  _renderForm() {
+  _selectTemplate = (template) => {
+    this.setState({
+      selectedTemplate: template,
+    });
+  }
+
+  _renderTemplate = (template) => {
+    let isSelected = this.state.selectedTemplate.id === template.id;
+
+    return (
+      <div
+        key={template.id}
+        style={{...Styles.templateContainer,
+          background: isSelected ? StyleConstants.colorPrimary : StyleConstants.colorLightBackground,
+        }}
+        onClick={() => this._selectTemplate(template)}>
+        <img src={template.iconUrl} style={Styles.icon} />
+        <div style={{...Styles.mediumText, color: isSelected ? 'white' : StyleConstants.colorText}}>
+          {template.name}
+        </div>
+      </div>
+    );
+  }
+
+  _renderForm = () => {
+    let { templates, selectedTemplate } = this.state;
+
+    if (!templates) {
+      return (
+        <div />
+      );
+    }
+
     return (
       <form name="newProject"
         style={Styles.form}
         onSubmit={this._onSubmitNewProject}>
         <div style={Styles.largeText}>
-          Choose a Project Name
+          Choose a template for your project:
         </div>
-        <div style={Styles.smallText}>
-          XDE will create a new directory with this name.
+        <div style={Styles.templatesContainer}>
+          <div style={{minWidth: 'min-content', display:'flex'}}>
+            {_.map(templates, this._renderTemplate)}
+          </div>
         </div>
-        {this._renderErrors()}
-        <input autoFocus type="text" style={Styles.input} ref="projectName"
+        <div style={Styles.mediumText}>
+          {selectedTemplate.description}
+        </div>
+
+        <div style={{...Styles.largeText, marginTop: StyleConstants.gutterLg, marginBottom: StyleConstants.gutterMd}}>
+          Choose a project name and directory:
+        </div>
+        <input autoFocus type="text" className="form-control" style={Styles.input} ref="projectName"
           onChange={this._onProjectNameChange}
           value={this.state.projectName}
         />
+        <div className="input-group" style={Styles.input}>
+          <input disabled type="text" className="form-control" style={{color: StyleConstants.colorSubtitle}} ref="projectDirectory"
+            value={this._getShortProjectDirectory()}
+          />
+          <span className="input-group-addon" style={{cursor: 'pointer', background: 'white'}} onClick={this._onClickChangeProjectDirectoryAsync}>...</span>
+        </div>
+        {this._renderErrors()}
         <div style={Styles.buttonsContainer}>
           <button onClick={this._onClickCancel}
             type="button"
@@ -84,7 +155,7 @@ class NewProjectModal extends React.Component {
     );
   }
 
-  _renderErrors() {
+  _renderErrors = () => {
     if (this.state.errorMessage) {
       return <div style={SharedStyles.errorMessage}>{this.state.errorMessage}</div>;
     } else {
@@ -92,7 +163,7 @@ class NewProjectModal extends React.Component {
     }
   }
 
-  _renderLoading() {
+  _renderLoading = () => {
     return (
       <div style={Styles.loadingContainer}>
         <LoadingIndicator
@@ -120,6 +191,29 @@ class NewProjectModal extends React.Component {
     this.setState({projectName: newValue});
   };
 
+  _getShortProjectDirectory = () => {
+    let dir = this.state.projectDirectory;
+    if (dir.length < 40) {
+      return dir;
+    } else {
+      return `${dir.substr(0, 20)}...${dir.substr(dir.length - 20)}`;
+    }
+  }
+
+  _onClickChangeProjectDirectoryAsync = async () => {
+    try {
+      let directory = await Commands.getDirectoryAsync(this.state.projectDirectory);
+      if (!directory) {
+        return;
+      }
+
+      await UserSettings.setAsync('defaultNewProjectDir', directory);
+      this.setState({
+        projectDirectory: directory,
+      });
+    } catch (e) {}
+  }
+
   _onClickCancel = (event) => {
     event.preventDefault();
     this.props.onClose();
@@ -142,7 +236,9 @@ class NewProjectModal extends React.Component {
     }
 
     try {
-      let projectRoot = await Commands.newExpAsync(this.state.projectName);
+      let projectRoot = await Exp.createNewExpAsync(this.state.selectedTemplate.id, this.state.projectDirectory, {}, {
+        name: this.state.projectName,
+      });
       if (!projectRoot) {
         this.setState({
           isLoading: false,
@@ -182,19 +278,42 @@ let Styles = {
     justifyContent: 'center',
   },
   form: {
-    width: 250,
+    width: 400,
     display: 'flex',
     flexDirection: 'column',
+  },
+  templatesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    //alignItems: 'center',
+    //justifyContent: 'center',
+    marginBottom: 10,
+    overflowX: 'auto',
+  },
+  templateContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: StyleConstants.gutterMd,
+    paddingBottom: StyleConstants.gutterMd,
+    borderRadius: 4,
+    cursor: 'pointer',
   },
   largeText: {
     color: StyleConstants.colorText,
     fontSize: StyleConstants.fontSizeLg,
     paddingBottom: StyleConstants.gutterSm,
   },
-  smallText: {
+  mediumText: {
     color: StyleConstants.colorSubtitle,
-    fontSize: StyleConstants.fontSizeSm,
-    paddingBottom: StyleConstants.gutterLg,
+    fontSize: StyleConstants.fontSizeMd,
   },
   loadingText: {
     paddingTop: StyleConstants.gutterLg,
@@ -226,11 +345,15 @@ let Styles = {
     backgroundColor: StyleConstants.colorPrimary,
   },
   input: {
-    ...SharedStyles.input,
-
-    display: 'block',
-    width: '100%',
-    marginBottom: StyleConstants.gutterLg,
+    marginBottom: StyleConstants.gutterMd,
+  },
+  icon: {
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    marginBottom: StyleConstants.gutterMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: 'black',
   },
 };
 
