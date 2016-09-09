@@ -243,20 +243,26 @@ class App extends React.Component {
   }
 
   _renderTabsVisibleControl = () => {
+    let tabLeftImage = (this.state.tabsVisible !== TAB_RIGHT_VISIBLE) ?
+      './IconPanelLeftSelected.png' :
+      './IconPanelLeft.png';
+    let tabRightImage = (this.state.tabsVisible !== TAB_LEFT_VISIBLE) ?
+      './IconPanelRightSelected.png' :
+      './IconPanelRight.png';
     return (
       <div style={Styles.tabsVisibleControl}>
         <a
           onClick={this._onClickTabLeftVisible}>
           <img
-            src="./SelectUpDown.png"
-            style={[Styles.iconWithMargin, Styles.deviceSelectIcon, {flex: 1}]}
+            src={tabLeftImage}
+            style={[Styles.iconWithMargin, Styles.tabVisibleIcon, {flex: 1}]}
           />
         </a>
         <a
           onClick={this._onClickTabRightVisible}>
           <img
-            src="./SelectUpDown.png"
-            style={[Styles.iconWithMargin, Styles.deviceSelectIcon, {flex: 1}]}
+            src={tabRightImage}
+            style={[Styles.iconWithMargin, Styles.tabVisibleIcon, {flex: 1}]}
           />
         </a>
       </div>
@@ -1125,6 +1131,12 @@ let Styles = {
     justifyContent: 'space-between',
     width: 24,
     marginRight: StyleConstants.gutterLg
+  },
+
+  tabVisibleIcon: {
+    height: DEVICES_ICON_SIZE,
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: -(StyleConstants.gutterMd + DEVICES_ICON_SIZE),
   },
 };
 

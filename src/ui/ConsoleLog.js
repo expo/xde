@@ -160,7 +160,7 @@ export default class ConsoleLog extends React.Component {
           </div>
           <div style={Styles.bottomBarRight}>
             <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
-              <img src="./IconTrash.png" style={Styles.clearButton} />
+              <img src="./IconClear.png" style={Styles.clearButton} />
             </a>
             {bottomBarRightContent}
           </div>
@@ -244,9 +244,9 @@ const Styles = {
     verticalAlign: 'middle',
   },
   clearButton: {
-    maxHeight: 14,
-    maxWidth: 14,
-    margin: 4,
+    maxHeight: 10,
+    maxWidth: 10,
+    margin: 6,
   },
 };
 
