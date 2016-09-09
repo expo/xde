@@ -8,6 +8,7 @@ import {
 
 import _ from 'lodash';
 import os from 'os';
+import path from 'path';
 import React, { PropTypes } from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 
@@ -17,6 +18,8 @@ import SharedStyles from './Styles';
 import * as IdentifierRules from '../IdentifierRules';
 
 const ICON_SIZE = 120;
+const MAX_PROJECT_LENGTH = 44;
+const HALF_MAX_PROJECT_LENGTH = 20;
 
 class NewProjectModal extends React.Component {
   constructor(props, context) {
@@ -188,15 +191,24 @@ class NewProjectModal extends React.Component {
 
   _onProjectNameChange = (event) => {
     let newValue = IdentifierRules.normalizeProjectNameWhileTyping(event.target.value);
-    this.setState({projectName: newValue});
+    let errorMessage = null;
+    if (newValue.length === 0) {
+      errorMessage = 'Project name cannot be blank';
+    }
+
+    this.setState({
+      projectName: newValue,
+      errorMessage,
+    });
   };
 
   _getShortProjectDirectory = () => {
-    let dir = this.state.projectDirectory;
-    if (dir.length < 40) {
+    let { projectName, projectDirectory} = this.state;
+    let dir = path.join(projectDirectory, projectName);
+    if (dir.length < MAX_PROJECT_LENGTH) {
       return dir;
     } else {
-      return `${dir.substr(0, 20)}...${dir.substr(dir.length - 20)}`;
+      return `${dir.substr(0, HALF_MAX_PROJECT_LENGTH)}...${dir.substr(dir.length - HALF_MAX_PROJECT_LENGTH)}`;
     }
   }
 
