@@ -118,7 +118,7 @@ class NewProjectModal extends React.Component {
         style={Styles.form}
         onSubmit={this._onSubmitNewProject}>
         <div style={Styles.largeText}>
-          Choose a template for your project:
+          Choose a template for your project
         </div>
         <div style={Styles.templatesContainer}>
           <div style={{minWidth: 'min-content', display:'flex'}}>
@@ -130,7 +130,7 @@ class NewProjectModal extends React.Component {
         </div>
 
         <div style={{...Styles.largeText, marginTop: StyleConstants.gutterLg, marginBottom: StyleConstants.gutterMd}}>
-          Choose a project name and directory:
+          Choose a project name and directory
         </div>
         <input autoFocus type="text" className="form-control" style={Styles.input} ref="projectName"
           onChange={this._onProjectNameChange}
@@ -299,8 +299,13 @@ let Styles = {
     flexDirection: 'row',
     //alignItems: 'center',
     //justifyContent: 'center',
+    marginTop: 5,
     marginBottom: 10,
     overflowX: 'auto',
+    backgroundColor: '#f1f1f1',
+    borderRadius: 3,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   templateContainer: {
     display: 'flex',
@@ -319,6 +324,7 @@ let Styles = {
     cursor: 'pointer',
   },
   largeText: {
+    fontWeight: 'bold',
     color: StyleConstants.colorText,
     fontSize: StyleConstants.fontSizeLg,
     paddingBottom: StyleConstants.gutterSm,
