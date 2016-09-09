@@ -568,7 +568,7 @@ class App extends React.Component {
       onClick: clearnNotificationOnClick,
     }});
 
-    if (!options.indefinite) {
+    if (!options || !options.indefinite) {
       this._notificationTimeout = setTimeout(() => {
         this._notificationTimeout = null;
         this.setState({notification: null});
@@ -1130,7 +1130,7 @@ let Styles = {
     display: 'inline-flex',
     justifyContent: 'space-between',
     width: 24,
-    marginRight: StyleConstants.gutterLg
+    marginRight: StyleConstants.gutterLg,
   },
 
   tabVisibleIcon: {
