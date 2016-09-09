@@ -10,7 +10,8 @@ export default class ConsoleLog extends React.Component {
   static propTypes = {
     isLoading: PropTypes.bool,
     logs: PropTypes.arrayOf(PropTypes.object),
-    bottomBarContent: PropTypes.node,
+    bottomBarLeftContent: PropTypes.node,
+    bottomBarRightContent: PropTypes.node,
     onClickClearLogs: PropTypes.func,
   };
 
@@ -137,9 +138,12 @@ export default class ConsoleLog extends React.Component {
     // add extra row for loading container
     let numRows = this.props.logs.length + 1;
 
-    let { bottomBarContent } = this.props;
-    if (!bottomBarContent) {
-      bottomBarContent = (<div />);
+    let { bottomBarLeftContent, bottomBarRightContent } = this.props;
+    if (!bottomBarLeftContent) {
+      bottomBarLeftContent = (<div />);
+    }
+    if (!bottomBarRightContent) {
+      bottomBarRightContent = (<div />);
     }
 
     /* eslint-disable react/jsx-no-bind */
@@ -152,12 +156,13 @@ export default class ConsoleLog extends React.Component {
         </div>
         <div style={Styles.bottomBar}>
           <div style={Styles.bottomBarLeft}>
-            {bottomBarContent}
+            {bottomBarLeftContent}
           </div>
           <div style={Styles.bottomBarRight}>
             <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
               <img src="./IconTrash.png" style={Styles.clearButton} />
             </a>
+            {bottomBarRightContent}
           </div>
         </div>
       </div>
@@ -233,6 +238,10 @@ const Styles = {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
     textDecoration: 'none',
+    display: 'inline-flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    verticalAlign: 'middle',
   },
   clearButton: {
     maxHeight: 14,

@@ -52,6 +52,10 @@ const OPTIONS_ICON_SIZE = 22;
 const DEVICES_ICON_SIZE = 16;
 const PROJECT_OPENED_MESSAGE = 'Project opened! You can now use the "Send Link" or "Device" buttons to view your project.';
 
+const TAB_LEFT_VISIBLE = 'tab-left-visible',
+  TAB_RIGHT_VISIBLE = 'tab-right-visible',
+  TAB_BOTH_VISIBLE = 'tab-both-visible';
+
 class App extends React.Component {
   static propTypes = {
     amplitude: PropTypes.object,
@@ -76,6 +80,7 @@ class App extends React.Component {
       openModal: null,
       expJson: null,
       exponentSdkStatus: Doctor.EXPONENT_SDK_INSTALLED_AND_IMPORTED,
+      tabsVisible: TAB_BOTH_VISIBLE,
     };
 
     this._resetLocalProperties();
@@ -98,28 +103,28 @@ class App extends React.Component {
   }
 
   _renderTabs() {
-    // Device logs only work >= SDK 7
-    let shouldShowDeviceLogs = false;
-    if (this.state.expJson && Versions.gteSdkVersion(this.state.expJson, '7.0.0')) {
-      shouldShowDeviceLogs = true;
-    }
+    let { tabsVisible } = this.state;
 
     return (
       <div style={Styles.tabsContainer}>
-        {this._renderPackagerConsole()}
-        {shouldShowDeviceLogs && <div style={Styles.verticalSeparator} />}
-        {shouldShowDeviceLogs && this._renderDeviceLogs()}
+        {(tabsVisible !== TAB_RIGHT_VISIBLE) && this._renderPackagerConsole()}
+        {(tabsVisible === TAB_BOTH_VISIBLE) && <div style={Styles.verticalSeparator} />}
+        {(tabsVisible !== TAB_LEFT_VISIBLE) && this._renderDeviceLogs()}
       </div>
     );
   }
 
   _renderPackagerConsole() {
+    let bottomBarRightContent = (this.state.tabsVisible === TAB_LEFT_VISIBLE) ?
+      this._renderTabsVisibleControl() :
+      null;
     return (
       <div style={Styles.tabContainer}>
         <ConsoleLog
           logs={this.state.logs}
           isLoading={this.state.isLoading}
           onClickClearLogs={this._onClickClearLogs}
+          bottomBarRightContent={bottomBarRightContent}
         />
       </div>
     );
@@ -185,6 +190,12 @@ class App extends React.Component {
         msg: `Add \`import 'exponent'\` to the top of your main file to see device logs.`,
         time: this._startTime,
       });
+    } else if (this.state.isProjectRunning && !(this.state.expJson && Versions.gteSdkVersion(this.state.expJson, '7.0.0'))) {
+      logs.push({
+        level: bunyan.WARN,
+        msg: `To see device logs, make sure your project uses at least SDK 7.0.0 and has a valid exp.json.`,
+        time: this._startTime,
+      });
     }
 
     return logs;
@@ -197,12 +208,16 @@ class App extends React.Component {
     } = this.state;
 
     let device = focusedConnectedDeviceId ? connectedDevices[focusedConnectedDeviceId] : null;
+    let bottomBarRightContent = (this.state.tabsVisible !== TAB_LEFT_VISIBLE) ?
+      this._renderTabsVisibleControl() :
+      null;
     let logs = (device && device.logs.length) ? device.logs : this._defaultDeviceLogs();
     return (
       <div style={Styles.tabContainer}>
         <ConsoleLog
           logs={logs}
-          bottomBarContent={this._renderDeviceSwitcher(device)}
+          bottomBarLeftContent={this._renderDeviceSwitcher(device)}
+          bottomBarRightContent={bottomBarRightContent}
           onClickClearLogs={this._onClickClearDeviceLogs}
         />
       </div>
@@ -226,6 +241,41 @@ class App extends React.Component {
       </div>
     );
   }
+
+  _renderTabsVisibleControl = () => {
+    return (
+      <div style={Styles.tabsVisibleControl}>
+        <a
+          onClick={this._onClickTabLeftVisible}>
+          <img
+            src="./SelectUpDown.png"
+            style={[Styles.iconWithMargin, Styles.deviceSelectIcon, {flex: 1}]}
+          />
+        </a>
+        <a
+          onClick={this._onClickTabRightVisible}>
+          <img
+            src="./SelectUpDown.png"
+            style={[Styles.iconWithMargin, Styles.deviceSelectIcon, {flex: 1}]}
+          />
+        </a>
+      </div>
+    );
+  };
+
+  _onClickTabLeftVisible = () => {
+    let tabsVisible = (this.state.tabsVisible === TAB_RIGHT_VISIBLE) ?
+      TAB_BOTH_VISIBLE :
+      TAB_RIGHT_VISIBLE;
+    this.setState({ tabsVisible });
+  };
+
+  _onClickTabRightVisible = () => {
+    let tabsVisible = (this.state.tabsVisible === TAB_LEFT_VISIBLE) ?
+      TAB_BOTH_VISIBLE :
+      TAB_LEFT_VISIBLE;
+    this.setState({ tabsVisible });
+  };
 
   _runProject = (project) => {
     this._startProjectAsync(project.root).catch((error) => {
@@ -1068,6 +1118,13 @@ let Styles = {
     color: StyleConstants.colorText,
     paddingLeft: DEVICES_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
     marginVertical: StyleConstants.gutterSm,
+  },
+
+  tabsVisibleControl: {
+    display: 'inline-flex',
+    justifyContent: 'space-between',
+    width: 24,
+    marginRight: StyleConstants.gutterLg
   },
 };
 
