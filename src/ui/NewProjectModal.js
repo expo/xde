@@ -313,7 +313,7 @@ let Styles = {
     marginBottom: 10,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: StyleConstants.gutterMd,
+    paddingTop: StyleConstants.gutterMd * 2,
     paddingBottom: StyleConstants.gutterMd,
     borderRadius: 4,
     cursor: 'pointer',
@@ -333,6 +333,7 @@ let Styles = {
     fontSize: StyleConstants.fontSizeMd,
   },
   buttonsContainer: {
+    marginTop: 10,
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
