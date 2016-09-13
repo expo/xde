@@ -58,7 +58,7 @@ const TAB_LEFT_VISIBLE = 'tab-left-visible',
 
 class App extends React.Component {
   static propTypes = {
-    amplitude: PropTypes.object,
+    segment: PropTypes.array,
   };
 
   constructor(props, context) {
@@ -88,8 +88,8 @@ class App extends React.Component {
     this._currentOpenProjectXDEId = 0; // used to avoid logging old projects
     global._App = this;
 
-    if (props.amplitude && !process.env.XDE_NPM_START) {
-      Analytics.setAmplitudeInstance(props.amplitude, 'd7151cf53094d6492c5e085eeb4d8ac4');
+    if (props.segment && !process.env.XDE_NPM_START) {
+      Analytics.setSegmentWebInstance(props.segment);
     }
 
     this._setVersionAsync();

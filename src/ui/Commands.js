@@ -1,7 +1,4 @@
 import { remote } from 'electron';
-import {
-  Exp,
-} from 'xdl';
 
 async function showOpenDialog(opts) {
   return new Promise((fulfill, reject) => {
