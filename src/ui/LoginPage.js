@@ -72,8 +72,7 @@ class LoginPage extends React.Component {
               [
                 <img key="button-invisible-icon" src="./arrow.svg" style={{
                   width: 15, height: 15, opacity: 0,
-                }}
-                />, // Purely for spacing
+                }} />, // Purely for spacing
                 <div key="button-text" style={{flex: 1}}>Sign in (or register)</div>,
                 <img key="button-icon" src="./arrow.svg" style={{width: 15, height: 15}} />,
               ]}
