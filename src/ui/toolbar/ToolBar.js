@@ -172,10 +172,10 @@ export default class ToolBar extends React.Component {
         <MenuItem label="Exponent Docs"
           onClick={this.props.onDocsClicked}
         />
-        <MenuItem label="Join us on Slack"
+        <MenuItem label="Join Us On Slack"
           onClick={this.props.onJoinUsOnSlackClicked}
         />
-        <MenuItem label="Chat with us on Intercom"
+        <MenuItem label="Chat with Us On Intercom"
           onClick={this.props.onChatWithUsOnIntercomClicked}
         />
         <MenuItem label="Send Diagnostics Report"
@@ -220,7 +220,7 @@ export default class ToolBar extends React.Component {
     return (
       <div>
         {Simulator.isPlatformSupported() && (
-          <MenuItem label="Open on iOS" shortcut="I"
+          <MenuItem label="Open on iOS Simulator" shortcut="I"
             onClick={this._simulatorIOSAsync}
           />
         )}

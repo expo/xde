@@ -18,7 +18,7 @@ export default {
     borderWidth: 1,
     boxShadow: `0 5px 10px rgba(0, 0, 0, 0.2)`,
     color: StyleConstants.colorText,
-    minWidth: 180,
+    minWidth: 190,
   },
   errorMessage: {
     color: StyleConstants.colorError,
