@@ -77,5 +77,6 @@ nvm use v6
 
 - Go into the `xde/` directory where you cloned the Git repo and run `npm install`
 - Go into the `xde/app` directory and run `npm install`
-- Once that completes, run `npm start` to start the GUI
+- Once that completes, run `npm start` from `xde/` to start the GUI
 - If you get a watchman error, you may need to increase your "max_queued_events" limit. On linux you can find this at /proc/sys/fs/inotify/max_queued_events.
+- If you get `ENOENT: no such file or directory, open '.../node_modules/electron-prebuilt/path.txt'`, run `cd node_modules/electron-prebuilt && node install.js` from `xde/`. See the issue here: https://github.com/electron-userland/electron-prebuilt/issues/76.
