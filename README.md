@@ -60,7 +60,7 @@ You can publish as many times as you want and it will replace your old version, 
 
 ## Build From Source
 
-- `git clone` this repository,
+- `git clone` this repository.
 - `git checkout` one of the release tags.
 - `git pull` to make sure it is up to date.
 - Make sure you have Node version 6.2.2 (or compatible). If you don't have it, use [nvm]( https://github.com/creationix/nvm) to install it. It won't clobber other installations of node you have and you can choose just to use it for npm installing xde (which is all you need it for).
@@ -75,8 +75,9 @@ nvm install v6
 nvm use v6
 ```
 
-- Go into the `xde/` directory where you cloned the Git repo and run `npm install`
-- Go into the `xde/app` directory and run `npm install`
-- Once that completes, run `npm start` from `xde/` to start the GUI
+- Install `gulp-cli`: `npm i -g gulp-cli`.
+- Go into the `xde/` directory where you cloned the Git repo and run `npm install`.
+- Go into the `xde/app` directory and run `npm install`.
+- Once that completes, run `npm start` from `xde/` to start the GUI.
 - If you get a watchman error, you may need to increase your "max_queued_events" limit. On linux you can find this at /proc/sys/fs/inotify/max_queued_events.
 - If you get `ENOENT: no such file or directory, open '.../node_modules/electron-prebuilt/path.txt'`, run `cd node_modules/electron-prebuilt && node install.js` from `xde/`. See the issue here: https://github.com/electron-userland/electron-prebuilt/issues/76.
