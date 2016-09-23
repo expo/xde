@@ -477,6 +477,7 @@ class App extends React.Component {
                   onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
                   onChatWithUsOnIntercomClicked={this._chatWithUsOnIntercomClicked}
                   onSendDiagnosticsReportClicked={this._sendDiagnosticsReportClicked}
+                  onClearXDECacheClicked={this._clearXDECacheClicked}
                   onTogglePopover={this._onTogglePopover}
                   openPopover={this.state.openPopover}
                   projectJson={this.state.projectJson}
@@ -527,6 +528,10 @@ class App extends React.Component {
     Intercom.trackEvent('diagnostics', deviceInfo);
     Intercom.showNewMessage(`Please explain what went wrong and we'll look at your diagnostics report: `);
     Logger.notifications.info('Uploaded report!');
+  }
+
+  _clearXDECacheClicked = async () => {
+    await Exp.clearXDLCacheAsync();
   }
 
   _setProjectSettingAsync = async (options) => {

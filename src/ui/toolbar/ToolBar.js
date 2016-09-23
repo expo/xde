@@ -43,6 +43,7 @@ export default class ToolBar extends React.Component {
     onJoinUsOnSlackClicked: PropTypes.func,
     onChatWithUsOnIntercomClicked: PropTypes.func,
     onSendDiagnosticsReportClicked: PropTypes.func,
+    onClearXDECacheClicked: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -180,6 +181,9 @@ export default class ToolBar extends React.Component {
         />
         <MenuItem label="Send Diagnostics Report"
           onClick={this.props.onSendDiagnosticsReportClicked}
+        />
+        <MenuItem label="Clear XDE Cache"
+          onClick={this.props.onClearXDECacheClicked}
         />
       </div>
     );
