@@ -1,4 +1,4 @@
-import Radium from 'radium';
+import { StyleSheet, css } from 'aphrodite';
 import React, {PropTypes} from 'react';
 import {
   Analytics,
@@ -17,7 +17,6 @@ import MenuItem from './MenuItem';
 import MenuSeparator from './MenuSeparator';
 import Popover from './Popover';
 
-@Radium
 export default class ToolBar extends React.Component {
   static propTypes = {
     isProjectOpen: PropTypes.bool,
@@ -124,13 +123,18 @@ export default class ToolBar extends React.Component {
     }
     return (
       <div>
-        <MenuItem label="New Project" shortcut="N"
+        <MenuItem
+          label="New Project"
+          shortcut="N"
           onClick={this.props.onNewProjectClick}
         />
-        <MenuItem label="Open Project" shortcut="O"
+        <MenuItem
+          label="Open Project"
+          shortcut="O"
           onClick={this.props.onOpenProjectClick}
         />
-        <MenuItem label="Close Project"
+        <MenuItem
+          label="Close Project"
           isDisabled={!this.props.isProjectOpen}
           onClick={this.props.onCloseProjectClick}
         />
@@ -144,16 +148,19 @@ export default class ToolBar extends React.Component {
       return (
         <div>
           <MenuSeparator />
-          <MenuItem label={FileSystem.openFolderName()}
+          <MenuItem
+            label={FileSystem.openFolderName()}
             isDisabled={!this.props.isProjectOpen}
             onClick={this._onShowInFinderClick}
           />
-          <MenuItem label={FileSystem.openConsoleName()}
+          <MenuItem
+            label={FileSystem.openConsoleName()}
             isDisabled={!this.props.isProjectOpen}
             onClick={this._onOpenInTerminalClick}
           />
           {process.platform === 'darwin' ?
-            <MenuItem label="Open in Editor"
+            <MenuItem
+              label="Open in Editor"
               isDisabled={!this.props.isProjectOpen}
               onClick={this._onOpenInEditorClick}
             /> : null}
@@ -170,19 +177,24 @@ export default class ToolBar extends React.Component {
     }
     return (
       <div>
-        <MenuItem label="Exponent Docs"
+        <MenuItem
+          label="Exponent Docs"
           onClick={this.props.onDocsClicked}
         />
-        <MenuItem label="Join Us On Slack"
+        <MenuItem
+          label="Join Us On Slack"
           onClick={this.props.onJoinUsOnSlackClicked}
         />
-        <MenuItem label="Chat with Us On Intercom"
+        <MenuItem
+          label="Chat with Us On Intercom"
           onClick={this.props.onChatWithUsOnIntercomClicked}
         />
-        <MenuItem label="Send Diagnostics Report"
+        <MenuItem
+          label="Send Diagnostics Report"
           onClick={this.props.onSendDiagnosticsReportClicked}
         />
-        <MenuItem label="Clear XDE Cache"
+        <MenuItem
+          label="Clear XDE Cache"
           onClick={this.props.onClearXDECacheClicked}
         />
       </div>
@@ -206,13 +218,15 @@ export default class ToolBar extends React.Component {
     }
     return (
       <div onClick={this._onMenuClick}>
-        <input style={Styles.sendLinkInput}
+        <input
+          className={css(styles.sendLinkInput)}
           ref={(r) => { this._sendLinkInput = r; }}
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
-        <a onClick={this._onSendLinkClick}
-          style={Styles.sendLinkSubmit}>Send Link</a>
+        <a
+          onClick={this._onSendLinkClick}
+          className={css(styles.sendLinkSubmit)}>Send Link</a>
       </div>
     );
   }
@@ -224,12 +238,16 @@ export default class ToolBar extends React.Component {
     return (
       <div>
         {Simulator.isPlatformSupported() && (
-          <MenuItem label="Open on iOS Simulator" shortcut="I"
+          <MenuItem
+            label="Open on iOS Simulator"
+            shortcut="I"
             onClick={this._simulatorIOSAsync}
           />
         )}
         {Android.isPlatformSupported() && (
-          <MenuItem label="Open on Android" shortcut="D"
+          <MenuItem
+            label="Open on Android"
+            shortcut="D"
             onClick={this._simulatorAndroidAsync}
           />
         )}
@@ -252,7 +270,8 @@ export default class ToolBar extends React.Component {
       </div>
     );
     const userNameEl = (
-      <a style={Styles.userName}
+      <a
+        className={css(styles.userName)}
         onClick={this._getTogglePopoverFn(PopoverEnum.USER)}>
         {this.props.userName}
       </a>
@@ -275,25 +294,25 @@ export default class ToolBar extends React.Component {
 
     return (
       <div>
-        <div style={Styles.row}>
-          <div style={Styles.leftCol}>
+        <div className={css(styles.row)}>
+          <div className={css(styles.leftCol)}>
             <ProjectIcon iconUrl={iconUrl} />
-            <div style={Styles.projectName}>{projectName}</div>
+            <div className={css(styles.projectName)}>{projectName}</div>
           </div>
-          <div style={Styles.rightCol}>
+          <div className={css(styles.rightCol)}>
             {this._renderUserName()}
           </div>
         </div>
-        <div style={Styles.separator} />
-        <div style={Styles.row}>
-          <div style={Styles.leftCol}>
+        <div className={css(styles.separator)} />
+        <div className={css(styles.row)}>
+          <div className={css(styles.leftCol)}>
             <IconButton
               iconUrl="./IconBolt.png"
               label="Project"
               color="#8309e0"
               onClick={this._getTogglePopoverFn(PopoverEnum.PROJECT)}
               popover={this._renderPopoverProject()}
-              style={Styles.rightSpaced}
+              className={css(styles.rightSpaced)}
             />
             <IconButton
               iconUrl="./IconRestart.png"
@@ -301,7 +320,7 @@ export default class ToolBar extends React.Component {
               color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
               onClick={this._restartClicked}
-              style={Styles.rightSpaced}
+              className={css(styles.rightSpaced)}
             />
             <IconButton
               iconUrl="./IconHelp.png"
@@ -309,17 +328,17 @@ export default class ToolBar extends React.Component {
               color="#383D40"
               onClick={this._getTogglePopoverFn(PopoverEnum.HELP)}
               popover={this._renderPopoverHelp()}
-              style={Styles.rightSpaced}
+              className={css(styles.rightSpaced)}
             />
           </div>
-          <div style={Styles.rightCol}>
+          <div className={css(styles.rightCol)}>
             <IconButton
               iconUrl="./IconArrowUp.png"
               label="Publish"
               color="#18B405"
               isDisabled={!this.props.isProjectRunning}
               onClick={this.props.onPublishClick}
-              style={Styles.rightSpaced}
+              className={css(styles.rightSpaced)}
             />
             <IconButton
               iconUrl="./IconArrowRight.png"
@@ -329,7 +348,7 @@ export default class ToolBar extends React.Component {
               onClick={this._getTogglePopoverFn(PopoverEnum.SEND_LINK)}
               popover={this._renderPopoverSendLink()}
               isPopoverToLeft
-              style={Styles.rightSpaced}
+              className={css(styles.rightSpaced)}
             />
             <IconButton
               iconUrl="./IconPhone.png"
@@ -380,7 +399,6 @@ export default class ToolBar extends React.Component {
 
   _simulatorIOSAsync = async () => {
     let projectUrl = await this._simulatorProjectUrlAsync();
-    console.log("projectUrl=" + projectUrl);
     return await Simulator.openUrlInSimulatorSafeAsync(projectUrl);
   };
 
@@ -397,7 +415,7 @@ export default class ToolBar extends React.Component {
   };
 }
 
-const Styles = {
+const styles = StyleSheet.create({
   separator: {
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
     marginTop: StyleConstants.gutterLg,
@@ -459,4 +477,4 @@ const Styles = {
       color: '#08509A',
     },
   },
-};
+});

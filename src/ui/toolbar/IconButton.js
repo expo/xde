@@ -1,10 +1,9 @@
-import Radium from 'radium';
+import { StyleSheet, css } from 'aphrodite';
 import React, {PropTypes} from 'react';
 
 import StyleConstants from '../StyleConstants';
 import Popover from './Popover';
 
-@Radium
 export default class IconButton extends React.Component {
   static propTypes = {
     color: PropTypes.string.isRequired,
@@ -20,28 +19,35 @@ export default class IconButton extends React.Component {
   }
 
   render() {
-    const containerStyle = {
-      ...Styles.container,
-      ...(this.props.isDisabled ? Styles.containerDisabled : {}),
-    };
-    const iconContainerStyle = {
-      ...Styles.iconContainer,
-      borderColor: this.props.color,
-    };
+    const containerStyles = [
+      styles.container,
+      (this.props.isDisabled ? styles.containerDisabled : null),
+    ];
     const iconEl = (
-      <div style={iconContainerStyle}>
-        <img src={this.props.iconUrl} style={Styles.icon} />
+      <div
+        className={css(styles.iconContainer)}
+        style={{borderColor: this.props.color}}>
+        <img
+          src={this.props.iconUrl}
+          className={css(styles.icon)}
+        />
       </div>
     );
 
     const mainEl = this.props.popover ?
-      <Popover isToLeft={this.props.isPopoverToLeft}
+      <Popover
+        isToLeft={this.props.isPopoverToLeft}
         body={this.props.popover}
-        arrowOffset={20} popoverOffset={-10}>{iconEl}</Popover> :
+        arrowOffset={20}
+        popoverOffset={-10}>
+        {iconEl}
+      </Popover> :
       iconEl;
 
     return (
-      <button style={{...containerStyle, ...this.props.style}}
+      <button
+        className={css(...containerStyles)}
+        style={this.props.style}
         disabled={this.props.isDisabled}
         onClick={this.props.onClick}>
         {mainEl}
@@ -53,7 +59,7 @@ export default class IconButton extends React.Component {
   }
 }
 
-const Styles = {
+const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     display: 'inline-flex',
@@ -85,4 +91,4 @@ const Styles = {
     maxHeight: 15,
     maxWidth: 15,
   },
-};
+});

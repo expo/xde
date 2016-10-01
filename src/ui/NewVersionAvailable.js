@@ -1,4 +1,4 @@
-import Radium from 'radium';
+import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
 
 import autobind from 'autobind-decorator';
@@ -14,8 +14,7 @@ const {
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 
-@Radium
-class NewVersionAvailable extends React.Component {
+export default class NewVersionAvailable extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -35,7 +34,7 @@ class NewVersionAvailable extends React.Component {
 
     // Should we use NODE_ENV instead of XDE_NPM_START?
     if ((!this.state.isVisible) || (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START)) {
-      return <div style={styles.hidden} />;
+      return <div className={css(styles.hidden)} />;
     }
 
     let { isChecking, isDownloading, errorMessage, newVersion } = this.state;
@@ -59,7 +58,8 @@ class NewVersionAvailable extends React.Component {
     }
 
     return (
-      <Notification onClick={clickListener}
+      <Notification
+        onClick={clickListener}
         type={buttonStyle === 'danger' ? 'error' : 'success'}
         message={text}
       />
@@ -160,10 +160,8 @@ class NewVersionAvailable extends React.Component {
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   hidden: {
     display: 'none',
   },
-};
-
-module.exports = NewVersionAvailable;
+});

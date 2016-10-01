@@ -21,11 +21,11 @@ import {
 } from 'xdl';
 Config.developerTool = 'xde';
 
+import { StyleSheet, css } from 'aphrodite/no-important';
 import _ from 'lodash';
 import bunyan from 'bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
-import { StyleRoot } from 'radium';
 import React, {PropTypes} from 'react';
 import JsonFile from '@exponent/json-file';
 
@@ -106,9 +106,9 @@ class App extends React.Component {
     let { tabsVisible } = this.state;
 
     return (
-      <div style={Styles.tabsContainer}>
+      <div className={css(styles.tabsContainer)}>
         {(tabsVisible !== TAB_RIGHT_VISIBLE) && this._renderPackagerConsole()}
-        {(tabsVisible === TAB_BOTH_VISIBLE) && <div style={Styles.verticalSeparator} />}
+        {(tabsVisible === TAB_BOTH_VISIBLE) && <div className={css(styles.verticalSeparator)} />}
         {(tabsVisible !== TAB_LEFT_VISIBLE) && this._renderDeviceLogs()}
       </div>
     );
@@ -119,7 +119,7 @@ class App extends React.Component {
       this._renderTabsVisibleControl() :
       null;
     return (
-      <div style={Styles.tabContainer}>
+      <div className={css(styles.tabContainer)}>
         <ConsoleLog
           logs={this.state.logs}
           isLoading={this.state.isLoading}
@@ -213,7 +213,7 @@ class App extends React.Component {
       null;
     let logs = (device && device.logs.length) ? device.logs : this._defaultDeviceLogs();
     return (
-      <div style={Styles.tabContainer}>
+      <div className={css(styles.tabContainer)}>
         <ConsoleLog
           logs={logs}
           bottomBarLeftContent={this._renderDeviceSwitcher(device)}
@@ -230,12 +230,12 @@ class App extends React.Component {
         {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
           <img
             src="./SelectUpDown.png"
-            style={[Styles.iconWithMargin, Styles.deviceSelectIcon]}
+            className={css(styles.iconWithMargin, styles.deviceSelectIcon)}
             onClick={this._toggleDeviceLogsPopover}
           />
         </Popover>
         }
-        <span style={Styles.deviceSelectText}>
+        <span className={css(styles.deviceSelectText)}>
           {device ? device.name : 'No devices connected'}
         </span>
       </div>
@@ -250,19 +250,21 @@ class App extends React.Component {
       './IconPanelRightSelected.png' :
       './IconPanelRight.png';
     return (
-      <div style={Styles.tabsVisibleControl}>
+      <div className={css(styles.tabsVisibleControl)}>
         <a
           onClick={this._onClickTabLeftVisible}>
           <img
             src={tabLeftImage}
-            style={[Styles.iconWithMargin, Styles.tabVisibleIcon, {flex: 1}]}
+            className={css(styles.iconWithMargin, styles.tabVisibleIcon)}
+            style={{flex: 1}}
           />
         </a>
         <a
           onClick={this._onClickTabRightVisible}>
           <img
             src={tabRightImage}
-            style={[Styles.iconWithMargin, Styles.tabVisibleIcon, {flex: 1}]}
+            className={css(styles.iconWithMargin, styles.tabVisibleIcon)}
+            style={{flex: 1}}
           />
         </a>
       </div>
@@ -326,22 +328,24 @@ class App extends React.Component {
 
   _renderUrlInput() {
     return (
-      <div style={Styles.urlInputContainer}>
+      <div className={css(styles.urlInputContainer)}>
         <Popover body={this._renderPopoverOptions()} arrowOffset={16}>
-          <img src="./gear.svg"
-            style={[Styles.iconWithMargin, Styles.optionsIcon]}
+          <img
+            src="./gear.svg"
+            className={css(styles.iconWithMargin, styles.optionsIcon)}
             onClick={this._toggleOptionsPopover}
           />
         </Popover>
         <input
           ref={(r) => { this._urlInput = r; }}
-          style={Styles.urlInput}
+          className={css(styles.urlInput)}
           value={this.state.computedUrl || ''}
           placeholder="Waiting for packager and tunnel to start..."
           onClick={this._urlInputSelect}
         />
-        <img src="./IconArrowUpRight.png"
-          style={Styles.urlInputCopyIcon}
+        <img
+          src="./IconArrowUpRight.png"
+          className={css(styles.urlInputCopyIcon)}
           onClick={this._urlInputCopy}
         />
       </div>
@@ -360,7 +364,10 @@ class App extends React.Component {
 
       /* eslint-disable react/jsx-no-bind */
       return (
-        <MenuItem label={label} key={option} checkState={checkState}
+        <MenuItem
+          label={label}
+          key={option}
+          checkState={checkState}
           onClick={() => this._setProjectSettingAsync({hostType: option})}
         />
       );
@@ -449,18 +456,19 @@ class App extends React.Component {
   render() {
     /* eslint-disable react/jsx-no-bind */
     return (
-      <StyleRoot onClick={this._closePopover}>
-        <LoginPage loggedInAs={this.state.user}
+      <div onClick={this._closePopover}>
+        <LoginPage
+          loggedInAs={this.state.user}
           onLogin={(user) => {
             this.setState({user});
           }}>
-          <div style={Styles.container}>
+          <div className={css(styles.container)}>
             <NewVersionAvailable />
             <div>
               {this.state.notification && (
                 <Notification {...this.state.notification} />
               )}
-              <div style={Styles.topSection}>
+              <div className={css(styles.topSection)}>
                 <ToolBar
                   isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
                   isProjectRunning={this.state.isProjectRunning}
@@ -494,12 +502,12 @@ class App extends React.Component {
               this._renderProjectList()}
           </div>
         </LoginPage>
-        {!!this.state.openModal && <div style={Styles.modalOverlay}>
-          <div style={Styles.modalContent}>
+        {!!this.state.openModal && <div className={css(styles.modalOverlay)}>
+          <div className={css(styles.modalContent)}>
             {this._renderModal()}
           </div>
         </div>}
-      </StyleRoot>
+      </div>
     );
     /* eslint-enable react/jsx-no-bind */
   }
@@ -1032,7 +1040,7 @@ class App extends React.Component {
   }
 }
 
-let Styles = {
+let styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -1143,7 +1151,7 @@ let Styles = {
     marginLeft: StyleConstants.gutterMd,
     marginRight: -(StyleConstants.gutterMd + DEVICES_ICON_SIZE),
   },
-};
+});
 
 global.cl = function(a, b, c) {
   console.log(a, b, c);
