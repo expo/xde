@@ -7,7 +7,7 @@
     "type": "git",
     "url": "git+https://github.com/exponentjs/xde.git"
   },
-  "author": "support@getexponent.com",
+  "author": "Exponent",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/exponentjs/xde/issues"
