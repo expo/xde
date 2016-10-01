@@ -1,7 +1,9 @@
 {
-  "presets": ["es2015", "stage-1", "react"],
+  "presets": ["es2015-node6/object-rest", "es2017", "react"],
   "plugins": [
+    "transform-class-properties",
     "transform-decorators-legacy",
+    "transform-object-rest-spread",
     "transform-runtime",
   ],
 }
