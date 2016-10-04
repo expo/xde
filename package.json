@@ -5,10 +5,9 @@
     "staging": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_STAGING=1 electron ./app",
     "lint": "eslint src",
     "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron ./app",
-    "pack": "gulp build:deploy && build --mac --win --dir",
-    "dist": "gulp build:deploy && build --mac --win",
-    "mac": "gulp build:deploy && build --mac",
-    "win": "gulp build:deploy && build --win"
+    "dist": "gulp release",
+    "mac": "gulp release:mac",
+    "win": "gulp release:windows"
   },
   "build": {
     "asar": false,
@@ -55,7 +54,7 @@
     "babel-preset-es2017": "^6.16.0",
     "babel-preset-react": "^6.5.0",
     "cross-env": "^3.0.0",
-    "electron-builder": "^7.9.0",
+    "electron-builder": "^7.10.2",
     "electron-prebuilt": "^1.3.1",
     "electron-rebuild": "^1.1.5",
     "eslint": "^3.1.1",
