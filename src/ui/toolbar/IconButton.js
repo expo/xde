@@ -11,22 +11,18 @@ export default class IconButton extends React.Component {
     isDisabled: PropTypes.bool,
     label: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
-    styles: PropTypes.array,
+    styles: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 
     // If specified, popover appears beneath icon circle on click.
     popover: PropTypes.node,
     isPopoverToLeft: PropTypes.bool,
-  }
-
-  static defaultProps = {
-    styles: [],
   };
 
   render() {
     const containerStyles = [
       styles.container,
+      this.props.styles,
       (this.props.isDisabled ? styles.containerDisabled : null),
-      ...this.props.styles,
     ];
     const iconEl = (
       <div

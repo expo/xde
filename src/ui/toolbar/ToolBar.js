@@ -312,7 +312,7 @@ export default class ToolBar extends React.Component {
               color="#8309e0"
               onClick={this._getTogglePopoverFn(PopoverEnum.PROJECT)}
               popover={this._renderPopoverProject()}
-              styles={[styles.rightSpaced]}
+              styles={styles.rightSpaced}
             />
             <IconButton
               iconUrl="./IconRestart.png"
@@ -320,7 +320,7 @@ export default class ToolBar extends React.Component {
               color="#328CE9"
               isDisabled={!this.props.isProjectOpen}
               onClick={this._restartClicked}
-              styles={[styles.rightSpaced]}
+              styles={styles.rightSpaced}
             />
             <IconButton
               iconUrl="./IconHelp.png"
@@ -328,7 +328,7 @@ export default class ToolBar extends React.Component {
               color="#383D40"
               onClick={this._getTogglePopoverFn(PopoverEnum.HELP)}
               popover={this._renderPopoverHelp()}
-              styles={[styles.rightSpaced]}
+              styles={styles.rightSpaced}
             />
           </div>
           <div className={css(styles.rightCol)}>
@@ -338,7 +338,7 @@ export default class ToolBar extends React.Component {
               color="#18B405"
               isDisabled={!this.props.isProjectRunning}
               onClick={this.props.onPublishClick}
-              styles={[styles.rightSpaced]}
+              styles={styles.rightSpaced}
             />
             <IconButton
               iconUrl="./IconArrowRight.png"
@@ -348,7 +348,7 @@ export default class ToolBar extends React.Component {
               onClick={this._getTogglePopoverFn(PopoverEnum.SEND_LINK)}
               popover={this._renderPopoverSendLink()}
               isPopoverToLeft
-              styles={[styles.rightSpaced]}
+              styles={styles.rightSpaced}
             />
             <IconButton
               iconUrl="./IconPhone.png"
