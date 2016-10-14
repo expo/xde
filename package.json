@@ -70,5 +70,8 @@
     "gulplog": "^1.0.0",
     "instapromise": "^2.0.2",
     "rimraf": "^2.5.2"
+  },
+  "dependencies": {
+    "instapromise": "latest"
   }
 }
