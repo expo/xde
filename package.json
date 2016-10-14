@@ -69,9 +69,7 @@
     "gulp-watch": "^4.3.6",
     "gulplog": "^1.0.0",
     "instapromise": "^2.0.2",
-    "rimraf": "^2.5.2"
-  },
-  "dependencies": {
-    "instapromise": "latest"
+    "rimraf": "^2.5.2",
+    "instapromise": "^2.0.6"
   }
 }
