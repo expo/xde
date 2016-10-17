@@ -7,7 +7,8 @@
     "local": "gulp build && cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 electron ./app",
     "dist": "gulp release",
     "mac": "gulp release:mac",
-    "win": "gulp release:windows"
+    "win": "gulp release:windows",
+    "linux": "gulp release:linux"
   },
   "build": {
     "asar": false,
@@ -35,8 +36,8 @@
       "remoteReleases": "https://github.com/exponentjs/xde"
     },
     "linux": {
+      "category": "Development",
       "target": [
-        "deb",
         "AppImage"
       ]
     }

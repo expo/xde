@@ -39,7 +39,7 @@ gulp.task('watch', gulp.parallel(
 gulp.task('release', gulp.series(
   tasks.clean,
   tasks.babel,
-  getReleaseTask(['mac', 'win']),
+  getReleaseTask(['mac', 'win', 'linux']),
   tasks.verifyMacApp,
 ));
 gulp.task('release:mac', gulp.series(
@@ -52,5 +52,10 @@ gulp.task('release:windows', gulp.series(
   tasks.clean,
   tasks.babel,
   getReleaseTask(['win']),
+));
+gulp.task('release:linux', gulp.series(
+  tasks.clean,
+  tasks.babel,
+  getReleaseTask(['linux']),
 ));
 gulp.task('clean', tasks.clean);
