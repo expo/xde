@@ -84,5 +84,17 @@ if (!require('electron-squirrel-startup')) {
       // when you should delete the corresponding element.
       mainWindow = null;
     });
+
+
+    let webContents = mainWindow.webContents;
+      var handleRedirect = (e, url) => {
+        if (url !== webContents.getURL()) {
+          e.preventDefault();
+          require('electron').shell.openExternal(url);
+        }
+      };
+
+      webContents.on('will-navigate', handleRedirect);
+      webContents.on('new-window', handleRedirect);
   });
 }

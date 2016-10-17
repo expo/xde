@@ -2,6 +2,7 @@ import _ from 'lodash';
 import bunyan from 'bunyan';
 import LoadingIndicator from 'react-loading-indicator';
 import React, {PropTypes} from 'react';
+import Linkify from 'react-linkify';
 
 import StyleConstants from './StyleConstants';
 
@@ -71,6 +72,7 @@ export default class ConsoleLog extends React.Component {
     }
 
     let time = log.time.toLocaleTimeString();
+    let shouldLinkify = true;
 
     message = _.trim(message);
 
@@ -96,6 +98,8 @@ export default class ConsoleLog extends React.Component {
     // A big chunk of json is logged right when an app starts. Lower the priority.
     if (log.tag === 'device' && message.includes('Running application') && message.includes('with appParams')) {
       logStyle = Styles.logDebug;
+      // Linkify does a bad job parsing json, so ingore this.
+      shouldLinkify = false;
     }
 
     // console.group
@@ -112,7 +116,14 @@ export default class ConsoleLog extends React.Component {
     return (
       <div key={index} style={{...Styles.logContainer, paddingTop, paddingBottom}}>
         <span style={Styles.logTime}>{time}</span>
-        <pre style={{...Styles.log, ...logStyle, paddingLeft, ...otherStyles}}>{message}</pre>
+        <pre style={{...Styles.log, ...logStyle, paddingLeft, ...otherStyles}}>
+          {shouldLinkify ?
+            <Linkify>
+              {message}
+            </Linkify> :
+            message
+          }
+        </pre>
       </div>
     );
   }
