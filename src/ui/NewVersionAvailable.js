@@ -31,9 +31,10 @@ export default class NewVersionAvailable extends React.Component {
     // N.B. If you are working on the UI for XDE updates, change this to `true` or else
     // that UI will never show up when running `npm start`
     let WORKING_ON_XDE_UPDATES = false;
+    let AUTO_UPDATES_SUPPORTED = process.platform !== 'linux';
 
     // Should we use NODE_ENV instead of XDE_NPM_START?
-    if ((!this.state.isVisible) || (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START)) {
+    if ((!this.state.isVisible) || (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START) || !AUTO_UPDATES_SUPPORTED) {
       return <div className={css(styles.hidden)} />;
     }
 
