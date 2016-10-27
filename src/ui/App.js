@@ -947,12 +947,12 @@ class App extends React.Component {
       try {
         args = JSON.parse(process.env.XDE_CMD_LINE_ARGS);
       } catch (e) {
-        console.error("Malformed XDE_CMD_LINE_ARGS: " + process.env.XDE_CMD_LINE_ARGS);
+        console.error(`Malformed XDE_CMD_LINE_ARGS: ${process.env.XDE_CMD_LINE_ARGS}`);
       }
       if (args.length === 1) {
         let openPath = path.resolve(process.env.XDE_CMD_LINE_CWD, args[0]);
 
-        console.log("Open project at " + openPath);
+        console.log(`Open project at ${openPath}`);
 
         this._startProjectAsync(args[0]);
       }
