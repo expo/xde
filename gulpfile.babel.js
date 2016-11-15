@@ -25,37 +25,22 @@ function getReleaseTask(platforms) {
   };
 }
 
-gulp.task('build:deploy', tasks.babel);
-gulp.task('build', gulp.parallel(
-  tasks.buildNativeModules,
-  tasks.babel,
+gulp.task('rebuild', gulp.parallel(
+  tasks.buildNativeModules(),
   tasks.icon,
 ));
-gulp.task('watch', gulp.parallel(
-  tasks.buildNativeModules,
-  gulp.series(tasks.babel, tasks.watchBabel),
+gulp.task('rebuild:force', gulp.parallel(
+  tasks.buildNativeModules(true),
   tasks.icon,
 ));
 gulp.task('release', gulp.series(
-  tasks.clean,
-  tasks.babel,
   getReleaseTask(['mac', 'win', 'linux']),
   tasks.verifyMacApp,
 ));
 gulp.task('release:mac', gulp.series(
-  tasks.clean,
-  tasks.babel,
   getReleaseTask(['mac']),
   tasks.verifyMacApp,
 ));
-gulp.task('release:windows', gulp.series(
-  tasks.clean,
-  tasks.babel,
-  getReleaseTask(['win']),
-));
-gulp.task('release:linux', gulp.series(
-  tasks.clean,
-  tasks.babel,
-  getReleaseTask(['linux']),
-));
+gulp.task('release:windows', getReleaseTask(['win']));
+gulp.task('release:linux', getReleaseTask(['linux']));
 gulp.task('clean', tasks.clean);

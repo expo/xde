@@ -58,20 +58,16 @@
         document.getElementById('app-loading').addEventListener('click', () => {
           remote.getCurrentWindow().openDevTools();
         }, false);
-
-        const React = require('react');
-        const ReactDOM = require('react-dom');
-        const App = require('../build/ui/App');
-        let rootElement = React.createElement(App, {
-          segment: analytics,
-        });
-        let rootNode = document.getElementById('app');
-        ReactDOM.render(rootElement, rootNode);
-
-        window.addEventListener('beforeunload', () => {
-          ReactDOM.unmountComponentAtNode(rootNode);
-        });
       })();
+    </script>
+    <script>
+      {
+        window.HMR = process.env.HOT ? true : false;
+        const script = document.createElement('script');
+        const port = process.env.DEVSERVER_PORT || 8282;
+        script.src = (process.env.HOT) ? `http://localhost:${port}/renderer.js` : '../build/renderer.js';
+        document.write(script.outerHTML);
+      }
     </script>
   </body>
 </html>

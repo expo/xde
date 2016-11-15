@@ -552,7 +552,7 @@ class App extends React.Component {
   };
 
   async _versionStringAsync() {
-    let pkgJsonFile = new JsonFile(path.join(__dirname, '../../package.json'));
+    let pkgJsonFile = new JsonFile(path.join(__dirname, '../../app/package.json'));
     let versionString = await pkgJsonFile.getAsync('version');
     return versionString;
   }

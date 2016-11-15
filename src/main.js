@@ -59,6 +59,14 @@ if (!require('electron-squirrel-startup')) {
   });
 
   app.on('ready', () => {
+    if (process.env.NODE_ENV === 'development') {
+      const devToolsInstaller = require('electron-devtools-installer');
+      const { default: installExtension, REACT_DEVELOPER_TOOLS } = devToolsInstaller;
+
+      installExtension(REACT_DEVELOPER_TOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err));
+    }
     // Create the browser window.
     mainWindow = new BrowserWindow({
       width: 1200,

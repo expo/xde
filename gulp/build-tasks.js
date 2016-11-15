@@ -1,6 +1,6 @@
 import 'instapromise';
 
-import electronPrebuilt from 'electron-prebuilt';
+import electron from 'electron';
 import {
   installNodeHeaders,
   rebuildNativeModules,
@@ -8,10 +8,7 @@ import {
 } from 'electron-rebuild';
 import fs from 'fs';
 import gulp from 'gulp';
-import babel from 'gulp-babel';
-import changed from 'gulp-changed';
 import rename from 'gulp-rename';
-import sourcemaps from 'gulp-sourcemaps';
 import logger from 'gulplog';
 import path from 'path';
 import rimraf from 'rimraf';
@@ -27,44 +24,32 @@ const paths = {
 };
 
 let tasks = {
-  async buildNativeModules() {
-    let shouldRebuild = await shouldRebuildNativeModules(electronPrebuilt);
-    if (!shouldRebuild) {
-      return;
-    }
+  buildNativeModules(force = false) {
+    return async function() {
+      let shouldRebuild = await shouldRebuildNativeModules(electron);
+      if (!shouldRebuild && !force) {
+        return;
+      }
 
-    let versionResult = await spawnAsync(electronPrebuilt, ['--version']);
-    let electronVersion = /v(\d+\.\d+\.\d+)/.exec(versionResult.stdout)[1];
+      let versionResult = await spawnAsync(electron, ['--version']);
+      let electronVersion = /v(\d+\.\d+\.\d+)/.exec(versionResult.stdout)[1];
 
-    // When Node and Electron share the same ABI version again (discussion here:
-    // https://github.com/electron/electron/issues/5851) we can remove this
-    // check and rely solely on shouldRebuildNativeModules again
-    let hasHeaders = await hasNodeHeadersAsync(electronVersion);
-    if (hasHeaders) {
-      return;
-    }
+      // When Node and Electron share the same ABI version again (discussion here:
+      // https://github.com/electron/electron/issues/5851) we can remove this
+      // check and rely solely on shouldRebuildNativeModules again
+      let hasHeaders = await hasNodeHeadersAsync(electronVersion);
+      if (hasHeaders && !force) {
+        return;
+      }
 
-    logger.info(`Rebuilding native Node modules for Electron ${electronVersion}...`);
-    await installNodeHeaders(electronVersion);
-    await rebuildNativeModules(electronVersion, paths.nodeModules);
-  },
-
-  babel() {
-    return gulp.src(paths.source.js)
-      .pipe(changed(paths.build))
-      .pipe(sourcemaps.init())
-      .pipe(babel())
-      .pipe(sourcemaps.write('__sourcemaps__'))
-      .pipe(gulp.dest(paths.build));
-  },
-
-  watchBabel(done) {
-    gulp.watch(paths.source.js, tasks.babel);
-    done();
+      logger.info(`Rebuilding native Node modules for Electron ${electronVersion}...`);
+      await installNodeHeaders(electronVersion);
+      await rebuildNativeModules(electronVersion, paths.nodeModules);
+    };
   },
 
   icon() {
-    let contentsPath = path.dirname(path.dirname(electronPrebuilt));
+    let contentsPath = path.dirname(path.dirname(electron));
     let resourcesPath = path.join(contentsPath, 'Resources');
     return gulp.src(paths.macIcon)
       .pipe(rename('electron.icns'))
