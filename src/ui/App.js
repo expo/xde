@@ -66,6 +66,7 @@ class App extends React.Component {
     super(props, context);
     this.state = {
       logs: [],
+      transformerProgress: 100,
       connectedDevices: {}, // mapping of device id -> {name, logs: array of logs}
       focusedConnectedDeviceId: null,
       isProjectRunning: false,
@@ -120,16 +121,30 @@ class App extends React.Component {
   }
 
   _renderPackagerConsole() {
-    let bottomBarRightContent = (this.state.tabsVisible === TAB_LEFT_VISIBLE) ?
+    let {
+      isLoading,
+      logs,
+      tabsVisible,
+      transformerProgress,
+    } = this.state;
+
+    let bottomBarRightContent = (tabsVisible === TAB_LEFT_VISIBLE) ?
       this._renderTabsVisibleControl() :
       null;
+
+    let bottomBarLeftContent = (transformerProgress < 100) ?
+      this._renderTransformerProgress() :
+      null;
+
     return (
       <div className={css(styles.tabContainer)}>
         <ConsoleLog
-          logs={this.state.logs}
-          isLoading={this.state.isLoading}
-          onClickClearLogs={this._onClickClearLogs}
           bottomBarRightContent={bottomBarRightContent}
+          bottomBarLeftContent={bottomBarLeftContent}
+          hideClearButton={!!bottomBarLeftContent}
+          isLoading={isLoading}
+          logs={logs}
+          onClickClearLogs={this._onClickClearLogs}
         />
       </div>
     );
@@ -275,6 +290,14 @@ class App extends React.Component {
       </div>
     );
   };
+
+  _renderTransformerProgress = () => {
+    return (
+      <span className={css(styles.transformerStatusText)}>
+        Building compiler cache: {this.state.transformerProgress}%
+      </span>
+    );
+  }
 
   _onClickTabLeftVisible = () => {
     let tabsVisible = (this.state.tabsVisible === TAB_RIGHT_VISIBLE) ?
@@ -748,6 +771,16 @@ class App extends React.Component {
     this.setState({ logs: [] });
   }
 
+  _updateTransformerProgress = (msg) => {
+    let transformerProgress = parseInt(msg.match(/\d+%/)[0], 10);
+    let isLoading = transformerProgress === 100 ? false : true;
+
+    this.setState({
+      transformerProgress,
+      isLoading,
+    });
+  }
+
   _appendLogChunk = (chunk) => {
     if (!chunk.shouldHide) {
       this._logsToAdd.push(chunk);
@@ -852,7 +885,11 @@ class App extends React.Component {
           if (chunk.tag === 'device') {
             this._handleDeviceLogs(chunk);
           } else {
-            this._appendLogChunk(chunk);
+            if (chunk.msg.match(/transformed \d+\/\d+ \(\d+%\)/)) {
+              this._updateTransformerProgress(chunk.msg);
+            } else {
+              this._appendLogChunk(chunk);
+            }
           }
         },
       },
@@ -1157,6 +1194,13 @@ let styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+  },
+
+  transformerStatusText: {
+    fontSize: StyleConstants.fontSizeSm,
+    color: StyleConstants.colorText,
+    paddingLeft: StyleConstants.gutterMd,
+    marginVertical: StyleConstants.gutterSm,
   },
 
   deviceSelectText: {
