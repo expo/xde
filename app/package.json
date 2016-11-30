@@ -13,7 +13,6 @@
     "url": "https://github.com/exponentjs/xde/issues"
   },
   "main": "./build/main.js",
-  "bin": "./build/xde-cli.js",
   "homepage": "https://github.com/exponentjs/xde#readme",
   "dependencies": {
     "@exponent/electron-cookies": "^2.0.0",

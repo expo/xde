@@ -21,6 +21,7 @@ import {
 } from 'xdl';
 Config.developerTool = 'xde';
 
+import fs from 'fs';
 import { StyleSheet, css } from 'aphrodite/no-important';
 import _ from 'lodash';
 import bunyan from 'bunyan';
@@ -93,6 +94,8 @@ class App extends React.Component {
     }
 
     this._setVersionAsync();
+
+    Binaries.installXDECommandAsync();
   }
 
   _resetLocalProperties() {
@@ -936,28 +939,6 @@ class App extends React.Component {
       console.error("Couldn't get list of recent Exps :(", err);
     });
 
-    // this._versionStringAsync().then((vs) => {
-    //   this.setState({versionString: vs});
-    // }, (err) => {
-    //   console.error("Couldn't get version string :(", err);
-    // });
-
-    let args = [];
-    if (process.env.XDE_CMD_LINE_ARGS) {
-      try {
-        args = JSON.parse(process.env.XDE_CMD_LINE_ARGS);
-      } catch (e) {
-        console.error(`Malformed XDE_CMD_LINE_ARGS: ${process.env.XDE_CMD_LINE_ARGS}`);
-      }
-      if (args.length === 1) {
-        let openPath = path.resolve(process.env.XDE_CMD_LINE_CWD, args[0]);
-
-        console.log(`Open project at ${openPath}`);
-
-        this._startProjectAsync(args[0]);
-      }
-    }
-
     this._registerLogs();
 
     ipcRenderer.on('menu-item-clicked', async (event, item) => {
@@ -973,6 +954,43 @@ class App extends React.Component {
           break;
       }
     });
+
+    this._parseCommandLineArgsAsync();
+  }
+
+  _parseCommandLineArgsAsync = async () => {
+    if (process.platform === 'darwin' && this.props.commandLineArgs) {
+      let argv = require('minimist')(this.props.commandLineArgs.slice(2));
+
+      let pathEnvironment = argv['path-environment'];
+      if (pathEnvironment) {
+        // TODO (skevy): when this is uncommented we get `Uncaught SyntaxError: Unexpected token :`
+        // process.env.PATH = pathEnvironment;
+      }
+
+      if (argv._ && argv._.length > 0 && await this._tryStartProjectAsync(argv._[0])) {
+        return;
+      }
+
+      let executedFrom = argv['executed-from'];
+      if (executedFrom && await this._tryStartProjectAsync(executedFrom)) {
+        return;
+      }
+    }
+  }
+
+  _tryStartProjectAsync = async (projectRoot) => {
+    try {
+      if (!fs.statSync(projectRoot).isDirectory()) {
+        return false;
+      }
+
+      await this._startProjectAsync(projectRoot);
+      return true;
+    } catch (e) {
+      this._logError(`Couldn't open ${projectRoot}: ${e.toString()}`);
+      return false;
+    }
   }
 
   componentWillUnmount() {

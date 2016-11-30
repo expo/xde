@@ -76,6 +76,7 @@ if (!require('electron-squirrel-startup')) {
       // for windows. osx gets icon from post install task
       icon: path.resolve(__dirname, '../build/xde.ico'),
     });
+    mainWindow.commandLineArgs = process.argv;
     mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
 
     // Open the devtools.
@@ -92,7 +93,6 @@ if (!require('electron-squirrel-startup')) {
       // when you should delete the corresponding element.
       mainWindow = null;
     });
-
 
     let webContents = mainWindow.webContents;
       var handleRedirect = (e, url) => {
