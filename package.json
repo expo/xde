@@ -7,6 +7,7 @@
     "start-staging-hot": "cross-env HOT=1 npm run start-staging",
     "start-local": "cross-env XDE_NPM_START=1 EXPONENT_LOCAL=1 npm run _start",
     "start-local-hot": "cross-env HOT=1 npm run start-local",
+    "start-proxy": "HTTP_PROXY=http://localhost.charlesproxy.com:8888 HTTPS_PROXY=http://localhost.charlesproxy.com:8888 npm start",
     "_start": "concurrently --kill-others --raw \"npm run webpack\" \"npm run app\"",
     "app": "gulp rebuild && electron ./app",
     "webpack": "if [ -n \"$HOT\" ]; then npm run webpack-hot; else npm run webpack-dev; fi",
