@@ -962,7 +962,12 @@ class App extends React.Component {
 
   _parseCommandLineArgsAsync = async () => {
     if (process.platform === 'darwin' && this.props.commandLineArgs) {
-      let argv = require('minimist')(this.props.commandLineArgs.slice(2));
+      let dummyIndex = _.indexOf(this.props.commandLineArgs, 'dummy');
+      if (dummyIndex === -1) {
+        return;
+      }
+
+      let argv = require('minimist')(this.props.commandLineArgs.slice(dummyIndex + 1));
 
       let pathEnvironment = argv['path-environment'];
       if (pathEnvironment) {
