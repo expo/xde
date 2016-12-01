@@ -968,14 +968,16 @@ class App extends React.Component {
         // process.env.PATH = pathEnvironment;
       }
 
-      if (argv._ && argv._.length > 0 && await this._tryStartProjectAsync(argv._[0])) {
+      let executedFrom = argv['executed-from'];
+      if (!executedFrom) {
         return;
       }
 
-      let executedFrom = argv['executed-from'];
-      if (executedFrom && await this._tryStartProjectAsync(executedFrom)) {
+      if (argv._ && argv._.length > 0 && await this._tryStartProjectAsync(path.resolve(executedFrom, argv._[0]))) {
         return;
       }
+
+      await this._tryStartProjectAsync(executedFrom);
     }
   }
 
