@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env XDE_NPM_START=1 npm run _start",
+    "rebuild": "gulp rebuild:force",
     "start-hot": "cross-env HOT=1 npm run start",
     "start-staging": "cross-env XDE_NPM_START=1 EXPONENT_STAGING=1 npm run _start",
     "start-staging-hot": "cross-env HOT=1 npm run start-staging",
