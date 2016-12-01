@@ -95,7 +95,9 @@ class App extends React.Component {
 
     this._setVersionAsync();
 
-    Binaries.installXDECommandAsync();
+    if (process.platform === 'darwin') {
+      Binaries.installXDECommandAsync();
+    }
   }
 
   _resetLocalProperties() {
