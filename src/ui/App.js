@@ -1008,8 +1008,7 @@ class App extends React.Component {
 
       let pathEnvironment = argv['path-environment'];
       if (pathEnvironment) {
-        // TODO (skevy): when this is uncommented we get `Uncaught SyntaxError: Unexpected token :`
-        // process.env.PATH = pathEnvironment;
+        process.env.PATH = pathEnvironment;
       }
 
       let executedFrom = argv['executed-from'];

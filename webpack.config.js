@@ -65,11 +65,10 @@ module.exports = env => {
   };
 
   const commonPlugins = [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        XDE_NPM_START: JSON.stringify(getenv.boolish('XDE_NPM_START', false)),
-      },
+    new webpack.BannerPlugin({
+      banner: 'process.env.NODE_ENV = ' + JSON.stringify(getenv.string('NODE_ENV', 'development')) + ';',
+      raw: true,
+      entryOnly: false,
     }),
     //prints more readable module names in the browser console on HMR updates
     new webpack.NamedModulesPlugin(),
@@ -87,6 +86,9 @@ module.exports = env => {
       node: {
         __dirname: false,
         __filename: false,
+        process: false,
+        Buffer: false,
+        setImmediate: false,
       },
       externals: [
         nodeExternals({
@@ -118,6 +120,9 @@ module.exports = env => {
       node: {
         __dirname: false,
         __filename: false,
+        process: false,
+        Buffer: false,
+        setImmediate: false,
       },
       externals(context, request, callback) {
         callback(null, request.startsWith('.') ? false : `require('${request}')`);
