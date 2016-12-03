@@ -418,9 +418,6 @@ class App extends React.Component {
     const otherMenuItems = [{
       label: 'Development Mode',
       option: 'dev',
-    }, {
-      label: 'Minify',
-      option: 'minify',
     }].map(({label, option}) => {
       const isEnabled = this.state.projectSettings[option];
 

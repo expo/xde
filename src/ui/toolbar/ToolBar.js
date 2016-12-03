@@ -410,7 +410,6 @@ export default class ToolBar extends React.Component {
     return UrlUtils.constructManifestUrlAsync(this.props.projectRoot, {
       hostType: 'localhost',
       dev: this.props.projectSettings.dev,
-      minify: this.props.projectSettings.minify,
     });
   };
 }
