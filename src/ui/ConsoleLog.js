@@ -12,7 +12,6 @@ export default class ConsoleLog extends React.Component {
     logs: PropTypes.arrayOf(PropTypes.object),
     bottomBarLeftContent: PropTypes.node,
     bottomBarRightContent: PropTypes.node,
-    hideClearButton: PropTypes.bool,
     onClickClearLogs: PropTypes.func,
   };
 
@@ -170,11 +169,9 @@ export default class ConsoleLog extends React.Component {
             {bottomBarLeftContent}
           </div>
           <div style={Styles.bottomBarRight}>
-            { !this.props.hideClearButton && (
-              <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
-                <img src="./IconClear.png" style={Styles.clearButton} />
-              </a>
-              ) }
+            <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
+              <img src="./IconClear.png" style={Styles.clearButton} />
+            </a>
             {bottomBarRightContent}
           </div>
         </div>
