@@ -37,6 +37,6 @@
     "react-virtualized": "^7.12.2",
     "source-map-support": "^0.4.6",
     "tree-kill": "^1.1.0",
-    "xdl": "0.26.3"
+    "xdl": "0.26.4"
   }
 }
