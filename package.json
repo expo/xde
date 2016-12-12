@@ -21,7 +21,8 @@
     "dist": "gulp clean && npm run build && gulp release",
     "mac": "gulp clean && npm run build && gulp release:mac",
     "win": "gulp clean && npm run build && gulp release:windows",
-    "linux": "gulp clean && npm run build && gulp release:linux"
+    "linux": "gulp clean && npm run build && gulp release:linux",
+    "flow-typed": "flow-typed install --flowVersion=\"$(flow version | awk '{ print $9 }')\" && cd app/ && npm run flow-typed"
   },
   "build": {
     "asar": false,
@@ -84,6 +85,8 @@
     "eslint-config-exponent": "^4.0.0",
     "eslint-plugin-babel": "^3.3.0",
     "eslint-plugin-react": "^6.3.0",
+    "flow-bin": "^0.36.0",
+    "flow-typed": "^2.0.0",
     "getenv": "^0.7.0",
     "gulp": "git+https://github.com/gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.2",

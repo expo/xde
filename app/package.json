@@ -12,6 +12,9 @@
   "bugs": {
     "url": "https://github.com/exponentjs/xde/issues"
   },
+  "scripts": {
+    "flow-typed": "flow-typed install --flowVersion=\"$(flow version | awk '{ print $9 }')\""
+  },
   "main": "./build/main.js",
   "homepage": "https://github.com/exponentjs/xde#readme",
   "dependencies": {
