@@ -7,12 +7,12 @@ const nodeExternals = require('webpack-node-externals');
 const getenv = require('getenv');
 
 const outputPath = path.join(__dirname, 'app', 'build');
-const nodeEnv = process.env.NODE_ENV || 'development';
 
 module.exports = env => {
   let babelConfig = {
     cacheDirectory: true,
     babelrc: false,
+    sourceMaps: true,
     presets: ['es2017', 'stage-1', 'react'],
     plugins: [
       'flow-react-proptypes',
@@ -66,7 +66,7 @@ module.exports = env => {
 
   const commonPlugins = [
     new webpack.BannerPlugin({
-      banner: 'process.env.NODE_ENV = ' + JSON.stringify(getenv.string('NODE_ENV', 'development')) + ';',
+      banner: `process.env.NODE_ENV = ${JSON.stringify(getenv.string('NODE_ENV', 'development'))};`,
       raw: true,
       entryOnly: false,
     }),
@@ -95,7 +95,7 @@ module.exports = env => {
           modulesDir: './app/node_modules',
         }),
       ],
-      devtool: env.dev ? 'eval' : 'source-map',
+      devtool: env.dev ? 'eval-source-map' : 'source-map',
       module: moduleConfig,
       resolve: {
         extensions: [
@@ -104,6 +104,9 @@ module.exports = env => {
           '.jsx',
           '.json',
         ],
+        alias: {
+          xde: path.join(__dirname, 'src'),
+        },
       },
       plugins: [
         ...commonPlugins,
@@ -127,11 +130,14 @@ module.exports = env => {
       externals(context, request, callback) {
         callback(null, request.startsWith('.') ? false : `require('${request}')`);
       },
-      devtool: env.dev ? 'inline-source-map' : 'source-map',
+      devtool: env.dev ? 'eval-source-map' : 'source-map',
       resolve: {
         modules: [
           'node_modules',
         ],
+        alias: {
+          xde: path.join(__dirname, 'src'),
+        },
       },
       module: moduleConfig,
       plugins: [
@@ -152,7 +158,7 @@ module.exports = env => {
     let rendererConfig = config[0];
     rendererConfig.entry = [
       'react-hot-loader/patch',
-      config[0].entry,
+      './src/renderer-hot.js',
     ];
 
     rendererConfig.output = Object.assign({}, rendererConfig.output, {

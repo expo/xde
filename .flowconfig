@@ -1,0 +1,39 @@
+[ignore]
+<PROJECT_ROOT>/gulp/.*
+<PROJECT_ROOT>/build/.*
+<PROJECT_ROOT>/app/build/.*
+<PROJECT_ROOT>/app/web/.*
+<PROJECT_ROOT>/dev/.*
+
+# Node modules
+<PROJECT_ROOT>/node_modules/babel-plugin-flow-react-proptypes/.*
+
+# Other dev tools
+.*/exp/.*
+.*/xdl/build/.*
+.*/node_modules/xdl/.*
+
+[include]
+../
+
+[options]
+module.system=haste
+esproposal.decorators=ignore
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+esproposal.export_star_as=enable
+
+unsafe.enable_getters_and_setters=true
+
+suppress_comment=.*\\$FlowFixMe
+suppress_comment=.*\\$FlowIssue
+suppress_comment=\\(.\\|\n\\)*\\$FlowNewLine
+
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=app/node_modules
+
+module.name_mapper='^xde/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+
+# XDL
+module.name_mapper='^xdl$' -> '<PROJECT_ROOT>/../xdl/src/xdl.js'
+module.name_mapper='^xdl/build/\(.*\)$' -> '<PROJECT_ROOT>/../xdl/src/\1'

@@ -6,4 +6,5 @@
     "transform-object-rest-spread",
     "transform-runtime",
   ],
+  "sourceMaps": true,
 }
