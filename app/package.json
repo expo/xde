@@ -1,7 +1,7 @@
 {
   "name": "xde",
   "productName": "Exponent XDE",
-  "version": "2.11.0",
+  "version": "3.0.0",
   "description": "The Exponent Development Environment",
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "react-loading-indicator": "^1.0.2",
     "react-motion": "^0.4.5",
     "react-redux": "^4.4.5",
+    "react-router": "4.0.0-alpha.6",
     "react-virtualized": "^7.12.2",
     "source-map-support": "^0.4.6",
     "redux": "^3.6.0",

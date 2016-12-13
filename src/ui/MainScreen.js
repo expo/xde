@@ -15,10 +15,10 @@ import {
   ProjectUtils,
   Simulator,
   UrlUtils,
-  User,
   UserSettings,
   Versions,
 } from 'xdl';
+
 Config.developerTool = 'xde';
 
 import fs from 'fs';
@@ -37,7 +37,6 @@ import {
 
 import Commands from './Commands';
 import ConsoleLog from './ConsoleLog';
-import LoginPage from './LoginPage';
 import NewProjectModal from './NewProjectModal';
 import NewVersionAvailable from './NewVersionAvailable';
 import Notification from './Notification';
@@ -57,7 +56,7 @@ const TAB_LEFT_VISIBLE = 'tab-left-visible',
   TAB_RIGHT_VISIBLE = 'tab-right-visible',
   TAB_BOTH_VISIBLE = 'tab-both-visible';
 
-class App extends React.Component {
+export default class MainScreen extends React.Component {
   static propTypes = {
     segment: PropTypes.array,
   };
@@ -72,7 +71,6 @@ class App extends React.Component {
       projectRoot: null,
       projectJson: null,
       recentExps: [],
-      user: null,
       projectSettings: null,
       notification: null,
       computedUrl: null,
@@ -385,7 +383,8 @@ class App extends React.Component {
 
       /* eslint-disable react/jsx-no-bind */
       return (
-        <MenuItem label={option} key={option} checkState={checkState}
+        <MenuItem
+          label={option} key={option} checkState={checkState}
           onClick={() => this._setProjectSettingAsync({urlType: option})}
         />
       );
@@ -400,7 +399,8 @@ class App extends React.Component {
 
       /* eslint-disable react/jsx-no-bind */
       return (
-        <MenuItem label={label} key={option}
+        <MenuItem
+          label={label} key={option}
           checkState={isEnabled ? 'checked' : 'unchecked'}
           onClick={() => this._setProjectSettingAsync({[option]: !isEnabled})}
         />
@@ -450,60 +450,52 @@ class App extends React.Component {
   }
 
   _logOutAsync = async () => {
-    this.setState({user: null});
+    // TODO: put this state in Redux
     await this._stopProjectAsync(this.state.projectRoot);
-    await User.logoutAsync();
   };
 
   render() {
     /* eslint-disable react/jsx-no-bind */
     return (
       <div onClick={this._closePopover}>
-        <LoginPage
-          loggedInAs={this.state.user}
-          onLogin={(user) => {
-            this.setState({user});
-          }}>
-          <div className={css(styles.container)}>
-            <NewVersionAvailable />
-            <div>
-              {this.state.notification && (
-                <Notification {...this.state.notification} />
-              )}
-              <div className={css(styles.topSection)}>
-                <ToolBar
-                  isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
-                  isProjectRunning={this.state.isProjectRunning}
-                  onAppendErrors={this._logError}
-                  onAppendLogs={this._logInfo}
-                  onLogOut={this._logOutAsync}
-                  onNewProjectClick={this._newClickedAsync}
-                  onOpenProjectClick={this._openClickedAsync}
-                  onCloseProjectClick={this._closeClickedAsync}
-                  onPublishClick={this._publishClickedAsync}
-                  onRestartClick={this._restartClickedAsync}
-                  onSendLinkClick={this._sendClickedAsync}
-                  onDocsClicked={this._docsClicked}
-                  onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
-                  onChatWithUsOnIntercomClicked={this._chatWithUsOnIntercomClicked}
-                  onSendDiagnosticsReportClicked={this._sendDiagnosticsReportClicked}
-                  onClearXDECacheClicked={this._clearXDECacheClicked}
-                  onTogglePopover={this._onTogglePopover}
-                  openPopover={this.state.openPopover}
-                  projectJson={this.state.projectJson}
-                  projectRoot={this.state.projectRoot}
-                  projectSettings={this.state.projectSettings}
-                  sendTo={this.state.sendTo}
-                  userName={this.state.user && this.state.user.username}
-                />
-                {this.state.projectSettings && this._renderUrlInput()}
-              </div>
+        <div className={css(styles.container)}>
+          <NewVersionAvailable />
+          <div>
+            {this.state.notification && (
+              <Notification {...this.state.notification} />
+            )}
+            <div className={css(styles.topSection)}>
+              <ToolBar
+                isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
+                isProjectRunning={this.state.isProjectRunning}
+                onAppendErrors={this._logError}
+                onAppendLogs={this._logInfo}
+                onLogOut={this._logOutAsync}
+                onNewProjectClick={this._newClickedAsync}
+                onOpenProjectClick={this._openClickedAsync}
+                onCloseProjectClick={this._closeClickedAsync}
+                onPublishClick={this._publishClickedAsync}
+                onRestartClick={this._restartClickedAsync}
+                onSendLinkClick={this._sendClickedAsync}
+                onDocsClicked={this._docsClicked}
+                onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
+                onChatWithUsOnIntercomClicked={this._chatWithUsOnIntercomClicked}
+                onSendDiagnosticsReportClicked={this._sendDiagnosticsReportClicked}
+                onClearXDECacheClicked={this._clearXDECacheClicked}
+                onTogglePopover={this._onTogglePopover}
+                openPopover={this.state.openPopover}
+                projectJson={this.state.projectJson}
+                projectRoot={this.state.projectRoot}
+                projectSettings={this.state.projectSettings}
+                sendTo={this.state.sendTo}
+              />
+              {this.state.projectSettings && this._renderUrlInput()}
             </div>
-            {this.state.projectRoot ?
-              this._renderTabs() :
-              this._renderProjectList()}
           </div>
-        </LoginPage>
+          {this.state.projectRoot ?
+            this._renderTabs() :
+            this._renderProjectList()}
+        </div>
         {!!this.state.openModal && <div className={css(styles.modalOverlay)}>
           <div className={css(styles.modalContent)}>
             {this._renderModal()}
@@ -849,7 +841,11 @@ class App extends React.Component {
           if (chunk.tag === 'device') {
             this._handleDeviceLogs(chunk);
           } else {
-            this._appendLogChunk(chunk);
+            if (chunk.msg.match(/transformed \d+\/\d+ \(\d+%\)/)) {
+              this._updateTransformerProgress(chunk.msg);
+            } else {
+              this._appendLogChunk(chunk);
+            }
           }
         },
       },
@@ -1068,6 +1064,7 @@ let styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
+    paddingTop: 30,
     backgroundImage: Env.isStaging() ? 'url("./staging.jpg")' : null,
   },
 
@@ -1183,7 +1180,3 @@ global.cl = function(a, b, c) {
 global.ce = function(a, b, c) {
   console.error(a, b, c);
 };
-
-
-
-module.exports = App;

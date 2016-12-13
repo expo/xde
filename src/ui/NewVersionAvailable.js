@@ -15,8 +15,11 @@ const {
 const NOTIFICATION_TIMEOUT_MS = 5000;
 
 export default class NewVersionAvailable extends React.Component {
+  _isMounted: boolean;
+
   constructor(props, context) {
     super(props, context);
+    this._isMounted = true;
     this.state = {
       isVisible: false,
       isChecking: false,
@@ -82,6 +85,7 @@ export default class NewVersionAvailable extends React.Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     // We need to call removeAllListeners instead of removeListener because
     // the latter doesn't work over Electron's IPC channel
     autoUpdater.removeAllListeners('error');
@@ -107,6 +111,10 @@ export default class NewVersionAvailable extends React.Component {
 
   @autobind
   _handleUpdateError(event, message) {
+    if (!this._isMounted) {
+      return;
+    }
+
     this.setState({
       isVisible: true,
       errorMessage: message,
@@ -117,12 +125,20 @@ export default class NewVersionAvailable extends React.Component {
     });
 
     setTimeout(() => {
+      if (!this._isMounted) {
+        return;
+      }
+
       this.setState({isVisible: false});
     }, NOTIFICATION_TIMEOUT_MS);
   }
 
   @autobind
   _handleCheckingForUpdate() {
+    if (!this._isMounted) {
+      return;
+    }
+
     this.setState({
       isChecking: true,
       isDownloading: false,
@@ -132,6 +148,10 @@ export default class NewVersionAvailable extends React.Component {
 
   @autobind
   _handleUpdateAvailable() {
+    if (!this._isMounted) {
+      return;
+    }
+
     this.setState({
       isChecking: false,
       isDownloading: true,
@@ -141,6 +161,10 @@ export default class NewVersionAvailable extends React.Component {
 
   @autobind
   _handleUpdateNotAvailable() {
+    if (!this._isMounted) {
+      return;
+    }
+
     this.setState({
       isChecking: false,
       isDownloading: false,
@@ -150,6 +174,10 @@ export default class NewVersionAvailable extends React.Component {
 
   @autobind
   _handleUpdateDownloaded(event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
+    if (!this._isMounted) {
+      return;
+    }
+
     this.setState({
       isVisible: true,
       isChecking: false,

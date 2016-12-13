@@ -1,5 +1,9 @@
+/**
+ * @flow
+ */
+
 import { StyleSheet, css } from 'aphrodite';
-import React, {PropTypes} from 'react';
+import React from 'react';
 import {
   Analytics,
   Android,
@@ -7,6 +11,9 @@ import {
   Simulator,
   UrlUtils,
 } from 'xdl';
+
+import { actions } from 'xde/state';
+import { connect } from 'xde/state/utils';
 
 import {PopoverEnum} from '../Constants';
 import ProjectIcon from '../ProjectIcon';
@@ -17,33 +24,53 @@ import MenuItem from './MenuItem';
 import MenuSeparator from './MenuSeparator';
 import Popover from './Popover';
 
-export default class ToolBar extends React.Component {
-  static propTypes = {
-    isProjectOpen: PropTypes.bool,
-    isProjectRunning: PropTypes.bool,
-    openPopover: PropTypes.oneOf(Object.keys(PopoverEnum).map((k) => PopoverEnum[k])),
-    onTogglePopover: PropTypes.func.isRequired,
-    projectJson: PropTypes.object,
-    projectRoot: PropTypes.string,
-    projectSettings: PropTypes.object,
-    sendTo: PropTypes.string,
-    userName: PropTypes.string,
+import type { AppState, AppActions } from 'xde/state/types';
 
-    onAppendErrors: PropTypes.func,
-    onAppendLogs: PropTypes.func,
-    onLogOut: PropTypes.func,
-    onNewProjectClick: PropTypes.func,
-    onOpenProjectClick: PropTypes.func,
-    onCloseProjectClick: PropTypes.func,
-    onPublishClick: PropTypes.func,
-    onRestartClick: PropTypes.func,
-    onSendLinkClick: PropTypes.func,
-    onDocsClicked: PropTypes.func,
-    onJoinUsOnSlackClicked: PropTypes.func,
-    onChatWithUsOnIntercomClicked: PropTypes.func,
-    onSendDiagnosticsReportClicked: PropTypes.func,
-    onClearXDECacheClicked: PropTypes.func,
-  };
+type Props = {
+  isProjectOpen: boolean,
+  isProjectRunning: boolean,
+  openPopover?: $Keys<typeof PopoverEnum>,
+  onTogglePopover: () => void,
+  projectJson?: {
+    icon: string,
+  },
+  projectRoot?: string,
+  projectSettings?: {
+    dev: boolean,
+    minify: boolean,
+  },
+  sendTo?: string,
+  userName?: string,
+
+  onAppendErrors: () => void,
+  onAppendLogs: () => void,
+  onLogOut: () => void,
+  onNewProjectClick: () => void,
+  onOpenProjectClick: () => void,
+  onCloseProjectClick: () => void,
+  onPublishClick: () => void,
+  onRestartClick: () => void,
+  onSendLinkClick: () => void,
+  onDocsClicked: () => void,
+  onJoinUsOnSlackClicked: () => void,
+  onChatWithUsOnIntercomClicked: () => void,
+  onSendDiagnosticsReportClicked: () => void,
+  onClearXDECacheClicked: () => void,
+
+  actions: AppActions,
+};
+
+type State = {
+  shiftSelected: boolean,
+}
+
+class ToolBar extends React.Component {
+  static data = ({ auth }: AppState) => ({
+    userName: auth.user && auth.user.nickname,
+  });
+
+  props: Props;
+  state: State;
 
   constructor(props, context) {
     super(props, context);
@@ -257,6 +284,9 @@ export default class ToolBar extends React.Component {
 
   _onLogOutClick = async () => {
     try {
+      // Logout!
+      this.props.actions.auth.logout();
+      // Tell the parent component
       this.props.onLogOut();
     } catch (error) {
       console.error("logout error:", error);
@@ -296,7 +326,7 @@ export default class ToolBar extends React.Component {
       <div>
         <div className={css(styles.row)}>
           <div className={css(styles.leftCol)}>
-            <ProjectIcon iconUrl={iconUrl} />
+            { iconUrl && <ProjectIcon iconUrl={iconUrl} /> }
             <div className={css(styles.projectName)}>{projectName}</div>
           </div>
           <div className={css(styles.rightCol)}>
@@ -414,6 +444,8 @@ export default class ToolBar extends React.Component {
     });
   };
 }
+
+export default connect(actions)(ToolBar);
 
 const styles = StyleSheet.create({
   separator: {

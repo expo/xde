@@ -73,6 +73,8 @@ if (!require('electron-squirrel-startup')) {
       height: 800,
       minWidth: 700,
       minHeight: 500,
+      // For mac
+      titleBarStyle: 'hidden-inset',
       // for windows. osx gets icon from post install task
       icon: path.resolve(__dirname, '../build/xde.ico'),
     });
@@ -95,14 +97,14 @@ if (!require('electron-squirrel-startup')) {
     });
 
     let webContents = mainWindow.webContents;
-      var handleRedirect = (e, url) => {
-        if (url !== webContents.getURL()) {
-          e.preventDefault();
-          require('electron').shell.openExternal(url);
-        }
-      };
+    var handleRedirect = (e, url) => {
+      if (url !== webContents.getURL()) {
+        e.preventDefault();
+        require('electron').shell.openExternal(url);
+      }
+    };
 
-      webContents.on('will-navigate', handleRedirect);
-      webContents.on('new-window', handleRedirect);
+    webContents.on('will-navigate', handleRedirect);
+    webContents.on('new-window', handleRedirect);
   });
 }

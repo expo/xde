@@ -8,7 +8,7 @@ import Redbox from 'redbox-react';
 
 import { AppContainer } from 'react-hot-loader';
 
-import App from './ui/App';
+import RootApp from './ui/RootApp';
 
 const rootNode = document.getElementById('app');
 
@@ -16,13 +16,13 @@ const render = () => {
   if (window.HMR) {
     ReactDOM.render(
       <AppContainer errorReporter={Redbox}>
-        <App segment={window.analytics} />
+        <RootApp segment={window.analytics} />
       </AppContainer>,
       rootNode
     );
   } else {
     ReactDOM.render(
-      <App segment={window.analytics} />,
+      <RootApp segment={window.analytics} />,
       rootNode
     );
   }
@@ -38,7 +38,7 @@ if (window.HMR) {
     try {
       // host re-render
       // $FlowFixMe
-      module.hot.accept('./ui/App', render);
+      module.hot.accept('./ui/RootApp', render);
     }
     catch (error) {
       // hot re-render failed. display a nice error page like inwebpack-hot-middleware

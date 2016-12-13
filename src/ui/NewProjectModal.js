@@ -15,7 +15,7 @@ import LoadingIndicator from 'react-loading-indicator';
 import Commands from './Commands';
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
-import * as IdentifierRules from '../IdentifierRules';
+import * as IdentifierRules from 'xde/utils/IdentifierRules';
 
 const ICON_SIZE = 120;
 const MAX_PROJECT_LENGTH = 44;

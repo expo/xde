@@ -6,13 +6,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { remote } from 'electron';
 
-import App from './ui/App';
+import RootApp from './ui/RootApp';
 
 const rootNode = document.getElementById('app');
 const commandLineArgs = remote.getCurrentWindow().commandLineArgs;
 
 ReactDOM.render(
-  <App segment={window.analytics} commandLineArgs={commandLineArgs} />,
+  <RootApp segment={window.analytics} commandLineArgs={commandLineArgs} />,
   rootNode
 );
 
