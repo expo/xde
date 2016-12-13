@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   topBar: {
     '-webkit-app-region': 'drag',
     height: 40,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     position: 'absolute',
     top: 0,
     left: 0,
