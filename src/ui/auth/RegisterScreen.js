@@ -10,11 +10,11 @@ import { actions } from 'xde/state';
 import { connectToData } from 'xde/state/utils';
 import type { AppActions, AppState } from 'xde/state/types';
 
-import type { User as UserObject } from 'xdl/build/User';
+import type { UserOrLegacyUser } from 'xdl/build/User';
 import type { RegisterFormData } from './components/RegisterForm';
 
 type Props = {
-  user: ?UserObject,
+  user: ?UserOrLegacyUser,
   isRegistering: boolean,
   actions: AppActions,
 }

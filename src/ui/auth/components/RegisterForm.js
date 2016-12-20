@@ -16,7 +16,7 @@ import TextInput from 'xde/ui/components/TextInput';
 import StyleConstants from 'xde/ui/StyleConstants';
 import * as IdentifierRules from 'xde/utils/IdentifierRules';
 
-import type { UserObject, User, LegacyUser } from 'xdl/build/User';
+import type { UserOrLegacyUser, User, LegacyUser } from 'xdl/build/User';
 
 export type RegisterFormData = {
   givenName: string,
@@ -27,7 +27,7 @@ export type RegisterFormData = {
 };
 
 type Props = {
-  user: ?UserObject,
+  user: ?UserOrLegacyUser,
   isRegistering: boolean,
   onRegister: (formData: RegisterFormData) => void | Promise<void>,
 }

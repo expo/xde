@@ -10,7 +10,7 @@ import {
 import { asyncAction, reduceAsync, composeReducers } from 'xde/state/utils';
 import type { AppAction, AppDispatch, AppState } from 'xde/state/types';
 
-import type { UserObject, RegistrationData } from 'xdl/build/User';
+import type { UserOrLegacyUser, RegistrationData } from 'xdl/build/User';
 
 const XDE_CLIENT_ID = '2Gej4rsLcTCRuhKKzn8xkAHsD1kiPAGS';
 UserManager.initialize(XDE_CLIENT_ID);
@@ -92,7 +92,7 @@ type State = {
   isOnboarded: boolean,
   accessToken: ?string,
   idToken: ?string, // jwt
-  user: ?UserObject,
+  user: ?UserOrLegacyUser,
 };
 
 const initialState: State = {
@@ -111,7 +111,7 @@ type LoginAction = AppAction & {
   payload: {
     loginType: LoginType,
     pending?: ActionTypes,
-    user: UserObject,
+    user: UserOrLegacyUser,
     error?: Error,
   }
 };
