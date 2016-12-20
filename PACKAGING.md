@@ -37,7 +37,7 @@ The entry point loads `web/index.html` in the Chromium instance. This is a norma
 
 4. Create a git tag called vX.Y.Z in XDE, not universe. Push the tag to github.
 
-5. Go to https://github.com/exponentjs/xde/releases and click on "Draft a new release".
+5. Go to https://github.com/exponent/xde/releases and click on "Draft a new release".
    Select the tag you just pushed. Title should be same as tag name.
    Write a short changelog. Make sure to drag the .zip file into the release
    attachments. Wait for upload and publish release.

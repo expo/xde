@@ -515,7 +515,7 @@ export default class MainScreen extends React.Component {
   };
 
   _joinUsOnSlackClicked = () => {
-    require('electron').shell.openExternal('https://slack.exponentjs.com/');
+    require('electron').shell.openExternal('https://slack.getexponent.com/');
   };
 
   _chatWithUsOnIntercomClicked = () => {

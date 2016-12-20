@@ -47,7 +47,7 @@
       "category": "public.app-category.developer-tools"
     },
     "win": {
-      "remoteReleases": "https://github.com/exponentjs/xde"
+      "remoteReleases": "https://github.com/exponent/xde"
     },
     "linux": {
       "category": "Development",

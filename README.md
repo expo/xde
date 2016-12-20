@@ -1,4 +1,4 @@
-# xde [![Slack](http://slack.exponentjs.com/badge.svg)](http://slack.exponentjs.com)
+# xde [![Slack](https://slack.getexponent.com/badge.svg)](https://slack.getexponent.com)
 The Exponent Development Environment
 
 Download the latest version of XDE for [macOS](https://xde-updates.exponentjs.com/download/mac), [Windows](https://xde-updates.exponentjs.com/download/win32), or [Linux](https://xde-updates.exponentjs.com/download/linux).
