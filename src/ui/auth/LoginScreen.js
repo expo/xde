@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { actions } from 'xde/state';
-import { connect } from 'xde/state/utils';
+import { connectToData } from 'xde/state/utils';
 
 import LoginForm from './components/LoginForm';
 
@@ -48,4 +48,4 @@ class LoginScreen extends React.Component {
   }
 }
 
-export default connect(actions)(LoginScreen);
+export default connectToData(actions)(LoginScreen);

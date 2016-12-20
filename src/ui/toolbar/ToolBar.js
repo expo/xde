@@ -13,7 +13,7 @@ import {
 } from 'xdl';
 
 import { actions } from 'xde/state';
-import { connect } from 'xde/state/utils';
+import { connectToData } from 'xde/state/utils';
 
 import {PopoverEnum} from '../Constants';
 import ProjectIcon from '../ProjectIcon';
@@ -445,7 +445,7 @@ class ToolBar extends React.Component {
   };
 }
 
-export default connect(actions)(ToolBar);
+export default connectToData(actions)(ToolBar);
 
 const styles = StyleSheet.create({
   separator: {

@@ -11,7 +11,7 @@ import {
 import { StyleSheet, css } from 'aphrodite/no-important';
 
 import { actions } from 'xde/state';
-import { connect } from 'xde/state/utils';
+import { connectToData } from 'xde/state/utils';
 import { withRouter } from 'xde/utils/routing';
 
 import Button from 'xde/ui/components/Button';
@@ -91,7 +91,7 @@ class ForgotPasswordScreen extends React.Component {
 }
 
 const screenWithRouter = withRouter(ForgotPasswordScreen);
-export default connect(actions)(screenWithRouter);
+export default connectToData(actions)(screenWithRouter);
 
 const styles = StyleSheet.create({
   form: {

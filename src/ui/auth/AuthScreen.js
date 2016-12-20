@@ -13,7 +13,7 @@ import {
 import SharedStyles from 'xde/ui/Styles';
 import { withRouter } from 'xde/utils/routing';
 
-import { connect } from 'xde/state/utils';
+import { connectToData } from 'xde/state/utils';
 
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
@@ -111,7 +111,7 @@ class AuthScreen extends React.Component {
 // See here: https://github.com/gaearon/react-hot-loader/issues/279
 // and here: https://github.com/gaearon/react-hot-loader/issues/378
 const screenWithRouter = withRouter(AuthScreen);
-export default connect()(screenWithRouter);
+export default connectToData()(screenWithRouter);
 
 let Styles = StyleSheet.create({
   errorMessage: {

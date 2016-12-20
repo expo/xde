@@ -7,7 +7,7 @@ import React from 'react';
 import RegisterForm from './components/RegisterForm';
 
 import { actions } from 'xde/state';
-import { connect } from 'xde/state/utils';
+import { connectToData } from 'xde/state/utils';
 import type { AppActions, AppState } from 'xde/state/types';
 
 import type { User as UserObject } from 'xdl/build/User';
@@ -48,4 +48,4 @@ class RegisterScreen extends React.Component {
   }
 }
 
-export default connect(actions)(RegisterScreen);
+export default connectToData(actions)(RegisterScreen);
