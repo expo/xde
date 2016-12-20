@@ -4,7 +4,7 @@
 
 import { remote } from 'electron';
 import {
-  User,
+  User as UserManager,
 } from 'xdl';
 
 import { asyncAction, reduceAsync, composeReducers } from 'xde/state/utils';
@@ -13,7 +13,7 @@ import type { AppAction, AppDispatch, AppState } from 'xde/state/types';
 import type { UserObject, RegistrationData } from 'xdl/build/User';
 
 const XDE_CLIENT_ID = '2Gej4rsLcTCRuhKKzn8xkAHsD1kiPAGS';
-User.initialize(XDE_CLIENT_ID);
+UserManager.initialize(XDE_CLIENT_ID);
 
 /** Action Types **/
 
@@ -31,9 +31,9 @@ export type LoginType = 'user-pass' | 'github';
 export const actions = {
   checkForExistingSession: () =>
     asyncAction('CHECK_SESSION', async () => {
-      const user = await User.getCurrentUserAsync();
+      const user = await UserManager.getCurrentUserAsync();
       if (!user) {
-        const legacyUser = await User.getLegacyUserData();
+        const legacyUser = await UserManager.getLegacyUserData();
         if (!legacyUser) {
           throw new Error('');
         }
@@ -49,7 +49,7 @@ export const actions = {
     asyncAction('LOGIN', async () => {
       const currentWindow = remote.getCurrentWindow();
       try {
-        const user = await User.loginAsync(loginType, loginArgs);
+        const user = await UserManager.loginAsync(loginType, loginArgs);
         currentWindow.show();
         return {
           user,
@@ -63,15 +63,15 @@ export const actions = {
         loginType,
     })),
 
-  logout: () => asyncAction('LOGOUT', async () => await User.logoutAsync()),
+  logout: () => asyncAction('LOGOUT', async () => await UserManager.logoutAsync()),
 
   forgotPassword: (usernameOrEmail: string) =>
-    asyncAction('FORGOT_PASSWORD', async () => await User.forgotPasswordAsync(usernameOrEmail)),
+    asyncAction('FORGOT_PASSWORD', async () => await UserManager.forgotPasswordAsync(usernameOrEmail)),
 
   register: (userData: RegistrationData) =>
     asyncAction('REGISTER', async (dispatch: AppDispatch, getState: () => AppState) => {
       const state = getState();
-      const user = await User.registerAsync(userData, state.auth.user);
+      const user = await UserManager.registerAsync(userData, state.auth.user);
       return {
         user,
       };
