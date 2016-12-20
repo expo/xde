@@ -296,7 +296,7 @@ class ToolBar extends React.Component {
   _renderUserName() {
     const popoverBodyEl = (
       <div>
-        <MenuItem label="Log out" onClick={this._onLogOutClick} />
+        <MenuItem label="Sign out" onClick={this._onLogOutClick} />
       </div>
     );
     const userNameEl = (

@@ -33,8 +33,13 @@ class RegisterScreen extends React.Component {
         user={this.props.user}
         isRegistering={this.props.isRegistering}
         onRegister={this._handleRegister}
+        onLogout={this._handleLogout}
       />
     );
+  }
+
+  _handleLogout = () => {
+    this.props.actions.auth.logout();
   }
 
   _handleRegister = (formData: RegisterFormData) => {

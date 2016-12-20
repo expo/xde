@@ -66,7 +66,7 @@ class ForgotPasswordScreen extends React.Component {
               // </p>
             }
             <p className={css(styles.smallText, styles.black)}>
-              Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Login</Link>
+              Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Sign in</Link>
             </p>
           </div>
         </div>

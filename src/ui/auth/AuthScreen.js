@@ -54,7 +54,7 @@ class AuthScreen extends React.Component {
         nextProps.isOnboarded !== this.props.isOnboarded) {
       if (nextProps.isAuthenticated && nextProps.isOnboarded) {
         this.props.router.transitionTo('/');
-      } else if (!nextProps.isOnboarded) {
+      } else if (nextProps.isAuthenticated && !nextProps.isOnboarded) {
         this.props.router.transitionTo('/auth/register');
       } else {
         this.props.router.transitionTo('/auth/login');

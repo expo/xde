@@ -29,6 +29,7 @@ export type RegisterFormData = {
 type Props = {
   user: ?UserOrLegacyUser,
   isRegistering: boolean,
+  onLogout: () => void,
   onRegister: (formData: RegisterFormData) => void | Promise<void>,
 }
 
@@ -86,58 +87,60 @@ export default class RegisterForm extends React.Component {
 
   _renderLegacyForm(hasPasswordField: boolean) {
     const user: LegacyUser = (this.props.user: any);
-    const disclosureText = `Welcome back, ${user.username}!
-      We've upgraded our account system and need a little bit more information from you!
-      Please fill in the form below and we'll get you on your way.`;
-
     return (
       <div className={css(styles.fieldContainer)}>
-        {disclosureText && <span className={css(styles.disclosureText)}>{disclosureText}</span>}
-        <TextInput
-          ref="givenName"
-          styles={styles.input}
-          type="text"
-          placeholder="First name"
-          value=""
-        />
-        <TextInput
-          ref="familyName"
-          styles={styles.input}
-          type="text"
-          placeholder="Last name"
-          value=""
-        />
-        <TextInput
-          ref="email"
-          styles={styles.input}
-          type="text"
-          placeholder="E-mail address"
-          value=""
-        />
-        { hasPasswordField &&
+        <span className={css(styles.signedAsDisclosure)}>
+          Signed in as: <strong>@{user.username}</strong>
+        </span>
+        <a className={css(styles.signOutLink)} href="javascript:;" onClick={this._onSignOutClick}>(Sign out?)</a>
+        <span className={css(styles.disclosureText)}>
+          Hi there! We don't currently have any way to identify you if you were to lose
+          your password. Please provide us with your name and e-mail address.
+        </span>
+        <div className={css(styles.fieldContainerInner)}>
           <TextInput
-            ref="password"
+            ref="givenName"
             styles={styles.input}
-            type="password"
-            placeholder="Current Password"
+            type="text"
+            placeholder="First name"
+            value=""
           />
-        }
-        <Button
-          styles={styles.button}
-          type="submit"
-          disabled={this.props.isRegistering}
-          isLoading={this.props.isRegistering}
-          renderRightIcon={() => //eslint-disable-line
-            <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-          }>
-          Update My Account
-        </Button>
-        <p className={css(styles.smallText, styles.gray)}>
-          By signing up, you agree to our terms.
-        </p>
-        <p className={css(styles.smallText, styles.black)}>
-          Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Login</Link>
-        </p>
+          <TextInput
+            ref="familyName"
+            styles={styles.input}
+            type="text"
+            placeholder="Last name"
+            value=""
+          />
+          <TextInput
+            ref="email"
+            styles={styles.input}
+            type="text"
+            placeholder="E-mail address"
+            value=""
+          />
+          { hasPasswordField &&
+            <TextInput
+              ref="password"
+              styles={styles.input}
+              type="password"
+              placeholder="Current Password"
+            />
+          }
+          <Button
+            styles={styles.button}
+            type="submit"
+            disabled={this.props.isRegistering}
+            isLoading={this.props.isRegistering}
+            renderRightIcon={() => //eslint-disable-line
+              <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
+            }>
+            Update My Account
+          </Button>
+          <p className={css(styles.smallText, styles.black)}>
+            <a href="javascript:;" onClick={this._onSignOutClick} style={{ color: StyleConstants.colorText }}>Sign in to another account</a>
+          </p>
+        </div>
       </div>
     );
   }
@@ -153,65 +156,71 @@ export default class RegisterForm extends React.Component {
     return (
       <div className={css(styles.fieldContainer)}>
         {disclosureText && <span className={css(styles.disclosureText)}>{disclosureText}</span>}
-        <TextInput
-          ref="givenName"
-          styles={styles.input}
-          type="text"
-          placeholder="First name"
-          value={user && user.givenName}
-        />
-        <TextInput
-          ref="familyName"
-          styles={styles.input}
-          type="text"
-          placeholder="Last name"
-          value={user && user.familyName}
-        />
-        <TextInput
-          ref="username"
-          styles={styles.input}
-          type="text"
-          placeholder="Username"
-          valueTransformer={IdentifierRules.normalizeWhileTyping}
-          value={user && (user.username || user.nickname)}
-        />
-        <TextInput
-          ref="email"
-          styles={styles.input}
-          type="text"
-          placeholder="E-mail address"
-          value={user && user.email}
-        />
-        <TextInput
-          ref="password"
-          styles={styles.input}
-          type="password"
-          placeholder="Password"
-        />
-        <TextInput
-          ref="passwordRepeat"
-          styles={styles.input}
-          type="password"
-          placeholder="Password (repeat)"
-        />
-        <Button
-          styles={styles.button}
-          type="submit"
-          disabled={this.props.isRegistering}
-          isLoading={this.props.isRegistering}
-          renderRightIcon={() => //eslint-disable-line
-            <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-          }>
-          Sign Up
-        </Button>
-        <p className={css(styles.smallText, styles.gray)}>
-          By signing up, you agree to our terms.
-        </p>
-        <p className={css(styles.smallText, styles.black)}>
-          Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Login</Link>
-        </p>
+        <div className={css(styles.fieldContainerInner)}>
+          <TextInput
+            ref="givenName"
+            styles={styles.input}
+            type="text"
+            placeholder="First name"
+            value={user && user.givenName}
+          />
+          <TextInput
+            ref="familyName"
+            styles={styles.input}
+            type="text"
+            placeholder="Last name"
+            value={user && user.familyName}
+          />
+          <TextInput
+            ref="username"
+            styles={styles.input}
+            type="text"
+            placeholder="Username"
+            valueTransformer={IdentifierRules.normalizeWhileTyping}
+            value={user && (user.username || user.nickname)}
+          />
+          <TextInput
+            ref="email"
+            styles={styles.input}
+            type="text"
+            placeholder="E-mail address"
+            value={user && user.email}
+          />
+          <TextInput
+            ref="password"
+            styles={styles.input}
+            type="password"
+            placeholder="Password"
+          />
+          <TextInput
+            ref="passwordRepeat"
+            styles={styles.input}
+            type="password"
+            placeholder="Password (repeat)"
+          />
+          <Button
+            styles={styles.button}
+            type="submit"
+            disabled={this.props.isRegistering}
+            isLoading={this.props.isRegistering}
+            renderRightIcon={() => //eslint-disable-line
+              <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
+            }>
+            Sign Up
+          </Button>
+          <p className={css(styles.smallText, styles.gray)}>
+            By signing up, you agree to our terms.
+          </p>
+          <p className={css(styles.smallText, styles.black)}>
+            Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Sign in</Link>
+          </p>
+        </div>
       </div>
     );
+  }
+
+  _onSignOutClick = () => {
+    this.props.onLogout();
   }
 
   _onSubmit = (e: any) => {
@@ -310,12 +319,34 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     alignItems: 'center',
-    width: 270,
+    width: 380,
+  },
+
+  fieldContainerInner: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    alignItems: 'center',
+    width: 360,
   },
 
   title: {
     fontSize: 20,
-    marginBottom: 40,
+    marginBottom: 12,
+  },
+
+  signedAsDisclosure: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+
+  signOutLink: {
+    fontSize: 12,
+    color: '#AAA',
+    textAlign: 'center',
+    marginBottom: 25,
   },
 
   disclosureText: {
