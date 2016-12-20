@@ -90,7 +90,7 @@ export default class RegisterForm extends React.Component {
     return (
       <div className={css(styles.fieldContainer)}>
         <span className={css(styles.signedAsDisclosure)}>
-          Signed in as: <strong>@{user.username}</strong>
+          Signed in as <strong>@{user.username}</strong>
         </span>
         <a className={css(styles.signOutLink)} href="javascript:;" onClick={this._onSignOutClick}>(Sign out?)</a>
         <span className={css(styles.disclosureText)}>
@@ -100,6 +100,7 @@ export default class RegisterForm extends React.Component {
         <div className={css(styles.fieldContainerInner)}>
           <TextInput
             ref="givenName"
+            autofocus
             styles={styles.input}
             type="text"
             placeholder="First name"
@@ -159,6 +160,7 @@ export default class RegisterForm extends React.Component {
         <div className={css(styles.fieldContainerInner)}>
           <TextInput
             ref="givenName"
+            autofocus
             styles={styles.input}
             type="text"
             placeholder="First name"
@@ -336,10 +338,11 @@ const styles = StyleSheet.create({
   },
 
   signedAsDisclosure: {
-    fontSize: 12,
-    color: '#888',
+    fontSize: 14,
+    color: 'rgba(0,0,0,0.85)',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 2,
+    marginTop: -2,
   },
 
   signOutLink: {
