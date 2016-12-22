@@ -967,6 +967,10 @@ export default class MainScreen extends React.Component {
         process.env.PATH = pathEnvironment;
       }
 
+      // Now that we have the correct PATH, write it to UserSettings so that
+      // it'll work in the future if not started from command line
+      await Binaries.writePathToUserSettingsAsync();
+
       let executedFrom = argv['executed-from'];
       if (!executedFrom) {
         return;
@@ -976,6 +980,7 @@ export default class MainScreen extends React.Component {
         return;
       }
 
+      // TODO: only start if exp.json exists
       await this._tryStartProjectAsync(executedFrom);
     }
   }
