@@ -1,11 +1,7 @@
 import 'instapromise';
 
 import electron from 'electron';
-import {
-  installNodeHeaders,
-  rebuildNativeModules,
-  shouldRebuildNativeModules,
-} from 'electron-rebuild';
+import rebuild from 'electron-rebuild';
 import fs from 'fs';
 import gulp from 'gulp';
 import rename from 'gulp-rename';
@@ -18,33 +14,25 @@ const paths = {
   source: {
     js: 'src/**/*.js',
   },
+  app: 'app',
   build: 'app/build',
-  nodeModules: 'app/node_modules',
   macIcon: 'build/icon.icns',
 };
 
 let tasks = {
   buildNativeModules(force = false) {
-    return async function() {
-      let shouldRebuild = await shouldRebuildNativeModules(electron);
-      if (!shouldRebuild && !force) {
-        return;
-      }
-
+    return async function buildNativeModules() {
       let versionResult = await spawnAsync(electron, ['--version']);
       let electronVersion = /v(\d+\.\d+\.\d+)/.exec(versionResult.stdout)[1];
 
-      // When Node and Electron share the same ABI version again (discussion here:
-      // https://github.com/electron/electron/issues/5851) we can remove this
-      // check and rely solely on shouldRebuildNativeModules again
-      let hasHeaders = await hasNodeHeadersAsync(electronVersion);
-      if (hasHeaders && !force) {
-        return;
-      }
-
       logger.info(`Rebuilding native Node modules for Electron ${electronVersion}...`);
-      await installNodeHeaders(electronVersion);
-      await rebuildNativeModules(electronVersion, paths.nodeModules);
+      await rebuild(
+        path.resolve(paths.app),
+        electronVersion,
+        /* arch */ undefined,
+        /* extraModules */ undefined,
+        force,
+      );
     };
   },
 
