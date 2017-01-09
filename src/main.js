@@ -74,7 +74,8 @@ if (!require('electron-squirrel-startup')) {
       minWidth: 700,
       minHeight: 500,
       // For mac
-      titleBarStyle: 'hidden-inset',
+      // TODO: re-enable once we have a better solution for notifications
+      // titleBarStyle: 'hidden-inset',
       // for windows. osx gets icon from post install task
       icon: path.resolve(__dirname, '../build/xde.ico'),
     });
