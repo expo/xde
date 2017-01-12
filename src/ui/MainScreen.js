@@ -1069,7 +1069,6 @@ let styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
-    paddingTop: 30,
     backgroundImage: Env.isStaging() ? 'url("./staging.jpg")' : null,
   },
 
