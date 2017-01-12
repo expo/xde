@@ -68,7 +68,6 @@ export default class RootApp extends React.Component {
   render() {
     return (
       <div className={css(styles.container)}>
-        <div className={css(styles.topBar)} />
         <Provider store={this._store}>
           <Router>
             {({ router }) => (
