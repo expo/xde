@@ -428,20 +428,11 @@ class ToolBar extends React.Component {
   // Simulator methods
 
   _simulatorIOSAsync = async () => {
-    let projectUrl = await this._simulatorProjectUrlAsync();
-    return await Simulator.openUrlInSimulatorSafeAsync(projectUrl);
+    return await Simulator.openProjectAsync(this.props.projectRoot);
   };
 
   _simulatorAndroidAsync = async () => {
     return await Android.openProjectAsync(this.props.projectRoot);
-  };
-
-  _simulatorProjectUrlAsync = async () => {
-    return UrlUtils.constructManifestUrlAsync(this.props.projectRoot, {
-      hostType: 'localhost',
-      dev: this.props.projectSettings.dev,
-      minify: false,
-    });
   };
 }
 
