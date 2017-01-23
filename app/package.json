@@ -1,7 +1,7 @@
 {
   "name": "xde",
   "productName": "Exponent XDE",
-  "version": "2.14.1",
+  "version": "2.14.2",
   "description": "The Exponent Development Environment",
   "repository": {
     "type": "git",
@@ -48,6 +48,6 @@
     "redux-logger": "^2.7.0",
     "redux-thunk": "^2.1.0",
     "tree-kill": "^1.1.0",
-    "xdl": "29.2.0"
+    "xdl": "29.3.0"
   }
 }
