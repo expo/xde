@@ -20,6 +20,7 @@
     "lint": "eslint src",
     "dist": "gulp clean && npm run build && gulp release",
     "mac": "gulp clean && npm run build && gulp release:mac",
+    "test-mac": "gulp clean && npm run build && gulp test:mac",
     "win": "gulp clean && npm run build && gulp release:windows",
     "linux": "gulp clean && npm run build && gulp release:linux",
     "flow-typed": "flow-typed install --flowVersion=\"$(flow version | awk '{ print $9 }')\" && cd app/ && npm run flow-typed"

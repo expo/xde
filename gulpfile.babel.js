@@ -11,9 +11,12 @@ let tasks = {
   ...verificationTasks,
 };
 
-function getReleaseTask(platforms) {
+function getReleaseTask(platforms, isTest = false) {
   return function release() {
     let args = platforms.map(platform => `--${platform}`);
+    if (isTest) {
+      args.push('--dir');
+    }
     let nodeBinPath = path.resolve(__dirname, 'node_modules/.bin');
     return spawnAsync('build', args, {
       env: {
@@ -43,4 +46,6 @@ gulp.task('release:mac', gulp.series(
 ));
 gulp.task('release:windows', getReleaseTask(['win']));
 gulp.task('release:linux', getReleaseTask(['linux']));
+
+gulp.task('test:mac', getReleaseTask(['mac'], true));
 gulp.task('clean', tasks.clean);
