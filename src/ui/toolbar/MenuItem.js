@@ -10,6 +10,7 @@ export default class MenuItem extends React.Component {
     label: PropTypes.string.isRequired,
     onClick: PropTypes.func,
     shortcut: PropTypes.string,
+    color: PropTypes.string,
 
     // If specified, this becomes a flyout menu.
     children: PropTypes.node,
@@ -68,6 +69,10 @@ export default class MenuItem extends React.Component {
       ...(this.state.isHovered && !this.props.isDisabled ? Styles.menuItemHovered : {}),
       ...(this.props.isDisabled ? Styles.menuItemDisabled : {}),
     };
+    if (this.props.color) {
+      menuItemStyle.color = this.props.color;
+    }
+
     return (
       <div style={menuItemStyle}
         onClick={this._onClick}

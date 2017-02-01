@@ -48,27 +48,37 @@ import SharedStyles from './Styles';
 import MenuItem from './toolbar/MenuItem';
 import Popover from './toolbar/Popover';
 import ToolBar from './toolbar/ToolBar';
+import PackagerNotificationsSwitcher from './PackagerNotificationsSwitcher';
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
-const DEVICES_ICON_SIZE = 16;
 const PROJECT_OPENED_MESSAGE = 'Project opened! You can now use the "Send Link" or "Device" buttons to view your project.';
 
 const TAB_LEFT_VISIBLE = 'tab-left-visible',
   TAB_RIGHT_VISIBLE = 'tab-right-visible',
   TAB_BOTH_VISIBLE = 'tab-both-visible';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   return {
-    notifications: state.notifications,
+    projects: state.projects,
   };
 };
 
 class MainScreen extends React.Component {
   static propTypes = {
     segment: PropTypes.array,
-    projectState: PropTypes.object,
+    projects: PropTypes.object,
   };
+
+  _getProjectState = () => {
+    let { projectRoot } = this.state;
+
+    if (projectRoot) {
+      return this.props.projects[projectRoot];
+    } else {
+      return null;
+    }
+  }
 
   constructor(props, context) {
     super(props, context);
@@ -130,23 +140,40 @@ class MainScreen extends React.Component {
     let bottomBarRightContent = (this.state.tabsVisible === TAB_LEFT_VISIBLE) ?
       this._renderTabsVisibleControl() :
       null;
-    return (
-      <div className={css(styles.tabContainer)}>
-        <ConsoleLog
-          logs={this.state.logs}
-          isLoading={this.state.isLoading}
-          bottomBarLeftContent={this._renderNotificationPackagerSwitcher()}
-          bottomBarRightContent={bottomBarRightContent}
-          onClickClearLogs={this._onClickClearLogs}
-        />
-      </div>
-    );
+
+    if (this._getProjectState().isPackagerSelected) {
+      return (
+        <div className={css(styles.tabContainer)}>
+          <ConsoleLog
+            logs={this.state.logs}
+            isLoading={this.state.isLoading}
+            bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
+            bottomBarRightContent={bottomBarRightContent}
+            onClickClearLogs={this._onClickClearLogs}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.tabContainer)}>
+          <ConsoleLog
+            logs={this.state.logs}
+            isLoading={this.state.isLoading}
+            bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
+            bottomBarRightContent={bottomBarRightContent}
+          />
+        </div>
+      );
+    }
   }
 
-  _renderNotificationPackagerSwitcher = () => {
+  _renderPackagerNotificationSwitcher = () => {
     return (
-      <div>
-      </div>
+      <PackagerNotificationsSwitcher
+        projectRoot={this.state.projectRoot}
+        onTogglePopover={this._onTogglePopover}
+        openPopover={this.state.openPopover}
+      />
     );
   }
 
@@ -250,12 +277,12 @@ class MainScreen extends React.Component {
         {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
           <img
             src="./SelectUpDown.png"
-            className={css(styles.iconWithMargin, styles.deviceSelectIcon)}
+            className={css(SharedStyles.iconWithMargin, SharedStyles.statusBarIcon)}
             onClick={this._toggleDeviceLogsPopover}
           />
         </Popover>
         }
-        <span className={css(styles.deviceSelectText)}>
+        <span className={css(SharedStyles.statusBarText)}>
           {device ? device.name : 'No devices connected'}
         </span>
       </div>
@@ -275,7 +302,7 @@ class MainScreen extends React.Component {
           onClick={this._onClickTabLeftVisible}>
           <img
             src={tabLeftImage}
-            className={css(styles.iconWithMargin, styles.tabVisibleIcon)}
+            className={css(SharedStyles.iconWithMargin, styles.tabVisibleIcon)}
             style={{flex: 1}}
           />
         </a>
@@ -283,7 +310,7 @@ class MainScreen extends React.Component {
           onClick={this._onClickTabRightVisible}>
           <img
             src={tabRightImage}
-            className={css(styles.iconWithMargin, styles.tabVisibleIcon)}
+            className={css(SharedStyles.iconWithMargin, styles.tabVisibleIcon)}
             style={{flex: 1}}
           />
         </a>
@@ -352,7 +379,7 @@ class MainScreen extends React.Component {
         <Popover body={this._renderPopoverOptions()} arrowOffset={16}>
           <img
             src="./gear.svg"
-            className={css(styles.iconWithMargin, styles.optionsIcon)}
+            className={css(SharedStyles.iconWithMargin, styles.optionsIcon)}
             onClick={this._toggleOptionsPopover}
           />
         </Popover>
@@ -874,6 +901,7 @@ class MainScreen extends React.Component {
     ipcRenderer.send('project-opened', projectRoot);
 
     const projectJson = await Exp.expInfoSafeAsync(projectRoot);
+    XDLState.store.dispatch(XDLState.actions.projects.selectPackagerPane(projectRoot));
 
     this.setState({
       projectSettings,
@@ -1117,22 +1145,10 @@ let styles = StyleSheet.create({
     marginTop: -((StyleConstants.gutterMd * 2) + 10) / 2,
   },
 
-  iconWithMargin: {
-    cursor: 'pointer',
-    marginTop: StyleConstants.gutterSm,
-    marginBottom: StyleConstants.gutterSm,
-  },
-
   optionsIcon: {
     height: OPTIONS_ICON_SIZE,
     marginLeft: StyleConstants.gutterMd,
     marginRight: -(StyleConstants.gutterMd + OPTIONS_ICON_SIZE),
-  },
-
-  deviceSelectIcon: {
-    height: DEVICES_ICON_SIZE,
-    marginLeft: StyleConstants.gutterMd,
-    marginRight: -(StyleConstants.gutterMd + DEVICES_ICON_SIZE),
   },
 
   modalOverlay: {
@@ -1173,13 +1189,6 @@ let styles = StyleSheet.create({
     height: '100%',
   },
 
-  deviceSelectText: {
-    fontSize: StyleConstants.fontSizeSm,
-    color: StyleConstants.colorText,
-    paddingLeft: DEVICES_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
-    marginVertical: StyleConstants.gutterSm,
-  },
-
   tabsVisibleControl: {
     display: 'inline-flex',
     justifyContent: 'space-between',
@@ -1188,9 +1197,9 @@ let styles = StyleSheet.create({
   },
 
   tabVisibleIcon: {
-    height: DEVICES_ICON_SIZE,
+    height: StyleConstants.statusBarIconSize,
     marginLeft: StyleConstants.gutterMd,
-    marginRight: -(StyleConstants.gutterMd + DEVICES_ICON_SIZE),
+    marginRight: -(StyleConstants.gutterMd + StyleConstants.statusBarIconSize),
   },
 });
 

@@ -58,16 +58,18 @@ type Props = {
   onClearXDECacheClicked: () => void,
 
   actions: AppActions,
-  notifications: any,
+  notifications?: any,
+  isNotificationsSelected?: bool,
 };
 
 type State = {
   shiftSelected: boolean,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   return {
-    notifications: state.notifications,
+    isNotificationsSelected: props.projectRoot ? state.projects[props.projectRoot].isNotificationsSelected : false,
+    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
   };
 };
 
@@ -172,9 +174,30 @@ class ToolBar extends React.Component {
           isDisabled={!this.props.isProjectOpen}
           onClick={this.props.onCloseProjectClick}
         />
+        {this._renderNotificationsLink()}
         {this._renderOpenLinks()}
       </div>
     );
+  }
+
+  _renderNotificationsLink = () => {
+    let { notifications, isNotificationsSelected } = this.props;
+
+    if (!notifications || notifications.count === 0 || isNotificationsSelected) {
+      return null;
+    }
+
+    return (
+      <MenuItem
+        label="View Issues"
+        onClick={this._onViewIssuesClicked}
+        color={notifications.color}
+      />
+    );
+  }
+
+  _onViewIssuesClicked = () => {
+    XDLState.store.dispatch(XDLState.actions.projects.selectNotificationsPane(this.props.projectRoot));
   }
 
   _renderOpenLinks() {
@@ -328,9 +351,13 @@ class ToolBar extends React.Component {
     const projectName =
       (this.props.projectJson && this.props.projectJson.name) ||
       this.props.projectRoot;
-    let notificationsCount = this.props.notifications.count;
-    if (notificationsCount === 0) {
-      notificationsCount = null;
+    let { notifications } = this.props;
+    let notificationsCount = null;
+    let notificationsColor = null;
+
+    if (notifications && notifications.count > 0) {
+      notificationsCount = notifications.count;
+      notificationsColor = notifications.color;
     }
 
     return (
@@ -355,7 +382,7 @@ class ToolBar extends React.Component {
               popover={this._renderPopoverProject()}
               styles={styles.rightSpaced}
               badgeCount={notificationsCount}
-              badgeBackgroundColor={this.props.notifications.color}
+              badgeBackgroundColor={notificationsColor}
             />
             <IconButton
               iconUrl="./IconRestart.png"

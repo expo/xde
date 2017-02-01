@@ -1,6 +1,27 @@
+import { StyleSheet } from 'aphrodite/no-important';
 import StyleConstants from './StyleConstants';
 
-export default {
+let styles = StyleSheet.create({
+  iconWithMargin: {
+    cursor: 'pointer',
+    marginTop: StyleConstants.gutterSm,
+    marginBottom: StyleConstants.gutterSm,
+  },
+  statusBarIcon: {
+    height: StyleConstants.statusBarIconSize,
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: -(StyleConstants.gutterMd + StyleConstants.statusBarIconSize),
+  },
+  statusBarText: {
+    fontSize: StyleConstants.fontSizeSm,
+    color: StyleConstants.colorText,
+    paddingLeft: StyleConstants.statusBarIconSize + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
+    marginVertical: StyleConstants.gutterSm,
+  },
+});
+
+styles = {
+  ...styles,
   input: {
     borderColor: StyleConstants.colorBorder,
     borderWidth: 1,
@@ -27,16 +48,6 @@ export default {
     marginBottom: 20,
     textAlign: 'center',
   },
-  badge: {
-    color: '#ffffff',
-    borderRadius: '50%',
-    height: 20,
-    minWidth: 20,
-    paddingLeft: 5,
-    paddingRight: 5,
-
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 };
+
+export default styles;

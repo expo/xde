@@ -169,15 +169,25 @@ export default class ConsoleLog extends React.Component {
             {bottomBarLeftContent}
           </div>
           <div style={Styles.bottomBarRight}>
-            <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
-              <img src="./IconClear.png" style={Styles.clearButton} />
-            </a>
+            {this._renderClearLogs()}
             {bottomBarRightContent}
           </div>
         </div>
       </div>
     );
     /* eslint-enable react/jsx-no-bind */
+  }
+
+  _renderClearLogs = () => {
+    if (!this.props.onClickClearLogs) {
+      return null;
+    }
+
+    return (
+      <a style={Styles.clearButtonLink} onClick={this.props.onClickClearLogs}>
+        <img src="./IconClear.png" style={Styles.clearButton} />
+      </a>
+    );
   }
 }
 
@@ -235,7 +245,7 @@ const Styles = {
     display: 'flex',
   },
   bottomBarLeft: {
-    flex: 1,
+    flex: 4, // left side needs more space
   },
   bottomBarRight: {
     flex: 1,

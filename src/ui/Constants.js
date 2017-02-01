@@ -6,6 +6,7 @@ export const PopoverEnum = {
   USER: 'User',
   OPTIONS: 'Options',
   DEVICE_LOGS: 'Device Logs',
+  NOTIFICATION_PACKAGER: 'Packager/Notifications',
 };
 
 export const ModalEnum = {

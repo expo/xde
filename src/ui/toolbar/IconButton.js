@@ -107,7 +107,17 @@ const styles = StyleSheet.create({
     maxWidth: 15,
   },
   floatingBadge: {
-    ...SharedStyles.badge,
+    color: '#ffffff',
+    borderRadius: '50%',
+    height: 20,
+    minWidth: 20,
+    paddingLeft: 5,
+    paddingRight: 5,
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
     position: 'absolute',
     right: -12,
     top: -6,

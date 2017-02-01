@@ -22,4 +22,5 @@ module.exports = {
   gutterLg: 20,
 
   zIndexPopover: 100,
+  statusBarIconSize: 16,
 };
