@@ -1,6 +1,7 @@
 import { StyleSheet, css } from 'aphrodite';
 import React, {PropTypes} from 'react';
 
+import SharedStyles from '../Styles';
 import StyleConstants from '../StyleConstants';
 import Popover from './Popover';
 
@@ -11,12 +12,24 @@ export default class IconButton extends React.Component {
     isDisabled: PropTypes.bool,
     label: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
+    badgeCount: PropTypes.number,
+    badgeBackgroundColor: PropTypes.string,
     styles: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 
     // If specified, popover appears beneath icon circle on click.
     popover: PropTypes.node,
     isPopoverToLeft: PropTypes.bool,
   };
+
+  _renderBadge() {
+    return (
+      <div
+        className={css(styles.floatingBadge)}
+        style={{backgroundColor: this.props.badgeBackgroundColor}}>
+        {this.props.badgeCount}
+      </div>
+    );
+  }
 
   render() {
     const containerStyles = [
@@ -32,6 +45,7 @@ export default class IconButton extends React.Component {
           src={this.props.iconUrl}
           className={css(styles.icon)}
         />
+        {this.props.badgeCount && this._renderBadge()}
       </div>
     );
 
@@ -75,6 +89,7 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   iconContainer: {
+    position: 'relative',
     borderRadius: '50%',
     borderStyle: 'solid',
     borderWidth: 2,
@@ -90,5 +105,11 @@ const styles = StyleSheet.create({
   icon: {
     maxHeight: 15,
     maxWidth: 15,
+  },
+  floatingBadge: {
+    ...SharedStyles.badge,
+    position: 'absolute',
+    right: -12,
+    top: -6,
   },
 });

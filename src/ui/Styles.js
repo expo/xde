@@ -27,4 +27,16 @@ export default {
     marginBottom: 20,
     textAlign: 'center',
   },
+  badge: {
+    color: '#ffffff',
+    borderRadius: '50%',
+    height: 20,
+    minWidth: 20,
+    paddingLeft: 5,
+    paddingRight: 5,
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 };

@@ -21,6 +21,7 @@ import {
 } from 'xdl';
 
 Config.developerTool = 'xde';
+Config.useReduxNotifications = true;
 
 import fs from 'fs';
 import { StyleSheet, css } from 'aphrodite/no-important';
@@ -59,7 +60,7 @@ const TAB_LEFT_VISIBLE = 'tab-left-visible',
 
 const mapStateToProps = (state) => {
   return {
-    projectState: state.project,
+    notifications: state.notifications,
   };
 };
 
@@ -134,9 +135,17 @@ class MainScreen extends React.Component {
         <ConsoleLog
           logs={this.state.logs}
           isLoading={this.state.isLoading}
-          onClickClearLogs={this._onClickClearLogs}
+          bottomBarLeftContent={this._renderNotificationPackagerSwitcher()}
           bottomBarRightContent={bottomBarRightContent}
+          onClickClearLogs={this._onClickClearLogs}
         />
+      </div>
+    );
+  }
+
+  _renderNotificationPackagerSwitcher = () => {
+    return (
+      <div>
       </div>
     );
   }
@@ -350,7 +359,7 @@ class MainScreen extends React.Component {
         <input
           ref={(r) => { this._urlInput = r; }}
           className={css(styles.urlInput)}
-          value={this.props.projectState.message}//this.state.computedUrl || ''}
+          value={this.state.computedUrl || ''}
           placeholder="Waiting for packager and tunnel to start..."
           onClick={this._urlInputSelect}
         />

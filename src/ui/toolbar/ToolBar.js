@@ -9,7 +9,7 @@ import {
   Android,
   FileSystem,
   Simulator,
-  UrlUtils,
+  XDLState,
 } from 'xdl';
 
 import { actions } from 'xde/state';
@@ -58,11 +58,18 @@ type Props = {
   onClearXDECacheClicked: () => void,
 
   actions: AppActions,
+  notifications: any,
 };
 
 type State = {
   shiftSelected: boolean,
 }
+
+const mapStateToProps = (state) => {
+  return {
+    notifications: state.notifications,
+  };
+};
 
 class ToolBar extends React.Component {
   static data = ({ auth }: AppState) => ({
@@ -321,6 +328,10 @@ class ToolBar extends React.Component {
     const projectName =
       (this.props.projectJson && this.props.projectJson.name) ||
       this.props.projectRoot;
+    let notificationsCount = this.props.notifications.count;
+    if (notificationsCount === 0) {
+      notificationsCount = null;
+    }
 
     return (
       <div>
@@ -343,6 +354,8 @@ class ToolBar extends React.Component {
               onClick={this._getTogglePopoverFn(PopoverEnum.PROJECT)}
               popover={this._renderPopoverProject()}
               styles={styles.rightSpaced}
+              badgeCount={notificationsCount}
+              badgeBackgroundColor={this.props.notifications.color}
             />
             <IconButton
               iconUrl="./IconRestart.png"
@@ -436,7 +449,7 @@ class ToolBar extends React.Component {
   };
 }
 
-export default connectToData(actions)(ToolBar);
+export default XDLState.connect(mapStateToProps)(connectToData(actions)(ToolBar));
 
 const styles = StyleSheet.create({
   separator: {
