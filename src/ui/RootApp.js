@@ -25,6 +25,10 @@ import {
   MatchWhenAuthorized,
 } from 'xde/utils/routing';
 
+import {
+  XDLProvider,
+} from 'xdl';
+
 type Props = {
   isAuthenticated?: boolean,
 };
@@ -35,9 +39,6 @@ type State = {
 
 /**
  * Main App container
- *
- * Looking for the old, monolithic App.js?? It's starting to be
- * broken up, but check out src/ui/MainScreen.js in the meantime.
  */
 export default class RootApp extends React.Component {
   props: Props;
@@ -68,28 +69,30 @@ export default class RootApp extends React.Component {
   render() {
     return (
       <div className={css(styles.container)}>
-        <Provider store={this._store}>
-          <Router>
-            {({ router }) => (
-              this.state.isLoaded ?
-                <div>
-                  <Match pattern="/auth" component={AuthScreen} />
-                  <MatchWhenAuthorized
-                    exactly
-                    pattern="/"
-                    getRedirect={props => { // eslint-disable-line
-                      if ((props.isAuthenticated && !props.isOnboarded) ||
-                          (!props.isAuthenticated && props.needsPasswordMigration)) {
-                        return '/auth/register';
-                      }
-                      return '/auth';
-                    }}
-                    component={MainScreen}
-                  />
-                </div> : <a id="app-loading" onClick={this._openDevTools}>Loading...</a>
-            )}
-          </Router>
-        </Provider>
+        <XDLProvider>
+          <Provider store={this._store}>
+            <Router>
+              {({ router }) => (
+                this.state.isLoaded ?
+                  <div>
+                    <Match pattern="/auth" component={AuthScreen} />
+                    <MatchWhenAuthorized
+                      exactly
+                      pattern="/"
+                      getRedirect={props => { // eslint-disable-line
+                        if ((props.isAuthenticated && !props.isOnboarded) ||
+                            (!props.isAuthenticated && props.needsPasswordMigration)) {
+                          return '/auth/register';
+                        }
+                        return '/auth';
+                      }}
+                      component={MainScreen}
+                    />
+                  </div> : <a id="app-loading" onClick={this._openDevTools}>Loading...</a>
+              )}
+            </Router>
+          </Provider>
+        </XDLProvider>
       </div>
     );
   }

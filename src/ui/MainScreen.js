@@ -17,6 +17,7 @@ import {
   UrlUtils,
   UserSettings,
   Versions,
+  XDLState,
 } from 'xdl';
 
 Config.developerTool = 'xde';
@@ -56,9 +57,16 @@ const TAB_LEFT_VISIBLE = 'tab-left-visible',
   TAB_RIGHT_VISIBLE = 'tab-right-visible',
   TAB_BOTH_VISIBLE = 'tab-both-visible';
 
-export default class MainScreen extends React.Component {
+const mapStateToProps = (state) => {
+  return {
+    projectState: state.project,
+  };
+};
+
+class MainScreen extends React.Component {
   static propTypes = {
     segment: PropTypes.array,
+    projectState: PropTypes.object,
   };
 
   constructor(props, context) {
@@ -342,7 +350,7 @@ export default class MainScreen extends React.Component {
         <input
           ref={(r) => { this._urlInput = r; }}
           className={css(styles.urlInput)}
-          value={this.state.computedUrl || ''}
+          value={this.props.projectState.message}//this.state.computedUrl || ''}
           placeholder="Waiting for packager and tunnel to start..."
           onClick={this._urlInputSelect}
         />
@@ -1184,3 +1192,5 @@ global.cl = function(a, b, c) {
 global.ce = function(a, b, c) {
   console.error(a, b, c);
 };
+
+export default XDLState.connect(mapStateToProps)(MainScreen);
