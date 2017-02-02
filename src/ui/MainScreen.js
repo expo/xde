@@ -49,6 +49,7 @@ import MenuItem from './toolbar/MenuItem';
 import Popover from './toolbar/Popover';
 import ToolBar from './toolbar/ToolBar';
 import PackagerNotificationsSwitcher from './PackagerNotificationsSwitcher';
+import Tab from './Tab';
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
@@ -144,24 +145,28 @@ class MainScreen extends React.Component {
     if (this._getProjectState().isPackagerSelected) {
       return (
         <div className={css(styles.tabContainer)}>
-          <ConsoleLog
-            logs={this.state.logs}
-            isLoading={this.state.isLoading}
+          <Tab
             bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
             bottomBarRightContent={bottomBarRightContent}
-            onClickClearLogs={this._onClickClearLogs}
-          />
+            onClickClearLogs={this._onClickClearLogs} >
+            <ConsoleLog
+              logs={this.state.logs}
+              isLoading={this.state.isLoading}
+            />
+          </Tab>
         </div>
       );
     } else {
       return (
         <div className={css(styles.tabContainer)}>
-          <ConsoleLog
-            logs={this.state.logs}
-            isLoading={this.state.isLoading}
+          <Tab
             bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
-            bottomBarRightContent={bottomBarRightContent}
-          />
+            bottomBarRightContent={bottomBarRightContent} >
+            <ConsoleLog
+              logs={this.state.logs}
+              isLoading={this.state.isLoading}
+            />
+          </Tab>
         </div>
       );
     }
@@ -261,12 +266,12 @@ class MainScreen extends React.Component {
     let logs = (device && device.logs.length) ? device.logs : this._defaultDeviceLogs();
     return (
       <div className={css(styles.tabContainer)}>
-        <ConsoleLog
-          logs={logs}
+        <Tab
           bottomBarLeftContent={this._renderDeviceSwitcher(device)}
           bottomBarRightContent={bottomBarRightContent}
-          onClickClearLogs={this._onClickClearDeviceLogs}
-        />
+          onClickClearLogs={this._onClickClearDeviceLogs} >
+          <ConsoleLog logs={logs} />
+        </Tab>
       </div>
     );
   };
