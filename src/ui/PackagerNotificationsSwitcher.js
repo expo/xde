@@ -42,7 +42,10 @@ class PackagerNotificationsSwitcher extends React.Component {
           />
         </Popover>
         }
-        <span className={css(SharedStyles.statusBarText)}>
+        <span
+          className={css(SharedStyles.statusBarText)}
+          style={{cursor: 'pointer'}}
+          onClick={this._toggleSwitcher}>
           {isPackagerSelected ? 'React Native Packager' : 'Notifications'}
         </span>
         {this._renderNotificationsCount()}
@@ -90,20 +93,25 @@ class PackagerNotificationsSwitcher extends React.Component {
   };
 
   _renderNotificationsCount = () => {
-    let { notifications } = this.props;
+    let { notifications, isPackagerSelected } = this.props;
 
     if (!notifications || notifications.count === 0) {
       return null;
+    }
+
+    let style = {
+      color: notifications.color,
+    };
+
+    if (isPackagerSelected) {
+      style.cursor = 'pointer';
     }
 
     return (
       <span
         onClick={this._onClickYourProjectHasIssues}
         className={css(SharedStyles.statusBarText)}
-        style={{
-          cursor: 'pointer',
-          color: notifications.color,
-        }}>
+        style={style}>
         <span
           className={css(styles.badge)}
           style={{backgroundColor: notifications.color}}>

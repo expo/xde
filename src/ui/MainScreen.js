@@ -42,6 +42,7 @@ import ConsoleLog from './ConsoleLog';
 import NewProjectModal from './NewProjectModal';
 import NewVersionAvailable from './NewVersionAvailable';
 import Notification from './Notification';
+import NotificationsTab from './NotificationsTab';
 import ProjectList from './ProjectList';
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
@@ -162,10 +163,7 @@ class MainScreen extends React.Component {
           <Tab
             bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
             bottomBarRightContent={bottomBarRightContent} >
-            <ConsoleLog
-              logs={this.state.logs}
-              isLoading={this.state.isLoading}
-            />
+            <NotificationsTab projectRoot={this.state.projectRoot} />
           </Tab>
         </div>
       );
@@ -287,7 +285,10 @@ class MainScreen extends React.Component {
           />
         </Popover>
         }
-        <span className={css(SharedStyles.statusBarText)}>
+        <span
+          className={css(SharedStyles.statusBarText)}
+          style={{cursor: 'pointer'}}
+          onClick={this._toggleDeviceLogsPopover}>
           {device ? device.name : 'No devices connected'}
         </span>
       </div>

@@ -10,6 +10,10 @@ export default class ConsoleLog extends React.Component {
   static propTypes = {
     isLoading: PropTypes.bool,
     logs: PropTypes.arrayOf(PropTypes.object),
+    // Each log must have:
+    //   msg
+    //   level
+    //   time || leftMsg
   };
 
   componentWillUpdate() {
@@ -44,7 +48,7 @@ export default class ConsoleLog extends React.Component {
 
   _logHasPadding = (index) => {
     let log = this.props.logs[index];
-    return log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications';
+    return log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding;
   }
 
   _lastLogHasPadding = (index) => {
@@ -68,7 +72,7 @@ export default class ConsoleLog extends React.Component {
       logStyle = LOG_LEVEL_TO_STYLE[log.level];
     }
 
-    let time = log.time.toLocaleTimeString();
+    let leftMsg = log.time ? log.time.toLocaleTimeString() : log.leftMsg;
     let shouldLinkify = true;
 
     message = _.trim(message);
@@ -76,7 +80,7 @@ export default class ConsoleLog extends React.Component {
     // Give important messages more space
     let paddingTop = 0;
     let paddingBottom = 0;
-    if (log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications') {
+    if (log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding) {
       paddingBottom = 20;
       if (index > 0 && !this._lastLogHasPadding(index)) {
         paddingTop = 20;
@@ -110,9 +114,16 @@ export default class ConsoleLog extends React.Component {
       otherStyles = Styles.bigLog;
     }
 
+    let leftMsgStyle = {
+      ...Styles.logLeftMsg,
+    };
+    if (log.leftMsgColor) {
+      leftMsgStyle.color = log.leftMsgColor;
+    }
+
     return (
       <div key={index} style={{...Styles.logContainer, paddingTop, paddingBottom}}>
-        <span style={Styles.logTime}>{time}</span>
+        <span style={leftMsgStyle}>{leftMsg}</span>
         <pre style={{...Styles.log, ...logStyle, paddingLeft, ...otherStyles}}>
           {shouldLinkify ?
             <Linkify>
@@ -201,7 +212,7 @@ const Styles = {
   logError: {
     color: StyleConstants.colorError,
   },
-  logTime: {
+  logLeftMsg: {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorSubtitle,
     width: 85,

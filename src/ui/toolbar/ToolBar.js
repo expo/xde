@@ -59,7 +59,6 @@ type Props = {
 
   actions: AppActions,
   notifications?: any,
-  isNotificationsSelected?: bool,
 };
 
 type State = {
@@ -68,7 +67,6 @@ type State = {
 
 const mapStateToProps = (state, props) => {
   return {
-    isNotificationsSelected: props.projectRoot ? state.projects[props.projectRoot].isNotificationsSelected : false,
     notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
   };
 };
@@ -181,9 +179,9 @@ class ToolBar extends React.Component {
   }
 
   _renderNotificationsLink = () => {
-    let { notifications, isNotificationsSelected } = this.props;
+    let { notifications } = this.props;
 
-    if (!notifications || notifications.count === 0 || isNotificationsSelected) {
+    if (!notifications || notifications.count === 0) {
       return null;
     }
 
