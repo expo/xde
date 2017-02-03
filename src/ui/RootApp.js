@@ -31,6 +31,8 @@ import {
 
 type Props = {
   isAuthenticated?: boolean,
+  segment: mixed,
+  commandLineArgs: Array<string>,
 };
 
 type State = {
@@ -86,7 +88,9 @@ export default class RootApp extends React.Component {
                         }
                         return '/auth';
                       }}
-                      component={MainScreen}
+                      render={(props) => (
+                        <MainScreen {...props} segment={this.props.segment} commandLineArgs={this.props.commandLineArgs} />
+                      )}
                     />
                   </div> : <a id="app-loading" onClick={this._openDevTools}>Loading...</a>
               )}

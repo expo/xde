@@ -18,6 +18,7 @@ import type { AppState } from 'xde/state/types';
 
 type MatchWhenAuthorizedProps = {
   component: ReactClass<*>,
+  render: ?Function,
   getRedirect: (props: Object) => string,
   isAuthenticated: boolean,
   isOnboarded: boolean,
@@ -34,12 +35,12 @@ export const MatchWhenAuthorized = connect(
     isOnboarded: auth.isOnboarded,
     needsPasswordMigration: auth.needsPasswordMigration,
   }),
-)(({ component: Component, getRedirect, isAuthenticated, isOnboarded, needsPasswordMigration, ...rest }: MatchWhenAuthorizedProps) => (
+)(({ component: Component, render, getRedirect, isAuthenticated, isOnboarded, needsPasswordMigration, ...rest }: MatchWhenAuthorizedProps) => (
   <Match
     {...rest}
     render={props => ( //eslint-disable-line
       isAuthenticated && isOnboarded ? (
-        <Component {...props} />
+        render && typeof render === 'function' ? render(props) : <Component {...props} />
       ) : (
         <Redirect
           to={{

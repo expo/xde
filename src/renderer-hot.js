@@ -5,24 +5,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Redbox from 'redbox-react';
+import { remote } from 'electron';
 
 import { AppContainer } from 'react-hot-loader';
 
 import RootApp from './ui/RootApp';
 
 const rootNode = document.getElementById('app');
+const commandLineArgs = remote.getCurrentWindow().commandLineArgs;
 
 const render = () => {
   if (window.HMR) {
     ReactDOM.render(
       <AppContainer errorReporter={Redbox}>
-        <RootApp segment={window.analytics} />
+        <RootApp segment={window.analytics} commandLineArgs={commandLineArgs} />
       </AppContainer>,
       rootNode
     );
   } else {
     ReactDOM.render(
-      <RootApp segment={window.analytics} />,
+      <RootApp segment={window.analytics} commandLineArgs={commandLineArgs} />,
       rootNode
     );
   }
