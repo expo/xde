@@ -179,7 +179,7 @@ module.exports = env => {
     rendererConfig.plugins = [
       //activates HMR
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
       ...rendererConfig.plugins,
     ];
 

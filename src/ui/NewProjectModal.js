@@ -376,4 +376,4 @@ let Styles = {
   },
 };
 
-module.exports = NewProjectModal;
+export default NewProjectModal;

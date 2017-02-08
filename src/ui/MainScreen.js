@@ -68,7 +68,17 @@ const mapStateToProps = (state, props) => {
 
 class MainScreen extends React.Component {
   static propTypes = {
-    segment: PropTypes.array,
+    // `segment` can be an array with analytics methods early in its life cycle
+    // and an object later, so test for the analytics methods
+    segment(props, propName, componentName) {
+      let value = props[propName];
+      if (!value || !(typeof value.identify === 'function')) {
+        return new Error(
+          `Invalid prop \`${propName}\` supplied to \`${componentName}\`. ` +
+          `Missing analytics methods.`
+        );
+      }
+    },
     projects: PropTypes.object,
   };
 

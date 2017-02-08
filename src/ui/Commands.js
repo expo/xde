@@ -9,7 +9,7 @@ async function showOpenDialog(opts) {
   });
 }
 
-module.exports = {
+export default {
   async getDirectoryAsync(currentDirectory) {
     let selections = await showOpenDialog({
       defaultPath: currentDirectory,

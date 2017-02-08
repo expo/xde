@@ -184,6 +184,6 @@ function setupMenu(window, isProjectOpen) {
   Menu.setApplicationMenu(menu);
 }
 
-module.exports = {
+export default {
   setupMenu,
 };

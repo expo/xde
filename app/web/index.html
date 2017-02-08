@@ -67,7 +67,7 @@
         const script = document.createElement('script');
         const port = process.env.DEVSERVER_PORT || 8282;
         script.src = (process.env.HOT) ? `http://localhost:${port}/renderer.js` : '../build/renderer.js';
-        document.write(script.outerHTML);
+        document.currentScript.parentNode.insertBefore(script, document.currentScript.nextSibling);
       }
     </script>
   </body>

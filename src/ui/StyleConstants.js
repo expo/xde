@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   navy: '#003A6B',
   colorPrimary: '#1172B6', // blue
   colorText: '#595C68', // gray
