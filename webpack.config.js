@@ -13,13 +13,14 @@ module.exports = env => {
     cacheDirectory: true,
     babelrc: false,
     sourceMaps: true,
-    presets: ['es2017', 'stage-1', 'react'],
+    presets: ['react'],
     plugins: [
       'flow-react-proptypes',
-      'transform-es2015-destructuring',
-      'transform-es2015-parameters',
+      'syntax-trailing-function-commas',
       'transform-class-properties',
       'transform-decorators-legacy',
+      'transform-export-extensions',
+      'transform-object-rest-spread',
       'transform-runtime',
     ],
   };
@@ -33,15 +34,15 @@ module.exports = env => {
     });
   } else if (env.hmr) {
     babelConfig = Object.assign({}, babelConfig, {
-      presets: ['es2017', 'stage-1', 'react'],
+      presets: ['react'],
       plugins: [
         'react-hot-loader/babel',
         'flow-react-proptypes',
-        'transform-decorators-legacy',
+        'syntax-trailing-function-commas',
         'transform-class-properties',
-        'transform-es2015-classes',
-        'transform-es2015-destructuring',
-        'transform-es2015-parameters',
+        'transform-decorators-legacy',
+        'transform-export-extensions',
+        'transform-object-rest-spread',
         'transform-runtime',
       ],
     });
