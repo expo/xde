@@ -797,6 +797,31 @@ class MainScreen extends React.Component {
     this.setState({ logs: [] });
   }
 
+  _appendOrUpdateProgressLogChunk = (chunk) => {
+    let { logs } = this.state;
+    let previousProgressLogChunkIndex = logs.indexOf(this._previousProgressLogChunk);
+
+    // Maybe it was cleared
+    if (previousProgressLogChunkIndex === -1) {
+      chunk.msg = _formatProgressLogMsg(chunk.msg);
+      this._previousProgressLogChunk = chunk;
+      return this._appendLogChunk(chunk);
+    } else {
+      if (chunk.msg.includes('100.0%') && !chunk.msg.includes(', done.')) {
+        return;
+      } else {
+        if (chunk.msg.includes(', done')) {
+          chunk.msg = 'Done transforming modules.';
+        }
+        logs[previousProgressLogChunkIndex].msg = _formatProgressLogMsg(chunk.msg);
+      }
+
+      this.setState({
+        logs,
+      });
+    }
+  }
+
   _appendLogChunk = (chunk) => {
     if (!chunk.shouldHide) {
       this._logsToAdd.push(chunk);
@@ -813,7 +838,7 @@ class MainScreen extends React.Component {
         });
       });
     }
-  };
+  }
 
   _logInfo = (data) => ProjectUtils.logInfo(this.state.projectRoot, 'exponent', data);
   _logError = (data) => ProjectUtils.logError(this.state.projectRoot, 'exponent', data);
@@ -901,8 +926,17 @@ class MainScreen extends React.Component {
           if (chunk.tag === 'device') {
             this._handleDeviceLogs(chunk);
           } else {
-            if (chunk.msg.match(/transformed \d+\/\d+ \(\d+%\)/)) {
-              this._updateTransformerProgress(chunk.msg);
+            // Replace special characters for tty with nothing
+            chunk.msg = chunk.msg.replace(/\[\w{2}/g, '');
+
+            if (!chunk.msg.match(/\w/)) {
+              return;
+            } else if (chunk.msg.match(/Bundling/) && chunk.msg.match(/Analysing/)) {
+              // This signals the start of a new bundle, clear previous pointer
+              this._previousProgressLogChunk = null;
+              this._appendLogChunk(chunk);
+            } else if (chunk.msg.match(/Transforming modules/) && chunk.msg.includes('%')) {
+              this._appendOrUpdateProgressLogChunk(chunk);
             } else {
               this._appendLogChunk(chunk);
             }
@@ -1218,6 +1252,10 @@ let styles = StyleSheet.create({
     marginRight: -(StyleConstants.gutterMd + StyleConstants.statusBarIconSize),
   },
 });
+
+function _formatProgressLogMsg(msg) {
+  return msg.replace(/\s+Transforming modules\s+/, '\n');
+}
 
 global.cl = function(a, b, c) {
   console.log(a, b, c);
