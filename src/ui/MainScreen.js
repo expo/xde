@@ -123,10 +123,6 @@ class MainScreen extends React.Component {
     }
 
     this._setVersionAsync();
-
-    if (process.platform === 'darwin') {
-      Binaries.installXDECommandAsync();
-    }
   }
 
   _resetLocalProperties() {

@@ -3,12 +3,11 @@ import {
   Menu,
 } from 'electron';
 
-function _installShellCommands(window, isProjectOpen) {
+function _installShellCommands(window) {
   if (process.platform === 'darwin') {
     return [{
       label: 'Install Shell Commands',
       click: () => { window.webContents.send('menu-item-clicked', 'install-shell-commands'); },
-      enabled: isProjectOpen,
     },
     {
       type: 'separator',
@@ -107,7 +106,7 @@ function setupMenu(window, isProjectOpen) {
         {
           type: 'separator',
         },
-        ..._installShellCommands(window, isProjectOpen),
+        ..._installShellCommands(window),
         {
           label: 'Install Android App',
           click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
@@ -169,7 +168,7 @@ function setupMenu(window, isProjectOpen) {
     template.unshift({
       label: 'Exponent XDE',
       submenu: [
-        ..._installShellCommands(window, isProjectOpen),
+        ..._installShellCommands(window),
         {
           label: 'Install Android App',
           click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
