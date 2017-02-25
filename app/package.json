@@ -1,7 +1,7 @@
 {
   "name": "xde",
   "productName": "Exponent XDE",
-  "version": "2.15.0",
+  "version": "2.15.1",
   "description": "The Exponent Development Environment",
   "repository": {
     "type": "git",
