@@ -5,10 +5,12 @@ import spawnAsync from '@exponent/spawn-async';
 
 import buildTasks from './gulp/build-tasks';
 import verificationTasks from './gulp/verification-tasks';
+import testTasks from './gulp/test-tasks';
 
 let tasks = {
   ...buildTasks,
   ...verificationTasks,
+  ...testTasks,
 };
 
 function getReleaseTask(platforms, isTest = false) {
@@ -49,3 +51,5 @@ gulp.task('release:linux', getReleaseTask(['linux']));
 
 gulp.task('test:mac', getReleaseTask(['mac'], true));
 gulp.task('clean', tasks.clean);
+
+gulp.task('test-updates', tasks.testUpdates());

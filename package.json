@@ -26,6 +26,13 @@
     "flow-typed": "flow-typed install --flowVersion=\"$(flow version | awk '{ print $9 }')\" && cd app/ && npm run flow-typed"
   },
   "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "exponent",
+        "repo": "xde"
+      }
+    ],
     "asar": false,
     "appId": "host.exp.xde",
     "dmg": {
@@ -47,14 +54,14 @@
       "identity": "650 Industries, Inc. (C8D8QTF339)",
       "category": "public.app-category.developer-tools"
     },
-    "win": {
-      "remoteReleases": "https://github.com/exponent/xde"
-    },
     "linux": {
       "category": "Development",
       "target": [
         "AppImage"
       ]
+    },
+    "nsis": {
+      "perMachine": true
     }
   },
   "devDependencies": {
@@ -78,7 +85,7 @@
     "concurrently": "^3.1.0",
     "cross-env": "^3.0.0",
     "electron": "~1.6.0",
-    "electron-builder": "^10.6.1",
+    "electron-builder": "14.4.0",
     "electron-devtools-installer": "^2.1.0",
     "electron-rebuild": "^1.5.6",
     "eslint": "^3.15.0",

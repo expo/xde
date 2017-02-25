@@ -2,15 +2,9 @@ import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
 
 import autobind from 'autobind-decorator';
-import { remote } from 'electron';
-import os from 'os';
+import { ipcRenderer } from 'electron';
 
 import Notification from './Notification';
-
-const {
-  app,
-  autoUpdater,
-} = remote;
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 
@@ -26,7 +20,6 @@ export default class NewVersionAvailable extends React.Component {
       isDownloading: false,
       errorMessage: null,
       newVersion: null,
-      quitAndUpdate: null,
     };
   }
 
@@ -71,42 +64,41 @@ export default class NewVersionAvailable extends React.Component {
   }
 
   componentDidMount() {
-    autoUpdater.on('error', this._handleUpdateError);
-    autoUpdater.on('checking-for-update', this._handleCheckingForUpdate);
-    autoUpdater.on('update-available', this._handleUpdateAvailable);
-    autoUpdater.on('update-not-available', this._handleUpdateNotAvailable);
-    autoUpdater.on('update-downloaded', this._handleUpdateDownloaded);
+    ipcRenderer.on('auto-updater', async (event, updateEventName, ...args) => {
+      switch (updateEventName) {
+        case 'error':
+          this._handleUpdateError(...args);
+          break;
+        case 'checking-for-update':
+          this._handleCheckingForUpdate(...args);
+          break;
+        case 'update-available':
+          this._handleUpdateAvailable(...args);
+          break;
+        case 'update-not-available':
+          this._handleUpdateNotAvailable(...args);
+          break;
+        case 'update-downloaded':
+          this._handleUpdateDownloaded(...args);
+          break;
+      }
+    });
 
-    let version = app.getVersion();
-    autoUpdater.setFeedURL(
-      `https://xde-updates.exponentjs.com/update/${os.platform()}_${os.arch()}/${version}`
-    );
     this._checkForUpdate();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    // We need to call removeAllListeners instead of removeListener because
-    // the latter doesn't work over Electron's IPC channel
-    autoUpdater.removeAllListeners('error');
-    autoUpdater.removeAllListeners('checking-for-update');
-    autoUpdater.removeAllListeners('update-available');
-    autoUpdater.removeAllListeners('update-not-available');
-    autoUpdater.removeAllListeners('update-downloaded');
   }
 
   @autobind
   _checkForUpdate() {
-    autoUpdater.checkForUpdates();
+    ipcRenderer.send('check-for-update');
   }
 
   @autobind
   _quitAndUpdate() {
-    if (this.state.quitAndUpdate) {
-      this.state.quitAndUpdate();
-    } else {
-      console.error('Do not have a function to quit and update XDE');
-    }
+    ipcRenderer.send('quit-and-update');
   }
 
   @autobind
@@ -173,7 +165,7 @@ export default class NewVersionAvailable extends React.Component {
   }
 
   @autobind
-  _handleUpdateDownloaded(event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
+  _handleUpdateDownloaded(event) {
     if (!this._isMounted) {
       return;
     }
@@ -183,8 +175,7 @@ export default class NewVersionAvailable extends React.Component {
       isChecking: false,
       isDownloading: false,
       errorMessage: null,
-      newVersion: releaseName,
-      quitAndUpdate,
+      newVersion: event.version,
     });
   }
 }
