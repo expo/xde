@@ -7,7 +7,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>host.exp.xde.helper</string>
 	<key>CFBundleName</key>
-	<string>Exponent XDE Helper</string>
+	<string>Expo XDE Helper</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>DTSDKBuild</key>

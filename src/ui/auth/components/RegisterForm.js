@@ -148,9 +148,9 @@ export default class RegisterForm extends React.Component {
 
   _renderOnboardingForm() {
     const user: ?User = (this.props.user: any);
-    let disclosureText = `Welcome to Exponent!`;
+    let disclosureText = `Welcome to Expo!`;
     if (user) {
-      disclosureText = `Thanks for signing up for Exponent!
+      disclosureText = `Thanks for signing up for Expo!
         Finish filling out your profile below.`;
     }
 

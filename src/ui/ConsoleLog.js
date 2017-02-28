@@ -48,7 +48,7 @@ export default class ConsoleLog extends React.Component {
 
   _logHasPadding = (index) => {
     let log = this.props.logs[index];
-    return log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding;
+    return log.tag === 'expo' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding;
   }
 
   _lastLogHasPadding = (index) => {
@@ -80,7 +80,7 @@ export default class ConsoleLog extends React.Component {
     // Give important messages more space
     let paddingTop = 0;
     let paddingBottom = 0;
-    if (log.tag === 'exponent' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding) {
+    if (log.tag === 'expo' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding) {
       paddingBottom = 20;
       if (index > 0 && !this._lastLogHasPadding(index)) {
         paddingTop = 20;

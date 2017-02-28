@@ -233,7 +233,7 @@ class ToolBar extends React.Component {
     return (
       <div>
         <MenuItem
-          label="Exponent Docs"
+          label="Expo Docs"
           onClick={this.props.onDocsClicked}
         />
         <MenuItem

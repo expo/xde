@@ -5,7 +5,7 @@
 	<key>BuildMachineOSBuild</key>
 	<string>13F34</string>
 	<key>CFBundleDisplayName</key>
-	<string>Exponent XDE</string>
+	<string>Expo XDE</string>
 	<key>CFBundleExecutable</key>
 	<string>Electron</string>
 	<key>CFBundleIconFile</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Exponent XDE</string>
+	<string>Expo XDE</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleVersion</key>

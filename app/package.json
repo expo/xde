@@ -1,13 +1,13 @@
 {
   "name": "xde",
-  "productName": "Exponent XDE",
+  "productName": "Expo XDE",
   "version": "2.15.1",
-  "description": "The Exponent Development Environment",
+  "description": "The Expo Development Environment",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/exponent/xde.git"
   },
-  "author": "Exponent",
+  "author": "Expo",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/exponent/xde/issues"

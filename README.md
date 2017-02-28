@@ -1,5 +1,5 @@
 # xde [![Slack](https://slack.getexponent.com/badge.svg)](https://slack.getexponent.com)
-The Exponent Development Environment
+The Expo Development Environment
 
 Download the latest version of XDE for [macOS](https://xde-updates.exponentjs.com/download/mac), [Windows](https://xde-updates.exponentjs.com/download/win32), or [Linux](https://xde-updates.exponentjs.com/download/linux-x86_64).
 
@@ -9,7 +9,7 @@ On Linux, open with `chmod a+x XDE*.AppImage` and `./XDE*.AppImage`.
 
 To make a new project, just click the "New" button in the upper left hand corner of the window. Then choose or make an empty directory where you want your project to live and hit OK.
 
-This will setup that directory with a very basic React Native project that will work with Exponent and show off some basic but still cool things about React Native.
+This will setup that directory with a very basic React Native project that will work with Expo and show off some basic but still cool things about React Native.
 
 ## Viewing a Project on Your Phone
 
@@ -17,14 +17,14 @@ Once you create a new project (or open an existing project), you'll see some log
 
 The url that begins with `exp://...` is the URL you can use to access your project while you're developing it. To view this on your phone, do the following:
 
-- Go get the Exponent app on your Android or iOS device. It's available [on the Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) and [on the iOS App Store](https://itunes.com/apps/exponent).
-- Open the Exponent app and put in your e-mail address.
+- Go get the Expo app on your Android or iOS device. It's available [on the Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) and [on the iOS App Store](https://itunes.com/apps/exponent).
+- Open the Expo app and put in your e-mail address.
 - Go back to the XDE GUI on your computer and put in your phone number or e-mail address into the text box in the header, then hit the "Send Link" button. This will send a link via e-mail or text message, so make sure you use an address or phone number you can access from your phone.
-- Check your e-mail or texts and tap the link. The Exponent app should open and you should be able to view your experience there!
+- Check your e-mail or texts and tap the link. The Expo app should open and you should be able to view your experience there!
 
-## Converting an existing project to work with Exponent
+## Converting an existing project to work with Expo
 
-React Native apps that don't use native modules can work with Exponent. To configure them, you typically need to do a few quick steps:
+React Native apps that don't use native modules can work with Expo. To configure them, you typically need to do a few quick steps:
 
   * In the directory that contains your React Native JavaScript source code, make sure there is a `package.json` file. There may already be one, but if not, run `npm init` to create one.
 
@@ -42,7 +42,7 @@ React Native apps that don't use native modules can work with Exponent. To confi
   AppRegistry.registerComponent('MyRootComponentName', () => MyRootComponentName);
   ```
 
-  Just leave that; it's totally fine to register the same component twice under two different names. Exponent by default looks for the `main` entry.
+  Just leave that; it's totally fine to register the same component twice under two different names. Expo by default looks for the `main` entry.
 
   Now you can open this directory in xde and send the URL to yourself and view what you've made.
 
@@ -50,11 +50,11 @@ React Native apps that don't use native modules can work with Exponent. To confi
 
 To publish something you've made, just follow these steps:
 
-  * In XDE, create an Exponent account or login to an existing one using the pane on the right of the header.
+  * In XDE, create an Expo account or login to an existing one using the pane on the right of the header.
 
   * Once you're logged in, open the project directory for the thing you want to publish. The packager should start, etc.
 
-  * Check to make sure you can load your app by sending the link to yourself and opening it in the Exponent app.
+  * Check to make sure you can load your app by sending the link to yourself and opening it in the Expo app.
 
   * Once everything looks good, hit the "Publish" button. A few seconds later, you should get a clean URL sent to you that points to the exp.host server where your package was published to.
 

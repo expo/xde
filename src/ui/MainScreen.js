@@ -109,7 +109,7 @@ class MainScreen extends React.Component {
       isLoading: false,
       openModal: null,
       expJson: null,
-      exponentSdkStatus: Doctor.EXPONENT_SDK_INSTALLED_AND_IMPORTED,
+      expoSdkStatus: Doctor.EXPO_SDK_INSTALLED_AND_IMPORTED,
       tabsVisible: TAB_BOTH_VISIBLE,
     };
 
@@ -234,16 +234,16 @@ class MainScreen extends React.Component {
       time: this._startTime,
     }];
 
-    if (this.state.exponentSdkStatus === Doctor.EXPONENT_SDK_NOT_INSTALLED) {
+    if (this.state.expoSdkStatus === Doctor.EXPO_SDK_NOT_INSTALLED) {
       logs.push({
         level: bunyan.WARN,
-        msg: `Please run \`npm install --save exponent\` and add \`import 'exponent'\` to the top of your main file to see device logs.`,
+        msg: `Please run \`npm install --save expo\` and add \`import 'expo'\` to the top of your main file to see device logs.`,
         time: this._startTime,
       });
-    } else if (this.state.exponentSdkStatus === Doctor.EXPONENT_SDK_NOT_IMPORTED) {
+    } else if (this.state.expoSdkStatus === Doctor.EXPO_SDK_NOT_IMPORTED) {
       logs.push({
         level: bunyan.WARN,
-        msg: `Add \`import 'exponent'\` to the top of your main file to see device logs.`,
+        msg: `Add \`import 'expo'\` to the top of your main file to see device logs.`,
         time: this._startTime,
       });
     } else if (this.state.isProjectRunning && !(this.state.expJson && Versions.gteSdkVersion(this.state.expJson, '7.0.0'))) {
@@ -752,12 +752,12 @@ class MainScreen extends React.Component {
       }
 
       let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
-      let exponentSdkStatus = await Doctor.getExponentSdkStatus(this.state.projectRoot);
+      let expoSdkStatus = await Doctor.getExpoSdkStatus(this.state.projectRoot);
       this.setState({
         computedUrl,
         isProjectRunning: true,
         expJson,
-        exponentSdkStatus,
+        expoSdkStatus,
         isLoading: false,
       });
     });
@@ -836,8 +836,8 @@ class MainScreen extends React.Component {
     }
   }
 
-  _logInfo = (data) => ProjectUtils.logInfo(this.state.projectRoot, 'exponent', data);
-  _logError = (data) => ProjectUtils.logError(this.state.projectRoot, 'exponent', data);
+  _logInfo = (data) => ProjectUtils.logInfo(this.state.projectRoot, 'expo', data);
+  _logError = (data) => ProjectUtils.logError(this.state.projectRoot, 'expo', data);
 
   // If multiple devices with the same name are connected, add ' - 1', ' - 2' to their names.
   _getDeviceName = (id, name) => {
@@ -961,12 +961,12 @@ class MainScreen extends React.Component {
         this._logInfo(PROJECT_OPENED_MESSAGE);
 
         let computedUrl = await this._computeUrlAsync(projectRoot);
-        let exponentSdkStatus = await Doctor.getExponentSdkStatus(projectRoot);
+        let expoSdkStatus = await Doctor.getExpoSdkStatus(projectRoot);
         this.setState({
           computedUrl,
           isProjectRunning: true,
           expJson,
-          exponentSdkStatus,
+          expoSdkStatus,
           isLoading: false,
         });
       } catch (err) {
@@ -1033,10 +1033,10 @@ class MainScreen extends React.Component {
           await Binaries.installShellCommandsAsync();
           break;
         case 'install-android-app':
-          await Android.upgradeExponentAsync();
+          await Android.upgradeExpoAsync();
           break;
         case 'install-ios-simulator-app':
-          await Simulator.upgradeExponentAsync();
+          await Simulator.upgradeExpoAsync();
           break;
       }
     });
@@ -1110,13 +1110,13 @@ class MainScreen extends React.Component {
         write: (chunk) => {
           switch (chunk.code) {
             case NotificationCode.OLD_IOS_APP_VERSION:
-              this._showNotification('warning', 'Exponent app on iOS simulator is out of date. Click to upgrade.', {}, async () => {
-                await Simulator.upgradeExponentAsync();
+              this._showNotification('warning', 'Expo app on iOS simulator is out of date. Click to upgrade.', {}, async () => {
+                await Simulator.upgradeExpoAsync();
               });
               return;
             case NotificationCode.OLD_ANDROID_APP_VERSION:
-              this._showNotification('warning', 'Exponent app on Android device is out of date. Click to upgrade.', {}, async () => {
-                await Android.upgradeExponentAsync();
+              this._showNotification('warning', 'Expo app on Android device is out of date. Click to upgrade.', {}, async () => {
+                await Android.upgradeExpoAsync();
               });
               return;
             case NotificationCode.START_LOADING:

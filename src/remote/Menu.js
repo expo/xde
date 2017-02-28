@@ -89,7 +89,7 @@ function setupMenu(window, isProjectOpen) {
       role: 'help',
       submenu: [
         {
-          label: 'Exponent Documentation',
+          label: 'Expo Documentation',
           click: () => { require('electron').shell.openExternal('https://docs.getexponent.com/'); },
         },
       ],
@@ -98,7 +98,7 @@ function setupMenu(window, isProjectOpen) {
 
   if (process.platform === 'darwin') {
     template.unshift({
-      label: 'Exponent XDE',
+      label: 'Expo XDE',
       submenu: [
         {
           role: 'about',
@@ -166,7 +166,7 @@ function setupMenu(window, isProjectOpen) {
     ];
   } else {
     template.unshift({
-      label: 'Exponent XDE',
+      label: 'Expo XDE',
       submenu: [
         ..._installShellCommands(window),
         {
