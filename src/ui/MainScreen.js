@@ -29,13 +29,10 @@ import _ from 'lodash';
 import bunyan from 'bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import JsonFile from '@exponent/json-file';
 
-import {
-  ModalEnum,
-  PopoverEnum,
-} from './Constants';
+import { ModalEnum, PopoverEnum } from './Constants';
 
 import Commands from './Commands';
 import ConsoleLog from './ConsoleLog';
@@ -75,7 +72,7 @@ class MainScreen extends React.Component {
       if (!value || !(typeof value.identify === 'function')) {
         return new Error(
           `Invalid prop \`${propName}\` supplied to \`${componentName}\`. ` +
-          `Missing analytics methods.`
+            `Missing analytics methods.`
         );
       }
     },
@@ -90,7 +87,7 @@ class MainScreen extends React.Component {
     } else {
       return null;
     }
-  }
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -137,17 +134,18 @@ class MainScreen extends React.Component {
 
     return (
       <div className={css(styles.tabsContainer)}>
-        {(tabsVisible !== TAB_RIGHT_VISIBLE) && this._renderPackagerConsole()}
-        {(tabsVisible === TAB_BOTH_VISIBLE) && <div className={css(styles.verticalSeparator)} />}
-        {(tabsVisible !== TAB_LEFT_VISIBLE) && this._renderDeviceLogs()}
+        {tabsVisible !== TAB_RIGHT_VISIBLE && this._renderPackagerConsole()}
+        {tabsVisible === TAB_BOTH_VISIBLE &&
+          <div className={css(styles.verticalSeparator)} />}
+        {tabsVisible !== TAB_LEFT_VISIBLE && this._renderDeviceLogs()}
       </div>
     );
   }
 
   _renderPackagerConsole() {
-    let bottomBarRightContent = (this.state.tabsVisible === TAB_LEFT_VISIBLE) ?
-      this._renderTabsVisibleControl() :
-      null;
+    let bottomBarRightContent = this.state.tabsVisible === TAB_LEFT_VISIBLE
+      ? this._renderTabsVisibleControl()
+      : null;
 
     if (this._getProjectState().isPackagerSelected) {
       return (
@@ -155,7 +153,7 @@ class MainScreen extends React.Component {
           <Tab
             bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
             bottomBarRightContent={bottomBarRightContent}
-            onClickClearLogs={this._onClickClearLogs} >
+            onClickClearLogs={this._onClickClearLogs}>
             <ConsoleLog
               logs={this.state.logs}
               isLoading={this.state.isLoading}
@@ -168,7 +166,7 @@ class MainScreen extends React.Component {
         <div className={css(styles.tabContainer)}>
           <Tab
             bottomBarLeftContent={this._renderPackagerNotificationSwitcher()}
-            bottomBarRightContent={bottomBarRightContent} >
+            bottomBarRightContent={bottomBarRightContent}>
             <NotificationsTab projectRoot={this.state.projectRoot} />
           </Tab>
         </div>
@@ -184,16 +182,16 @@ class MainScreen extends React.Component {
         openPopover={this.state.openPopover}
       />
     );
-  }
+  };
 
-  _toggleDeviceLogsPopover = (event) => {
+  _toggleDeviceLogsPopover = event => {
     event.stopPropagation();
     if (this.state.focusedConnectedDeviceId) {
       this._onTogglePopover(PopoverEnum.DEVICE_LOGS);
     }
   };
 
-  _setSelectedDevice = (deviceId) => {
+  _setSelectedDevice = deviceId => {
     this.setState({
       focusedConnectedDeviceId: deviceId,
     });
@@ -228,11 +226,13 @@ class MainScreen extends React.Component {
   }
 
   _defaultDeviceLogs = () => {
-    let logs = [{
-      level: bunyan.INFO,
-      msg: `Logs from devices will appear here`,
-      time: this._startTime,
-    }];
+    let logs = [
+      {
+        level: bunyan.INFO,
+        msg: `Logs from devices will appear here`,
+        time: this._startTime,
+      },
+    ];
 
     if (this.state.expoSdkStatus === Doctor.EXPO_SDK_NOT_INSTALLED) {
       logs.push({
@@ -246,7 +246,11 @@ class MainScreen extends React.Component {
         msg: `Add \`import 'expo'\` to the top of your main file to see device logs.`,
         time: this._startTime,
       });
-    } else if (this.state.isProjectRunning && !(this.state.expJson && Versions.gteSdkVersion(this.state.expJson, '7.0.0'))) {
+    } else if (
+      this.state.isProjectRunning &&
+      !(this.state.expJson &&
+        Versions.gteSdkVersion(this.state.expJson, '7.0.0'))
+    ) {
       logs.push({
         level: bunyan.WARN,
         msg: `To see device logs, make sure your project uses at least SDK 7.0.0 and has a valid exp.json.`,
@@ -263,67 +267,76 @@ class MainScreen extends React.Component {
       focusedConnectedDeviceId,
     } = this.state;
 
-    let device = focusedConnectedDeviceId ? connectedDevices[focusedConnectedDeviceId] : null;
-    let bottomBarRightContent = (this.state.tabsVisible !== TAB_LEFT_VISIBLE) ?
-      this._renderTabsVisibleControl() :
-      null;
-    let logs = (device && device.logs.length) ? device.logs : this._defaultDeviceLogs();
+    let device = focusedConnectedDeviceId
+      ? connectedDevices[focusedConnectedDeviceId]
+      : null;
+    let bottomBarRightContent = this.state.tabsVisible !== TAB_LEFT_VISIBLE
+      ? this._renderTabsVisibleControl()
+      : null;
+    let logs = device && device.logs.length
+      ? device.logs
+      : this._defaultDeviceLogs();
     return (
       <div className={css(styles.tabContainer)}>
         <Tab
           bottomBarLeftContent={this._renderDeviceSwitcher(device)}
           bottomBarRightContent={bottomBarRightContent}
-          onClickClearLogs={this._onClickClearDeviceLogs} >
+          onClickClearLogs={this._onClickClearDeviceLogs}>
           <ConsoleLog logs={logs} />
         </Tab>
       </div>
     );
   };
 
-  _renderDeviceSwitcher = (device) => {
+  _renderDeviceSwitcher = device => {
     return (
       <div>
-        {<Popover body={this._renderPopoverDeviceLogs()} arrowOffset={16} isAbove>
-          <img
-            src="./SelectUpDown.png"
-            className={css(SharedStyles.iconWithMargin, SharedStyles.statusBarIcon)}
-            onClick={this._toggleDeviceLogsPopover}
-          />
-        </Popover>
+        {
+          <Popover
+            body={this._renderPopoverDeviceLogs()}
+            arrowOffset={16}
+            isAbove>
+            <img
+              src="./SelectUpDown.png"
+              className={css(
+                SharedStyles.iconWithMargin,
+                SharedStyles.statusBarIcon
+              )}
+              onClick={this._toggleDeviceLogsPopover}
+            />
+          </Popover>
         }
         <span
           className={css(SharedStyles.statusBarText)}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={this._toggleDeviceLogsPopover}>
           {device ? device.name : 'No devices connected'}
         </span>
       </div>
     );
-  }
+  };
 
   _renderTabsVisibleControl = () => {
-    let tabLeftImage = (this.state.tabsVisible !== TAB_RIGHT_VISIBLE) ?
-      './IconPanelLeftSelected.png' :
-      './IconPanelLeft.png';
-    let tabRightImage = (this.state.tabsVisible !== TAB_LEFT_VISIBLE) ?
-      './IconPanelRightSelected.png' :
-      './IconPanelRight.png';
+    let tabLeftImage = this.state.tabsVisible !== TAB_RIGHT_VISIBLE
+      ? './IconPanelLeftSelected.png'
+      : './IconPanelLeft.png';
+    let tabRightImage = this.state.tabsVisible !== TAB_LEFT_VISIBLE
+      ? './IconPanelRightSelected.png'
+      : './IconPanelRight.png';
     return (
       <div className={css(styles.tabsVisibleControl)}>
-        <a
-          onClick={this._onClickTabLeftVisible}>
+        <a onClick={this._onClickTabLeftVisible}>
           <img
             src={tabLeftImage}
             className={css(SharedStyles.iconWithMargin, styles.tabVisibleIcon)}
-            style={{flex: 1}}
+            style={{ flex: 1 }}
           />
         </a>
-        <a
-          onClick={this._onClickTabRightVisible}>
+        <a onClick={this._onClickTabRightVisible}>
           <img
             src={tabRightImage}
             className={css(SharedStyles.iconWithMargin, styles.tabVisibleIcon)}
-            style={{flex: 1}}
+            style={{ flex: 1 }}
           />
         </a>
       </div>
@@ -331,34 +344,37 @@ class MainScreen extends React.Component {
   };
 
   _onClickTabLeftVisible = () => {
-    let tabsVisible = (this.state.tabsVisible === TAB_RIGHT_VISIBLE) ?
-      TAB_BOTH_VISIBLE :
-      TAB_RIGHT_VISIBLE;
+    let tabsVisible = this.state.tabsVisible === TAB_RIGHT_VISIBLE
+      ? TAB_BOTH_VISIBLE
+      : TAB_RIGHT_VISIBLE;
     this.setState({ tabsVisible });
   };
 
   _onClickTabRightVisible = () => {
-    let tabsVisible = (this.state.tabsVisible === TAB_LEFT_VISIBLE) ?
-      TAB_BOTH_VISIBLE :
-      TAB_LEFT_VISIBLE;
+    let tabsVisible = this.state.tabsVisible === TAB_LEFT_VISIBLE
+      ? TAB_BOTH_VISIBLE
+      : TAB_LEFT_VISIBLE;
     this.setState({ tabsVisible });
   };
 
-  _runProject = (project) => {
-    this._startProjectAsync(project.root).catch((error) => {
+  _runProject = project => {
+    this._startProjectAsync(project.root).catch(error => {
       this._logError(`Couldn't open Exp ${project.name}: ${error.toString()}`);
     });
   };
 
   _renderProjectList() {
     return (
-      <ProjectList projects={this.state.recentExps} onSelect={this._runProject} />
+      <ProjectList
+        projects={this.state.recentExps}
+        onSelect={this._runProject}
+      />
     );
   }
 
-  _onTogglePopover = (popover) => {
+  _onTogglePopover = popover => {
     const isAlreadyOpen = this.state.openPopover === popover;
-    this.setState({openPopover: isAlreadyOpen ? null : popover});
+    this.setState({ openPopover: isAlreadyOpen ? null : popover });
 
     if (!isAlreadyOpen) {
       Analytics.logEvent('Open Popover', {
@@ -368,7 +384,7 @@ class MainScreen extends React.Component {
   };
 
   _closePopover = () => {
-    this.setState({openPopover: null});
+    this.setState({ openPopover: null });
   };
 
   _urlInputSelect = () => {
@@ -380,7 +396,7 @@ class MainScreen extends React.Component {
     document.execCommand('copy');
   };
 
-  _toggleOptionsPopover = (event) => {
+  _toggleOptionsPopover = event => {
     event.stopPropagation();
     this._onTogglePopover(PopoverEnum.OPTIONS);
   };
@@ -396,7 +412,9 @@ class MainScreen extends React.Component {
           />
         </Popover>
         <input
-          ref={(r) => { this._urlInput = r; }}
+          ref={r => {
+            this._urlInput = r;
+          }}
           className={css(styles.urlInput)}
           value={this.state.computedUrl || ''}
           placeholder="Waiting for packager and tunnel to start..."
@@ -416,10 +434,11 @@ class MainScreen extends React.Component {
       return null;
     }
 
-    const hostMenuItems = ['Tunnel', 'LAN', 'localhost'].map((label) => {
+    const hostMenuItems = ['Tunnel', 'LAN', 'localhost'].map(label => {
       const option = label.toLowerCase();
-      const checkState = this.state.projectSettings.hostType === option ?
-        'checked' : 'unchecked';
+      const checkState = this.state.projectSettings.hostType === option
+        ? 'checked'
+        : 'unchecked';
 
       /* eslint-disable react/jsx-no-bind */
       return (
@@ -427,38 +446,44 @@ class MainScreen extends React.Component {
           label={label}
           key={option}
           checkState={checkState}
-          onClick={() => this._setProjectSettingAsync({hostType: option})}
+          onClick={() => this._setProjectSettingAsync({ hostType: option })}
         />
       );
       /* eslint-enable react/jsx-no-bind */
     });
 
-    const protocolMenuItems = ['exp', 'http', 'redirect'].map((option) => {
-      const checkState = this.state.projectSettings.urlType === option ?
-        'checked' : 'unchecked';
+    const protocolMenuItems = ['exp', 'http', 'redirect'].map(option => {
+      const checkState = this.state.projectSettings.urlType === option
+        ? 'checked'
+        : 'unchecked';
 
       /* eslint-disable react/jsx-no-bind */
       return (
         <MenuItem
-          label={option} key={option} checkState={checkState}
-          onClick={() => this._setProjectSettingAsync({urlType: option})}
+          label={option}
+          key={option}
+          checkState={checkState}
+          onClick={() => this._setProjectSettingAsync({ urlType: option })}
         />
       );
       /* eslint-enable react/jsx-no-bind */
     });
 
-    const otherMenuItems = [{
-      label: 'Development Mode',
-      option: 'dev',
-    }].map(({label, option}) => {
+    const otherMenuItems = [
+      {
+        label: 'Development Mode',
+        option: 'dev',
+      },
+    ].map(({ label, option }) => {
       const isEnabled = this.state.projectSettings[option];
 
       /* eslint-disable react/jsx-no-bind */
       return (
         <MenuItem
-          label={label} key={option}
+          label={label}
+          key={option}
           checkState={isEnabled ? 'checked' : 'unchecked'}
-          onClick={() => this._setProjectSettingAsync({[option]: !isEnabled})}
+          onClick={() => this._setProjectSettingAsync({ [option]: !isEnabled })}
         />
       );
       /* eslint-enable react/jsx-no-bind */
@@ -503,7 +528,7 @@ class MainScreen extends React.Component {
     this.setState({
       openModal: null,
     });
-  }
+  };
 
   _logOutAsync = async () => {
     // TODO: put this state in Redux
@@ -517,12 +542,13 @@ class MainScreen extends React.Component {
         <div className={css(styles.container)}>
           <NewVersionAvailable />
           <div>
-            {this.state.notification && (
-              <Notification {...this.state.notification} />
-            )}
+            {this.state.notification &&
+              <Notification {...this.state.notification} />}
             <div className={css(styles.topSection)}>
               <ToolBar
-                isProjectOpen={!!this.state.projectRoot && !!this.state.projectSettings}
+                isProjectOpen={
+                  !!this.state.projectRoot && !!this.state.projectSettings
+                }
                 isProjectRunning={this.state.isProjectRunning}
                 onAppendErrors={this._logError}
                 onAppendLogs={this._logInfo}
@@ -535,8 +561,12 @@ class MainScreen extends React.Component {
                 onSendLinkClick={this._sendClickedAsync}
                 onDocsClicked={this._docsClicked}
                 onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
-                onChatWithUsOnIntercomClicked={this._chatWithUsOnIntercomClicked}
-                onSendDiagnosticsReportClicked={this._sendDiagnosticsReportClicked}
+                onChatWithUsOnIntercomClicked={
+                  this._chatWithUsOnIntercomClicked
+                }
+                onSendDiagnosticsReportClicked={
+                  this._sendDiagnosticsReportClicked
+                }
                 onClearXDECacheClicked={this._clearXDECacheClicked}
                 onTogglePopover={this._onTogglePopover}
                 openPopover={this.state.openPopover}
@@ -548,15 +578,16 @@ class MainScreen extends React.Component {
               {this.state.projectSettings && this._renderUrlInput()}
             </div>
           </div>
-          {this.state.projectRoot ?
-            this._renderTabs() :
-            this._renderProjectList()}
+          {this.state.projectRoot
+            ? this._renderTabs()
+            : this._renderProjectList()}
         </div>
-        {!!this.state.openModal && <div className={css(styles.modalOverlay)}>
-          <div className={css(styles.modalContent)}>
-            {this._renderModal()}
-          </div>
-        </div>}
+        {!!this.state.openModal &&
+          <div className={css(styles.modalOverlay)}>
+            <div className={css(styles.modalContent)}>
+              {this._renderModal()}
+            </div>
+          </div>}
       </div>
     );
     /* eslint-enable react/jsx-no-bind */
@@ -564,7 +595,9 @@ class MainScreen extends React.Component {
 
   _docsClicked = () => {
     if (this.state.expJson && this.state.expJson.sdkVersion) {
-      require('electron').shell.openExternal(`https://docs.getexponent.com/versions/v${this.state.expJson.sdkVersion}/`);
+      require('electron').shell.openExternal(
+        `https://docs.getexponent.com/versions/v${this.state.expJson.sdkVersion}/`
+      );
     } else {
       require('electron').shell.openExternal('https://docs.getexponent.com/');
     }
@@ -579,21 +612,29 @@ class MainScreen extends React.Component {
   };
 
   _sendDiagnosticsReportClicked = async () => {
-    Logger.notifications.info({indefinite: true}, 'Generating diagnostics report...');
+    Logger.notifications.info(
+      { indefinite: true },
+      'Generating diagnostics report...'
+    );
     let deviceInfo = await Diagnostics.getDeviceInfoAsync({
       uploadLogs: true,
     });
     Intercom.trackEvent('diagnostics', deviceInfo);
-    Intercom.showNewMessage(`Please explain what went wrong and we'll look at your diagnostics report: `);
+    Intercom.showNewMessage(
+      `Please explain what went wrong and we'll look at your diagnostics report: `
+    );
     Logger.notifications.info('Uploaded report!');
-  }
+  };
 
   _clearXDECacheClicked = async () => {
     await Exp.clearXDLCacheAsync();
-  }
+  };
 
-  _setProjectSettingAsync = async (options) => {
-    let projectSettings = await ProjectSettings.setAsync(this.state.projectRoot, options);
+  _setProjectSettingAsync = async options => {
+    let projectSettings = await ProjectSettings.setAsync(
+      this.state.projectRoot,
+      options
+    );
     let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
     this.setState({
       projectSettings,
@@ -602,7 +643,9 @@ class MainScreen extends React.Component {
   };
 
   async _versionStringAsync() {
-    let pkgJsonFile = new JsonFile(path.join(__dirname, '../../app/package.json'));
+    let pkgJsonFile = new JsonFile(
+      path.join(__dirname, '../../app/package.json')
+    );
     let versionString = await pkgJsonFile.getAsync('version');
     return versionString;
   }
@@ -619,23 +662,30 @@ class MainScreen extends React.Component {
       clearTimeout(this._notificationTimeout);
     }
 
-    let clearnNotificationOnClick = onClick ? () => {
-      this._clearNotification();
-      onClick();
-    } : null;
+    let clearnNotificationOnClick = onClick
+      ? () => {
+          this._clearNotification();
+          onClick();
+        }
+      : null;
 
     // Show a notification, then hide it after a while.
-    this.setState({notification: {
-      type,
-      message,
-      onClick: clearnNotificationOnClick,
-    }});
+    this.setState({
+      notification: {
+        type,
+        message,
+        onClick: clearnNotificationOnClick,
+      },
+    });
 
     if (!options || !options.indefinite) {
-      this._notificationTimeout = setTimeout(() => {
-        this._notificationTimeout = null;
-        this.setState({notification: null});
-      }, NOTIFICATION_TIMEOUT_MS);
+      this._notificationTimeout = setTimeout(
+        () => {
+          this._notificationTimeout = null;
+          this.setState({ notification: null });
+        },
+        NOTIFICATION_TIMEOUT_MS
+      );
     }
   }
 
@@ -645,11 +695,14 @@ class MainScreen extends React.Component {
     }
 
     this._notificationTimeout = null;
-    this.setState({notification: null});
+    this.setState({ notification: null });
   }
 
   _publishClickedAsync = async () => {
-    let confirmBeforePublish = await UserSettings.getAsync('confirmBeforePublish', true);
+    let confirmBeforePublish = await UserSettings.getAsync(
+      'confirmBeforePublish',
+      true
+    );
 
     if (confirmBeforePublish) {
       let { dialog } = remote;
@@ -657,24 +710,21 @@ class MainScreen extends React.Component {
       // Yes = 0
       // Yes, don't ask again = 1
       // No = 2
-      var choice = dialog.showMessageBox(
-        remote.getCurrentWindow(),
-        {
-            type: 'question',
-            buttons: ['Yes', `Yes, don't ask again`, 'No'],
-            title: 'Confirm',
-            message: 'This will make your experience publicly accessible. Continue?',
-        }
-      );
+      var choice = dialog.showMessageBox(remote.getCurrentWindow(), {
+        type: 'question',
+        buttons: ['Yes', `Yes, don't ask again`, 'No'],
+        title: 'Confirm',
+        message: 'This will make your experience publicly accessible. Continue?',
+      });
 
       if (choice === 1) {
-        await UserSettings.mergeAsync({'confirmBeforePublish': false});
+        await UserSettings.mergeAsync({ confirmBeforePublish: false });
       } else if (choice === 2) {
         return;
       }
     }
 
-    this._logInfo("Publishing...");
+    this._logInfo('Publishing...');
     try {
       let result = await Project.publishAsync(this.state.projectRoot);
       this._logInfo(`Published to ${result.url}`);
@@ -727,46 +777,58 @@ class MainScreen extends React.Component {
   _restartClickedAsync = async (isShiftSelected = false) => {
     Analytics.logEvent('Click Restart');
 
-    let clearCacheByDefault = await UserSettings.getAsync('clearCacheByDefault', true);
+    let clearCacheByDefault = await UserSettings.getAsync(
+      'clearCacheByDefault',
+      true
+    );
     let reset = clearCacheByDefault ? !isShiftSelected : isShiftSelected;
 
     let shiftMessage = '';
     if (!isShiftSelected) {
-      shiftMessage = clearCacheByDefault ? ' (Hold shift while clicking restart to avoid clearing cache)' : ' (Hold shift while clicking restart to clear packager cache)';
+      shiftMessage = clearCacheByDefault
+        ? ' (Hold shift while clicking restart to avoid clearing cache)'
+        : ' (Hold shift while clicking restart to clear packager cache)';
     }
 
-    this._logInfo(`Restarting project${(reset ? ' and clearing packager cache' : '')}${shiftMessage}.`);
-    this.setState({
-      computedUrl: null,
-      isProjectRunning: false,
-      isLoading: true,
-    }, async () => {
-      // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
-      // because they rely on setState calls that work asynchronously.
-      let expJson;
-      try {
-        expJson = await Project.startAsync(this.state.projectRoot, { reset });
-        this._logInfo(PROJECT_OPENED_MESSAGE);
-      } catch (err) {
-        this._logError(err.message);
-      }
+    this._logInfo(
+      `Restarting project${reset ? ' and clearing packager cache' : ''}${shiftMessage}.`
+    );
+    this.setState(
+      {
+        computedUrl: null,
+        isProjectRunning: false,
+        isLoading: true,
+      },
+      async () => {
+        // TODO: refactor this. can't call _startProjectAsync and _stopProjectAsync
+        // because they rely on setState calls that work asynchronously.
+        let expJson;
+        try {
+          expJson = await Project.startAsync(this.state.projectRoot, { reset });
+          this._logInfo(PROJECT_OPENED_MESSAGE);
+        } catch (err) {
+          this._logError(err.message);
+        }
 
-      let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
-      let expoSdkStatus = await Doctor.getExpoSdkStatus(this.state.projectRoot);
-      this.setState({
-        computedUrl,
-        isProjectRunning: true,
-        expJson,
-        expoSdkStatus,
-        isLoading: false,
-      });
-    });
+        let computedUrl = await this._computeUrlAsync(this.state.projectRoot);
+        let expoSdkStatus = await Doctor.getExpoSdkStatus(
+          this.state.projectRoot
+        );
+        this.setState({
+          computedUrl,
+          isProjectRunning: true,
+          expJson,
+          expoSdkStatus,
+          isLoading: false,
+        });
+      }
+    );
   };
 
-  _sendClickedAsync = async (sendTo) => {
+  _sendClickedAsync = async sendTo => {
     Analytics.logEvent('Click Send');
 
-    this.setState({sendTo});
+    this.setState({ sendTo });
     let url_ = this.state.computedUrl;
     try {
       await Exp.sendAsync(sendTo, url_);
@@ -774,7 +836,9 @@ class MainScreen extends React.Component {
       UserSettings.updateAsync('sendTo', sendTo);
     } catch (err) {
       this._logError(`Could not send link to ${sendTo}: ${err}`);
-      this._logError("If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number.");
+      this._logError(
+        "If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number."
+      );
     }
   };
 
@@ -811,10 +875,11 @@ class MainScreen extends React.Component {
         });
       });
     }
-  }
+  };
 
-  _logInfo = (data) => ProjectUtils.logInfo(this.state.projectRoot, 'expo', data);
-  _logError = (data) => ProjectUtils.logError(this.state.projectRoot, 'expo', data);
+  _logInfo = data => ProjectUtils.logInfo(this.state.projectRoot, 'expo', data);
+  _logError = data =>
+    ProjectUtils.logError(this.state.projectRoot, 'expo', data);
 
   // If multiple devices with the same name are connected, add ' - 1', ' - 2' to their names.
   _getDeviceName = (id, name) => {
@@ -834,9 +899,9 @@ class MainScreen extends React.Component {
 
     this._deviceIdToName[id] = `${name} - ${number}`;
     return this._deviceIdToName[id];
-  }
+  };
 
-  _handleDeviceLogs = (chunk) => {
+  _handleDeviceLogs = chunk => {
     this._deviceLogsToAdd.push(chunk);
 
     requestAnimationFrame(() => {
@@ -844,7 +909,7 @@ class MainScreen extends React.Component {
         return;
       }
 
-      this.setState((state) => {
+      this.setState(state => {
         let connectedDevices = state.connectedDevices;
         let focusedConnectedDeviceId = state.focusedConnectedDeviceId;
 
@@ -857,15 +922,19 @@ class MainScreen extends React.Component {
             }
             connectedDevices[chunk.deviceId] = {
               name,
-              logs: [{
-                level: bunyan.INFO,
-                msg: `Streaming logs from ${name}...`,
-                time: new Date(),
-              }],
+              logs: [
+                {
+                  level: bunyan.INFO,
+                  msg: `Streaming logs from ${name}...`,
+                  time: new Date(),
+                },
+              ],
             };
           }
 
-          connectedDevices[chunk.deviceId].logs = connectedDevices[chunk.deviceId].logs.concat([chunk]);
+          connectedDevices[chunk.deviceId].logs = connectedDevices[
+            chunk.deviceId
+          ].logs.concat([chunk]);
         }
         this._deviceLogsToAdd = [];
 
@@ -936,37 +1005,42 @@ class MainScreen extends React.Component {
     ipcRenderer.send('project-opened', projectRoot);
 
     const projectJson = await Exp.expInfoSafeAsync(projectRoot);
-    XDLState.store.dispatch(XDLState.actions.projects.selectPackagerPane(projectRoot));
+    XDLState.store.dispatch(
+      XDLState.actions.projects.selectPackagerPane(projectRoot)
+    );
 
-    this.setState({
-      projectSettings,
-      projectRoot,
-      projectJson,
-      isProjectRunning: false,
-      isLoading: true,
-    }, async () => {
-      try {
-        let expJson = await Project.startAsync(projectRoot);
-        this._logInfo(PROJECT_OPENED_MESSAGE);
+    this.setState(
+      {
+        projectSettings,
+        projectRoot,
+        projectJson,
+        isProjectRunning: false,
+        isLoading: true,
+      },
+      async () => {
+        try {
+          let expJson = await Project.startAsync(projectRoot);
+          this._logInfo(PROJECT_OPENED_MESSAGE);
 
-        let computedUrl = await this._computeUrlAsync(projectRoot);
-        let expoSdkStatus = await Doctor.getExpoSdkStatus(projectRoot);
-        this.setState({
-          computedUrl,
-          isProjectRunning: true,
-          expJson,
-          expoSdkStatus,
-          isLoading: false,
-        });
-      } catch (err) {
-        this._logError(err.message);
+          let computedUrl = await this._computeUrlAsync(projectRoot);
+          let expoSdkStatus = await Doctor.getExpoSdkStatus(projectRoot);
+          this.setState({
+            computedUrl,
+            isProjectRunning: true,
+            expJson,
+            expoSdkStatus,
+            isLoading: false,
+          });
+        } catch (err) {
+          this._logError(err.message);
+        }
       }
-    });
+    );
 
     return true;
   };
 
-  _stopProjectAsync = async (projectRoot) => {
+  _stopProjectAsync = async projectRoot => {
     if (!this.state.projectRoot) {
       return false;
     }
@@ -1001,18 +1075,24 @@ class MainScreen extends React.Component {
   };
 
   componentDidMount() {
-    UserSettings.getAsync('sendTo').then((sendTo) => {
-      this.setState({sendTo});
-    }, (err) => {
-      // Probably means that there's no saved value here; not a huge deal
-      // console.error("Error getting sendTo:", err);
-    });
+    UserSettings.getAsync('sendTo').then(
+      sendTo => {
+        this.setState({ sendTo });
+      },
+      err => {
+        // Probably means that there's no saved value here; not a huge deal
+        // console.error("Error getting sendTo:", err);
+      }
+    );
 
-    Exp.recentValidExpsAsync().then((recentExps) => {
-      this.setState({recentExps});
-    }, (err) => {
-      console.error("Couldn't get list of recent Exps :(", err);
-    });
+    Exp.recentValidExpsAsync().then(
+      recentExps => {
+        this.setState({ recentExps });
+      },
+      err => {
+        console.error("Couldn't get list of recent Exps :(", err);
+      }
+    );
 
     this._registerLogs();
 
@@ -1040,7 +1120,9 @@ class MainScreen extends React.Component {
         return;
       }
 
-      let argv = require('minimist')(this.props.commandLineArgs.slice(dummyIndex + 1));
+      let argv = require('minimist')(
+        this.props.commandLineArgs.slice(dummyIndex + 1)
+      );
 
       let pathEnvironment = argv['path-environment'];
       if (pathEnvironment) {
@@ -1056,16 +1138,22 @@ class MainScreen extends React.Component {
         return;
       }
 
-      if (argv._ && argv._.length > 0 && await this._tryStartProjectAsync(path.resolve(executedFrom, argv._[0]))) {
+      if (
+        argv._ &&
+        argv._.length > 0 &&
+        (await this._tryStartProjectAsync(
+          path.resolve(executedFrom, argv._[0])
+        ))
+      ) {
         return;
       }
 
       // TODO: only start if exp.json exists
       await this._tryStartProjectAsync(executedFrom);
     }
-  }
+  };
 
-  _tryStartProjectAsync = async (projectRoot) => {
+  _tryStartProjectAsync = async projectRoot => {
     try {
       if (!fs.statSync(projectRoot).isDirectory()) {
         return false;
@@ -1077,7 +1165,7 @@ class MainScreen extends React.Component {
       this._logError(`Couldn't open ${projectRoot}: ${e.toString()}`);
       return false;
     }
-  }
+  };
 
   componentWillUnmount() {
     if (this._notificationTimeout) {
@@ -1096,17 +1184,27 @@ class MainScreen extends React.Component {
   _registerLogs() {
     Logger.notifications.addStream({
       stream: {
-        write: (chunk) => {
+        write: chunk => {
           switch (chunk.code) {
             case NotificationCode.OLD_IOS_APP_VERSION:
-              this._showNotification('warning', 'Expo app on iOS simulator is out of date. Click to upgrade.', {}, async () => {
-                await Simulator.upgradeExpoAsync();
-              });
+              this._showNotification(
+                'warning',
+                'Expo app on iOS simulator is out of date. Click to upgrade.',
+                {},
+                async () => {
+                  await Simulator.upgradeExpoAsync();
+                }
+              );
               return;
             case NotificationCode.OLD_ANDROID_APP_VERSION:
-              this._showNotification('warning', 'Expo app on Android device is out of date. Click to upgrade.', {}, async () => {
-                await Android.upgradeExpoAsync();
-              });
+              this._showNotification(
+                'warning',
+                'Expo app on Android device is out of date. Click to upgrade.',
+                {},
+                async () => {
+                  await Android.upgradeExpoAsync();
+                }
+              );
               return;
             case NotificationCode.START_LOADING:
               this.setState({
@@ -1135,7 +1233,7 @@ class MainScreen extends React.Component {
 
     Logger.global.addStream({
       stream: {
-        write: (chunk) => {
+        write: chunk => {
           this._appendLogChunk(chunk);
         },
       },
@@ -1166,7 +1264,9 @@ let styles = StyleSheet.create({
   urlInput: {
     ...SharedStyles.input,
     flex: 1,
-    paddingLeft: OPTIONS_ICON_SIZE + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
+    paddingLeft: OPTIONS_ICON_SIZE +
+      StyleConstants.gutterMd * 2 -
+      StyleConstants.gutterSm,
   },
 
   urlInputCopyIcon: {
@@ -1176,8 +1276,8 @@ let styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: '50%',
-    height: (StyleConstants.gutterMd * 2) + 10,
-    marginTop: -((StyleConstants.gutterMd * 2) + 10) / 2,
+    height: StyleConstants.gutterMd * 2 + 10,
+    marginTop: (-(StyleConstants.gutterMd * 2 + 10)) / 2,
   },
 
   optionsIcon: {
