@@ -784,41 +784,18 @@ class MainScreen extends React.Component {
       focusedConnectedDeviceId,
     } = this.state;
 
-    if (focusedConnectedDeviceId && connectedDevices[focusedConnectedDeviceId]) {
+    if (
+      focusedConnectedDeviceId && connectedDevices[focusedConnectedDeviceId]
+    ) {
       connectedDevices[focusedConnectedDeviceId].logs = [];
     }
   };
 
   _onClickClearLogs = () => {
     this.setState({ logs: [] });
-  }
+  };
 
-  _appendOrUpdateProgressLogChunk = (chunk) => {
-    let { logs } = this.state;
-    let previousProgressLogChunkIndex = logs.indexOf(this._previousProgressLogChunk);
-
-    // Maybe it was cleared
-    if (previousProgressLogChunkIndex === -1) {
-      chunk.msg = _formatProgressLogMsg(chunk.msg);
-      this._previousProgressLogChunk = chunk;
-      return this._appendLogChunk(chunk);
-    } else {
-      if (chunk.msg.includes('100.0%') && !chunk.msg.includes(', done.')) {
-        return;
-      } else {
-        if (chunk.msg.includes(', done')) {
-          chunk.msg = 'Done transforming modules.';
-        }
-        logs[previousProgressLogChunkIndex].msg = _formatProgressLogMsg(chunk.msg);
-      }
-
-      this.setState({
-        logs,
-      });
-    }
-  }
-
-  _appendLogChunk = (chunk) => {
+  _appendLogChunk = chunk => {
     if (!chunk.shouldHide) {
       this._logsToAdd.push(chunk);
 
@@ -898,23 +875,42 @@ class MainScreen extends React.Component {
         };
       });
     });
-  }
+  };
 
-  _startProjectAsync = async (projectRoot) => {
+  _startProjectAsync = async projectRoot => {
     if (this.state.projectRoot) {
       return false;
     }
 
     if (!projectRoot) {
-      throw new Error("Could not open project: empty root.");
+      throw new Error('Could not open project: empty root.');
     }
 
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
     let xdeProjectId = this._currentOpenProjectXDEId;
 
+    const formatPackagerLog = chunk => {
+      // Replace special characters for tty with nothing
+      chunk.msg = chunk.msg.replace(/\[\w{2}/g, '');
+      if (chunk.msg.match(/Transforming modules/)) {
+        let progress = chunk.msg.match(/\d+\.\d+% \(\d+\/\d+\)/);
+        if (progress && progress[0]) {
+          chunk.msg = `Transforming modules: ${progress[0]}`;
+
+          // Don't show repeated progress updates
+          let prevChunk = this.state.logs[this.state.logs.length - 1];
+          if (prevChunk && prevChunk.msg === chunk.msg) {
+            chunk.msg = '';
+          }
+        }
+      }
+
+      return chunk;
+    };
+
     ProjectUtils.attachLoggerStream(projectRoot, {
       stream: {
-        write: (chunk) => {
+        write: chunk => {
           if (this._currentOpenProjectXDEId !== xdeProjectId) {
             return;
           }
@@ -922,19 +918,12 @@ class MainScreen extends React.Component {
           if (chunk.tag === 'device') {
             this._handleDeviceLogs(chunk);
           } else {
-            // Replace special characters for tty with nothing
-            chunk.msg = chunk.msg.replace(/\[\w{2}/g, '');
+            chunk = formatPackagerLog(chunk);
 
             if (!chunk.msg.match(/\w/)) {
               return;
-            } else if (chunk.msg.match(/Bundling/) && chunk.msg.match(/Analysing/)) {
-              // This signals the start of a new bundle, clear previous pointer
-              this._previousProgressLogChunk = null;
-              this._appendLogChunk(chunk);
-            } else if (chunk.msg.match(/Transforming modules/) && chunk.msg.includes('%')) {
-              this._appendOrUpdateProgressLogChunk(chunk);
             } else {
-              this._appendLogChunk(chunk);
+              this._appendLogChunk(formatPackagerLog(chunk));
             }
           }
         },
@@ -1248,10 +1237,6 @@ let styles = StyleSheet.create({
     marginRight: -(StyleConstants.gutterMd + StyleConstants.statusBarIconSize),
   },
 });
-
-function _formatProgressLogMsg(msg) {
-  return msg.replace(/\s+Transforming modules\s+/, '\n');
-}
 
 global.cl = function(a, b, c) {
   console.log(a, b, c);
