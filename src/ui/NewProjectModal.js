@@ -4,6 +4,7 @@ import {
   Logger,
   NotificationCode,
   UserSettings,
+  MessageCode,
 } from 'xdl';
 
 import _ from 'lodash';
@@ -24,13 +25,15 @@ const HALF_MAX_PROJECT_LENGTH = 20;
 class NewProjectModal extends React.Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       isLoading: true,
       projectName: 'my-new-project',
       projectDirectory: null,
       errorMessage: null,
       loadingMessage: null,
+      notificationType: null,
+      showRetryPrompt: false,
+      progress: null,
       templates: null,
       selectedTemplate: null,
     };
@@ -41,6 +44,8 @@ class NewProjectModal extends React.Component {
     onSelectProject: PropTypes.func.isRequired,
   }
 
+  _currentRequestID = 0;
+
   componentDidMount() {
     Logger.notifications.addStream({
       stream: {
@@ -49,6 +54,19 @@ class NewProjectModal extends React.Component {
             case NotificationCode.PROGRESS:
               this.setState({
                 loadingMessage: chunk.msg,
+                notificationType: NotificationCode.PROGRESS,
+              });
+              break;
+            case NotificationCode.DOWNLOAD:
+              this.setState({
+                loadingMessage: 'Downloading...' + chunk.msg + " %",
+                progress: chunk.msg,
+                notificationType: NotificationCode.DOWNLOAD,
+              });
+              break;
+            case NotificationCode.RETRY_DOWNLOAD:
+              this.setState({
+                showRetryPrompt: true,
               });
               break;
           }
@@ -167,24 +185,40 @@ class NewProjectModal extends React.Component {
   }
 
   _renderLoading = () => {
+    let downloading = this.state.notificationType === NotificationCode.DOWNLOAD;
     return (
       <div style={Styles.loadingContainer}>
-        <LoadingIndicator
-          color={{
-            red: 17,
-            green: 114,
-            blue: 182,
-            alpha: 1.0,
-          }}
-          segmentWidth={6}
-          segmentLength={15}
-          spacing={9}
-        />
+        {downloading ?
+          <div style={Styles.progressBar}>
+            <div style={{...Styles.progress, width: this.state.progress * 2}} />
+          </div>          :
+          <LoadingIndicator
+            color={{
+              red: 17,
+              green: 114,
+              blue: 182,
+              alpha: 1.0,
+            }}
+            segmentWidth={6}
+            segmentLength={15}
+            spacing={9}
+          />
+        }
         {this.state.loadingMessage &&
           <div style={Styles.loadingText}>
             {this.state.loadingMessage}
           </div>
         }
+        {this.state.showRetryPrompt ?
+          <div style={Styles.loadingContainer}>
+            <div style={{...Styles.loadingText, paddingTop: 0}}>
+              {MessageCode.DOWNLOAD_IS_SLOW}
+            </div>
+            <button onClick={this._onClickRetry} type="button" style={Styles.retryButton}>
+              <div key="button-text" style={{ flex: 1 }}>Retry</div>
+            </button>
+          </div> :
+          <div />}
       </div>
     );
   }
@@ -231,8 +265,16 @@ class NewProjectModal extends React.Component {
     this.props.onClose();
   };
 
+  _onClickRetry = async event => {
+    Exp.clearXDLCacheAsync();
+    this.setState({showRetryPrompt: false});
+    this._onSubmitNewProject(event);
+  };
+
   _onSubmitNewProject = async (event) => {
     event.preventDefault();
+    const requestID = this._currentRequestID + 1;
+    this._currentRequestID = requestID;
 
     if (this.state.projectName.length === 0) {
       this.setState({
@@ -248,9 +290,28 @@ class NewProjectModal extends React.Component {
     }
 
     try {
-      let projectRoot = await Exp.createNewExpAsync(this.state.selectedTemplate.id, this.state.projectDirectory, {}, {
-        name: this.state.projectName,
-      });
+      let templateDownload = await Exp.downloadTemplateApp(
+        this.state.selectedTemplate.id,
+        this.state.projectDirectory,
+        {
+          name: this.state.projectName,
+          progressFunction: (progress) => {
+            if (this._currentRequestID === requestID) {
+              Logger.notifications.info({code: NotificationCode.DOWNLOAD}, (Math.round(progress * 100)));
+            }
+          },
+          retryFunction: () =>
+            Logger.notifications.info(
+              { code: NotificationCode.RETRY_DOWNLOAD },
+              MessageCode.DOWNLOAD_IS_SLOW
+            ),
+        });
+
+      if (this._currentRequestID !== requestID) {
+        return;
+      }
+
+      let projectRoot = await Exp.extractTemplateApp(templateDownload.starterAppPath, templateDownload.name, templateDownload.root);
       if (!projectRoot) {
         this.setState({
           isLoading: false,
@@ -261,6 +322,7 @@ class NewProjectModal extends React.Component {
       await this.props.onSelectProject(projectRoot);
       this.props.onClose();
     } catch (e) {
+      Exp.clearXDLCacheAsync();
       this.setState({
         isLoading: false,
         errorMessage: e.message,
@@ -363,6 +425,15 @@ let Styles = {
 
     backgroundColor: StyleConstants.colorPrimary,
   },
+  retryButton: {
+    border: 'none',
+    borderRadius: 5,
+    color: 'white',
+    padding: StyleConstants.gutterSm,
+    marginTop: 20,
+    width: '40%',
+    backgroundColor: StyleConstants.colorPrimary
+  },
   input: {
     marginBottom: StyleConstants.gutterMd,
   },
@@ -373,6 +444,15 @@ let Styles = {
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: 'black',
+  },
+  progress: {
+    backgroundColor: StyleConstants.colorPrimary,
+    height: 30,
+  },
+  progressBar: {
+    backgroundColor: StyleConstants.colorLightBackground,
+    height: 30,
+    width: 200,
   },
 };
 
