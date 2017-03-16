@@ -48,6 +48,7 @@ import Popover from './toolbar/Popover';
 import ToolBar from './toolbar/ToolBar';
 import PackagerNotificationsSwitcher from './PackagerNotificationsSwitcher';
 import Tab from './Tab';
+import { installShellCommandsAsync } from '../utils/binaries';
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
@@ -1099,7 +1100,7 @@ class MainScreen extends React.Component {
     ipcRenderer.on('menu-item-clicked', async (event, item) => {
       switch (item) {
         case 'install-shell-commands':
-          await Binaries.installShellCommandsAsync();
+          await installShellCommandsAsync();
           break;
         case 'install-android-app':
           await Android.upgradeExpoAsync();
