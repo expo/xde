@@ -334,7 +334,7 @@ class NewProjectModal extends React.Component {
             if (this._currentRequestID === requestID) {
               Logger.notifications.info(
                 { code: NotificationCode.DOWNLOAD },
-                Math.round(progress * 100)
+                progress
               );
             }
           },
