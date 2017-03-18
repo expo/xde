@@ -562,9 +562,6 @@ class MainScreen extends React.Component {
                 onSendLinkClick={this._sendClickedAsync}
                 onDocsClicked={this._docsClicked}
                 onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
-                onChatWithUsOnIntercomClicked={
-                  this._chatWithUsOnIntercomClicked
-                }
                 onSendDiagnosticsReportClicked={
                   this._sendDiagnosticsReportClicked
                 }
@@ -608,23 +605,12 @@ class MainScreen extends React.Component {
     require('electron').shell.openExternal('https://slack.getexponent.com/');
   };
 
-  _chatWithUsOnIntercomClicked = () => {
-    Intercom.showNewMessage();
-  };
-
   _sendDiagnosticsReportClicked = async () => {
-    Logger.notifications.info(
-      { indefinite: true },
-      'Generating diagnostics report...'
-    );
-    let deviceInfo = await Diagnostics.getDeviceInfoAsync({
+    Logger.global.info('Generating diagnostics report...');
+    let { url } = await Diagnostics.getDeviceInfoAsync({
       uploadLogs: true,
     });
-    Intercom.trackEvent('diagnostics', deviceInfo);
-    Intercom.showNewMessage(
-      `Please explain what went wrong and we'll look at your diagnostics report: `
-    );
-    Logger.notifications.info('Uploaded report!');
+    Logger.global.info(`Uploaded report! Send this url to the Expo team: ${url}`);
   };
 
   _clearXDECacheClicked = async () => {

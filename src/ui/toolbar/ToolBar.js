@@ -53,7 +53,6 @@ type Props = {
   onSendLinkClick: () => void,
   onDocsClicked: () => void,
   onJoinUsOnSlackClicked: () => void,
-  onChatWithUsOnIntercomClicked: () => void,
   onSendDiagnosticsReportClicked: () => void,
   onClearXDECacheClicked: () => void,
 
@@ -241,11 +240,8 @@ class ToolBar extends React.Component {
           onClick={this.props.onJoinUsOnSlackClicked}
         />
         <MenuItem
-          label="Chat with Us On Intercom"
-          onClick={this.props.onChatWithUsOnIntercomClicked}
-        />
-        <MenuItem
           label="Send Diagnostics Report"
+          isDisabled={!this.props.isProjectOpen}
           onClick={this.props.onSendDiagnosticsReportClicked}
         />
         <MenuItem
