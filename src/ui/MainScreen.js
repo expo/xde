@@ -561,6 +561,7 @@ class MainScreen extends React.Component {
                 onRestartClick={this._restartClickedAsync}
                 onSendLinkClick={this._sendClickedAsync}
                 onDocsClicked={this._docsClicked}
+                onForumsClicked={this._forumsClicked}
                 onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
                 onSendDiagnosticsReportClicked={
                   this._sendDiagnosticsReportClicked
@@ -594,15 +595,19 @@ class MainScreen extends React.Component {
   _docsClicked = () => {
     if (this.state.expJson && this.state.expJson.sdkVersion) {
       require('electron').shell.openExternal(
-        `https://docs.getexponent.com/versions/v${this.state.expJson.sdkVersion}/`
+        `https://docs.expo.io/versions/v${this.state.expJson.sdkVersion}/`
       );
     } else {
-      require('electron').shell.openExternal('https://docs.getexponent.com/');
+      require('electron').shell.openExternal('https://docs.expo.io/');
     }
   };
 
+  _forumsClicked = () => {
+    require('electron').shell.openExternal('https://forums.expo.io/');
+  };
+
   _joinUsOnSlackClicked = () => {
-    require('electron').shell.openExternal('https://slack.getexponent.com/');
+    require('electron').shell.openExternal('https://slack.expo.io/');
   };
 
   _sendDiagnosticsReportClicked = async () => {

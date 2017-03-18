@@ -90,7 +90,7 @@ function setupMenu(window, isProjectOpen) {
       submenu: [
         {
           label: 'Expo Documentation',
-          click: () => { require('electron').shell.openExternal('https://docs.getexponent.com/'); },
+          click: () => { require('electron').shell.openExternal('https://docs.expo.io/'); },
         },
       ],
     },

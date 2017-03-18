@@ -52,6 +52,7 @@ type Props = {
   onRestartClick: () => void,
   onSendLinkClick: () => void,
   onDocsClicked: () => void,
+  onForumsClicked: () => void,
   onJoinUsOnSlackClicked: () => void,
   onSendDiagnosticsReportClicked: () => void,
   onClearXDECacheClicked: () => void,
@@ -236,6 +237,14 @@ class ToolBar extends React.Component {
           onClick={this.props.onDocsClicked}
         />
         <MenuItem
+          label="Expo Forums"
+          onClick={this.props.onForumsClicked}
+        />
+        <MenuItem
+          label="Clear XDE Cache"
+          onClick={this.props.onClearXDECacheClicked}
+        />
+        <MenuItem
           label="Join Us On Slack"
           onClick={this.props.onJoinUsOnSlackClicked}
         />
@@ -243,10 +252,6 @@ class ToolBar extends React.Component {
           label="Send Diagnostics Report"
           isDisabled={!this.props.isProjectOpen}
           onClick={this.props.onSendDiagnosticsReportClicked}
-        />
-        <MenuItem
-          label="Clear XDE Cache"
-          onClick={this.props.onClearXDECacheClicked}
         />
       </div>
     );
