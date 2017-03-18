@@ -1,7 +1,7 @@
 {
   "name": "xde",
   "productName": "Expo XDE",
-  "version": "2.15.2",
+  "version": "2.16.0",
   "description": "The Expo Development Environment",
   "repository": {
     "type": "git",
@@ -49,6 +49,6 @@
     "redux-thunk": "^2.1.0",
     "source-map-support": "^0.4.6",
     "tree-kill": "^1.1.0",
-    "xdl": "33.0.0"
+    "xdl": "36.1.0"
   }
 }
