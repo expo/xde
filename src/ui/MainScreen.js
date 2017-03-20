@@ -1208,11 +1208,14 @@ class MainScreen extends React.Component {
                 isLoading: false,
               });
               return;
+            case NotificationCode.DOWNLOAD:
+              return;
           }
 
           let notificationOptions = {
             indefinite: !!chunk.indefinite,
           };
+
           if (chunk.level <= bunyan.INFO) {
             this._showNotification('info', chunk.msg, notificationOptions);
           } else {
