@@ -108,6 +108,7 @@
     "instapromise": "2.0.7",
     "json-loader": "^0.5.4",
     "mkdirp": "^0.5.1",
+    "node-loader": "^0.6.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-hot-loader": "3.0.0-beta.6",

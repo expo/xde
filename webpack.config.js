@@ -62,6 +62,10 @@ module.exports = env => {
         test: /\.json/,
         loader: 'json',
       },
+      {
+        test: /\.node$/,
+        use: "node-loader",
+      },
     ],
   };
 
