@@ -12,8 +12,8 @@ import type { AppAction, AppDispatch, AppState } from 'xde/state/types';
 
 import type { UserOrLegacyUser, RegistrationData } from 'xdl/build/User';
 
-const XDE_CLIENT_ID = '2Gej4rsLcTCRuhKKzn8xkAHsD1kiPAGS';
-UserManager.initialize(XDE_CLIENT_ID);
+// const XDE_CLIENT_ID = '2Gej4rsLcTCRuhKKzn8xkAHsD1kiPAGS';
+UserManager.initialize();
 
 /** Action Types **/
 
