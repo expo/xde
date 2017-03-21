@@ -49,6 +49,6 @@
     "redux-thunk": "^2.1.0",
     "source-map-support": "^0.4.6",
     "tree-kill": "^1.1.0",
-    "xdl": "36.1.0"
+    "xdl": "37.0.0"
   }
 }
