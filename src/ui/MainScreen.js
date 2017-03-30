@@ -10,6 +10,7 @@ import {
   Intercom,
   Logger,
   NotificationCode,
+  PackagerLogsStream,
   Project,
   ProjectSettings,
   ProjectUtils,
@@ -36,6 +37,7 @@ import { ModalEnum, PopoverEnum } from './Constants';
 
 import Commands from './Commands';
 import ConsoleLog from './ConsoleLog';
+import DeviceLogsStream from './DeviceLogsStream';
 import NewProjectModal from './NewProjectModal';
 import NewVersionAvailable from './NewVersionAvailable';
 import Notification from './Notification';
@@ -615,7 +617,9 @@ class MainScreen extends React.Component {
     let { url } = await Diagnostics.getDeviceInfoAsync({
       uploadLogs: true,
     });
-    Logger.global.info(`Uploaded report! Send this url to the Expo team: ${url}`);
+    Logger.global.info(
+      `Uploaded report! Send this url to the Expo team: ${url}`
+    );
   };
 
   _clearXDECacheClicked = async () => {
@@ -938,6 +942,8 @@ class MainScreen extends React.Component {
     });
   };
 
+  _getCurrentOpenProjectXDEId = () => this._currentOpenProjectXDEId;
+
   _startProjectAsync = async projectRoot => {
     if (this.state.projectRoot) {
       return false;
@@ -948,48 +954,20 @@ class MainScreen extends React.Component {
     }
 
     let projectSettings = await ProjectSettings.readAsync(projectRoot);
-    let xdeProjectId = this._currentOpenProjectXDEId;
 
-    const formatPackagerLog = chunk => {
-      // Replace special characters for tty with nothing
-      chunk.msg = chunk.msg.replace(/\[\w{2}/g, '');
-      if (chunk.msg.match(/Transforming modules/)) {
-        let progress = chunk.msg.match(/\d+\.\d+% \(\d+\/\d+\)/);
-        if (progress && progress[0]) {
-          chunk.msg = `Transforming modules: ${progress[0]}`;
-
-          // Don't show repeated progress updates
-          let prevChunk = this.state.logs[this.state.logs.length - 1];
-          if (prevChunk && prevChunk.msg === chunk.msg) {
-            chunk.msg = '';
-          }
-        }
-      }
-
-      return chunk;
-    };
-
-    ProjectUtils.attachLoggerStream(projectRoot, {
-      stream: {
-        write: chunk => {
-          if (this._currentOpenProjectXDEId !== xdeProjectId) {
-            return;
-          }
-
-          if (chunk.tag === 'device') {
-            this._handleDeviceLogs(chunk);
-          } else {
-            chunk = formatPackagerLog(chunk);
-
-            if (!chunk.msg.match(/\w/)) {
-              return;
-            } else {
-              this._appendLogChunk(formatPackagerLog(chunk));
-            }
-          }
-        },
+    let packagerLogsStream = new PackagerLogsStream({
+      projectRoot,
+      getCurrentOpenProjectId: this._getCurrentOpenProjectXDEId,
+      updateLogs: updater => {
+        let nextState = { logs: updater(this.state.logs) };
+        this.setState(nextState);
       },
-      type: 'raw',
+    });
+
+    let deviceLogsStream = new DeviceLogsStream({
+      projectRoot,
+      getCurrentOpenProjectId: this._getCurrentOpenProjectXDEId,
+      handleDeviceLogs: this._handleDeviceLogs,
     });
 
     // Send projectRoot to main process. main process will close this project
