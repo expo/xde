@@ -3,10 +3,7 @@
  */
 
 import React from 'react';
-import {
-  MemoryRouter as Router,
-  Match,
-} from 'react-router';
+import { MemoryRouter as Router, Match } from 'react-router';
 
 import { css, StyleSheet } from 'aphrodite/no-important';
 
@@ -16,18 +13,11 @@ import { getStore } from 'xde/state/store';
 import type { AppStore } from 'xde/state/types';
 import { actions } from 'xde/state';
 
-import {
-  MainScreen,
-  AuthScreen,
-} from 'xde/ui';
+import { MainScreen, AuthScreen } from 'xde/ui';
 
-import {
-  MatchWhenAuthorized,
-} from 'xde/utils/routing';
+import { MatchWhenAuthorized } from 'xde/utils/routing';
 
-import {
-  XDLProvider,
-} from 'xdl';
+import { XDLProvider } from 'xdl';
 
 type Props = {
   isAuthenticated?: boolean,
@@ -37,7 +27,7 @@ type Props = {
 
 type State = {
   isLoaded: boolean,
-}
+};
 
 /**
  * Main App container
@@ -59,9 +49,7 @@ export default class RootApp extends React.Component {
   componentDidMount() {
     // TODO: We can handle a failure here, and show a nice message
     // when somebody doesn't have an internet connection
-    this._store.dispatch(
-      actions.auth.checkForExistingSession(),
-    ).then(() => {
+    this._store.dispatch(actions.auth.checkForExistingSession()).then(() => {
       this.setState({
         isLoaded: true,
       });
@@ -74,26 +62,36 @@ export default class RootApp extends React.Component {
         <XDLProvider>
           <Provider store={this._store}>
             <Router>
-              {({ router }) => (
-                this.state.isLoaded ?
-                  <div>
-                    <Match pattern="/auth" component={AuthScreen} />
-                    <MatchWhenAuthorized
-                      exactly
-                      pattern="/"
-                      getRedirect={props => { // eslint-disable-line
-                        if ((props.isAuthenticated && !props.isOnboarded) ||
-                            (!props.isAuthenticated && props.needsPasswordMigration)) {
-                          return '/auth/register';
-                        }
-                        return '/auth';
-                      }}
-                      render={(props) => (
-                        <MainScreen {...props} segment={this.props.segment} commandLineArgs={this.props.commandLineArgs} />
-                      )}
-                    />
-                  </div> : <a id="app-loading" onClick={this._openDevTools}>Loading...</a>
-              )}
+              {({ router }) =>
+                (this.state.isLoaded
+                  ? <div>
+                      <Match pattern="/auth" component={AuthScreen} />
+                      <MatchWhenAuthorized
+                        exactly
+                        pattern="/"
+                        getRedirect={props => {
+                          // eslint-disable-line
+                          if (
+                            (props.isAuthenticated && !props.isOnboarded) ||
+                            (!props.isAuthenticated &&
+                              props.needsPasswordMigration)
+                          ) {
+                            return '/auth/register';
+                          }
+                          return '/auth';
+                        }}
+                        render={props => (
+                          <MainScreen
+                            {...props}
+                            segment={this.props.segment}
+                            commandLineArgs={this.props.commandLineArgs}
+                          />
+                        )}
+                      />
+                    </div>
+                  : <a id="app-loading" onClick={this._openDevTools}>
+                      Loading...
+                    </a>)}
             </Router>
           </Provider>
         </XDLProvider>
@@ -104,7 +102,7 @@ export default class RootApp extends React.Component {
   _openDevTools = () => {
     const { remote } = require('electron');
     remote.getCurrentWindow().openDevTools();
-  }
+  };
 }
 
 const styles = StyleSheet.create({

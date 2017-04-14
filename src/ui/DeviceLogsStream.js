@@ -8,17 +8,15 @@ export default class DeviceLogsStream {
   _getCurrentOpenProjectId: () => any;
   _handleDeviceLogs: () => any;
 
-  constructor(
-    {
-      projectRoot,
-      getCurrentOpenProjectId,
-      handleDeviceLogs,
-    }: {
-      projectRoot: string,
-      getCurrentOpenProjectId: () => any,
-      handleDeviceLogs: () => void,
-    }
-  ) {
+  constructor({
+    projectRoot,
+    getCurrentOpenProjectId,
+    handleDeviceLogs,
+  }: {
+    projectRoot: string,
+    getCurrentOpenProjectId: () => any,
+    handleDeviceLogs: () => void,
+  }) {
     this._projectId = getCurrentOpenProjectId();
     this._projectRoot = projectRoot;
     this._getCurrentOpenProjectId = getCurrentOpenProjectId;

@@ -15,7 +15,9 @@ let styles = StyleSheet.create({
   statusBarText: {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
-    paddingLeft: StyleConstants.statusBarIconSize + (StyleConstants.gutterMd * 2) - StyleConstants.gutterSm,
+    paddingLeft: StyleConstants.statusBarIconSize +
+      StyleConstants.gutterMd * 2 -
+      StyleConstants.gutterSm,
     marginVertical: StyleConstants.gutterSm,
   },
 });
@@ -32,7 +34,8 @@ styles = {
     paddingBottom: 8,
     paddingLeft: 8,
   },
-  hoverBox: { // gray border and box shadow
+  hoverBox: {
+    // gray border and box shadow
     backgroundColor: 'white',
     borderColor: StyleConstants.colorBorder,
     borderStyle: 'solid',

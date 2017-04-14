@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 import ProjectIcon from './ProjectIcon';
 import StyleConstants from './StyleConstants';
@@ -26,7 +26,9 @@ class Project extends React.Component {
         <ProjectIcon size={32} iconUrl={this.props.project.icon} />
         <div style={Styles.projectDetails}>
           <div style={Styles.projectName}>{this.props.project.name}</div>
-          <div style={Styles.projectRoot}>{this.props.project.readableRoot}</div>
+          <div style={Styles.projectRoot}>
+            {this.props.project.readableRoot}
+          </div>
         </div>
       </div>
     );

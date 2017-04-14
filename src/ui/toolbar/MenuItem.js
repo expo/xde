@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 import StyleConstants from '../StyleConstants';
 
@@ -22,18 +22,18 @@ export default class MenuItem extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {isHovered: false};
+    this.state = { isHovered: false };
   }
 
   _onMouseEnter = () => {
-    this.setState({isHovered: true});
+    this.setState({ isHovered: true });
   };
 
   _onMouseLeave = () => {
-    this.setState({isHovered: false});
+    this.setState({ isHovered: false });
   };
 
-  _onClick = (event) => {
+  _onClick = event => {
     if (this.props.isDisabled) {
       event.stopPropagation();
     } else if (this.props.onClick) {
@@ -43,14 +43,15 @@ export default class MenuItem extends React.Component {
 
   _renderFlyout() {
     return (
-      <div style={{
-        position: 'absolute',
-        top: 0,
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
 
-        // TODO: When we need flyouts to the left, make this customizable.
-        left: 0,
-        marginLeft: '100%',
-      }}>
+          // TODO: When we need flyouts to the left, make this customizable.
+          left: 0,
+          marginLeft: '100%',
+        }}>
         {this.props.children}
       </div>
     );
@@ -58,15 +59,17 @@ export default class MenuItem extends React.Component {
 
   _renderCheck() {
     // If unchecked, hold a space for the checkmark by rendering an invisible one.
-    let style = this.props.checkState === 'checked' ? {} : {opacity: 0};
-    return <span style={style}>&#x2713;&nbsp;</span>;
+    let style = this.props.checkState === 'checked' ? {} : { opacity: 0 };
+    return <span style={style}>✓&nbsp;</span>;
   }
 
   render() {
     const isFlyoutMenu = !!this.props.children;
     const menuItemStyle = {
       ...Styles.menuItem,
-      ...(this.state.isHovered && !this.props.isDisabled ? Styles.menuItemHovered : {}),
+      ...(this.state.isHovered && !this.props.isDisabled
+        ? Styles.menuItemHovered
+        : {}),
       ...(this.props.isDisabled ? Styles.menuItemDisabled : {}),
     };
     if (this.props.color) {
@@ -74,16 +77,18 @@ export default class MenuItem extends React.Component {
     }
 
     return (
-      <div style={menuItemStyle}
+      <div
+        style={menuItemStyle}
         onClick={this._onClick}
         onMouseEnter={this._onMouseEnter}
         onMouseLeave={this._onMouseLeave}>
         {this.props.checkState !== 'uncheckable' && this._renderCheck()}
         <div style={Styles.label}>{this.props.label}</div>
-        {this.props.shortcut && (
-          <div style={Styles.shortcut}>{this._metaKey()}{this.props.shortcut}</div>
-        )}
-        {isFlyoutMenu && <span>&#x25BA;</span>}
+        {this.props.shortcut &&
+          <div style={Styles.shortcut}>
+            {this._metaKey()}{this.props.shortcut}
+          </div>}
+        {isFlyoutMenu && <span>►</span>}
         {isFlyoutMenu && this.state.isHovered && this._renderFlyout()}
       </div>
     );

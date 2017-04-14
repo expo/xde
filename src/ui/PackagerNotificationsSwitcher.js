@@ -1,22 +1,22 @@
 import { StyleSheet, css } from 'aphrodite';
-import React, {PropTypes} from 'react';
-import {
-  XDLState,
-} from 'xdl';
+import React, { PropTypes } from 'react';
+import { XDLState } from 'xdl';
 
 import SharedStyles from './Styles';
 import StyleConstants from './StyleConstants';
 import Popover from './toolbar/Popover';
 import MenuItem from './toolbar/MenuItem';
 
-import {
-  PopoverEnum,
-} from './Constants';
+import { PopoverEnum } from './Constants';
 
 const mapStateToProps = (state, props) => {
   return {
-    isPackagerSelected: props.projectRoot ? state.projects[props.projectRoot].isPackagerSelected : true,
-    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
+    isPackagerSelected: props.projectRoot
+      ? state.projects[props.projectRoot].isPackagerSelected
+      : true,
+    notifications: props.projectRoot
+      ? state.notifications[props.projectRoot]
+      : null,
   };
 };
 
@@ -34,17 +34,21 @@ class PackagerNotificationsSwitcher extends React.Component {
 
     return (
       <div>
-        {<Popover body={this._renderSwitcher()} arrowOffset={16} isAbove>
-          <img
-            src="./SelectUpDown.png"
-            className={css(SharedStyles.iconWithMargin, SharedStyles.statusBarIcon)}
-            onClick={this._toggleSwitcher}
-          />
-        </Popover>
+        {
+          <Popover body={this._renderSwitcher()} arrowOffset={16} isAbove>
+            <img
+              src="./SelectUpDown.png"
+              className={css(
+                SharedStyles.iconWithMargin,
+                SharedStyles.statusBarIcon
+              )}
+              onClick={this._toggleSwitcher}
+            />
+          </Popover>
         }
         <span
           className={css(SharedStyles.statusBarText)}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={this._toggleSwitcher}>
           {isPackagerSelected ? 'React Native Packager' : 'Notifications'}
         </span>
@@ -67,7 +71,10 @@ class PackagerNotificationsSwitcher extends React.Component {
         label="React Native Packager"
         key="packager"
         checkState={isPackagerSelected ? 'checked' : 'unchecked'}
-        onClick={() => XDLState.store.dispatch(XDLState.actions.projects.selectPackagerPane(projectRoot))}
+        onClick={() =>
+          XDLState.store.dispatch(
+            XDLState.actions.projects.selectPackagerPane(projectRoot)
+          )}
       />
     );
     menuItems.push(
@@ -75,7 +82,10 @@ class PackagerNotificationsSwitcher extends React.Component {
         label="Notifications"
         key="notifications"
         checkState={isPackagerSelected ? 'unchecked' : 'checked'}
-        onClick={() => XDLState.store.dispatch(XDLState.actions.projects.selectNotificationsPane(projectRoot))}
+        onClick={() =>
+          XDLState.store.dispatch(
+            XDLState.actions.projects.selectNotificationsPane(projectRoot)
+          )}
       />
     );
     /* eslint-enable react/jsx-no-bind */
@@ -87,7 +97,7 @@ class PackagerNotificationsSwitcher extends React.Component {
     );
   }
 
-  _toggleSwitcher = (event) => {
+  _toggleSwitcher = event => {
     event.stopPropagation();
     this.props.onTogglePopover(PopoverEnum.NOTIFICATION_PACKAGER);
   };
@@ -114,17 +124,19 @@ class PackagerNotificationsSwitcher extends React.Component {
         style={style}>
         <span
           className={css(styles.badge)}
-          style={{backgroundColor: notifications.color}}>
+          style={{ backgroundColor: notifications.color }}>
           {notifications.count}
         </span>
         Your project has issues.
       </span>
     );
-  }
+  };
 
   _onClickYourProjectHasIssues = () => {
-    XDLState.store.dispatch(XDLState.actions.projects.selectNotificationsPane(this.props.projectRoot));
-  }
+    XDLState.store.dispatch(
+      XDLState.actions.projects.selectNotificationsPane(this.props.projectRoot)
+    );
+  };
 }
 
 export default XDLState.connect(mapStateToProps)(PackagerNotificationsSwitcher);

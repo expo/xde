@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 import StyleConstants from './StyleConstants';
 
@@ -17,11 +17,12 @@ export default class ProjectIcon extends React.Component {
       width: this.props.size,
       height: this.props.size,
     };
-    return this.props.iconUrl ?
-      <img style={{...Styles.projectIcon, ...sizeStyle}}
-        src={this.props.iconUrl}
-      /> :
-      <div style={{...Styles.placeholderIcon, ...sizeStyle}} />;
+    return this.props.iconUrl
+      ? <img
+          style={{ ...Styles.projectIcon, ...sizeStyle }}
+          src={this.props.iconUrl}
+        />
+      : <div style={{ ...Styles.placeholderIcon, ...sizeStyle }} />;
   }
 }
 

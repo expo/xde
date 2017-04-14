@@ -17,7 +17,7 @@ type Props = {
   user: ?UserOrLegacyUser,
   isRegistering: boolean,
   actions: AppActions,
-}
+};
 
 class RegisterScreen extends React.Component {
   props: Props;
@@ -40,7 +40,7 @@ class RegisterScreen extends React.Component {
 
   _handleLogout = () => {
     this.props.actions.auth.logout();
-  }
+  };
 
   _handleRegister = (formData: RegisterFormData) => {
     if (this.props.isRegistering) {
@@ -50,7 +50,7 @@ class RegisterScreen extends React.Component {
     this.props.actions.auth.register({
       ...formData,
     });
-  }
+  };
 }
 
 export default connectToData(actions)(RegisterScreen);

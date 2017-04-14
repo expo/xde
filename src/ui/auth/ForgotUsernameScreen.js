@@ -4,9 +4,7 @@
 
 import React from 'react';
 
-import {
-  Link,
-} from 'react-router';
+import { Link } from 'react-router';
 
 import { StyleSheet, css } from 'aphrodite/no-important';
 
@@ -19,10 +17,7 @@ import * as IdentifierRules from 'xde/utils/IdentifierRules';
 export default class ForgotUsernameScreen extends React.Component {
   render() {
     return (
-      <form
-        name="login"
-        className={css(styles.form)}
-        onSubmit={this._onSubmit}>
+      <form name="login" className={css(styles.form)} onSubmit={this._onSubmit}>
         <div className={css(styles.innerForm)}>
           <div className={css(styles.fieldContainer)}>
             <h3 className={css(styles.title)}>Find your username</h3>
@@ -41,16 +36,26 @@ export default class ForgotUsernameScreen extends React.Component {
               type="submit"
               disabled={this.props.isLoggingIn}
               isLoading={this.props.isLoggingIn}
-              renderRightIcon={() =>
-                <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-              }>
+              renderRightIcon={() => (
+                <img
+                  key="right"
+                  src="./arrow.svg"
+                  style={{ width: 15, height: 15 }}
+                />
+              )}>
               Send instructions
             </Button>
             <p className={css(styles.smallText, styles.black)}>
               <Link to="/auth/forgot-password">Forgot your password?</Link>
             </p>
             <p className={css(styles.smallText, styles.black)}>
-              Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Login</Link>
+              Already have a username/password?
+              {' '}
+              <Link
+                to="/auth/login"
+                style={{ color: StyleConstants.colorText }}>
+                Login
+              </Link>
             </p>
           </div>
         </div>
@@ -60,8 +65,7 @@ export default class ForgotUsernameScreen extends React.Component {
 
   _onSubmit = (e: any) => {
     e.preventDefault();
-
-  }
+  };
 }
 
 const styles = StyleSheet.create({

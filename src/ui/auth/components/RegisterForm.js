@@ -4,9 +4,7 @@
 
 import React from 'react';
 
-import {
-  Link,
-} from 'react-router';
+import { Link } from 'react-router';
 
 import { StyleSheet, css } from 'aphrodite/no-important';
 
@@ -31,7 +29,7 @@ type Props = {
   isRegistering: boolean,
   onLogout: () => void,
   onRegister: (formData: RegisterFormData) => void | Promise<void>,
-}
+};
 
 type State = {
   username?: string,
@@ -56,25 +54,26 @@ export default class RegisterForm extends React.Component {
     const { user } = this.props;
 
     let isLegacy = user && user.userMetadata.legacy;
-    let title = "Sign Up";
+    let title = 'Sign Up';
     if (isLegacy) {
-      title = "Update Your Account";
+      title = 'Update Your Account';
     }
 
     let form = null;
     if (user && user.kind === 'legacyUser') {
       form = this._renderLegacyForm(true);
-    } else if (user && user.kind === 'user' && user.currentConnection === 'Username-Password-Authentication') {
+    } else if (
+      user &&
+      user.kind === 'user' &&
+      user.currentConnection === 'Username-Password-Authentication'
+    ) {
       form = this._renderLegacyForm(false);
     } else {
       form = this._renderOnboardingForm();
     }
 
     return (
-      <form
-        name="login"
-        className={css(styles.form)}
-        onSubmit={this._onSubmit}>
+      <form name="login" className={css(styles.form)} onSubmit={this._onSubmit}>
         <div className={css(styles.innerForm)}>
           <div className={css(styles.fieldContainer)}>
             <h3 className={css(styles.title)}>{title}</h3>
@@ -92,7 +91,12 @@ export default class RegisterForm extends React.Component {
         <span className={css(styles.signedAsDisclosure)}>
           Signed in as <strong>@{user.username}</strong>
         </span>
-        <a className={css(styles.signOutLink)} href="javascript:;" onClick={this._onSignOutClick}>(Sign out?)</a>
+        <a
+          className={css(styles.signOutLink)}
+          href="javascript:;"
+          onClick={this._onSignOutClick}>
+          (Sign out?)
+        </a>
         <span className={css(styles.disclosureText)}>
           Hi there! We don't currently have any way to identify you if you were to lose
           your password. Please provide us with your name and e-mail address.
@@ -120,26 +124,35 @@ export default class RegisterForm extends React.Component {
             placeholder="E-mail address"
             value=""
           />
-          { hasPasswordField &&
+          {hasPasswordField &&
             <TextInput
               ref="password"
               styles={styles.input}
               type="password"
               placeholder="Current Password"
-            />
-          }
+            />}
           <Button
             styles={styles.button}
             type="submit"
             disabled={this.props.isRegistering}
             isLoading={this.props.isRegistering}
             renderRightIcon={() => //eslint-disable-line
-              <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-            }>
+            (
+              <img
+                key="right"
+                src="./arrow.svg"
+                style={{ width: 15, height: 15 }}
+              />
+            )}>
             Update My Account
           </Button>
           <p className={css(styles.smallText, styles.black)}>
-            <a href="javascript:;" onClick={this._onSignOutClick} style={{ color: StyleConstants.colorText }}>Sign in to another account</a>
+            <a
+              href="javascript:;"
+              onClick={this._onSignOutClick}
+              style={{ color: StyleConstants.colorText }}>
+              Sign in to another account
+            </a>
           </p>
         </div>
       </div>
@@ -156,7 +169,8 @@ export default class RegisterForm extends React.Component {
 
     return (
       <div className={css(styles.fieldContainer)}>
-        {disclosureText && <span className={css(styles.disclosureText)}>{disclosureText}</span>}
+        {disclosureText &&
+          <span className={css(styles.disclosureText)}>{disclosureText}</span>}
         <div className={css(styles.fieldContainerInner)}>
           <TextInput
             ref="givenName"
@@ -206,15 +220,24 @@ export default class RegisterForm extends React.Component {
             disabled={this.props.isRegistering}
             isLoading={this.props.isRegistering}
             renderRightIcon={() => //eslint-disable-line
-              <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-            }>
+            (
+              <img
+                key="right"
+                src="./arrow.svg"
+                style={{ width: 15, height: 15 }}
+              />
+            )}>
             Sign Up
           </Button>
           <p className={css(styles.smallText, styles.gray)}>
             By signing up, you agree to our terms.
           </p>
           <p className={css(styles.smallText, styles.black)}>
-            Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Sign in</Link>
+            Already have a username/password?
+            {' '}
+            <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>
+              Sign in
+            </Link>
           </p>
         </div>
       </div>
@@ -223,7 +246,7 @@ export default class RegisterForm extends React.Component {
 
   _onSignOutClick = () => {
     this.props.onLogout();
-  }
+  };
 
   _onSubmit = (e: any) => {
     e.preventDefault();
@@ -231,17 +254,17 @@ export default class RegisterForm extends React.Component {
     const givenName = this.refs.givenName && this.refs.givenName.getValue();
     const familyName = this.refs.familyName && this.refs.familyName.getValue();
     const email = this.refs.email && this.refs.email.getValue();
-    const username = this.state.username || (this.refs.username && this.refs.username.getValue());
+    const username =
+      this.state.username ||
+      (this.refs.username && this.refs.username.getValue());
     const password = this.refs.password && this.refs.password.getValue();
-    const passwordRepeat = this.refs.passwordRepeat && this.refs.passwordRepeat.getValue();
+    const passwordRepeat =
+      this.refs.passwordRepeat && this.refs.passwordRepeat.getValue();
 
     if (this.props.user) {
       if (this.props.user.kind === 'legacyUser') {
         //we're upgrading an account without password
-        if (!givenName ||
-            !familyName ||
-            !email ||
-            !password) {
+        if (!givenName || !familyName || !email || !password) {
           alert('Please fill out all the fields.');
           return;
         }
@@ -255,11 +278,11 @@ export default class RegisterForm extends React.Component {
         });
 
         return;
-      } else if (this.props.user.kind === 'user' && this.props.user.userMetadata.legacy) {
+      } else if (
+        this.props.user.kind === 'user' && this.props.user.userMetadata.legacy
+      ) {
         //we're upgrading an account WITH password
-        if (!givenName ||
-            !familyName ||
-            !email) {
+        if (!givenName || !familyName || !email) {
           alert('Please fill out all the fields.');
           return;
         }
@@ -274,12 +297,14 @@ export default class RegisterForm extends React.Component {
       }
     }
 
-    if (!givenName ||
-        !familyName ||
-        !email ||
-        !username ||
-        !password ||
-        !passwordRepeat) {
+    if (
+      !givenName ||
+      !familyName ||
+      !email ||
+      !username ||
+      !password ||
+      !passwordRepeat
+    ) {
       alert('Please fill out all the fields.');
       return;
     }
@@ -296,7 +321,7 @@ export default class RegisterForm extends React.Component {
       username,
       password,
     });
-  }
+  };
 }
 
 const styles = StyleSheet.create({

@@ -25,14 +25,16 @@ let tasks = {
       let versionResult = await spawnAsync(electron, ['--version']);
       let electronVersion = /v(\d+\.\d+\.\d+)/.exec(versionResult.stdout)[1];
 
-      logger.info(`Rebuilding native Node modules for Electron ${electronVersion}...`);
+      logger.info(
+        `Rebuilding native Node modules for Electron ${electronVersion}...`
+      );
       await _markDtraceProviderForRebuildAsync();
       await rebuild(
         path.resolve(paths.app),
         electronVersion,
         /* arch */ undefined,
         /* extraModules */ undefined,
-        force,
+        force
       );
     };
   },
@@ -40,7 +42,8 @@ let tasks = {
   icon() {
     let contentsPath = path.dirname(path.dirname(electron));
     let resourcesPath = path.join(contentsPath, 'Resources');
-    return gulp.src(paths.macIcon)
+    return gulp
+      .src(paths.macIcon)
       .pipe(rename('electron.icns'))
       .pipe(gulp.dest(resourcesPath));
   },
@@ -56,10 +59,16 @@ let tasks = {
  * dtrace-provider.
  */
 async function _markDtraceProviderForRebuildAsync() {
-  let dtraceProviderPath = path.resolve(paths.app, 'node_modules', 'dtrace-provider');
+  let dtraceProviderPath = path.resolve(
+    paths.app,
+    'node_modules',
+    'dtrace-provider'
+  );
   let packageExists = await isDirectoryAsync(dtraceProviderPath);
   if (!packageExists) {
-    logger.warn(`We couldn't find the dtrace-provider package and won't try to rebuild its native modules for Electron`);
+    logger.warn(
+      `We couldn't find the dtrace-provider package and won't try to rebuild its native modules for Electron`
+    );
   }
   await copyFileAsync(
     path.join(dtraceProviderPath, 'compile.py'),
@@ -72,7 +81,7 @@ async function copyFileAsync(source, target) {
     let input = fs.createReadStream(source);
     let output = fs.createWriteStream(target);
 
-    let cleanup = (error) => {
+    let cleanup = error => {
       input.destroy();
       output.end();
       reject(error);

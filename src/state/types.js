@@ -18,7 +18,7 @@ type ReduxStore<S, A> = {
   dispatch: ReduxDispatch<A>,
   getState(): S,
   subscribe(listener: () => void): () => void,
-  replaceReducer(nextReducer: ReduxReducer<S, A>): void
+  replaceReducer(nextReducer: ReduxReducer<S, A>): void,
 };
 
 // App types
@@ -53,7 +53,7 @@ export type AppState = $ObjMap<Reducers, $ExtractFunctionReturn>;
 export type AppAction = {
   type: AppActionType,
   payload: any,
-}
+};
 
 // We use the thunk middleware in this application, so therefore an action can
 // be either the raw action defined above (AppAction) or a thunk, which is a
@@ -69,6 +69,9 @@ export type AppStore = ReduxStore<AppState, AppActionOrThunkAction>;
 
 // Helpers for the above ^^ using polymorphic flow types.
 type $MaybePromise<X> = X | Promise<X>;
-type $Thunk<A, S> = (dispatch: ReduxDispatch<$MaybeThunk<A, S>>, getState: () => S) => $MaybePromise<*>;
+type $Thunk<A, S> = (
+  dispatch: ReduxDispatch<$MaybeThunk<A, S>>,
+  getState: () => S
+) => $MaybePromise<*>;
 type $MaybeThunk<A, S> = A | $Thunk<A, S>;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;

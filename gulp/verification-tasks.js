@@ -27,12 +27,7 @@ let tasks = {
 async function verifyCodeSignatureAsync(appPath) {
   try {
     // codesign returns a non-zero exit code if verification fails
-    await spawnAsync('codesign', [
-      '--verify',
-      '--deep',
-      '--strict',
-      appPath,
-    ]);
+    await spawnAsync('codesign', ['--verify', '--deep', '--strict', appPath]);
   } catch (e) {
     let error = new Error(
       `Could not verify code signature of the Mac app:\n` + e.stderr
@@ -74,7 +69,8 @@ async function assessWithSystemPolicyAsync(appPath) {
   } catch (e) {
     let error = new Error(
       `Could not assess whether the Mac app's signature meets Gatekeeper ` +
-      `requirements:\n` + e.stderr
+        `requirements:\n` +
+        e.stderr
     );
     error.cause = e;
     throw error;

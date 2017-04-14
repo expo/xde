@@ -8,11 +8,7 @@ import Menu from './remote/Menu';
 
 import config from './config';
 
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-} = electron;
+const { app, BrowserWindow, ipcMain } = electron;
 
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -53,7 +49,7 @@ app.on('window-all-closed', () => {
 });
 
 // Clean up all open projects before exiting
-app.on('will-quit', async (event) => {
+app.on('will-quit', async event => {
   if (projectRoots.length > 0) {
     event.preventDefault();
 
@@ -72,11 +68,14 @@ app.on('will-quit', async (event) => {
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'development') {
     const devToolsInstaller = require('electron-devtools-installer');
-    const { default: installExtension, REACT_DEVELOPER_TOOLS } = devToolsInstaller;
+    const {
+      default: installExtension,
+      REACT_DEVELOPER_TOOLS,
+    } = devToolsInstaller;
 
     installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name) => console.log(`Added Extension:  ${name}`))
-      .catch((err) => console.log('An error occurred: ', err));
+      .then(name => console.log(`Added Extension:  ${name}`))
+      .catch(err => console.log('An error occurred: ', err));
   }
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -119,7 +118,13 @@ app.on('ready', () => {
   webContents.on('will-navigate', handleRedirect);
   webContents.on('new-window', handleRedirect);
 
-  const AUTO_UPDATER_EVENTS = ['error', 'checking-for-update', 'update-available', 'update-not-available', 'update-downloaded'];
+  const AUTO_UPDATER_EVENTS = [
+    'error',
+    'checking-for-update',
+    'update-available',
+    'update-not-available',
+    'update-downloaded',
+  ];
   for (let updateEventName of AUTO_UPDATER_EVENTS) {
     autoUpdater.on(updateEventName, (...args) => {
       mainWindow.webContents.send('auto-updater', updateEventName, ...args);

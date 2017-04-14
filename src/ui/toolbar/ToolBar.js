@@ -4,18 +4,12 @@
 
 import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
-import {
-  Analytics,
-  Android,
-  FileSystem,
-  Simulator,
-  XDLState,
-} from 'xdl';
+import { Analytics, Android, FileSystem, Simulator, XDLState } from 'xdl';
 
 import { actions } from 'xde/state';
 import { connectToData } from 'xde/state/utils';
 
-import {PopoverEnum} from '../Constants';
+import { PopoverEnum } from '../Constants';
 import ProjectIcon from '../ProjectIcon';
 import StyleConstants from '../StyleConstants';
 
@@ -63,11 +57,13 @@ type Props = {
 
 type State = {
   shiftSelected: boolean,
-}
+};
 
 const mapStateToProps = (state, props) => {
   return {
-    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
+    notifications: props.projectRoot
+      ? state.notifications[props.projectRoot]
+      : null,
   };
 };
 
@@ -96,7 +92,7 @@ class ToolBar extends React.Component {
     document.body.removeEventListener('keyup', this._onKeyUp);
   }
 
-  _onKeyDown = (event) => {
+  _onKeyDown = event => {
     let metaKey = event.ctrlKey;
     if (process.platform === 'darwin') {
       metaKey = event.metaKey;
@@ -138,18 +134,18 @@ class ToolBar extends React.Component {
     }
   };
 
-  _onKeyUp = (event) => {
+  _onKeyUp = event => {
     this.setState({
       shiftSelected: !!event.shiftKey,
     });
-  }
+  };
 
-  _getTogglePopoverFn = (popover) => {
-    return (event) => {
+  _getTogglePopoverFn = popover => {
+    return event => {
       event.stopPropagation();
       this.props.onTogglePopover(popover);
     };
-  }
+  };
 
   _renderPopoverProject() {
     if (this.props.openPopover !== PopoverEnum.PROJECT) {
@@ -192,11 +188,13 @@ class ToolBar extends React.Component {
         color={notifications.color}
       />
     );
-  }
+  };
 
   _onViewIssuesClicked = () => {
-    XDLState.store.dispatch(XDLState.actions.projects.selectNotificationsPane(this.props.projectRoot));
-  }
+    XDLState.store.dispatch(
+      XDLState.actions.projects.selectNotificationsPane(this.props.projectRoot)
+    );
+  };
 
   _renderOpenLinks() {
     if (process.platform === 'darwin' || process.platform === 'win32') {
@@ -213,12 +211,13 @@ class ToolBar extends React.Component {
             isDisabled={!this.props.isProjectOpen}
             onClick={this._onOpenInTerminalClick}
           />
-          {process.platform === 'darwin' ?
-            <MenuItem
-              label="Open in Editor"
-              isDisabled={!this.props.isProjectOpen}
-              onClick={this._onOpenInEditorClick}
-            /> : null}
+          {process.platform === 'darwin'
+            ? <MenuItem
+                label="Open in Editor"
+                isDisabled={!this.props.isProjectOpen}
+                onClick={this._onOpenInEditorClick}
+              />
+            : null}
         </div>
       );
     } else {
@@ -232,14 +231,8 @@ class ToolBar extends React.Component {
     }
     return (
       <div>
-        <MenuItem
-          label="Expo Docs"
-          onClick={this.props.onDocsClicked}
-        />
-        <MenuItem
-          label="Expo Forums"
-          onClick={this.props.onForumsClicked}
-        />
+        <MenuItem label="Expo Docs" onClick={this.props.onDocsClicked} />
+        <MenuItem label="Expo Forums" onClick={this.props.onForumsClicked} />
         <MenuItem
           label="Clear XDE Cache"
           onClick={this.props.onClearXDECacheClicked}
@@ -257,14 +250,14 @@ class ToolBar extends React.Component {
     );
   }
 
-  _onSendLinkClick = (event) => {
+  _onSendLinkClick = event => {
     if (this._sendLinkInput.value) {
       this._getTogglePopoverFn(PopoverEnum.SEND_LINK)(event);
       this.props.onSendLinkClick(this._sendLinkInput.value);
     }
   };
 
-  _onMenuClick = (event) => {
+  _onMenuClick = event => {
     event.stopPropagation();
   };
 
@@ -276,13 +269,17 @@ class ToolBar extends React.Component {
       <div onClick={this._onMenuClick}>
         <input
           className={css(styles.sendLinkInput)}
-          ref={(r) => { this._sendLinkInput = r; }}
+          ref={r => {
+            this._sendLinkInput = r;
+          }}
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
         <a
           onClick={this._onSendLinkClick}
-          className={css(styles.sendLinkSubmit)}>Send Link</a>
+          className={css(styles.sendLinkSubmit)}>
+          Send Link
+        </a>
       </div>
     );
   }
@@ -293,20 +290,18 @@ class ToolBar extends React.Component {
     }
     return (
       <div>
-        {Simulator.isPlatformSupported() && (
+        {Simulator.isPlatformSupported() &&
           <MenuItem
             label="Open on iOS Simulator"
             shortcut="I"
             onClick={this._simulatorIOSAsync}
-          />
-        )}
-        {Android.isPlatformSupported() && (
+          />}
+        {Android.isPlatformSupported() &&
           <MenuItem
             label="Open on Android"
             shortcut="D"
             onClick={this._simulatorAndroidAsync}
-          />
-        )}
+          />}
       </div>
     );
   }
@@ -318,7 +313,7 @@ class ToolBar extends React.Component {
       // Tell the parent component
       this.props.onLogOut();
     } catch (error) {
-      console.error("logout error:", error);
+      console.error('logout error:', error);
     }
   };
 
@@ -341,8 +336,9 @@ class ToolBar extends React.Component {
       </Popover>
     );
 
-    return this.props.openPopover === PopoverEnum.USER ?
-      userNameWithPopoverEl : userNameEl;
+    return this.props.openPopover === PopoverEnum.USER
+      ? userNameWithPopoverEl
+      : userNameEl;
   }
 
   render() {
@@ -363,7 +359,7 @@ class ToolBar extends React.Component {
       <div>
         <div className={css(styles.row)}>
           <div className={css(styles.leftCol)}>
-            { iconUrl && <ProjectIcon iconUrl={iconUrl} /> }
+            {iconUrl && <ProjectIcon iconUrl={iconUrl} />}
             <div className={css(styles.projectName)}>{projectName}</div>
           </div>
           <div className={css(styles.rightCol)}>
@@ -436,14 +432,14 @@ class ToolBar extends React.Component {
 
   _restartClicked = () => {
     this.props.onRestartClick(this.state.shiftSelected);
-  }
+  };
 
   // File system methods
 
   _onShowInFinderClick = () => {
     Analytics.logEvent('Click Show in Finder');
 
-    FileSystem.openFolderAsync(this.props.projectRoot).catch((err) => {
+    FileSystem.openFolderAsync(this.props.projectRoot).catch(err => {
       console.error(err);
     });
   };
@@ -451,7 +447,7 @@ class ToolBar extends React.Component {
   _onOpenInTerminalClick = () => {
     Analytics.logEvent('Click Open in Terminal');
 
-    FileSystem.openConsoleAsync(this.props.projectRoot).catch((err) => {
+    FileSystem.openConsoleAsync(this.props.projectRoot).catch(err => {
       console.error(err);
     });
   };
@@ -459,7 +455,7 @@ class ToolBar extends React.Component {
   _onOpenInEditorClick = () => {
     Analytics.logEvent('Click Open in Editor');
 
-    FileSystem.openProjectInEditorAsync(this.props.projectRoot).catch((err) => {
+    FileSystem.openProjectInEditorAsync(this.props.projectRoot).catch(err => {
       console.error(err);
     });
   };
@@ -475,7 +471,9 @@ class ToolBar extends React.Component {
   };
 }
 
-export default XDLState.connect(mapStateToProps)(connectToData(actions)(ToolBar));
+export default XDLState.connect(mapStateToProps)(
+  connectToData(actions)(ToolBar)
+);
 
 const styles = StyleSheet.create({
   separator: {

@@ -9,19 +9,19 @@ import SharedStyles from 'xde/ui/Styles';
 type Event = {
   target: {
     value: string,
-  }
-}
+  },
+};
 
 type Props = {
   styles?: any,
   value?: ?string,
   valueTransformer?: (val: string) => string,
   autofocus: ?boolean,
-}
+};
 
 type State = {
   value: string,
-}
+};
 
 export default class TextInput extends React.Component {
   props: Props;
@@ -45,15 +45,13 @@ export default class TextInput extends React.Component {
   }
 
   render() {
-    const {
-      styles: extraStyles,
-      valueTransformer,
-      ...inputProps
-    } = this.props;
+    const { styles: extraStyles, valueTransformer, ...inputProps } = this.props;
 
     return (
       <input
-        ref={view => { this._input = view; }}
+        ref={view => {
+          this._input = view;
+        }}
         className={css(styles.input, extraStyles)}
         {...inputProps}
         onChange={this._onValueChange}
@@ -70,7 +68,7 @@ export default class TextInput extends React.Component {
     this.setState({
       value,
     });
-  }
+  };
 }
 
 const styles = StyleSheet.create({

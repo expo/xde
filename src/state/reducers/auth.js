@@ -3,9 +3,7 @@
  */
 
 import { remote } from 'electron';
-import {
-  User as UserManager,
-} from 'xdl';
+import { User as UserManager } from 'xdl';
 
 import { asyncAction, reduceAsync, composeReducers } from 'xde/state/utils';
 import type { AppAction, AppDispatch, AppState } from 'xde/state/types';
@@ -17,12 +15,12 @@ UserManager.initialize();
 
 /** Action Types **/
 
-export type ActionTypes = |
-  'CHECK_SESSION' |
-  'REGISTER' |
-  'LOGIN' |
-  'FORGOT_PASSWORD' |
-  'LOGOUT';
+export type ActionTypes =
+  | 'CHECK_SESSION'
+  | 'REGISTER'
+  | 'LOGIN'
+  | 'FORGOT_PASSWORD'
+  | 'LOGOUT';
 
 /** Actions **/
 
@@ -30,55 +28,74 @@ export type LoginType = 'user-pass' | 'github';
 
 export const actions = {
   checkForExistingSession: () =>
-    asyncAction('CHECK_SESSION', async () => {
-      const user = await UserManager.getCurrentUserAsync();
-      if (!user) {
-        const legacyUser = await UserManager.getLegacyUserData();
-        if (!legacyUser) {
-          throw new Error('');
+    asyncAction(
+      'CHECK_SESSION',
+      async () => {
+        const user = await UserManager.getCurrentUserAsync();
+        if (!user) {
+          const legacyUser = await UserManager.getLegacyUserData();
+          if (!legacyUser) {
+            throw new Error('');
+          }
+          return { user: legacyUser };
         }
-        return { user: legacyUser };
-      }
-      return { user };
-    }, (actionType, payload) => ({
+        return { user };
+      },
+      (actionType, payload) => ({
         ...payload,
         loginType: 'user-pass',
-    })),
+      })
+    ),
 
-  login: (loginType: LoginType, loginArgs?: { username: string, password: string }) =>
-    asyncAction('LOGIN', async () => {
-      const currentWindow = remote.getCurrentWindow();
-      try {
-        const user = await UserManager.loginAsync(loginType, loginArgs);
-        currentWindow.show();
+  login: (
+    loginType: LoginType,
+    loginArgs?: { username: string, password: string }
+  ) =>
+    asyncAction(
+      'LOGIN',
+      async () => {
+        const currentWindow = remote.getCurrentWindow();
+        try {
+          const user = await UserManager.loginAsync(loginType, loginArgs);
+          currentWindow.show();
+          return {
+            user,
+          };
+        } catch (e) {
+          currentWindow.show();
+          throw e;
+        }
+      },
+      (actionType, payload) => ({
+        ...payload,
+        loginType,
+      })
+    ),
+
+  logout: () =>
+    asyncAction('LOGOUT', async () => await UserManager.logoutAsync()),
+
+  forgotPassword: (usernameOrEmail: string) =>
+    asyncAction(
+      'FORGOT_PASSWORD',
+      async () => await UserManager.forgotPasswordAsync(usernameOrEmail)
+    ),
+
+  register: (userData: RegistrationData) =>
+    asyncAction(
+      'REGISTER',
+      async (dispatch: AppDispatch, getState: () => AppState) => {
+        const state = getState();
+        const user = await UserManager.registerAsync(userData, state.auth.user);
         return {
           user,
         };
-      } catch (e) {
-        currentWindow.show();
-        throw e;
-      }
-    }, (actionType, payload) => ({
-        ...payload,
-        loginType,
-    })),
-
-  logout: () => asyncAction('LOGOUT', async () => await UserManager.logoutAsync()),
-
-  forgotPassword: (usernameOrEmail: string) =>
-    asyncAction('FORGOT_PASSWORD', async () => await UserManager.forgotPasswordAsync(usernameOrEmail)),
-
-  register: (userData: RegistrationData) =>
-    asyncAction('REGISTER', async (dispatch: AppDispatch, getState: () => AppState) => {
-      const state = getState();
-      const user = await UserManager.registerAsync(userData, state.auth.user);
-      return {
-        user,
-      };
-    }, (actionType, payload) => ({
+      },
+      (actionType, payload) => ({
         ...payload,
         loginType: 'user-pass',
-    })),
+      })
+    ),
 };
 
 /** Reducers **/
@@ -113,7 +130,7 @@ type LoginAction = AppAction & {
     pending?: ActionTypes,
     user: UserOrLegacyUser,
     error?: Error,
-  }
+  },
 };
 
 function authPending(state: State, action: LoginAction): State {
@@ -148,26 +165,29 @@ function authFailed(state: State, action: LoginAction): State {
   };
 }
 
-export const reducer = composeReducers([
-  reduceAsync('CHECK_SESSION', {
-    pending: authPending,
-    complete: authComplete,
-    failed: authFailed,
-  }),
-  reduceAsync('REGISTER', {
-    pending: authPending,
-    complete: authComplete,
-    failed: authFailed,
-  }),
-  reduceAsync('LOGIN', {
-    pending: authPending,
-    complete: authComplete,
-    failed: authFailed,
-  }),
-  reduceAsync('LOGOUT', {
-    complete: (state: State, action: LoginAction) => _resetToInitial(),
-  }),
-], initialState);
+export const reducer = composeReducers(
+  [
+    reduceAsync('CHECK_SESSION', {
+      pending: authPending,
+      complete: authComplete,
+      failed: authFailed,
+    }),
+    reduceAsync('REGISTER', {
+      pending: authPending,
+      complete: authComplete,
+      failed: authFailed,
+    }),
+    reduceAsync('LOGIN', {
+      pending: authPending,
+      complete: authComplete,
+      failed: authFailed,
+    }),
+    reduceAsync('LOGOUT', {
+      complete: (state: State, action: LoginAction) => _resetToInitial(),
+    }),
+  ],
+  initialState
+);
 
 function _resetToInitial() {
   return {

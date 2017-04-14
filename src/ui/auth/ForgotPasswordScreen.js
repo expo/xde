@@ -4,9 +4,7 @@
 
 import React from 'react';
 
-import {
-  Link,
-} from 'react-router';
+import { Link } from 'react-router';
 
 import { StyleSheet, css } from 'aphrodite/no-important';
 
@@ -34,10 +32,7 @@ class ForgotPasswordScreen extends React.Component {
 
   render() {
     return (
-      <form
-        name="login"
-        className={css(styles.form)}
-        onSubmit={this._onSubmit}>
+      <form name="login" className={css(styles.form)} onSubmit={this._onSubmit}>
         <div className={css(styles.innerForm)}>
           <div className={css(styles.fieldContainer)}>
             <h3 className={css(styles.title)}>Reset your password</h3>
@@ -55,9 +50,13 @@ class ForgotPasswordScreen extends React.Component {
               type="submit"
               disabled={this.props.isLoggingIn}
               isLoading={this.props.isLoggingIn}
-              renderRightIcon={() =>
-                <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-              }>
+              renderRightIcon={() => (
+                <img
+                  key="right"
+                  src="./arrow.svg"
+                  style={{ width: 15, height: 15 }}
+                />
+              )}>
               Reset your password
             </Button>
             {
@@ -66,7 +65,13 @@ class ForgotPasswordScreen extends React.Component {
               // </p>
             }
             <p className={css(styles.smallText, styles.black)}>
-              Already have a username/password? <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>Sign in</Link>
+              Already have a username/password?
+              {' '}
+              <Link
+                to="/auth/login"
+                style={{ color: StyleConstants.colorText }}>
+                Sign in
+              </Link>
             </p>
           </div>
         </div>
@@ -87,7 +92,7 @@ class ForgotPasswordScreen extends React.Component {
     this.props.actions.auth.forgotPassword(usernameOrEmail);
 
     this.props.router.transitionTo('/auth/login');
-  }
+  };
 }
 
 const screenWithRouter = withRouter(ForgotPasswordScreen);

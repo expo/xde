@@ -53,10 +53,12 @@ module.exports = env => {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: babelConfig,
-        }],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: babelConfig,
+          },
+        ],
       },
       {
         test: /\.json/,
@@ -64,7 +66,7 @@ module.exports = env => {
       },
       {
         test: /\.node$/,
-        use: "node-loader",
+        use: 'node-loader',
       },
     ],
   };
@@ -103,19 +105,12 @@ module.exports = env => {
       devtool: env.dev ? 'eval-source-map' : 'source-map',
       module: moduleConfig,
       resolve: {
-        extensions: [
-          '.svg',
-          '.js',
-          '.jsx',
-          '.json',
-        ],
+        extensions: ['.svg', '.js', '.jsx', '.json'],
         alias: {
           xde: path.join(__dirname, 'src'),
         },
       },
-      plugins: [
-        ...commonPlugins,
-      ],
+      plugins: [...commonPlugins],
     },
     {
       name: 'electron',
@@ -133,13 +128,14 @@ module.exports = env => {
         setImmediate: false,
       },
       externals(context, request, callback) {
-        callback(null, request.startsWith('.') ? false : `require('${request}')`);
+        callback(
+          null,
+          request.startsWith('.') ? false : `require('${request}')`
+        );
       },
       devtool: env.dev ? 'eval-source-map' : 'source-map',
       resolve: {
-        modules: [
-          'node_modules',
-        ],
+        modules: ['node_modules'],
         alias: {
           xde: path.join(__dirname, 'src'),
         },
@@ -147,7 +143,7 @@ module.exports = env => {
       module: moduleConfig,
       plugins: [
         new webpack.BannerPlugin({
-          banner: 'require(\"source-map-support\").install();',
+          banner: 'require("source-map-support").install();',
           raw: true,
           entryOnly: false,
         }),
@@ -161,10 +157,7 @@ module.exports = env => {
     const devServerPort = getenv.int('DEVSERVER_PORT', 8282);
 
     let rendererConfig = config[0];
-    rendererConfig.entry = [
-      'react-hot-loader/patch',
-      './src/renderer-hot.js',
-    ];
+    rendererConfig.entry = ['react-hot-loader/patch', './src/renderer-hot.js'];
 
     rendererConfig.output = Object.assign({}, rendererConfig.output, {
       publicPath: `http://localhost:${devServerPort}/`,
@@ -198,13 +191,9 @@ module.exports = env => {
     const rendererConfig = config[0];
     const mainConfig = config[1];
 
-    rendererConfig.plugins = [
-      ...rendererConfig.plugins,
-    ];
+    rendererConfig.plugins = [...rendererConfig.plugins];
 
-    mainConfig.plugins = [
-      ...mainConfig.plugins,
-    ];
+    mainConfig.plugins = [...mainConfig.plugins];
 
     config[0] = rendererConfig;
     config[1] = mainConfig;

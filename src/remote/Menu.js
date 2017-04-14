@@ -1,17 +1,21 @@
-import {
-  BrowserWindow,
-  Menu,
-} from 'electron';
+import { BrowserWindow, Menu } from 'electron';
 
 function _installShellCommands(window) {
   if (process.platform === 'darwin') {
-    return [{
-      label: 'Install Shell Commands',
-      click: () => { window.webContents.send('menu-item-clicked', 'install-shell-commands'); },
-    },
-    {
-      type: 'separator',
-    }];
+    return [
+      {
+        label: 'Install Shell Commands',
+        click: () => {
+          window.webContents.send(
+            'menu-item-clicked',
+            'install-shell-commands'
+          );
+        },
+      },
+      {
+        type: 'separator',
+      },
+    ];
   } else {
     return [];
   }
@@ -19,11 +23,18 @@ function _installShellCommands(window) {
 
 function _installIosSimulatorApp(window, isProjectOpen) {
   if (process.platform === 'darwin') {
-    return [{
-      label: 'Install iOS Simulator App',
-      click: () => { window.webContents.send('menu-item-clicked', 'install-ios-simulator-app'); },
-      enabled: isProjectOpen,
-    }];
+    return [
+      {
+        label: 'Install iOS Simulator App',
+        click: () => {
+          window.webContents.send(
+            'menu-item-clicked',
+            'install-ios-simulator-app'
+          );
+        },
+        enabled: isProjectOpen,
+      },
+    ];
   } else {
     return [];
   }
@@ -62,13 +73,21 @@ function setupMenu(window, isProjectOpen) {
       submenu: [
         {
           label: 'Reload',
-          accelerator: process.platform === 'darwin' ? 'Alt+Command+R' : 'Ctrl+Shift+R',
-          click: () => { BrowserWindow.getFocusedWindow().reload(); },
+          accelerator: process.platform === 'darwin'
+            ? 'Alt+Command+R'
+            : 'Ctrl+Shift+R',
+          click: () => {
+            BrowserWindow.getFocusedWindow().reload();
+          },
         },
         {
           label: 'Toggle DevTools',
-          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-          click: () => { BrowserWindow.getFocusedWindow().toggleDevTools(); },
+          accelerator: process.platform === 'darwin'
+            ? 'Alt+Command+I'
+            : 'Ctrl+Shift+I',
+          click: () => {
+            BrowserWindow.getFocusedWindow().toggleDevTools();
+          },
         },
       ],
     },
@@ -90,7 +109,9 @@ function setupMenu(window, isProjectOpen) {
       submenu: [
         {
           label: 'Expo Documentation',
-          click: () => { require('electron').shell.openExternal('https://docs.expo.io/'); },
+          click: () => {
+            require('electron').shell.openExternal('https://docs.expo.io/');
+          },
         },
       ],
     },
@@ -109,7 +130,9 @@ function setupMenu(window, isProjectOpen) {
         ..._installShellCommands(window),
         {
           label: 'Install Android App',
-          click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
+          click: () => {
+            window.webContents.send('menu-item-clicked', 'install-android-app');
+          },
           enabled: isProjectOpen,
         },
         ..._installIosSimulatorApp(window, isProjectOpen),
@@ -171,7 +194,9 @@ function setupMenu(window, isProjectOpen) {
         ..._installShellCommands(window),
         {
           label: 'Install Android App',
-          click: () => { window.webContents.send('menu-item-clicked', 'install-android-app'); },
+          click: () => {
+            window.webContents.send('menu-item-clicked', 'install-android-app');
+          },
           enabled: isProjectOpen,
         },
         ..._installIosSimulatorApp(window, isProjectOpen),

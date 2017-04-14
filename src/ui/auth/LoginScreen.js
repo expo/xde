@@ -45,7 +45,7 @@ class LoginScreen extends React.Component {
     } else {
       this.props.actions.auth.login(loginType);
     }
-  }
+  };
 }
 
 export default connectToData(actions)(LoginScreen);

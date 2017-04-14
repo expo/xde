@@ -5,10 +5,7 @@
 import { StyleSheet, css } from 'aphrodite/no-important';
 import React from 'react';
 import { Motion, spring } from 'react-motion';
-import {
-  Match,
-  Redirect,
-} from 'react-router';
+import { Match, Redirect } from 'react-router';
 
 import SharedStyles from 'xde/ui/Styles';
 import { withRouter } from 'xde/utils/routing';
@@ -29,7 +26,7 @@ type Props = {
   authErrorMessage: ?string,
   router: {
     transitionTo: (path: string) => void,
-  }
+  },
 };
 
 type State = {};
@@ -50,8 +47,10 @@ class AuthScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.isAuthenticated !== this.props.isAuthenticated ||
-        nextProps.isOnboarded !== this.props.isOnboarded) {
+    if (
+      nextProps.isAuthenticated !== this.props.isAuthenticated ||
+      nextProps.isOnboarded !== this.props.isOnboarded
+    ) {
       if (nextProps.isAuthenticated && nextProps.isOnboarded) {
         this.props.router.transitionTo('/');
       } else if (nextProps.isAuthenticated && !nextProps.isOnboarded) {
@@ -65,18 +64,33 @@ class AuthScreen extends React.Component {
   render() {
     const { pathname } = this.props;
     return (
-      <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
-        {(value) =>
-          <div style={{opacity: value.x}}>
+      <Motion defaultStyle={{ x: 0 }} style={{ x: spring(1) }}>
+        {value => (
+          <div style={{ opacity: value.x }}>
             <div className={css(Styles.container)}>
               <div className={css(Styles.innerContainer)}>
-                <img src="./ExponentLogoTrans.png" className={css(Styles.logo)} />
+                <img
+                  src="./ExponentLogoTrans.png"
+                  className={css(Styles.logo)}
+                />
                 {this._renderErrors()}
                 <div>
-                  <Match pattern={`${pathname}/register`} component={RegisterScreen} />
-                  <Match pattern={`${pathname}/login`} component={LoginScreen} />
-                  <Match pattern={`${pathname}/forgot-password`} component={ForgotPasswordScreen} />
-                  <Match pattern={`${pathname}/forgot-username`} component={ForgotUsernameScreen} />
+                  <Match
+                    pattern={`${pathname}/register`}
+                    component={RegisterScreen}
+                  />
+                  <Match
+                    pattern={`${pathname}/login`}
+                    component={LoginScreen}
+                  />
+                  <Match
+                    pattern={`${pathname}/forgot-password`}
+                    component={ForgotPasswordScreen}
+                  />
+                  <Match
+                    pattern={`${pathname}/forgot-username`}
+                    component={ForgotUsernameScreen}
+                  />
                   <Match
                     exactly
                     pattern={pathname}
@@ -93,14 +107,18 @@ class AuthScreen extends React.Component {
               </div>
             </div>
           </div>
-        }
+        )}
       </Motion>
     );
   }
 
   _renderErrors() {
     if (this.props.authErrorMessage) {
-      return <div className={css(Styles.errorMessage)}>{this.props.authErrorMessage}</div>;
+      return (
+        <div className={css(Styles.errorMessage)}>
+          {this.props.authErrorMessage}
+        </div>
+      );
     } else {
       return null;
     }

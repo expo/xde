@@ -20,8 +20,7 @@ export const actions = {
 
 // ActionTypes
 import type { ActionTypes as AuthActionTypes } from './reducers/auth';
-export type ActionTypes =
-  AuthActionTypes;
+export type ActionTypes = AuthActionTypes;
 
 export type Reducers = typeof reducers;
 export type Actions = typeof actions;

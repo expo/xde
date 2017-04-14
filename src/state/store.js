@@ -4,12 +4,7 @@
 
 /*****/
 
-import {
-  createStore,
-  applyMiddleware,
-  combineReducers,
-  compose,
-} from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
@@ -24,9 +19,7 @@ let _store;
 function _createAppStore() {
   const reducer = combineReducers(reducers);
 
-  const middleware = [
-    thunk,
-  ];
+  const middleware = [thunk];
 
   // Only enable logging in development
   if (process.env.NODE_ENV === 'development') {
@@ -36,9 +29,7 @@ function _createAppStore() {
     middleware.push(logger);
   }
 
-  const enhancer = compose(
-    applyMiddleware(...middleware)
-  );
+  const enhancer = compose(applyMiddleware(...middleware));
 
   const store = createStore(reducer, enhancer);
 

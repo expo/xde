@@ -3,7 +3,15 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 import spawnAsync from '@exponent/spawn-async';
 
-import { Binaries, ErrorCode, Logger, NotificationCode, UserSettings, Utils, XDLError } from 'xdl';
+import {
+  Binaries,
+  ErrorCode,
+  Logger,
+  NotificationCode,
+  UserSettings,
+  Utils,
+  XDLError,
+} from 'xdl';
 let runas = null; // defer until used
 
 const INSTALL_PATH = '/usr/local/bin';
@@ -21,15 +29,21 @@ export async function installShellCommandsAsync() {
   }
 
   if (installedBinaries.length === 0) {
-    Logger.notifications.warn({code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT}, `Shell commands ${binaries.join(', ')} are already installed`);
+    Logger.notifications.warn(
+      { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
+      `Shell commands ${binaries.join(', ')} are already installed`
+    );
   } else {
-    Logger.notifications.info({code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT}, `Installed ${installedBinaries.join(', ')} to your shell`);
+    Logger.notifications.info(
+      { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
+      `Installed ${installedBinaries.join(', ')} to your shell`
+    );
   }
 }
 
 // Only called on darwin
 async function _installBinaryAsync(name) {
-  if (await _binaryInstalledAsync(name) || await _binaryExistsAsync(name)) {
+  if ((await _binaryInstalledAsync(name)) || (await _binaryExistsAsync(name))) {
     return false;
   }
 
@@ -49,20 +63,36 @@ async function _installBinaryAsync(name) {
       throw new Error(`Could not run \`mkdir -p ${INSTALL_PATH}\`.`);
     }
 
-    if (runas('/bin/ln', ['-s', path.join(_expoBinaryDirectory(), name, name), path.join(INSTALL_PATH, name)], { admin: true }) !== 0) {
+    if (
+      runas(
+        '/bin/ln',
+        [
+          '-s',
+          path.join(_expoBinaryDirectory(), name, name),
+          path.join(INSTALL_PATH, name),
+        ],
+        { admin: true }
+      ) !== 0
+    ) {
       throw new Error(`Could not symlink \`${name}\`.`);
     }
 
     return true;
   } catch (e) {
-    Logger.notifications.error({code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT}, `Error installing ${name}: ${e.message}`);
+    Logger.notifications.error(
+      { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
+      `Error installing ${name}: ${e.message}`
+    );
     throw e;
   }
 }
 
 async function _copyBinariesToExpoDirAsync() {
   if (process.platform !== 'darwin') {
-    throw new XDLError(ErrorCode.PLATFORM_NOT_SUPPORTED, 'Platform not supported.');
+    throw new XDLError(
+      ErrorCode.PLATFORM_NOT_SUPPORTED,
+      'Platform not supported.'
+    );
   }
 
   await Utils.ncpAsync(Binaries.OSX_SOURCE_PATH, _expoBinaryDirectory());
@@ -72,7 +102,11 @@ async function _binaryInstalledAsync(name) {
   try {
     let result = await spawnAsync('which', [name]);
     // We add watchman to PATH when starting packager, so make sure we're not using that version
-    return (result.stdout && result.stdout.length > 1 && !result.stdout.includes(Binaries.OSX_SOURCE_PATH));
+    return (
+      result.stdout &&
+      result.stdout.length > 1 &&
+      !result.stdout.includes(Binaries.OSX_SOURCE_PATH)
+    );
   } catch (e) {
     console.log(e.toString());
     return false;

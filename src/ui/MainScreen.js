@@ -54,7 +54,8 @@ import { installShellCommandsAsync } from '../utils/binaries';
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
-const PROJECT_OPENED_MESSAGE = 'Project opened! You can now use the "Send Link" or "Device" buttons to view your project.';
+const PROJECT_OPENED_MESSAGE =
+  'Project opened! You can now use the "Send Link" or "Device" buttons to view your project.';
 
 const TAB_LEFT_VISIBLE = 'tab-left-visible',
   TAB_RIGHT_VISIBLE = 'tab-right-visible',
@@ -265,10 +266,7 @@ class MainScreen extends React.Component {
   };
 
   _renderDeviceLogs = () => {
-    let {
-      connectedDevices,
-      focusedConnectedDeviceId,
-    } = this.state;
+    let { connectedDevices, focusedConnectedDeviceId } = this.state;
 
     let device = focusedConnectedDeviceId
       ? connectedDevices[focusedConnectedDeviceId]
@@ -675,13 +673,10 @@ class MainScreen extends React.Component {
     });
 
     if (!options || !options.indefinite) {
-      this._notificationTimeout = setTimeout(
-        () => {
-          this._notificationTimeout = null;
-          this.setState({ notification: null });
-        },
-        NOTIFICATION_TIMEOUT_MS
-      );
+      this._notificationTimeout = setTimeout(() => {
+        this._notificationTimeout = null;
+        this.setState({ notification: null });
+      }, NOTIFICATION_TIMEOUT_MS);
     }
   }
 
@@ -839,10 +834,7 @@ class MainScreen extends React.Component {
   };
 
   _onClickClearDeviceLogs = () => {
-    let {
-      connectedDevices,
-      focusedConnectedDeviceId,
-    } = this.state;
+    let { connectedDevices, focusedConnectedDeviceId } = this.state;
 
     if (
       focusedConnectedDeviceId && connectedDevices[focusedConnectedDeviceId]
@@ -1250,7 +1242,7 @@ let styles = StyleSheet.create({
     right: 0,
     top: '50%',
     height: StyleConstants.gutterMd * 2 + 10,
-    marginTop: (-(StyleConstants.gutterMd * 2 + 10)) / 2,
+    marginTop: -(StyleConstants.gutterMd * 2 + 10) / 2,
   },
 
   optionsIcon: {

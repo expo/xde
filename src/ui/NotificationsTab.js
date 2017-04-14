@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
-import {
-  XDLState,
-} from 'xdl';
+import { XDLState } from 'xdl';
 import bunyan from 'bunyan';
 
 import ConsoleLog from './ConsoleLog';
@@ -9,7 +7,9 @@ import StyleConstants from './StyleConstants';
 
 const mapStateToProps = (state, props) => {
   return {
-    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
+    notifications: props.projectRoot
+      ? state.notifications[props.projectRoot]
+      : null,
   };
 };
 
@@ -25,8 +25,20 @@ class NotificationsTab extends React.Component {
     let logs = [];
 
     if (notifications) {
-      this._addLogsForArray(logs, notifications.error, bunyan.ERROR, 'Error', StyleConstants.colorError);
-      this._addLogsForArray(logs, notifications.warn, bunyan.WARN, 'Warning', StyleConstants.colorWarning);
+      this._addLogsForArray(
+        logs,
+        notifications.error,
+        bunyan.ERROR,
+        'Error',
+        StyleConstants.colorError
+      );
+      this._addLogsForArray(
+        logs,
+        notifications.warn,
+        bunyan.WARN,
+        'Warning',
+        StyleConstants.colorWarning
+      );
       this._addLogsForArray(logs, notifications.info, bunyan.INFO, 'Info');
     }
 
@@ -39,9 +51,7 @@ class NotificationsTab extends React.Component {
       });
     }
 
-    return (
-      <ConsoleLog logs={logs} />
-    );
+    return <ConsoleLog logs={logs} />;
   }
 
   _addLogsForArray = (logs, array, level, levelName, levelColor) => {
@@ -58,7 +68,7 @@ class NotificationsTab extends React.Component {
       }
       logs.push(logMessage);
     }
-  }
+  };
 }
 
 export default XDLState.connect(mapStateToProps)(NotificationsTab);

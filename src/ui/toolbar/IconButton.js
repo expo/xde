@@ -1,5 +1,5 @@
 import { StyleSheet, css } from 'aphrodite';
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 import SharedStyles from '../Styles';
 import StyleConstants from '../StyleConstants';
@@ -25,7 +25,7 @@ export default class IconButton extends React.Component {
     return (
       <div
         className={css(styles.floatingBadge)}
-        style={{backgroundColor: this.props.badgeBackgroundColor}}>
+        style={{ backgroundColor: this.props.badgeBackgroundColor }}>
         {this.props.badgeCount}
       </div>
     );
@@ -35,29 +35,26 @@ export default class IconButton extends React.Component {
     const containerStyles = [
       styles.container,
       this.props.styles,
-      (this.props.isDisabled ? styles.containerDisabled : null),
+      this.props.isDisabled ? styles.containerDisabled : null,
     ];
     const iconEl = (
       <div
         className={css(styles.iconContainer)}
-        style={{borderColor: this.props.color}}>
-        <img
-          src={this.props.iconUrl}
-          className={css(styles.icon)}
-        />
+        style={{ borderColor: this.props.color }}>
+        <img src={this.props.iconUrl} className={css(styles.icon)} />
         {this.props.badgeCount && this._renderBadge()}
       </div>
     );
 
-    const mainEl = this.props.popover ?
-      <Popover
-        isToLeft={this.props.isPopoverToLeft}
-        body={this.props.popover}
-        arrowOffset={20}
-        popoverOffset={-10}>
-        {iconEl}
-      </Popover> :
-      iconEl;
+    const mainEl = this.props.popover
+      ? <Popover
+          isToLeft={this.props.isPopoverToLeft}
+          body={this.props.popover}
+          arrowOffset={20}
+          popoverOffset={-10}>
+          {iconEl}
+        </Popover>
+      : iconEl;
 
     return (
       <button
@@ -65,7 +62,7 @@ export default class IconButton extends React.Component {
         disabled={this.props.isDisabled}
         onClick={this.props.onClick}>
         {mainEl}
-        <div style={{color: this.props.color}}>
+        <div style={{ color: this.props.color }}>
           {this.props.label}
         </div>
       </button>

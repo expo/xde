@@ -12,8 +12,8 @@ type Props = {
   styles?: Array<any> | any,
   children?: any,
   isLoading?: boolean,
-  renderRightIcon: () => React.Element<*>
-}
+  renderRightIcon: () => React.Element<*>,
+};
 
 export default class Button extends React.Component {
   props: Props;
@@ -31,22 +31,31 @@ export default class Button extends React.Component {
         key="spacer"
         src="./arrow.svg"
         style={{
-          width: 15, height: 15, opacity: 0,
+          width: 15,
+          height: 15,
+          opacity: 0,
         }}
       />,
-      <div key="content" style={{flex: 1}}>
+      <div key="content" style={{ flex: 1 }}>
         {this.props.children}
       </div>,
       this.props.renderRightIcon && this.props.renderRightIcon(),
     ];
 
     if (this.props.isLoading) {
-      content = <LoadingIndicator color={{red: 255, green: 255, blue: 255, alpha: 1}} />;
+      content = (
+        <LoadingIndicator
+          color={{ red: 255, green: 255, blue: 255, alpha: 1 }}
+        />
+      );
     }
 
     return (
       <button
-        className={css(styles.button, ...(Array.isArray(extraStyles) ? extraStyles : [extraStyles]))}
+        className={css(
+          styles.button,
+          ...(Array.isArray(extraStyles) ? extraStyles : [extraStyles])
+        )}
         {...buttonProps}>
         {content}
       </button>

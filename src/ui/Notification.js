@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 import StyleConstants from './StyleConstants';
 
@@ -11,7 +11,7 @@ export default class Notification extends React.Component {
     onClick: PropTypes.func,
   };
 
-  _onClick = (event) => {
+  _onClick = event => {
     event.stopPropagation();
     if (this.props.onClick) {
       this.props.onClick();
@@ -43,7 +43,8 @@ export default class Notification extends React.Component {
           ...Styles.container,
           backgroundColor: color,
           cursor: this.props.onClick ? 'pointer' : 'default',
-        }} onClick={this._onClick}>
+        }}
+        onClick={this._onClick}>
         {message}
       </div>
     );

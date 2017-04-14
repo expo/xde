@@ -3,7 +3,7 @@ import { remote } from 'electron';
 async function showOpenDialog(opts) {
   return new Promise((fulfill, reject) => {
     let { dialog } = remote;
-    dialog.showOpenDialog(opts, (selections) => {
+    dialog.showOpenDialog(opts, selections => {
       fulfill(selections);
     });
   });
@@ -29,7 +29,7 @@ export default {
     });
 
     if (selections == null) {
-      console.log("No selections; cancelled Open Exp");
+      console.log('No selections; cancelled Open Exp');
       return null;
     }
 

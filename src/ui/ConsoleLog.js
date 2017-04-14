@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import bunyan from 'bunyan';
 import LoadingIndicator from 'react-loading-indicator';
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import Linkify from 'react-linkify';
 
 import StyleConstants from './StyleConstants';
@@ -21,7 +21,8 @@ export default class ConsoleLog extends React.Component {
     // From http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     const node = this._scrollContainerRef;
     if (node) {
-      this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+      this.shouldScrollBottom =
+        node.scrollTop + node.offsetHeight === node.scrollHeight;
     }
   }
 
@@ -34,7 +35,7 @@ export default class ConsoleLog extends React.Component {
     }
   }
 
-  componentWillReceiveProps = (nextProps) => {
+  componentWillReceiveProps = nextProps => {
     // When the loading indicator appears or is hidden, force a redraw.
     let oldIsLoading = this.props.isLoading;
     let newIsLoading = nextProps.isLoading;
@@ -44,20 +45,25 @@ export default class ConsoleLog extends React.Component {
         this._grid.recomputeGridSize();
       });
     }
-  }
+  };
 
-  _logHasPadding = (index) => {
+  _logHasPadding = index => {
     let log = this.props.logs[index];
-    return log.tag === 'expo' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding;
-  }
+    return (
+      log.tag === 'expo' ||
+      log.type === 'global' ||
+      log.type === 'notifications' ||
+      log.hasVerticalPadding
+    );
+  };
 
-  _lastLogHasPadding = (index) => {
+  _lastLogHasPadding = index => {
     if (index === 0) {
       return false;
     } else {
       return this._logHasPadding(index - 1);
     }
-  }
+  };
 
   _renderLog = ({ rowIndex }) => {
     let index = rowIndex;
@@ -80,7 +86,12 @@ export default class ConsoleLog extends React.Component {
     // Give important messages more space
     let paddingTop = 0;
     let paddingBottom = 0;
-    if (log.tag === 'expo' || log.type === 'global' || log.type === 'notifications' || log.hasVerticalPadding) {
+    if (
+      log.tag === 'expo' ||
+      log.type === 'global' ||
+      log.type === 'notifications' ||
+      log.hasVerticalPadding
+    ) {
       paddingBottom = 20;
       if (index > 0 && !this._lastLogHasPadding(index)) {
         paddingTop = 20;
@@ -97,7 +108,11 @@ export default class ConsoleLog extends React.Component {
     }
 
     // A big chunk of json is logged right when an app starts. Lower the priority.
-    if (log.tag === 'device' && message.includes('Running application') && message.includes('with appParams')) {
+    if (
+      log.tag === 'device' &&
+      message.includes('Running application') &&
+      message.includes('with appParams')
+    ) {
       logStyle = Styles.logDebug;
       // Linkify does a bad job parsing json, so ingore this.
       shouldLinkify = false;
@@ -122,19 +137,21 @@ export default class ConsoleLog extends React.Component {
     }
 
     return (
-      <div key={index} style={{...Styles.logContainer, paddingTop, paddingBottom}}>
+      <div
+        key={index}
+        style={{ ...Styles.logContainer, paddingTop, paddingBottom }}>
         <span style={leftMsgStyle}>{leftMsg}</span>
-        <pre style={{...Styles.log, ...logStyle, paddingLeft, ...otherStyles}}>
-          {shouldLinkify ?
-            <Linkify>
-              {message}
-            </Linkify> :
-            message
-          }
+        <pre
+          style={{ ...Styles.log, ...logStyle, paddingLeft, ...otherStyles }}>
+          {shouldLinkify
+            ? <Linkify>
+                {message}
+              </Linkify>
+            : message}
         </pre>
       </div>
     );
-  }
+  };
 
   _renderLoading() {
     let { isLoading } = this.props;
@@ -142,13 +159,13 @@ export default class ConsoleLog extends React.Component {
     if (isLoading) {
       return (
         <div style={Styles.loadingIndicator} key={-1}>
-          <LoadingIndicator color={{red: 255, green: 255, blue: 255, alpha: 1}} />
+          <LoadingIndicator
+            color={{ red: 255, green: 255, blue: 255, alpha: 1 }}
+          />
         </div>
       );
     } else {
-      return (
-        <div key={-2} />
-      );
+      return <div key={-2} />;
     }
   }
 
@@ -160,8 +177,10 @@ export default class ConsoleLog extends React.Component {
     return (
       <div
         style={Styles.logs}
-        ref={(c) => { this._scrollContainerRef = c; }}>
-        {_.range(numRows).map(rowIndex => this._renderLog({rowIndex}))}
+        ref={c => {
+          this._scrollContainerRef = c;
+        }}>
+        {_.range(numRows).map(rowIndex => this._renderLog({ rowIndex }))}
       </div>
     );
     /* eslint-enable react/jsx-no-bind */
@@ -177,7 +196,7 @@ export default class ConsoleLog extends React.Component {
         <img src="./IconClear.png" style={Styles.clearButton} />
       </a>
     );
-  }
+  };
 }
 
 const Styles = {

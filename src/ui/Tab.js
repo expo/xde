@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
 import StyleConstants from './StyleConstants';
 
@@ -12,10 +12,10 @@ export default class Tab extends React.Component {
   render() {
     let { bottomBarLeftContent, bottomBarRightContent } = this.props;
     if (!bottomBarLeftContent) {
-      bottomBarLeftContent = (<div />);
+      bottomBarLeftContent = <div />;
     }
     if (!bottomBarRightContent) {
-      bottomBarRightContent = (<div />);
+      bottomBarRightContent = <div />;
     }
 
     /* eslint-disable react/jsx-no-bind */
@@ -46,7 +46,7 @@ export default class Tab extends React.Component {
         <img src="./IconClear.png" style={Styles.clearButton} />
       </a>
     );
-  }
+  };
 }
 
 const Styles = {

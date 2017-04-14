@@ -1,5 +1,5 @@
-import React, {PropTypes} from 'react';
-import {Motion, spring} from 'react-motion';
+import React, { PropTypes } from 'react';
+import { Motion, spring } from 'react-motion';
 
 import SharedStyles from '../Styles';
 import StyleConstants from '../StyleConstants';
@@ -23,10 +23,16 @@ export default class Popover extends React.Component {
   };
 
   _renderPopoverContents() {
-    let popoverStyle = this.props.isAbove ? Styles.popoverAbove : Styles.popoverBelow;
+    let popoverStyle = this.props.isAbove
+      ? Styles.popoverAbove
+      : Styles.popoverBelow;
     let arrowStyle = this.props.isAbove ? Styles.arrowAbove : Styles.arrowBelow;
-    let arrowFillStyle = this.props.isAbove ? Styles.arrowFillAbove : Styles.arrowFillBelow;
-    let contentStyle = this.props.isAbove ? Styles.contentAbove : Styles.contentBelow;
+    let arrowFillStyle = this.props.isAbove
+      ? Styles.arrowFillAbove
+      : Styles.arrowFillBelow;
+    let contentStyle = this.props.isAbove
+      ? Styles.contentAbove
+      : Styles.contentBelow;
 
     if (this.props.isToLeft) {
       popoverStyle.right = this.props.popoverOffset;
@@ -45,26 +51,24 @@ export default class Popover extends React.Component {
     }
 
     return (
-      <Motion defaultStyle={{x: 0}} style={{x: spring(1)}}>
-        {(value) => (
+      <Motion defaultStyle={{ x: 0 }} style={{ x: spring(1) }}>
+        {value => (
           <div>
-            {this.props.isAbove ? (
-              <div style={{...popoverStyle, opacity: value.x}}>
-                <div style={contentStyle}>
-                  {this.props.body}
+            {this.props.isAbove
+              ? <div style={{ ...popoverStyle, opacity: value.x }}>
+                  <div style={contentStyle}>
+                    {this.props.body}
+                  </div>
+                  <div style={arrowFillStyle} />
+                  <div style={arrowStyle} />
                 </div>
-                <div style={arrowFillStyle}></div>
-                <div style={arrowStyle}></div>
-              </div>
-            ) : (
-              <div style={{...popoverStyle, opacity: value.x}}>
-                <div style={arrowStyle}></div>
-                <div style={arrowFillStyle}></div>
-                <div style={contentStyle}>
-                  {this.props.body}
-                </div>
-              </div>
-            )}
+              : <div style={{ ...popoverStyle, opacity: value.x }}>
+                  <div style={arrowStyle} />
+                  <div style={arrowFillStyle} />
+                  <div style={contentStyle}>
+                    {this.props.body}
+                  </div>
+                </div>}
           </div>
         )}
       </Motion>

@@ -30,7 +30,11 @@ export default class NewVersionAvailable extends React.Component {
     let AUTO_UPDATES_SUPPORTED = process.platform !== 'linux';
 
     // Should we use NODE_ENV instead of XDE_NPM_START?
-    if ((!this.state.isVisible) || (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START) || !AUTO_UPDATES_SUPPORTED) {
+    if (
+      !this.state.isVisible ||
+      (!WORKING_ON_XDE_UPDATES && process.env.XDE_NPM_START) ||
+      !AUTO_UPDATES_SUPPORTED
+    ) {
       return <div className={css(styles.hidden)} />;
     }
 
@@ -46,7 +50,8 @@ export default class NewVersionAvailable extends React.Component {
       text = `A new version of XDE is available. Click to restart and install XDE ${newVersion}.`;
       clickListener = this._quitAndUpdate;
     } else if (isDownloading) {
-      text = 'A new version of XDE is available. You can keep working while it is downloading.';
+      text =
+        'A new version of XDE is available. You can keep working while it is downloading.';
     } else if (isChecking) {
       text = 'Checking if there is a new version of XDE...';
     } else {
@@ -91,18 +96,15 @@ export default class NewVersionAvailable extends React.Component {
     this._isMounted = false;
   }
 
-  @autobind
-  _checkForUpdate() {
+  @autobind _checkForUpdate() {
     ipcRenderer.send('check-for-update');
   }
 
-  @autobind
-  _quitAndUpdate() {
+  @autobind _quitAndUpdate() {
     ipcRenderer.send('quit-and-update');
   }
 
-  @autobind
-  _handleUpdateError(event, message) {
+  @autobind _handleUpdateError(event, message) {
     if (!this._isMounted) {
       return;
     }
@@ -121,12 +123,11 @@ export default class NewVersionAvailable extends React.Component {
         return;
       }
 
-      this.setState({isVisible: false});
+      this.setState({ isVisible: false });
     }, NOTIFICATION_TIMEOUT_MS);
   }
 
-  @autobind
-  _handleCheckingForUpdate() {
+  @autobind _handleCheckingForUpdate() {
     if (!this._isMounted) {
       return;
     }
@@ -138,8 +139,7 @@ export default class NewVersionAvailable extends React.Component {
     });
   }
 
-  @autobind
-  _handleUpdateAvailable() {
+  @autobind _handleUpdateAvailable() {
     if (!this._isMounted) {
       return;
     }
@@ -151,8 +151,7 @@ export default class NewVersionAvailable extends React.Component {
     });
   }
 
-  @autobind
-  _handleUpdateNotAvailable() {
+  @autobind _handleUpdateNotAvailable() {
     if (!this._isMounted) {
       return;
     }
@@ -164,8 +163,7 @@ export default class NewVersionAvailable extends React.Component {
     });
   }
 
-  @autobind
-  _handleUpdateDownloaded(event) {
+  @autobind _handleUpdateDownloaded(event) {
     if (!this._isMounted) {
       return;
     }

@@ -41,8 +41,7 @@ if (window.HMR) {
       // host re-render
       // $FlowFixMe
       module.hot.accept('./ui/RootApp', render);
-    }
-    catch (error) {
+    } catch (error) {
       // hot re-render failed. display a nice error page like inwebpack-hot-middleware
       const RedBox = require('redbox-react');
       ReactDOM.render(<RedBox error={error} className="redbox" />, rootNode);

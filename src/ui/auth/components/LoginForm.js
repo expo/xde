@@ -4,9 +4,7 @@
 
 import { StyleSheet, css } from 'aphrodite/no-important';
 import React from 'react';
-import {
-  Link,
-} from 'react-router';
+import { Link } from 'react-router';
 
 import Button from 'xde/ui/components/Button';
 import TextInput from 'xde/ui/components/TextInput';
@@ -17,13 +15,16 @@ import * as IdentifierRules from 'xde/utils/IdentifierRules';
 export type LoginFormData = {
   username: string,
   password: string,
-}
+};
 
 type Props = {
   isLoggingIn: boolean,
   currentLoginMethod: ?string,
-  onLogin: (loginType: string, formData?: LoginFormData) => void | Promise<void>,
-}
+  onLogin: (
+    loginType: string,
+    formData?: LoginFormData
+  ) => void | Promise<void>,
+};
 
 export default class LoginForm extends React.Component {
   props: Props;
@@ -34,7 +35,7 @@ export default class LoginForm extends React.Component {
         name="login"
         className={css(styles.form)}
         onSubmit={this._onSubmitLogin}>
-        <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           {this._renderUsernamePasswordForm()}
         </div>
       </form>
@@ -43,7 +44,12 @@ export default class LoginForm extends React.Component {
 
   _renderUsernamePasswordForm() {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
         <div style={{ width: 270 }}>
           <TextInput
             ref="username"
@@ -61,10 +67,17 @@ export default class LoginForm extends React.Component {
             styles={styles.button}
             type="submit"
             disabled={this.props.isLoggingIn}
-            isLoading={this.props.isLoggingIn && this.props.currentLoginMethod === 'user-pass'}
-            renderRightIcon={() =>
-              <img key="right" src="./arrow.svg" style={{width: 15, height: 15}} />
-            }>
+            isLoading={
+              this.props.isLoggingIn &&
+                this.props.currentLoginMethod === 'user-pass'
+            }
+            renderRightIcon={() => (
+              <img
+                key="right"
+                src="./arrow.svg"
+                style={{ width: 15, height: 15 }}
+              />
+            )}>
             Sign In
           </Button>
           <Button
@@ -72,21 +85,46 @@ export default class LoginForm extends React.Component {
             type="button"
             onClick={this._onGithubClick}
             disabled={this.props.isLoggingIn}
-            isLoading={this.props.isLoggingIn && this.props.currentLoginMethod === 'github'}
-            renderRightIcon={() =>
-              <img key="right" src="./arrow.svg" className={css(styles.svgArrow)} />
-            }>
+            isLoading={
+              this.props.isLoggingIn &&
+                this.props.currentLoginMethod === 'github'
+            }
+            renderRightIcon={() => (
+              <img
+                key="right"
+                src="./arrow.svg"
+                className={css(styles.svgArrow)}
+              />
+            )}>
             Sign In With Github
           </Button>
         </div>
-        <div style={{ width: 270, marginTop: 20, display: 'flex', flex: 1, flexDirection: 'row', marginBottom: 16 }}>
+        <div
+          style={{
+            width: 270,
+            marginTop: 20,
+            display: 'flex',
+            flex: 1,
+            flexDirection: 'row',
+            marginBottom: 16,
+          }}>
           <p style={{ fontSize: 12, display: 'flex', flex: 1, flexGrow: 2 }}>
-            <Link to="/auth/forgot-password" style={{ color: StyleConstants.colorText }}>
+            <Link
+              to="/auth/forgot-password"
+              style={{ color: StyleConstants.colorText }}>
               Forgot your password?
             </Link>
           </p>
-          <p style={{ fontSize: 12, display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
-            <Link to="/auth/register" style={{ color: StyleConstants.colorText }}>
+          <p
+            style={{
+              fontSize: 12,
+              display: 'flex',
+              flex: 1,
+              justifyContent: 'flex-end',
+            }}>
+            <Link
+              to="/auth/register"
+              style={{ color: StyleConstants.colorText }}>
               Register
             </Link>
           </p>
@@ -97,15 +135,15 @@ export default class LoginForm extends React.Component {
 
   _onFacebookClick = () => {
     this.props.onLogin('facebook');
-  }
+  };
 
   _onGithubClick = () => {
     this.props.onLogin('github');
-  }
+  };
 
   _onGoogleClick = () => {
     this.props.onLogin('google');
-  }
+  };
 
   _onSubmitLogin = async (e: any) => {
     e.preventDefault();
@@ -169,5 +207,4 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
   },
-
 });

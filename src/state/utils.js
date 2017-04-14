@@ -21,9 +21,14 @@ import type {
 type AppReducer<S, A> = (state: S, action: A) => S;
 type Handler<S, A> = (state: S, action: A) => S;
 
-export function reduce<S: Object, A: AppAction>(actionType: AppActionType, handler: Handler<S, A>): AppReducer<S, A> {
+export function reduce<S: Object, A: AppAction>(
+  actionType: AppActionType,
+  handler: Handler<S, A>
+): AppReducer<S, A> {
   return (state: S, action: A) => {
-    if (action.type !== actionType) { return state; }
+    if (action.type !== actionType) {
+      return state;
+    }
     return handler(state, action);
   };
 }
@@ -34,7 +39,7 @@ export function reduceAsync<S: Object, A: AppAction>(
     pending?: AppReducer<S, A>,
     complete?: AppReducer<S, A>,
     failed?: AppReducer<S, A>,
-  |},
+  |}
 ): AppReducer<S, A> {
   const {
     pending: pendingHandler,
@@ -76,25 +81,31 @@ type SyncActionCreator = (payload?: Object) => AppAction;
 /**
  * Generate a single action creator from an action type string.
  */
-export const generateAction = (actionType: AppActionType): SyncActionCreator =>
-  (payload?: Object = {}): AppAction => ({
-    type: actionType,
-    payload,
-  });
+export const generateAction = (
+  actionType: AppActionType
+): SyncActionCreator => (payload?: Object = {}): AppAction => ({
+  type: actionType,
+  payload,
+});
 
 /**
  * Given a list of action types, generate an array of action creators for each
  * provided action type, respectively.
  */
-export const generateActions = (...actionTypes: AppActionType[]): SyncActionCreator[] =>
+export const generateActions = (
+  ...actionTypes: AppActionType[]
+): SyncActionCreator[] =>
   actionTypes.map((actionType: AppActionType) => generateAction(actionType));
 
 export function asyncAction(
   actionPrefix: AppActionType,
   handler: (dispatch: AppDispatch, getState: () => AppState) => Promise<*>,
-  payloadTransformer?: (actionType: AppActionType, payload: any) => any,
+  payloadTransformer?: (actionType: AppActionType, payload: any) => any
 ): AppActionOrThunkAction {
-  return async (dispatch: AppDispatch, getState: () => AppState): Promise<*> => {
+  return async (
+    dispatch: AppDispatch,
+    getState: () => AppState
+  ): Promise<*> => {
     const PENDING_ACTION: AppActionType = (`${actionPrefix}/PENDING`: any);
     const COMPLETE_ACTION: AppActionType = (`${actionPrefix}/COMPLETE`: any);
     const FAILED_ACTION: AppActionType = (`${actionPrefix}/FAILED`: any);
@@ -102,11 +113,20 @@ export function asyncAction(
       payloadTransformer = (actionType, payload) => payload;
     }
     try {
-      dispatch({ type: PENDING_ACTION, payload: payloadTransformer(PENDING_ACTION, { pending: actionPrefix }) });
+      dispatch({
+        type: PENDING_ACTION,
+        payload: payloadTransformer(PENDING_ACTION, { pending: actionPrefix }),
+      });
       const result = await handler(dispatch, getState);
-      dispatch({ type: COMPLETE_ACTION, payload: payloadTransformer(COMPLETE_ACTION, result) });
+      dispatch({
+        type: COMPLETE_ACTION,
+        payload: payloadTransformer(COMPLETE_ACTION, result),
+      });
     } catch (e) {
-      dispatch({ type: FAILED_ACTION, payload: payloadTransformer(FAILED_ACTION, { error: e }) });
+      dispatch({
+        type: FAILED_ACTION,
+        payload: payloadTransformer(FAILED_ACTION, { error: e }),
+      });
     }
   };
 }
@@ -120,10 +140,13 @@ import { connect as reduxConnect } from 'react-redux';
  * Special version of `connect` from react-redux, so as to pull
  * `mapStateFromProps` from statics of the component (we call it data).
  */
-export const connectToData = (actions?: Object | Function) => (Component: ComponentWithData) => {
+export const connectToData = (actions?: Object | Function) => (
+  Component: ComponentWithData
+) => {
   return reduxConnect(
     Component.data, // map state to props
-    (dispatch, ownProps) => { // map dispatch to props
+    (dispatch, ownProps) => {
+      // map dispatch to props
       if (actions) {
         if (typeof actions === 'function') {
           return {
@@ -132,12 +155,10 @@ export const connectToData = (actions?: Object | Function) => (Component: Compon
           };
         } else {
           const boundActions = {};
-          Object
-            .keys(actions)
-            .forEach((key: string) => {
-              // $FlowFixMe
-              boundActions[key] = bindActionCreators(actions[key], dispatch);
-            });
+          Object.keys(actions).forEach((key: string) => {
+            // $FlowFixMe
+            boundActions[key] = bindActionCreators(actions[key], dispatch);
+          });
           return {
             ...ownProps,
             actions: boundActions,
@@ -155,4 +176,4 @@ export const connectToData = (actions?: Object | Function) => (Component: Compon
 // (used for the above connect HoC)
 type ComponentWithData = ReactClass<*> & {
   data?: (state: AppState, ownProps: Object) => Object,
-}
+};
