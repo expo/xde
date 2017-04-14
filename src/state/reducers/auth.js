@@ -76,10 +76,16 @@ export const actions = {
     asyncAction('LOGOUT', async () => await UserManager.logoutAsync()),
 
   forgotPassword: (usernameOrEmail: string) =>
-    asyncAction(
-      'FORGOT_PASSWORD',
-      async () => await UserManager.forgotPasswordAsync(usernameOrEmail)
-    ),
+    asyncAction('FORGOT_PASSWORD', async () => {
+      let result = await UserManager.forgotPasswordAsync(usernameOrEmail);
+
+      if (result) {
+        // Oddly, this string includes double quotes around it
+        alert(result.replace(/"/g, ''));
+      }
+
+      return result;
+    }),
 
   register: (userData: RegistrationData) =>
     asyncAction(
