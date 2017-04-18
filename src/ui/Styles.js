@@ -9,16 +9,10 @@ let styles = StyleSheet.create({
   },
   statusBarIcon: {
     height: StyleConstants.statusBarIconSize,
-    marginLeft: StyleConstants.gutterMd,
-    marginRight: -(StyleConstants.gutterMd + StyleConstants.statusBarIconSize),
   },
   statusBarText: {
     fontSize: StyleConstants.fontSizeSm,
     color: StyleConstants.colorText,
-    paddingLeft: StyleConstants.statusBarIconSize +
-      StyleConstants.gutterMd * 2 -
-      StyleConstants.gutterSm,
-    marginVertical: StyleConstants.gutterSm,
   },
 });
 

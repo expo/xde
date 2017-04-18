@@ -56,16 +56,17 @@ const Styles = {
     height: '100%',
   },
   bottomBar: {
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 24,
-    display: 'flex',
   },
   bottomBarLeft: {
-    flex: 4, // left side needs more space
+    minWidth: '25%',
+    width: '100%',
   },
   bottomBarRight: {
-    flex: 1,
+    flexShrink: 0,
     textAlign: 'right',
     paddingRight: StyleConstants.gutterLg,
     marginVertical: StyleConstants.gutterSm,

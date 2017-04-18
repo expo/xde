@@ -42,6 +42,7 @@ import NewProjectModal from './NewProjectModal';
 import NewVersionAvailable from './NewVersionAvailable';
 import Notification from './Notification';
 import NotificationsTab from './NotificationsTab';
+import StatusItem from './components/StatusItem';
 import ProjectList from './ProjectList';
 import StyleConstants from './StyleConstants';
 import SharedStyles from './Styles';
@@ -290,31 +291,30 @@ class MainScreen extends React.Component {
   };
 
   _renderDeviceSwitcher = device => {
-    return (
-      <div>
-        {
-          <Popover
-            body={this._renderPopoverDeviceLogs()}
-            arrowOffset={16}
-            isAbove>
-            <img
-              src="./SelectUpDown.png"
-              className={css(
-                SharedStyles.iconWithMargin,
-                SharedStyles.statusBarIcon
-              )}
-              onClick={this._toggleDeviceLogsPopover}
-            />
-          </Popover>
-        }
-        <span
-          className={css(SharedStyles.statusBarText)}
-          style={{ cursor: 'pointer' }}
-          onClick={this._toggleDeviceLogsPopover}>
-          {device ? device.name : 'No devices connected'}
-        </span>
-      </div>
+    const icon = (
+      <Popover
+        body={this._renderPopoverDeviceLogs()}
+        arrowOffset={15}
+        popoverOffset={-13}
+        isAbove>
+        <img
+          src="./SelectUpDown.png"
+          className={css(SharedStyles.statusBarIcon)}
+          onClick={this._toggleDeviceLogsPopover}
+        />
+      </Popover>
     );
+
+    const right = (
+      <span
+        className={css(SharedStyles.statusBarText)}
+        style={{ cursor: 'pointer' }}
+        onClick={this._toggleDeviceLogsPopover}>
+        {device ? device.name : 'No devices connected'}
+      </span>
+    );
+
+    return <StatusItem icon={icon} right={right} />;
   };
 
   _renderTabsVisibleControl = () => {

@@ -6,6 +6,7 @@ import SharedStyles from './Styles';
 import StyleConstants from './StyleConstants';
 import Popover from './toolbar/Popover';
 import MenuItem from './toolbar/MenuItem';
+import StatusItem from './components/StatusItem';
 
 import { PopoverEnum } from './Constants';
 
@@ -31,27 +32,34 @@ class PackagerNotificationsSwitcher extends React.Component {
 
   render() {
     let { isPackagerSelected } = this.props;
+    const icon = (
+      <Popover
+        body={this._renderSwitcher()}
+        arrowOffset={15}
+        popoverOffset={-13}
+        isAbove>
+        <img
+          src="./SelectUpDown.png"
+          className={css(SharedStyles.statusBarIcon)}
+          onClick={this._toggleSwitcher}
+        />
+      </Popover>
+    );
 
-    return (
+    const right = (
       <div>
-        {
-          <Popover body={this._renderSwitcher()} arrowOffset={16} isAbove>
-            <img
-              src="./SelectUpDown.png"
-              className={css(
-                SharedStyles.iconWithMargin,
-                SharedStyles.statusBarIcon
-              )}
-              onClick={this._toggleSwitcher}
-            />
-          </Popover>
-        }
         <span
           className={css(SharedStyles.statusBarText)}
           style={{ cursor: 'pointer' }}
           onClick={this._toggleSwitcher}>
           {isPackagerSelected ? 'React Native Packager' : 'Notifications'}
         </span>
+      </div>
+    );
+
+    return (
+      <div className={css(styles.statuses)}>
+        <StatusItem icon={icon} right={right} />
         {this._renderNotificationsCount()}
       </div>
     );
@@ -109,7 +117,7 @@ class PackagerNotificationsSwitcher extends React.Component {
       return null;
     }
 
-    let style = {
+    const style = {
       color: notifications.color,
     };
 
@@ -117,18 +125,26 @@ class PackagerNotificationsSwitcher extends React.Component {
       style.cursor = 'pointer';
     }
 
-    return (
+    const icon = (
       <span
-        onClick={this._onClickYourProjectHasIssues}
-        className={css(SharedStyles.statusBarText)}
-        style={style}>
-        <span
-          className={css(styles.badge)}
-          style={{ backgroundColor: notifications.color }}>
-          {notifications.count}
-        </span>
-        Your project has issues.
+        className={css(styles.badge)}
+        style={{ backgroundColor: notifications.color }}>
+        {notifications.count}
       </span>
+    );
+
+    const right = (
+      <span className={css(SharedStyles.statusBarText)} style={style}>
+        Issues
+      </span>
+    );
+
+    return (
+      <StatusItem
+        onClick={this._onClickYourProjectHasIssues}
+        icon={icon}
+        right={right}
+      />
     );
   };
 
@@ -142,6 +158,11 @@ class PackagerNotificationsSwitcher extends React.Component {
 export default XDLState.connect(mapStateToProps)(PackagerNotificationsSwitcher);
 
 const styles = StyleSheet.create({
+  statuses: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
   badge: {
     fontSize: StyleConstants.fontSizeSm,
     color: '#ffffff',
@@ -150,11 +171,8 @@ const styles = StyleSheet.create({
     minWidth: 20,
     paddingLeft: 5,
     paddingRight: 5,
-    marginRight: 5,
     paddingBottom: 2,
     paddingTop: 2,
-    marginVertical: -StyleConstants.gutterSm,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
