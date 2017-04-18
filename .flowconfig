@@ -7,6 +7,9 @@
 
 # Node modules
 <PROJECT_ROOT>/node_modules/babel-plugin-flow-react-proptypes/.*
+<PROJECT_ROOT>/app/node_modules/fbjs/.*
+<PROJECT_ROOT>/node_modules/fbjs/.*
+.*node_modules/reqwest/tests.*
 
 # Other dev tools
 .*/exp/.*

@@ -21,7 +21,7 @@ type Props = {
   isLoggingIn: boolean,
   currentLoginMethod: ?string,
   onLogin: (
-    loginType: string,
+    loginType: 'user-pass' | 'github',
     formData?: LoginFormData
   ) => void | Promise<void>,
 };

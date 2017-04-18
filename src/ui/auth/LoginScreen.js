@@ -35,7 +35,10 @@ class LoginScreen extends React.Component {
     );
   }
 
-  _handleLogin = (loginType: string, formData: ?LoginFormData) => {
+  _handleLogin = (
+    loginType: 'user-pass' | 'github',
+    formData: ?LoginFormData
+  ) => {
     if (this.props.isLoggingIn) {
       return;
     }
