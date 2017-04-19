@@ -20,7 +20,10 @@ class StatusItem extends Component {
 
   render() {
     return (
-      <span className={css(Styles.container)} style={this.props.style}>
+      <span
+        className={css(Styles.container)}
+        style={this.props.style}
+        onClick={this.props.onClick}>
         <figure className={css(Styles.icon)}>
           {this.props.icon}
         </figure>
@@ -38,6 +41,7 @@ const Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    cursor: 'pointer',
   },
   icon: {
     flexShrink: 0,
