@@ -18,8 +18,7 @@ Once you create a new project (or open an existing project), you'll see some log
 The url that begins with `exp://...` is the URL you can use to access your project while you're developing it. To view this on your phone, do the following:
 
 - Go get the Expo app on your Android or iOS device. It's available [on the Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) and [on the iOS App Store](https://itunes.com/apps/exponent).
-- Open the Expo app and put in your e-mail address.
-- Go back to the XDE GUI on your computer and put in your phone number or e-mail address into the text box in the header, then hit the "Send Link" button. This will send a link via e-mail or text message, so make sure you use an address or phone number you can access from your phone.
+- Go back to the XDE GUI on your computer and put in your phone number or e-mail address into the text box under "Share", then hit the "Send Link" button. This will send a link via e-mail or text message, so make sure you use an address or phone number you can access from your phone.
 - Check your e-mail or texts and tap the link. The Expo app should open and you should be able to view your experience there!
 
 ## Converting an existing project to work with Expo

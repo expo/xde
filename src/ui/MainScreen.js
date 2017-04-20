@@ -56,7 +56,7 @@ import { installShellCommandsAsync } from '../utils/binaries';
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
 const PROJECT_OPENED_MESSAGE =
-  'Project opened! You can now use the "Send Link" or "Device" buttons to view your project.';
+  'Project opened! You can now use the "Share" or "Device" buttons to view your project.';
 
 const TAB_LEFT_VISIBLE = 'tab-left-visible',
   TAB_RIGHT_VISIBLE = 'tab-right-visible',

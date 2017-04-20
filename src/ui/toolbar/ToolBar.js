@@ -252,7 +252,7 @@ class ToolBar extends React.Component {
 
   _onSendLinkClick = event => {
     if (this._sendLinkInput.value) {
-      this._getTogglePopoverFn(PopoverEnum.SEND_LINK)(event);
+      this._getTogglePopoverFn(PopoverEnum.SHARE)(event);
       this.props.onSendLinkClick(this._sendLinkInput.value);
     }
   };
@@ -262,7 +262,7 @@ class ToolBar extends React.Component {
   };
 
   _renderPopoverSendLink() {
-    if (this.props.openPopover !== PopoverEnum.SEND_LINK) {
+    if (this.props.openPopover !== PopoverEnum.SHARE) {
       return null;
     }
     return (
@@ -407,10 +407,10 @@ class ToolBar extends React.Component {
             />
             <IconButton
               iconUrl="./IconArrowRight.png"
-              label="Send Link"
+              label="Share"
               color="#383D40"
               isDisabled={!this.props.isProjectRunning}
-              onClick={this._getTogglePopoverFn(PopoverEnum.SEND_LINK)}
+              onClick={this._getTogglePopoverFn(PopoverEnum.SHARE)}
               popover={this._renderPopoverSendLink()}
               isPopoverToLeft
               styles={styles.rightSpaced}
