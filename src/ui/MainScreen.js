@@ -547,6 +547,7 @@ class MainScreen extends React.Component {
               <Notification {...this.state.notification} />}
             <div className={css(styles.topSection)}>
               <ToolBar
+                url={this.state.computedUrl}
                 isProjectOpen={
                   !!this.state.projectRoot && !!this.state.projectSettings
                 }

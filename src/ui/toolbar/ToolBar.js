@@ -5,6 +5,7 @@
 import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
 import { Analytics, Android, FileSystem, Simulator, XDLState } from 'xdl';
+import QRCode from 'qrcode.react';
 
 import { actions } from 'xde/state';
 import { connectToData } from 'xde/state/utils';
@@ -21,6 +22,7 @@ import Popover from './Popover';
 import type { AppState, AppActions } from 'xde/state/types';
 
 type Props = {
+  url?: string,
   isProjectOpen: boolean,
   isProjectRunning: boolean,
   openPopover?: $Keys<typeof PopoverEnum>,
@@ -261,12 +263,16 @@ class ToolBar extends React.Component {
     event.stopPropagation();
   };
 
-  _renderPopoverSendLink() {
+  _renderPopoverShare() {
     if (this.props.openPopover !== PopoverEnum.SHARE) {
       return null;
     }
     return (
       <div onClick={this._onMenuClick}>
+        <QRCode value={this.props.url} />
+        <div className={css(styles.shareOrDiv)}>
+          - or -
+        </div>
         <input
           className={css(styles.sendLinkInput)}
           ref={r => {
@@ -411,7 +417,7 @@ class ToolBar extends React.Component {
               color="#383D40"
               isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.SHARE)}
-              popover={this._renderPopoverSendLink()}
+              popover={this._renderPopoverShare()}
               isPopoverToLeft
               styles={styles.rightSpaced}
             />
@@ -508,6 +514,13 @@ const styles = StyleSheet.create({
     cursor: 'pointer',
     fontSize: StyleConstants.fontSizeMd,
     textDecoration: 'none',
+  },
+  shareOrDiv: {
+    color: StyleConstants.colorSubtitle,
+    fontSize: StyleConstants.fontSizeSm,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: StyleConstants.gutterMd,
   },
   sendLinkInput: {
     border: 'none',
