@@ -12,6 +12,7 @@ import { connectToData } from 'xde/state/utils';
 
 import { PopoverEnum } from '../Constants';
 import ProjectIcon from '../ProjectIcon';
+import SharedStyles from '../Styles';
 import StyleConstants from '../StyleConstants';
 
 import IconButton from './IconButton';
@@ -269,7 +270,9 @@ class ToolBar extends React.Component {
     }
     return (
       <div onClick={this._onMenuClick}>
-        <QRCode value={this.props.url} />
+        <div className={css(styles.qrCode)}>
+          <QRCode value={this.props.url} />
+        </div>
         <div className={css(styles.shareOrDiv)}>
           - or -
         </div>
@@ -515,6 +518,9 @@ const styles = StyleSheet.create({
     fontSize: StyleConstants.fontSizeMd,
     textDecoration: 'none',
   },
+  qrCode: {
+    marginTop: StyleConstants.gutterLg,
+  },
   shareOrDiv: {
     color: StyleConstants.colorSubtitle,
     fontSize: StyleConstants.fontSizeSm,
@@ -523,7 +529,7 @@ const styles = StyleSheet.create({
     padding: StyleConstants.gutterMd,
   },
   sendLinkInput: {
-    border: 'none',
+    ...SharedStyles.input,
     color: StyleConstants.colorSubtitle,
     display: 'block',
     fontSize: StyleConstants.fontSizeMd,
