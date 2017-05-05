@@ -719,8 +719,11 @@ class MainScreen extends React.Component {
     this._logInfo('Publishing...');
     try {
       let result = await Project.publishAsync(this.state.projectRoot);
-      this._logInfo(`Published to ${result.url}`);
+      await new Promise(resolve => {
+        requestAnimationFrame(resolve);
+      });
 
+      this._logInfo(`Published to ${result.url}`);
       let notificationMessage = 'Project published successfully.';
       let sendTo = this.state.sendTo;
       if (sendTo) {
@@ -852,7 +855,7 @@ class MainScreen extends React.Component {
     if (!chunk.shouldHide) {
       this._logsToAdd.push(chunk);
 
-      requestAnimationFrame(() => {
+      setImmediate(() => {
         if (this._logsToAdd.length === 0) {
           return;
         }

@@ -13,7 +13,6 @@ const { app, BrowserWindow, ipcMain } = electron;
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
 // Report crashes to our server.
 // electron.CrashReporter.start();
 
@@ -88,6 +87,9 @@ app.on('ready', () => {
     // titleBarStyle: 'hidden-inset',
     // for windows. osx gets icon from post install task
     icon: path.resolve(__dirname, '../build/xde.ico'),
+    webPreferences: {
+      backgroundThrottling: false,
+    },
   });
   mainWindow.commandLineArgs = process.argv;
   mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);

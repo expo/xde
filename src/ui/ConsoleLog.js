@@ -107,6 +107,11 @@ export default class ConsoleLog extends React.Component {
       logStyle = Styles.logDebug;
     }
 
+    // Expo logs can be "quiet" which formats them the same as packager logs
+    if (log.name === 'expo' && log.level === bunyan.INFO && log.quiet) {
+      logStyle = Styles.logDebug;
+    }
+
     // A big chunk of json is logged right when an app starts. Lower the priority.
     if (
       log.tag === 'device' &&
