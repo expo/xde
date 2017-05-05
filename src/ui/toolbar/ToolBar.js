@@ -282,7 +282,7 @@ class ToolBar extends React.Component {
             this._sendLinkInput = r;
           }}
           defaultValue={this.props.sendTo}
-          placeholder="Email or phone"
+          placeholder="Enter email or phone"
         />
         <a
           onClick={this._onSendLinkClick}
