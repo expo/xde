@@ -97,7 +97,7 @@
     "flow-bin": "^0.38.0",
     "flow-typed": "^2.0.0",
     "getenv": "^0.7.0",
-    "gulp": "git+https://github.com/gulpjs/gulp#4.0",
+    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.2",
     "gulp-changed": "^1.3.0",
     "gulp-plumber": "^1.1.0",
