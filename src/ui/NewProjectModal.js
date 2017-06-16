@@ -275,7 +275,9 @@ class NewProjectModal extends React.Component {
     if (dir.length < MAX_PROJECT_LENGTH) {
       return dir;
     } else {
-      return `${dir.substr(0, HALF_MAX_PROJECT_LENGTH)}...${dir.substr(dir.length - HALF_MAX_PROJECT_LENGTH)}`;
+      return `${dir.substr(0, HALF_MAX_PROJECT_LENGTH)}...${dir.substr(
+        dir.length - HALF_MAX_PROJECT_LENGTH
+      )}`;
     }
   };
 
@@ -330,11 +332,11 @@ class NewProjectModal extends React.Component {
         this.state.projectDirectory,
         {
           name: this.state.projectName,
-          progressFunction: progress => {
+          progressFunction: percentage => {
             if (this._currentRequestID === requestID) {
               Logger.notifications.info(
                 { code: NotificationCode.DOWNLOAD },
-                progress
+                percentage
               );
             }
           },
