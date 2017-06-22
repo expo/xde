@@ -84,8 +84,8 @@ class NewProjectModal extends React.Component {
 
     this.setState({
       isLoading: false,
-      templates: versions.templates,
-      selectedTemplate: versions.templates[0],
+      templates: versions.templatesv2,
+      selectedTemplate: versions.templatesv2[0],
       projectDirectory: dir,
     });
   };
@@ -219,8 +219,8 @@ class NewProjectModal extends React.Component {
         {downloading
           ? <div style={Styles.progressBar}>
               <div
-                style={{ ...Styles.progress, width: this.state.progress * 2 }}
-              />
+              style={{ ...Styles.progress, width: this.state.progress * 2 }}
+            />
             </div>
           : <LoadingIndicator
               color={{
@@ -232,7 +232,7 @@ class NewProjectModal extends React.Component {
               segmentWidth={6}
               segmentLength={15}
               spacing={9}
-            />}
+          />}
         {this.state.loadingMessage &&
           <div style={Styles.loadingText}>
             {this.state.loadingMessage}
@@ -240,14 +240,14 @@ class NewProjectModal extends React.Component {
         {this.state.showRetryPrompt
           ? <div style={Styles.loadingContainer}>
               <div style={{ ...Styles.loadingText, paddingTop: 0 }}>
-                {MessageCode.DOWNLOAD_IS_SLOW}
-              </div>
+              {MessageCode.DOWNLOAD_IS_SLOW}
+            </div>
               <button
-                onClick={this._onClickRetry}
-                type="button"
-                style={Styles.retryButton}>
-                <div key="button-text" style={{ flex: 1 }}>Retry</div>
-              </button>
+              onClick={this._onClickRetry}
+              type="button"
+              style={Styles.retryButton}>
+              <div key="button-text" style={{ flex: 1 }}>Retry</div>
+            </button>
             </div>
           : <div />}
       </div>
