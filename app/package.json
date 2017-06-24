@@ -51,6 +51,6 @@
     "runas": "^3.1.1",
     "source-map-support": "^0.4.6",
     "tree-kill": "^1.1.0",
-    "xdl": "42.1.0"
+    "xdl": "42.2.0"
   }
 }
