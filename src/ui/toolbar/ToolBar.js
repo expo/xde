@@ -255,6 +255,9 @@ class ToolBar extends React.Component {
 
   _onSendLinkClick = event => {
     if (this._sendLinkInput.value) {
+      if (event.type === 'keypress' && event.key !== 'Enter') {
+        return;
+      }
       this._getTogglePopoverFn(PopoverEnum.SHARE)(event);
       this.props.onSendLinkClick(this._sendLinkInput.value);
     }
@@ -280,7 +283,11 @@ class ToolBar extends React.Component {
           className={css(styles.sendLinkInput)}
           ref={r => {
             this._sendLinkInput = r;
+            if (r) {
+              r.focus();
+            }
           }}
+          onKeyPress={this._onSendLinkClick}
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
