@@ -27,7 +27,7 @@ Config.useReduxNotifications = true;
 import fs from 'fs';
 import { StyleSheet, css } from 'aphrodite/no-important';
 import _ from 'lodash';
-import bunyan from 'bunyan';
+import bunyan from '@expo/bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
 import React, { PropTypes } from 'react';
@@ -253,8 +253,10 @@ class MainScreen extends React.Component {
       });
     } else if (
       this.state.isProjectRunning &&
-      !(this.state.expJson &&
-        Versions.gteSdkVersion(this.state.expJson, '7.0.0'))
+      !(
+        this.state.expJson &&
+        Versions.gteSdkVersion(this.state.expJson, '7.0.0')
+      )
     ) {
       logs.push({
         level: bunyan.WARN,
@@ -706,7 +708,8 @@ class MainScreen extends React.Component {
         type: 'question',
         buttons: ['Yes', `Yes, don't ask again`, 'No'],
         title: 'Confirm',
-        message: 'This will make your experience publicly accessible. Continue?',
+        message:
+          'This will make your experience publicly accessible. Continue?',
       });
 
       if (choice === 1) {
@@ -786,7 +789,9 @@ class MainScreen extends React.Component {
     }
 
     this._logInfo(
-      `Restarting project${reset ? ' and clearing packager cache' : ''}${shiftMessage}.`
+      `Restarting project${reset
+        ? ' and clearing packager cache'
+        : ''}${shiftMessage}.`
     );
     this.setState(
       {
@@ -841,7 +846,8 @@ class MainScreen extends React.Component {
     let { connectedDevices, focusedConnectedDeviceId } = this.state;
 
     if (
-      focusedConnectedDeviceId && connectedDevices[focusedConnectedDeviceId]
+      focusedConnectedDeviceId &&
+      connectedDevices[focusedConnectedDeviceId]
     ) {
       connectedDevices[focusedConnectedDeviceId].logs = [];
     }
@@ -1233,9 +1239,8 @@ let styles = StyleSheet.create({
   urlInput: {
     ...SharedStyles.input,
     flex: 1,
-    paddingLeft: OPTIONS_ICON_SIZE +
-      StyleConstants.gutterMd * 2 -
-      StyleConstants.gutterSm,
+    paddingLeft:
+      OPTIONS_ICON_SIZE + StyleConstants.gutterMd * 2 - StyleConstants.gutterSm,
   },
 
   urlInputCopyIcon: {

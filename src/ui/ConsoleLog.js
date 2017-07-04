@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import bunyan from 'bunyan';
+import bunyan from '@expo/bunyan';
 import LoadingIndicator from 'react-loading-indicator';
 import React, { PropTypes } from 'react';
 import Linkify from 'react-linkify';
