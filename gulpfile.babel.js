@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 import path from 'path';
 import process from 'process';
-import spawnAsync from '@exponent/spawn-async';
+import spawnAsync from '@expo/spawn-async';
 
 import buildTasks from './gulp/build-tasks';
 import verificationTasks from './gulp/verification-tasks';

@@ -1,5 +1,5 @@
 import path from 'path';
-import JsonFile from '@exponent/json-file';
+import JsonFile from '@expo/json-file';
 
 let tasks = {
   testUpdates() {

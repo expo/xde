@@ -1,7 +1,7 @@
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import path from 'path';
-import spawnAsync from '@exponent/spawn-async';
+import spawnAsync from '@expo/spawn-async';
 
 import {
   Binaries,

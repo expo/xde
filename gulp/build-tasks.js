@@ -8,7 +8,7 @@ import rename from 'gulp-rename';
 import logger from 'gulplog';
 import path from 'path';
 import rimraf from 'rimraf';
-import spawnAsync from '@exponent/spawn-async';
+import spawnAsync from '@expo/spawn-async';
 
 const paths = {
   source: {

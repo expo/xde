@@ -1,6 +1,6 @@
 import assert from 'assert';
 import path from 'path';
-import spawnAsync from '@exponent/spawn-async';
+import spawnAsync from '@expo/spawn-async';
 
 const appPackage = require('../app/package.json');
 
