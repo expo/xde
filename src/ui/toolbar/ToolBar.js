@@ -77,6 +77,7 @@ class ToolBar extends React.Component {
 
   props: Props;
   state: State;
+  _sendLinkInput: HTMLInputElement;
 
   constructor(props, context) {
     super(props, context);
@@ -216,10 +217,10 @@ class ToolBar extends React.Component {
           />
           {process.platform === 'darwin'
             ? <MenuItem
-                label="Open in Editor"
-                isDisabled={!this.props.isProjectOpen}
-                onClick={this._onOpenInEditorClick}
-              />
+              label="Open in Editor"
+              isDisabled={!this.props.isProjectOpen}
+              onClick={this._onOpenInEditorClick}
+            />
             : null}
         </div>
       );
@@ -253,6 +254,14 @@ class ToolBar extends React.Component {
     );
   }
 
+  _maybeSendLink = event => {
+    if (event.type === 'keypress' && event.key !== 'Enter') {
+      return;
+    }
+
+    this._onSendLinkClick(event);
+  };
+
   _onSendLinkClick = event => {
     if (this._sendLinkInput.value) {
       this._getTogglePopoverFn(PopoverEnum.SHARE)(event);
@@ -278,9 +287,11 @@ class ToolBar extends React.Component {
         </div>
         <input
           className={css(styles.sendLinkInput)}
+          autoFocus
           ref={r => {
             this._sendLinkInput = r;
           }}
+          onKeyPress={this._maybeSendLink}
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
