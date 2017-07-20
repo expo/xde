@@ -27,6 +27,22 @@ React Native apps that don't use native modules can work with Expo. To configure
 
   * In the directory that contains your React Native JavaScript source code, make sure there is a `package.json` file. There may already be one, but if not, run `npm init` to create one.
 
+  * Add Expo to your dependency by running `npm install --save expo` or `yarn add expo` if you prefer using yarn.
+
+  * In the directory that contains your React Native JavaScript source code, make sure there is a `app.json` file that contains at least an `expo` object with the `name` (name of your app), `slug` (friendly url name for publishing) and `sdkVersion` (version of expo specified in `package.json`) keys. For example:
+
+  ```js
+  {
+    "expo": {
+      "name": "myApp",
+      "slug": "my-app",
+      "sdkVersion": "18.0.0"
+    }
+  }
+  ```
+
+  Refer to the [dedicated section of the documentation](https://docs.expo.io/versions/latest/guides/configuration.html) for more information.
+
   * If the entry point of your app is not `index.js` then add an entry `"main"` in your `package.json` and give the filename that is the entry point for your app. Entry point basically means the file that contains the root component of your app.
 
   * At the bottom of your entry point file, add a line like this:
