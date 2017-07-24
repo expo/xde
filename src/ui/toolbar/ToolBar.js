@@ -51,6 +51,7 @@ type Props = {
   onDocsClicked: () => void,
   onForumsClicked: () => void,
   onJoinUsOnSlackClicked: () => void,
+  onChatWithUsOnIntercomClicked: () => void,
   onSendDiagnosticsReportClicked: () => void,
   onClearXDECacheClicked: () => void,
 

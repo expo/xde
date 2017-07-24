@@ -1,58 +1,66 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Expo XDE</title>
-    <link rel="stylesheet" href="./bootstrap-3.3.5.min.css" />
-    <link rel="stylesheet" href="./xde.css" />
-    <link rel="stylesheet" href="../node_modules/react-virtualized/styles.css" />
-    <script>
-      (() => {
-        'use strict';
-        const ElectronCookies = require('@exponent/electron-cookies');
-        ElectronCookies.enable({ origin: 'https://xde.exp.host' });
-      })();
-    </script>
 
-    <!-- Segment -->
-    <script type="text/javascript">
-      !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
-      analytics.load("I5eX6asl1D5capd8hsrZ1Mpi3EVuPLBS");
-      analytics.page()
-      }}();
-    </script>
+<head>
+  <meta charset="utf-8" />
+  <title>Expo XDE</title>
+  <link rel="stylesheet" href="./bootstrap-3.3.5.min.css" />
+  <link rel="stylesheet" href="./xde.css" />
+  <link rel="stylesheet" href="../node_modules/react-virtualized/styles.css" />
+  <script>
+    (() => {
+      'use strict';
+      const ElectronCookies = require('@exponent/electron-cookies');
+      ElectronCookies.enable({ origin: 'https://xde.exp.host' });
+    })();
+  </script>
 
-    <!-- Intercom
-    <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/j3i1r6vl';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
-    <script>
-      window.IntercomUpdateStyle = function() {
-        var intercomStyleInterval = setInterval(function() {
-          var frame = document.querySelector('.intercom-launcher-frame');
-          if (frame) {
-            let intercomContainer = frame.contentDocument.querySelector('#intercom-container');
-            if (intercomContainer) {
-              intercomContainer.style.opacity = 0.5;
-              frame.style.transform = 'translate(0, -24px)';
-              intercomContainer.onmouseover = function () {
-                intercomContainer.style.transition = 'opacity 0.2s';
-                intercomContainer.style.opacity = 1.0;
-              };
-              intercomContainer.onmouseout = function () {
-                intercomContainer.style.opacity = 0.5;
-              };
-              clearInterval(intercomStyleInterval);
-            }
-          }
-        }, 100);
+  <!-- Segment -->
+  <script type="text/javascript">
+    !function () {
+      var analytics = window.analytics = window.analytics || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
+        analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "page", "once", "off", "on"]; analytics.factory = function (t) { return function () { var e = Array.prototype.slice.call(arguments); e.unshift(t); analytics.push(e); return analytics } }; for (var t = 0; t < analytics.methods.length; t++) { var e = analytics.methods[t]; analytics[e] = analytics.factory(e) } analytics.load = function (t) { var e = document.createElement("script"); e.type = "text/javascript"; e.async = !0; e.src = ("https:" === document.location.protocol ? "https://" : "http://") + "cdn.segment.com/analytics.js/v1/" + t + "/analytics.min.js"; var n = document.getElementsByTagName("script")[0]; n.parentNode.insertBefore(e, n) }; analytics.SNIPPET_VERSION = "3.1.0";
+        analytics.load("I5eX6asl1D5capd8hsrZ1Mpi3EVuPLBS");
+        analytics.page()
       }
-    </script>
-    -->
-  </head>
-  <body>
-    <div id="app">
-      <a id="app-loading">Loading...</a>
-    </div>
-    <script>
+    }();
+  </script>
+
+  <script>
+    (function () { var w = window; var ic = w.Intercom; if (typeof ic === "function") { ic('reattach_activator'); ic('update', intercomSettings); } else { var d = document; var i = function () { i.c(arguments) }; i.q = []; i.c = function (args) { i.q.push(args) }; w.Intercom = i; function l() { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/j3i1r6vl'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); } if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); } } })()
+
+  </script>
+
+  <!-- Intercom -->
+  <script>
+    window.IntercomUpdateStyle = function () {
+      var intercomStyleInterval = setInterval(function () {
+        var frame = document.querySelector('.intercom-launcher-frame');
+        if (frame) {
+          let intercomContainer = frame.contentDocument.querySelector('#intercom-container');
+          if (intercomContainer) {
+            intercomContainer.style.opacity = 0.5;
+            frame.style.transform = 'translate(0, -24px)';
+            intercomContainer.onmouseover = function () {
+              intercomContainer.style.transition = 'opacity 0.2s';
+              intercomContainer.style.opacity = 1.0;
+            };
+            intercomContainer.onmouseout = function () {
+              intercomContainer.style.opacity = 0.5;
+            };
+            clearInterval(intercomStyleInterval);
+          }
+        }
+      }, 100);
+    }
+  </script>
+</head>
+
+<body>
+  <div id="app">
+    <a id="app-loading">Loading...</a>
+  </div>
+  <script>
       (() => {
         'use strict';
         const { remote } = require('electron');
@@ -60,15 +68,16 @@
           remote.getCurrentWindow().openDevTools();
         }, false);
       })();
-    </script>
-    <script>
-      {
-        window.HMR = process.env.HOT ? true : false;
-        const script = document.createElement('script');
-        const port = process.env.DEVSERVER_PORT || 8282;
-        script.src = (process.env.HOT) ? `http://localhost:${port}/renderer.js` : '../build/renderer.js';
-        document.currentScript.parentNode.insertBefore(script, document.currentScript.nextSibling);
-      }
-    </script>
-  </body>
+  </script>
+  <script>
+    {
+      window.HMR = process.env.HOT ? true : false;
+      const script = document.createElement('script');
+      const port = process.env.DEVSERVER_PORT || 8282;
+      script.src = (process.env.HOT) ? `http://localhost:${port}/renderer.js` : '../build/renderer.js';
+      document.currentScript.parentNode.insertBefore(script, document.currentScript.nextSibling);
+    }
+  </script>
+</body>
+
 </html>

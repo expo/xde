@@ -566,6 +566,9 @@ class MainScreen extends React.Component {
                 onDocsClicked={this._docsClicked}
                 onForumsClicked={this._forumsClicked}
                 onJoinUsOnSlackClicked={this._joinUsOnSlackClicked}
+                onChatWithUsOnIntercomClicked={
+                  this._chatWithUsOnIntercomClicked
+                }
                 onSendDiagnosticsReportClicked={
                   this._sendDiagnosticsReportClicked
                 }
@@ -611,6 +614,10 @@ class MainScreen extends React.Component {
 
   _joinUsOnSlackClicked = () => {
     require('electron').shell.openExternal('https://slack.expo.io/');
+  };
+
+  _chatWithUsOnIntercomClicked = () => {
+    Intercom.showNewMessage();
   };
 
   _sendDiagnosticsReportClicked = async () => {
