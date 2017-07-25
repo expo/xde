@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { XDLState } from 'xdl';
-import bunyan from 'bunyan';
+import bunyan from '@expo/bunyan';
 
 import ConsoleLog from './ConsoleLog';
 import StyleConstants from './StyleConstants';

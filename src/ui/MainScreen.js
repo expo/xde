@@ -31,7 +31,7 @@ import bunyan from '@expo/bunyan';
 import { ipcRenderer, remote } from 'electron';
 import path from 'path';
 import React, { PropTypes } from 'react';
-import JsonFile from '@exponent/json-file';
+import JsonFile from '@expo/json-file';
 
 import { ModalEnum, PopoverEnum } from './Constants';
 
