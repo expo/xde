@@ -1,8 +1,5 @@
-import 'instapromise';
-
 import electron from 'electron';
 import rebuild from 'electron-rebuild';
-import fs from 'fs';
 import gulp from 'gulp';
 import rename from 'gulp-rename';
 import logger from 'gulplog';
@@ -28,7 +25,6 @@ let tasks = {
       logger.info(
         `Rebuilding native Node modules for Electron ${electronVersion}...`
       );
-      await _markDtraceProviderForRebuildAsync();
       await rebuild(
         path.resolve(paths.app),
         electronVersion,
@@ -52,59 +48,5 @@ let tasks = {
     rimraf(paths.build, done);
   },
 };
-
-/**
- * electron-rebuild searches for binding.gyp but dtrace-provider names its file
- * compile.py instead. This is a workaround to rebuild the native modules in
- * dtrace-provider.
- */
-async function _markDtraceProviderForRebuildAsync() {
-  let dtraceProviderPath = path.resolve(
-    paths.app,
-    'node_modules',
-    'dtrace-provider'
-  );
-  let packageExists = await isDirectoryAsync(dtraceProviderPath);
-  if (!packageExists) {
-    logger.warn(
-      `We couldn't find the dtrace-provider package and won't try to rebuild its native modules for Electron`
-    );
-  }
-  await copyFileAsync(
-    path.join(dtraceProviderPath, 'compile.py'),
-    path.join(dtraceProviderPath, 'binding.gyp')
-  );
-}
-
-async function copyFileAsync(source, target) {
-  return new Promise(function(resolve, reject) {
-    let input = fs.createReadStream(source);
-    let output = fs.createWriteStream(target);
-
-    let cleanup = error => {
-      input.destroy();
-      output.end();
-      reject(error);
-    };
-
-    input.on('error', cleanup);
-    output.on('error', cleanup);
-    output.on('finish', resolve);
-
-    input.pipe(output);
-  });
-}
-
-async function isDirectoryAsync(directoryPath) {
-  try {
-    let stats = await fs.promise.stat(directoryPath);
-    return stats.isDirectory();
-  } catch (e) {
-    if (e.code !== 'ENOENT') {
-      throw e;
-    }
-    return false;
-  }
-}
 
 export default tasks;
