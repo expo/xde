@@ -218,10 +218,10 @@ class ToolBar extends React.Component {
           />
           {process.platform === 'darwin'
             ? <MenuItem
-              label="Open in Editor"
-              isDisabled={!this.props.isProjectOpen}
-              onClick={this._onOpenInEditorClick}
-            />
+                label="Open in Editor"
+                isDisabled={!this.props.isProjectOpen}
+                onClick={this._onOpenInEditorClick}
+              />
             : null}
         </div>
       );
@@ -283,9 +283,7 @@ class ToolBar extends React.Component {
         <div className={css(styles.qrCode)}>
           <QRCode value={this.props.url} />
         </div>
-        <div className={css(styles.shareOrDiv)}>
-          - or -
-        </div>
+        <div className={css(styles.shareOrDiv)}>- or -</div>
         <input
           className={css(styles.sendLinkInput)}
           autoFocus
@@ -381,9 +379,11 @@ class ToolBar extends React.Component {
         <div className={css(styles.row)}>
           <div className={css(styles.leftCol)}>
             {iconUrl && <ProjectIcon iconUrl={iconUrl} />}
-            <div className={css(styles.projectName)}>{projectName}</div>
+            <div className={css(styles.projectName)}>
+              {projectName}
+            </div>
           </div>
-          <div className={css(styles.rightCol)}>
+          <div className={css(styles.rightCol, styles.username)}>
             {this._renderUserName()}
           </div>
         </div>
@@ -499,13 +499,12 @@ export default XDLState.connect(mapStateToProps)(
 const styles = StyleSheet.create({
   separator: {
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
-    marginTop: StyleConstants.gutterLg,
-    marginBottom: StyleConstants.gutterLg,
   },
   row: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: StyleConstants.gutterLg,
   },
   leftCol: {
     flex: 1,
@@ -513,6 +512,9 @@ const styles = StyleSheet.create({
   rightCol: {
     flex: 1,
     textAlign: 'right',
+  },
+  username: {
+    height: 25,
   },
   rightSpaced: {
     marginRight: StyleConstants.gutterLg,

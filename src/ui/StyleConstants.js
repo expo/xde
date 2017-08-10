@@ -6,11 +6,13 @@ export default {
   colorBackground: '#FAFAFA', // off-white
   colorLightBackground: '#DCE1E6', // light gray
   colorDarkBackground: '#282c34', // slate gray
+  colorLighterBackground: '#F8F8F9', // lighter gray
   colorError: '#F6345D', // pink
   colorWarning: '#FF8C00', // orange
   colorDebug: '#ADB1B7',
   colorConfirm: '#269F89', // green
   colorBorder: '#DCE1E6', // light gray
+  colorBorderLight: '#EEEFF0', // lighter gray
   colorCancel: '#DCE1E6', // light gray
 
   fontSizeSm: 10,

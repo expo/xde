@@ -148,9 +148,10 @@ class MainScreen extends React.Component {
   }
 
   _renderPackagerConsole() {
-    let bottomBarRightContent = this.state.tabsVisible === TAB_LEFT_VISIBLE
-      ? this._renderTabsVisibleControl()
-      : null;
+    let bottomBarRightContent =
+      this.state.tabsVisible === TAB_LEFT_VISIBLE
+        ? this._renderTabsVisibleControl()
+        : null;
 
     if (this._getProjectState().isPackagerSelected) {
       return (
@@ -274,12 +275,12 @@ class MainScreen extends React.Component {
     let device = focusedConnectedDeviceId
       ? connectedDevices[focusedConnectedDeviceId]
       : null;
-    let bottomBarRightContent = this.state.tabsVisible !== TAB_LEFT_VISIBLE
-      ? this._renderTabsVisibleControl()
-      : null;
-    let logs = device && device.logs.length
-      ? device.logs
-      : this._defaultDeviceLogs();
+    let bottomBarRightContent =
+      this.state.tabsVisible !== TAB_LEFT_VISIBLE
+        ? this._renderTabsVisibleControl()
+        : null;
+    let logs =
+      device && device.logs.length ? device.logs : this._defaultDeviceLogs();
     return (
       <div className={css(styles.tabContainer)}>
         <Tab
@@ -320,12 +321,14 @@ class MainScreen extends React.Component {
   };
 
   _renderTabsVisibleControl = () => {
-    let tabLeftImage = this.state.tabsVisible !== TAB_RIGHT_VISIBLE
-      ? './IconPanelLeftSelected.png'
-      : './IconPanelLeft.png';
-    let tabRightImage = this.state.tabsVisible !== TAB_LEFT_VISIBLE
-      ? './IconPanelRightSelected.png'
-      : './IconPanelRight.png';
+    let tabLeftImage =
+      this.state.tabsVisible !== TAB_RIGHT_VISIBLE
+        ? './IconPanelLeftSelected.png'
+        : './IconPanelLeft.png';
+    let tabRightImage =
+      this.state.tabsVisible !== TAB_LEFT_VISIBLE
+        ? './IconPanelRightSelected.png'
+        : './IconPanelRight.png';
     return (
       <div className={css(styles.tabsVisibleControl)}>
         <a onClick={this._onClickTabLeftVisible}>
@@ -347,16 +350,18 @@ class MainScreen extends React.Component {
   };
 
   _onClickTabLeftVisible = () => {
-    let tabsVisible = this.state.tabsVisible === TAB_RIGHT_VISIBLE
-      ? TAB_BOTH_VISIBLE
-      : TAB_RIGHT_VISIBLE;
+    let tabsVisible =
+      this.state.tabsVisible === TAB_RIGHT_VISIBLE
+        ? TAB_BOTH_VISIBLE
+        : TAB_RIGHT_VISIBLE;
     this.setState({ tabsVisible });
   };
 
   _onClickTabRightVisible = () => {
-    let tabsVisible = this.state.tabsVisible === TAB_LEFT_VISIBLE
-      ? TAB_BOTH_VISIBLE
-      : TAB_LEFT_VISIBLE;
+    let tabsVisible =
+      this.state.tabsVisible === TAB_LEFT_VISIBLE
+        ? TAB_BOTH_VISIBLE
+        : TAB_LEFT_VISIBLE;
     this.setState({ tabsVisible });
   };
 
@@ -371,6 +376,8 @@ class MainScreen extends React.Component {
       <ProjectList
         projects={this.state.recentExps}
         onSelect={this._runProject}
+        onNewProjectClick={this._newClickedAsync}
+        onOpenProjectClick={this._openClickedAsync}
       />
     );
   }
@@ -439,9 +446,10 @@ class MainScreen extends React.Component {
 
     const hostMenuItems = ['Tunnel', 'LAN', 'localhost'].map(label => {
       const option = label.toLowerCase();
-      const checkState = this.state.projectSettings.hostType === option
-        ? 'checked'
-        : 'unchecked';
+      const checkState =
+        this.state.projectSettings.hostType === option
+          ? 'checked'
+          : 'unchecked';
 
       /* eslint-disable react/jsx-no-bind */
       return (
@@ -456,9 +464,8 @@ class MainScreen extends React.Component {
     });
 
     const protocolMenuItems = ['exp', 'http', 'redirect'].map(option => {
-      const checkState = this.state.projectSettings.urlType === option
-        ? 'checked'
-        : 'unchecked';
+      const checkState =
+        this.state.projectSettings.urlType === option ? 'checked' : 'unchecked';
 
       /* eslint-disable react/jsx-no-bind */
       return (
@@ -1003,6 +1010,7 @@ class MainScreen extends React.Component {
 
           let computedUrl = await this._computeUrlAsync(projectRoot);
           let expoSdkStatus = await Doctor.getExpoSdkStatus(projectRoot);
+          this._getRecentProjects();
           this.setState({
             computedUrl,
             isProjectRunning: true,
@@ -1064,14 +1072,7 @@ class MainScreen extends React.Component {
       }
     );
 
-    Exp.recentValidExpsAsync().then(
-      recentExps => {
-        this.setState({ recentExps });
-      },
-      err => {
-        console.error("Couldn't get list of recent Exps :(", err);
-      }
-    );
+    this._getRecentProjects();
 
     this._registerLogs();
 
@@ -1091,6 +1092,17 @@ class MainScreen extends React.Component {
 
     this._parseCommandLineArgsAsync();
   }
+
+  _getRecentProjects = () => {
+    Exp.recentValidExpsAsync().then(
+      recentExps => {
+        this.setState({ recentExps });
+      },
+      err => {
+        console.error("Couldn't get list of recent Exps :(", err);
+      }
+    );
+  };
 
   _parseCommandLineArgsAsync = async () => {
     if (process.platform === 'darwin' && this.props.commandLineArgs) {
@@ -1232,14 +1244,13 @@ let styles = StyleSheet.create({
     backgroundImage: Env.isStaging() ? 'url("./staging.jpg")' : null,
   },
 
-  topSection: {
-    margin: StyleConstants.gutterLg,
-  },
+  topSection: {},
 
   urlInputContainer: {
     display: 'flex',
     alignItems: 'center',
-    marginTop: StyleConstants.gutterLg,
+    padding: StyleConstants.gutterLg,
+    paddingTop: 0,
     position: 'relative', // For positioning copy icon
   },
 
@@ -1255,10 +1266,10 @@ let styles = StyleSheet.create({
     padding: StyleConstants.gutterMd, // Pad clickable area
 
     position: 'absolute',
-    right: 0,
+    right: StyleConstants.gutterLg,
     top: '50%',
     height: StyleConstants.gutterMd * 2 + 10,
-    marginTop: -(StyleConstants.gutterMd * 2 + 10) / 2,
+    marginTop: -(StyleConstants.gutterLg * 2 + 10) / 2,
   },
 
   optionsIcon: {
