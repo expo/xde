@@ -762,8 +762,6 @@ class MainScreen extends React.Component {
   _newClickedAsync = async () => {
     Analytics.logEvent('Click New');
 
-    await this._stopProjectAsync(this.state.projectRoot);
-
     this.setState({
       openModal: ModalEnum.NEW_PROJECT,
     });
@@ -771,8 +769,6 @@ class MainScreen extends React.Component {
 
   _openClickedAsync = async () => {
     Analytics.logEvent('Click Open');
-
-    await this._stopProjectAsync(this.state.projectRoot);
 
     let root = await Commands.openExpAsync();
     if (root) {
@@ -961,6 +957,7 @@ class MainScreen extends React.Component {
   _getCurrentOpenProjectXDEId = () => this._currentOpenProjectXDEId;
 
   _startProjectAsync = async projectRoot => {
+    await this._stopProjectAsync(this.state.projectRoot);
     if (this.state.projectRoot) {
       return false;
     }
