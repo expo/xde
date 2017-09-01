@@ -163,6 +163,7 @@ class MainScreen extends React.Component {
             <ConsoleLog
               logs={this.state.logs}
               isLoading={this.state.isLoading}
+              projectRoot={this.state.projectRoot}
             />
           </Tab>
         </div>
@@ -287,7 +288,7 @@ class MainScreen extends React.Component {
           bottomBarLeftContent={this._renderDeviceSwitcher(device)}
           bottomBarRightContent={bottomBarRightContent}
           onClickClearLogs={this._onClickClearDeviceLogs}>
-          <ConsoleLog logs={logs} />
+          <ConsoleLog projectRoot={this.state.projectRoot} logs={logs} />
         </Tab>
       </div>
     );
