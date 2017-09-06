@@ -1,4 +1,5 @@
 {
+  "name": "xde-electron",
   "private": true,
   "scripts": {
     "start": "cross-env XDE_NPM_START=1 npm run _start",
