@@ -17,6 +17,12 @@
   },
   "main": "./build/main.js",
   "homepage": "https://github.com/exponent/xde#readme",
+  "powertools": {
+    "group": [
+      "dev-tools",
+      "xde"
+    ]
+  },
   "dependencies": {
     "@expo/bunyan": "^1.8.10",
     "@expo/json-file": "^5.0.1",
