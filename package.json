@@ -17,7 +17,6 @@
     "webpack-dev": "webpack -w --env.dev",
     "webpack-hot": "webpack --env.dev && cross-env BABEL_ENV=hot webpack-dev-server -w --env.hmr --env.dev",
     "build": "cross-env NODE_ENV=production webpack --env.prod",
-    "postinstall": "node scripts/postinstall.js",
     "lint": "eslint src",
     "dist": "gulp clean && npm run build && gulp release",
     "mac": "gulp clean && npm run build && gulp release:mac",
