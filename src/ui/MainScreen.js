@@ -1162,12 +1162,24 @@ class MainScreen extends React.Component {
     }
   }
 
-  async _computeUrlAsync(root) {
-    if (!root) {
+  async _computeUrlAsync(projectRoot) {
+    if (!projectRoot) {
       return null;
     }
 
-    return UrlUtils.constructManifestUrlAsync(root);
+    const {
+      url,
+      isUrlFallback,
+    } = await Project.getManifestUrlWithFallbackAsync(projectRoot);
+
+    if (isUrlFallback) {
+      this._logError(
+        'Switched to a LAN URL because the tunnel appears to be down. ' +
+          'Only devices in the same network can access the app. ' +
+          'You can restart the project to try reconnecting.'
+      );
+    }
+    return url;
   }
 
   _registerLogs() {
