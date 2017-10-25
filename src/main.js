@@ -44,7 +44,9 @@ ipcMain.on('quit-and-update', () => {
 });
 
 app.on('window-all-closed', () => {
-  app.quit();
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 // Clean up all open projects before exiting
@@ -59,25 +61,12 @@ app.on('will-quit', async event => {
       console.error(e);
     }
     projectRoots = [];
-
-    app.quit();
   }
 });
 
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'development') {
-    const devToolsInstaller = require('electron-devtools-installer');
-    const {
-      default: installExtension,
-      REACT_DEVELOPER_TOOLS,
-    } = devToolsInstaller;
-
-    installExtension(REACT_DEVELOPER_TOOLS)
-      .then(name => console.log(`Added Extension:  ${name}`))
-      .catch(err => console.log('An error occurred: ', err));
-  }
+const createMainWindow = () => {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  const win = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 700,
@@ -91,25 +80,25 @@ app.on('ready', () => {
       backgroundThrottling: false,
     },
   });
-  mainWindow.commandLineArgs = process.argv;
-  mainWindow.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
+  win.commandLineArgs = process.argv;
+  win.loadURL(`file://${path.resolve(__dirname, '../web/index.html')}`);
 
   // Open the devtools.
   if (config.__DEV__) {
-    mainWindow.openDevTools();
+    win.openDevTools();
   }
 
   // Setup the menu bar
-  Menu.setupMenu(mainWindow, false);
+  Menu.setupMenu(win, false);
 
-  mainWindow.on('closed', () => {
+  win.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
   });
 
-  let webContents = mainWindow.webContents;
+  let webContents = win.webContents;
   var handleRedirect = (e, url) => {
     if (url !== webContents.getURL()) {
       e.preventDefault();
@@ -129,7 +118,31 @@ app.on('ready', () => {
   ];
   for (let updateEventName of AUTO_UPDATER_EVENTS) {
     autoUpdater.on(updateEventName, (...args) => {
-      mainWindow.webContents.send('auto-updater', updateEventName, ...args);
+      win.webContents.send('auto-updater', updateEventName, ...args);
     });
+  }
+
+  return win;
+};
+
+app.on('ready', () => {
+  if (process.env.NODE_ENV === 'development') {
+    const devToolsInstaller = require('electron-devtools-installer');
+    const {
+      default: installExtension,
+      REACT_DEVELOPER_TOOLS,
+    } = devToolsInstaller;
+
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then(name => console.log(`Added Extension:  ${name}`))
+      .catch(err => console.log('An error occurred: ', err));
+  }
+
+  mainWindow = createMainWindow();
+});
+
+app.on('activate', () => {
+  if (!mainWindow) {
+    mainWindow = createMainWindow();
   }
 });
