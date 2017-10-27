@@ -29,9 +29,7 @@ async function verifyCodeSignatureAsync(appPath) {
     // codesign returns a non-zero exit code if verification fails
     await spawnAsync('codesign', ['--verify', '--deep', '--strict', appPath]);
   } catch (e) {
-    let error = new Error(
-      `Could not verify code signature of the Mac app:\n` + e.stderr
-    );
+    let error = new Error(`Could not verify code signature of the Mac app:\n` + e.stderr);
     error.cause = e;
     throw error;
   }
@@ -40,11 +38,7 @@ async function verifyCodeSignatureAsync(appPath) {
 async function verifyCodeSigningAuthorityAsync(appPath) {
   let authorities = [];
   try {
-    let result = await spawnAsync('codesign', [
-      '--display',
-      '--verbose=2',
-      appPath,
-    ]);
+    let result = await spawnAsync('codesign', ['--display', '--verbose=2', appPath]);
     let match;
     let regex = /^Authority=(.*)$/gm;
     // codesign writes to stderr
@@ -52,9 +46,7 @@ async function verifyCodeSigningAuthorityAsync(appPath) {
       authorities.push(match[1]);
     }
   } catch (e) {
-    let error = new Error(
-      `Could not read the code signature of the Mac app:\n` + e.stderr
-    );
+    let error = new Error(`Could not read the code signature of the Mac app:\n` + e.stderr);
     error.cause = e;
     throw error;
   }
@@ -78,9 +70,7 @@ async function assessWithSystemPolicyAsync(appPath) {
 
   let appFilename = path.basename(appPath);
   if (result.stderr.indexOf(`${appFilename}: accepted`) === -1) {
-    throw new Error(
-      `Mac app does not meet Gatekeeper requirements:\n${result.stderr}`
-    );
+    throw new Error(`Mac app does not meet Gatekeeper requirements:\n${result.stderr}`);
   }
 }
 

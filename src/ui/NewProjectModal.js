@@ -1,11 +1,4 @@
-import {
-  Api,
-  Exp,
-  Logger,
-  NotificationCode,
-  UserSettings,
-  MessageCode,
-} from 'xdl';
+import { Api, Exp, Logger, NotificationCode, UserSettings, MessageCode } from 'xdl';
 
 import _ from 'lodash';
 import os from 'os';
@@ -137,21 +130,14 @@ class NewProjectModal extends React.Component {
     }
 
     return (
-      <form
-        name="newProject"
-        style={Styles.form}
-        onSubmit={this._onSubmitNewProject}>
-        <div style={Styles.largeText}>
-          Choose a template for your project
-        </div>
+      <form name="newProject" style={Styles.form} onSubmit={this._onSubmitNewProject}>
+        <div style={Styles.largeText}>Choose a template for your project</div>
         <div style={Styles.templatesContainer}>
           <div style={{ minWidth: 'min-content', display: 'flex' }}>
             {_.map(templates, this._renderTemplate)}
           </div>
         </div>
-        <div style={Styles.mediumText}>
-          {selectedTemplate.description}
-        </div>
+        <div style={Styles.mediumText}>{selectedTemplate.description}</div>
 
         <div
           style={{
@@ -188,14 +174,15 @@ class NewProjectModal extends React.Component {
         </div>
         {this._renderErrors()}
         <div style={Styles.buttonsContainer}>
-          <button
-            onClick={this._onClickCancel}
-            type="button"
-            style={Styles.cancelButton}>
-            <div key="button-text" style={{ flex: 1 }}>Cancel</div>
+          <button onClick={this._onClickCancel} type="button" style={Styles.cancelButton}>
+            <div key="button-text" style={{ flex: 1 }}>
+              Cancel
+            </div>
           </button>
           <button type="submit" style={Styles.submitButton}>
-            <div key="button-text" style={{ flex: 1 }}>Create</div>
+            <div key="button-text" style={{ flex: 1 }}>
+              Create
+            </div>
           </button>
         </div>
       </form>
@@ -204,9 +191,7 @@ class NewProjectModal extends React.Component {
 
   _renderErrors = () => {
     if (this.state.errorMessage) {
-      return (
-        <div style={SharedStyles.errorMessage}>{this.state.errorMessage}</div>
-      );
+      return <div style={SharedStyles.errorMessage}>{this.state.errorMessage}</div>;
     } else {
       return null;
     }
@@ -216,48 +201,46 @@ class NewProjectModal extends React.Component {
     let downloading = this.state.notificationType === NotificationCode.DOWNLOAD;
     return (
       <div style={Styles.loadingContainer}>
-        {downloading
-          ? <div style={Styles.progressBar}>
-              <div
-              style={{ ...Styles.progress, width: this.state.progress * 2 }}
-            />
-            </div>
-          : <LoadingIndicator
-              color={{
-                red: 17,
-                green: 114,
-                blue: 182,
-                alpha: 1.0,
-              }}
-              segmentWidth={6}
-              segmentLength={15}
-              spacing={9}
-          />}
-        {this.state.loadingMessage &&
-          <div style={Styles.loadingText}>
-            {this.state.loadingMessage}
-          </div>}
-        {this.state.showRetryPrompt
-          ? <div style={Styles.loadingContainer}>
-              <div style={{ ...Styles.loadingText, paddingTop: 0 }}>
+        {downloading ? (
+          <div style={Styles.progressBar}>
+            <div style={{ ...Styles.progress, width: this.state.progress * 2 }} />
+          </div>
+        ) : (
+          <LoadingIndicator
+            color={{
+              red: 17,
+              green: 114,
+              blue: 182,
+              alpha: 1.0,
+            }}
+            segmentWidth={6}
+            segmentLength={15}
+            spacing={9}
+          />
+        )}
+        {this.state.loadingMessage && (
+          <div style={Styles.loadingText}>{this.state.loadingMessage}</div>
+        )}
+        {this.state.showRetryPrompt ? (
+          <div style={Styles.loadingContainer}>
+            <div style={{ ...Styles.loadingText, paddingTop: 0 }}>
               {MessageCode.DOWNLOAD_IS_SLOW}
             </div>
-              <button
-              onClick={this._onClickRetry}
-              type="button"
-              style={Styles.retryButton}>
-              <div key="button-text" style={{ flex: 1 }}>Retry</div>
+            <button onClick={this._onClickRetry} type="button" style={Styles.retryButton}>
+              <div key="button-text" style={{ flex: 1 }}>
+                Retry
+              </div>
             </button>
-            </div>
-          : <div />}
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   };
 
   _onProjectNameChange = event => {
-    let newValue = IdentifierRules.normalizeProjectNameWhileTyping(
-      event.target.value
-    );
+    let newValue = IdentifierRules.normalizeProjectNameWhileTyping(event.target.value);
     let errorMessage = null;
     if (newValue.length === 0) {
       errorMessage = 'Project name cannot be blank';
@@ -275,15 +258,15 @@ class NewProjectModal extends React.Component {
     if (dir.length < MAX_PROJECT_LENGTH) {
       return dir;
     } else {
-      return `${dir.substr(0, HALF_MAX_PROJECT_LENGTH)}...${dir.substr(dir.length - HALF_MAX_PROJECT_LENGTH)}`;
+      return `${dir.substr(0, HALF_MAX_PROJECT_LENGTH)}...${dir.substr(
+        dir.length - HALF_MAX_PROJECT_LENGTH
+      )}`;
     }
   };
 
   _onClickChangeProjectDirectoryAsync = async () => {
     try {
-      let directory = await Commands.getDirectoryAsync(
-        this.state.projectDirectory
-      );
+      let directory = await Commands.getDirectoryAsync(this.state.projectDirectory);
       if (!directory) {
         return;
       }

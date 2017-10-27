@@ -41,11 +41,7 @@ export function reduceAsync<S: Object, A: AppAction>(
     failed?: AppReducer<S, A>,
   |}
 ): AppReducer<S, A> {
-  const {
-    pending: pendingHandler,
-    complete: completeHandler,
-    failed: failedHandler,
-  } = handlers;
+  const { pending: pendingHandler, complete: completeHandler, failed: failedHandler } = handlers;
 
   const PENDING_ACTION: AppActionType = (`${actionType}/PENDING`: any);
   const COMPLETE_ACTION: AppActionType = (`${actionType}/COMPLETE`: any);
@@ -81,9 +77,9 @@ type SyncActionCreator = (payload?: Object) => AppAction;
 /**
  * Generate a single action creator from an action type string.
  */
-export const generateAction = (
-  actionType: AppActionType
-): SyncActionCreator => (payload?: Object = {}): AppAction => ({
+export const generateAction = (actionType: AppActionType): SyncActionCreator => (
+  payload?: Object = {}
+): AppAction => ({
   type: actionType,
   payload,
 });
@@ -92,9 +88,7 @@ export const generateAction = (
  * Given a list of action types, generate an array of action creators for each
  * provided action type, respectively.
  */
-export const generateActions = (
-  ...actionTypes: AppActionType[]
-): SyncActionCreator[] =>
+export const generateActions = (...actionTypes: AppActionType[]): SyncActionCreator[] =>
   actionTypes.map((actionType: AppActionType) => generateAction(actionType));
 
 export function asyncAction(
@@ -102,10 +96,7 @@ export function asyncAction(
   handler: (dispatch: AppDispatch, getState: () => AppState) => Promise<*>,
   payloadTransformer?: (actionType: AppActionType, payload: any) => any
 ): AppActionOrThunkAction {
-  return async (
-    dispatch: AppDispatch,
-    getState: () => AppState
-  ): Promise<*> => {
+  return async (dispatch: AppDispatch, getState: () => AppState): Promise<*> => {
     const PENDING_ACTION: AppActionType = (`${actionPrefix}/PENDING`: any);
     const COMPLETE_ACTION: AppActionType = (`${actionPrefix}/COMPLETE`: any);
     const FAILED_ACTION: AppActionType = (`${actionPrefix}/FAILED`: any);
@@ -140,9 +131,7 @@ import { connect as reduxConnect } from 'react-redux';
  * Special version of `connect` from react-redux, so as to pull
  * `mapStateFromProps` from statics of the component (we call it data).
  */
-export const connectToData = (actions?: Object | Function) => (
-  Component: ComponentWithData
-) => {
+export const connectToData = (actions?: Object | Function) => (Component: ComponentWithData) => {
   return reduxConnect(
     Component.data, // map state to props
     (dispatch, ownProps) => {

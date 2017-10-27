@@ -128,10 +128,7 @@ module.exports = env => {
         setImmediate: false,
       },
       externals(context, request, callback) {
-        callback(
-          null,
-          request.startsWith('.') ? false : `require('${request}')`
-        );
+        callback(null, request.startsWith('.') ? false : `require('${request}')`);
       },
       devtool: env.dev ? 'eval-source-map' : 'source-map',
       resolve: {

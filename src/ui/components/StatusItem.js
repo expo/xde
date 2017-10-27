@@ -20,16 +20,9 @@ class StatusItem extends Component {
 
   render() {
     return (
-      <span
-        className={css(Styles.container)}
-        style={this.props.style}
-        onClick={this.props.onClick}>
-        <figure className={css(Styles.icon)}>
-          {this.props.icon}
-        </figure>
-        <span className={css(Styles.right)}>
-          {this.props.right}
-        </span>
+      <span className={css(Styles.container)} style={this.props.style} onClick={this.props.onClick}>
+        <figure className={css(Styles.icon)}>{this.props.icon}</figure>
+        <span className={css(Styles.right)}>{this.props.right}</span>
       </span>
     );
   }

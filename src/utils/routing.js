@@ -29,23 +29,29 @@ export const MatchWhenAuthorized = connect(({ auth }: AppState) => ({
   isAuthenticated: auth.authenticated,
   isOnboarded: auth.isOnboarded,
   needsPasswordMigration: auth.needsPasswordMigration,
-}))(({
-  component: Component,
-  render,
-  getRedirect,
-  isAuthenticated,
-  isOnboarded,
-  needsPasswordMigration,
-  ...rest
-}: MatchWhenAuthorizedProps) => (
-  <Match
-    {...rest}
-    render={props => //eslint-disable-line
-      (isAuthenticated && isOnboarded
-        ? render && typeof render === 'function'
-            ? render(props)
-            : <Component {...props} />
-        : <Redirect
+}))(
+  ({
+    component: Component,
+    render,
+    getRedirect,
+    isAuthenticated,
+    isOnboarded,
+    needsPasswordMigration,
+    ...rest
+  }: MatchWhenAuthorizedProps) => (
+    <Match
+      {...rest}
+      render={(
+        props //eslint-disable-line
+      ) =>
+        isAuthenticated && isOnboarded ? (
+          render && typeof render === 'function' ? (
+            render(props)
+          ) : (
+            <Component {...props} />
+          )
+        ) : (
+          <Redirect
             to={{
               pathname: getRedirect({
                 isAuthenticated,
@@ -54,9 +60,11 @@ export const MatchWhenAuthorized = connect(({ auth }: AppState) => ({
               }),
               state: { from: props.location },
             }}
-          />)}
-  />
-));
+          />
+        )}
+    />
+  )
+);
 
 /**
  * HoC that provides "router", from context, to `WrappedComponent`

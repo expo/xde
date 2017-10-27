@@ -37,11 +37,7 @@ export default class ForgotUsernameScreen extends React.Component {
               disabled={this.props.isLoggingIn}
               isLoading={this.props.isLoggingIn}
               renderRightIcon={() => (
-                <img
-                  key="right"
-                  src="./arrow.svg"
-                  style={{ width: 15, height: 15 }}
-                />
+                <img key="right" src="./arrow.svg" style={{ width: 15, height: 15 }} />
               )}>
               Send instructions
             </Button>
@@ -49,11 +45,8 @@ export default class ForgotUsernameScreen extends React.Component {
               <Link to="/auth/forgot-password">Forgot your password?</Link>
             </p>
             <p className={css(styles.smallText, styles.black)}>
-              Already have a username/password?
-              {' '}
-              <Link
-                to="/auth/login"
-                style={{ color: StyleConstants.colorText }}>
+              Already have a username/password?{' '}
+              <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>
                 Login
               </Link>
             </p>

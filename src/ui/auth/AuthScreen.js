@@ -69,32 +69,19 @@ class AuthScreen extends React.Component {
           <div style={{ opacity: value.x }}>
             <div className={css(Styles.container)}>
               <div className={css(Styles.innerContainer)}>
-                <img
-                  src="./ExponentLogoTrans.png"
-                  className={css(Styles.logo)}
-                />
+                <img src="./ExponentLogoTrans.png" className={css(Styles.logo)} />
                 {this._renderErrors()}
                 <div>
-                  <Match
-                    pattern={`${pathname}/register`}
-                    component={RegisterScreen}
-                  />
-                  <Match
-                    pattern={`${pathname}/login`}
-                    component={LoginScreen}
-                  />
-                  <Match
-                    pattern={`${pathname}/forgot-password`}
-                    component={ForgotPasswordScreen}
-                  />
-                  <Match
-                    pattern={`${pathname}/forgot-username`}
-                    component={ForgotUsernameScreen}
-                  />
+                  <Match pattern={`${pathname}/register`} component={RegisterScreen} />
+                  <Match pattern={`${pathname}/login`} component={LoginScreen} />
+                  <Match pattern={`${pathname}/forgot-password`} component={ForgotPasswordScreen} />
+                  <Match pattern={`${pathname}/forgot-username`} component={ForgotUsernameScreen} />
                   <Match
                     exactly
                     pattern={pathname}
-                    render={props => ( //eslint-disable-line
+                    render={(
+                      props //eslint-disable-line
+                    ) => (
                       <Redirect
                         to={{
                           pathname: `${pathname}/login`,
@@ -114,11 +101,7 @@ class AuthScreen extends React.Component {
 
   _renderErrors() {
     if (this.props.authErrorMessage) {
-      return (
-        <div className={css(Styles.errorMessage)}>
-          {this.props.authErrorMessage}
-        </div>
-      );
+      return <div className={css(Styles.errorMessage)}>{this.props.authErrorMessage}</div>;
     } else {
       return null;
     }

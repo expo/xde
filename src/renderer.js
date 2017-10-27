@@ -11,10 +11,7 @@ import RootApp from './ui/RootApp';
 const rootNode = document.getElementById('app');
 const commandLineArgs = remote.getCurrentWindow().commandLineArgs;
 
-ReactDOM.render(
-  <RootApp segment={window.analytics} commandLineArgs={commandLineArgs} />,
-  rootNode
-);
+ReactDOM.render(<RootApp segment={window.analytics} commandLineArgs={commandLineArgs} />, rootNode);
 
 window.addEventListener('beforeunload', () => {
   ReactDOM.unmountComponentAtNode(rootNode);

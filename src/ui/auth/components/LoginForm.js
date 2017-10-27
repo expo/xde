@@ -20,10 +20,7 @@ export type LoginFormData = {
 type Props = {
   isLoggingIn: boolean,
   currentLoginMethod: ?string,
-  onLogin: (
-    loginType: 'user-pass' | 'github',
-    formData?: LoginFormData
-  ) => void | Promise<void>,
+  onLogin: (loginType: 'user-pass' | 'github', formData?: LoginFormData) => void | Promise<void>,
 };
 
 export default class LoginForm extends React.Component {
@@ -31,10 +28,7 @@ export default class LoginForm extends React.Component {
 
   render() {
     return (
-      <form
-        name="login"
-        className={css(styles.form)}
-        onSubmit={this._onSubmitLogin}>
+      <form name="login" className={css(styles.form)} onSubmit={this._onSubmitLogin}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           {this._renderUsernamePasswordForm()}
         </div>
@@ -57,26 +51,14 @@ export default class LoginForm extends React.Component {
             type="text"
             placeholder="Username or e-mail address"
           />
-          <TextInput
-            ref="password"
-            styles={styles.input}
-            type="password"
-            placeholder="Password"
-          />
+          <TextInput ref="password" styles={styles.input} type="password" placeholder="Password" />
           <Button
             styles={styles.button}
             type="submit"
             disabled={this.props.isLoggingIn}
-            isLoading={
-              this.props.isLoggingIn &&
-                this.props.currentLoginMethod === 'user-pass'
-            }
+            isLoading={this.props.isLoggingIn && this.props.currentLoginMethod === 'user-pass'}
             renderRightIcon={() => (
-              <img
-                key="right"
-                src="./arrow.svg"
-                style={{ width: 15, height: 15 }}
-              />
+              <img key="right" src="./arrow.svg" style={{ width: 15, height: 15 }} />
             )}>
             Sign In
           </Button>
@@ -85,16 +67,9 @@ export default class LoginForm extends React.Component {
             type="button"
             onClick={this._onGithubClick}
             disabled={this.props.isLoggingIn}
-            isLoading={
-              this.props.isLoggingIn &&
-                this.props.currentLoginMethod === 'github'
-            }
+            isLoading={this.props.isLoggingIn && this.props.currentLoginMethod === 'github'}
             renderRightIcon={() => (
-              <img
-                key="right"
-                src="./arrow.svg"
-                className={css(styles.svgArrow)}
-              />
+              <img key="right" src="./arrow.svg" className={css(styles.svgArrow)} />
             )}>
             Sign In With Github
           </Button>
@@ -109,9 +84,7 @@ export default class LoginForm extends React.Component {
             marginBottom: 16,
           }}>
           <p style={{ fontSize: 12, display: 'flex', flex: 1, flexGrow: 2 }}>
-            <Link
-              to="/auth/forgot-password"
-              style={{ color: StyleConstants.colorText }}>
+            <Link to="/auth/forgot-password" style={{ color: StyleConstants.colorText }}>
               Forgot your password?
             </Link>
           </p>
@@ -122,9 +95,7 @@ export default class LoginForm extends React.Component {
               flex: 1,
               justifyContent: 'flex-end',
             }}>
-            <Link
-              to="/auth/register"
-              style={{ color: StyleConstants.colorText }}>
+            <Link to="/auth/register" style={{ color: StyleConstants.colorText }}>
               Register
             </Link>
           </p>

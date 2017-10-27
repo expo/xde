@@ -19,12 +19,7 @@ export default class Button extends React.Component {
   props: Props;
 
   render() {
-    const {
-      styles: extraStyles,
-      isLoading,
-      renderRightIcon,
-      ...buttonProps
-    } = this.props;
+    const { styles: extraStyles, isLoading, renderRightIcon, ...buttonProps } = this.props;
 
     let content = [
       <img
@@ -43,11 +38,7 @@ export default class Button extends React.Component {
     ];
 
     if (this.props.isLoading) {
-      content = (
-        <LoadingIndicator
-          color={{ red: 255, green: 255, blue: 255, alpha: 1 }}
-        />
-      );
+      content = <LoadingIndicator color={{ red: 255, green: 255, blue: 255, alpha: 1 }} />;
     }
 
     return (

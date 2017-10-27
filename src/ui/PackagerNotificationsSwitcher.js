@@ -15,9 +15,7 @@ const mapStateToProps = (state, props) => {
     isPackagerSelected: props.projectRoot
       ? state.projects[props.projectRoot].isPackagerSelected
       : true,
-    notifications: props.projectRoot
-      ? state.notifications[props.projectRoot]
-      : null,
+    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
   };
 };
 
@@ -33,11 +31,7 @@ class PackagerNotificationsSwitcher extends React.Component {
   render() {
     let { isPackagerSelected } = this.props;
     const icon = (
-      <Popover
-        body={this._renderSwitcher()}
-        arrowOffset={15}
-        popoverOffset={-13}
-        isAbove>
+      <Popover body={this._renderSwitcher()} arrowOffset={15} popoverOffset={-13} isAbove>
         <img
           src="./SelectUpDown.png"
           className={css(SharedStyles.statusBarIcon)}
@@ -80,9 +74,7 @@ class PackagerNotificationsSwitcher extends React.Component {
         key="packager"
         checkState={isPackagerSelected ? 'checked' : 'unchecked'}
         onClick={() =>
-          XDLState.store.dispatch(
-            XDLState.actions.projects.selectPackagerPane(projectRoot)
-          )}
+          XDLState.store.dispatch(XDLState.actions.projects.selectPackagerPane(projectRoot))}
       />
     );
     menuItems.push(
@@ -91,18 +83,12 @@ class PackagerNotificationsSwitcher extends React.Component {
         key="notifications"
         checkState={isPackagerSelected ? 'unchecked' : 'checked'}
         onClick={() =>
-          XDLState.store.dispatch(
-            XDLState.actions.projects.selectNotificationsPane(projectRoot)
-          )}
+          XDLState.store.dispatch(XDLState.actions.projects.selectNotificationsPane(projectRoot))}
       />
     );
     /* eslint-enable react/jsx-no-bind */
 
-    return (
-      <div>
-        {menuItems}
-      </div>
-    );
+    return <div>{menuItems}</div>;
   }
 
   _toggleSwitcher = event => {
@@ -126,9 +112,7 @@ class PackagerNotificationsSwitcher extends React.Component {
     }
 
     const icon = (
-      <span
-        className={css(styles.badge)}
-        style={{ backgroundColor: notifications.color }}>
+      <span className={css(styles.badge)} style={{ backgroundColor: notifications.color }}>
         {notifications.count}
       </span>
     );
@@ -139,13 +123,7 @@ class PackagerNotificationsSwitcher extends React.Component {
       </span>
     );
 
-    return (
-      <StatusItem
-        onClick={this._onClickYourProjectHasIssues}
-        icon={icon}
-        right={right}
-      />
-    );
+    return <StatusItem onClick={this._onClickYourProjectHasIssues} icon={icon} right={right} />;
   };
 
   _onClickYourProjectHasIssues = () => {

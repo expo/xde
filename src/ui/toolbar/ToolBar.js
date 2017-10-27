@@ -65,9 +65,7 @@ type State = {
 
 const mapStateToProps = (state, props) => {
   return {
-    notifications: props.projectRoot
-      ? state.notifications[props.projectRoot]
-      : null,
+    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
   };
 };
 
@@ -158,16 +156,8 @@ class ToolBar extends React.Component {
     }
     return (
       <div>
-        <MenuItem
-          label="New Project"
-          shortcut="N"
-          onClick={this.props.onNewProjectClick}
-        />
-        <MenuItem
-          label="Open Project"
-          shortcut="O"
-          onClick={this.props.onOpenProjectClick}
-        />
+        <MenuItem label="New Project" shortcut="N" onClick={this.props.onNewProjectClick} />
+        <MenuItem label="Open Project" shortcut="O" onClick={this.props.onOpenProjectClick} />
         <MenuItem
           label="Close Project"
           isDisabled={!this.props.isProjectOpen}
@@ -216,13 +206,13 @@ class ToolBar extends React.Component {
             isDisabled={!this.props.isProjectOpen}
             onClick={this._onOpenInTerminalClick}
           />
-          {process.platform === 'darwin'
-            ? <MenuItem
-                label="Open in Editor"
-                isDisabled={!this.props.isProjectOpen}
-                onClick={this._onOpenInEditorClick}
-              />
-            : null}
+          {process.platform === 'darwin' ? (
+            <MenuItem
+              label="Open in Editor"
+              isDisabled={!this.props.isProjectOpen}
+              onClick={this._onOpenInEditorClick}
+            />
+          ) : null}
         </div>
       );
     } else {
@@ -238,14 +228,8 @@ class ToolBar extends React.Component {
       <div>
         <MenuItem label="Expo Docs" onClick={this.props.onDocsClicked} />
         <MenuItem label="Expo Forums" onClick={this.props.onForumsClicked} />
-        <MenuItem
-          label="Clear XDE Cache"
-          onClick={this.props.onClearXDECacheClicked}
-        />
-        <MenuItem
-          label="Join Us On Slack"
-          onClick={this.props.onJoinUsOnSlackClicked}
-        />
+        <MenuItem label="Clear XDE Cache" onClick={this.props.onClearXDECacheClicked} />
+        <MenuItem label="Join Us On Slack" onClick={this.props.onJoinUsOnSlackClicked} />
         <MenuItem
           label="Send Diagnostics Report"
           isDisabled={!this.props.isProjectOpen}
@@ -294,9 +278,7 @@ class ToolBar extends React.Component {
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
-        <a
-          onClick={this._onSendLinkClick}
-          className={css(styles.sendLinkSubmit)}>
+        <a onClick={this._onSendLinkClick} className={css(styles.sendLinkSubmit)}>
           Send Link
         </a>
       </div>
@@ -309,18 +291,12 @@ class ToolBar extends React.Component {
     }
     return (
       <div>
-        {Simulator.isPlatformSupported() &&
-          <MenuItem
-            label="Open on iOS Simulator"
-            shortcut="I"
-            onClick={this._simulatorIOSAsync}
-          />}
-        {Android.isPlatformSupported() &&
-          <MenuItem
-            label="Open on Android"
-            shortcut="D"
-            onClick={this._simulatorAndroidAsync}
-          />}
+        {Simulator.isPlatformSupported() && (
+          <MenuItem label="Open on iOS Simulator" shortcut="I" onClick={this._simulatorIOSAsync} />
+        )}
+        {Android.isPlatformSupported() && (
+          <MenuItem label="Open on Android" shortcut="D" onClick={this._simulatorAndroidAsync} />
+        )}
       </div>
     );
   }
@@ -343,9 +319,7 @@ class ToolBar extends React.Component {
       </div>
     );
     const userNameEl = (
-      <a
-        className={css(styles.userName)}
-        onClick={this._getTogglePopoverFn(PopoverEnum.USER)}>
+      <a className={css(styles.userName)} onClick={this._getTogglePopoverFn(PopoverEnum.USER)}>
         {this.props.userName}
       </a>
     );
@@ -355,16 +329,13 @@ class ToolBar extends React.Component {
       </Popover>
     );
 
-    return this.props.openPopover === PopoverEnum.USER
-      ? userNameWithPopoverEl
-      : userNameEl;
+    return this.props.openPopover === PopoverEnum.USER ? userNameWithPopoverEl : userNameEl;
   }
 
   render() {
     const iconUrl = this.props.projectJson && this.props.projectJson.icon;
     const projectName =
-      (this.props.projectJson && this.props.projectJson.name) ||
-      this.props.projectRoot;
+      (this.props.projectJson && this.props.projectJson.name) || this.props.projectRoot;
     let { notifications } = this.props;
     let notificationsCount = null;
     let notificationsColor = null;
@@ -379,13 +350,9 @@ class ToolBar extends React.Component {
         <div className={css(styles.row)}>
           <div className={css(styles.leftCol)}>
             {iconUrl && <ProjectIcon iconUrl={iconUrl} />}
-            <div className={css(styles.projectName)}>
-              {projectName}
-            </div>
+            <div className={css(styles.projectName)}>{projectName}</div>
           </div>
-          <div className={css(styles.rightCol, styles.username)}>
-            {this._renderUserName()}
-          </div>
+          <div className={css(styles.rightCol, styles.username)}>{this._renderUserName()}</div>
         </div>
         <div className={css(styles.separator)} />
         <div className={css(styles.row)}>
@@ -492,9 +459,7 @@ class ToolBar extends React.Component {
   };
 }
 
-export default XDLState.connect(mapStateToProps)(
-  connectToData(actions)(ToolBar)
-);
+export default XDLState.connect(mapStateToProps)(connectToData(actions)(ToolBar));
 
 const styles = StyleSheet.create({
   separator: {

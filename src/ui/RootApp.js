@@ -63,35 +63,36 @@ export default class RootApp extends React.Component {
           <Provider store={this._store}>
             <Router>
               {({ router }) =>
-                (this.state.isLoaded
-                  ? <div>
-                      <Match pattern="/auth" component={AuthScreen} />
-                      <MatchWhenAuthorized
-                        exactly
-                        pattern="/"
-                        getRedirect={props => {
-                          // eslint-disable-line
-                          if (
-                            (props.isAuthenticated && !props.isOnboarded) ||
-                            (!props.isAuthenticated &&
-                              props.needsPasswordMigration)
-                          ) {
-                            return '/auth/register';
-                          }
-                          return '/auth';
-                        }}
-                        render={props => (
-                          <MainScreen
-                            {...props}
-                            segment={this.props.segment}
-                            commandLineArgs={this.props.commandLineArgs}
-                          />
-                        )}
-                      />
-                    </div>
-                  : <a id="app-loading" onClick={this._openDevTools}>
-                      Loading...
-                    </a>)}
+                this.state.isLoaded ? (
+                  <div>
+                    <Match pattern="/auth" component={AuthScreen} />
+                    <MatchWhenAuthorized
+                      exactly
+                      pattern="/"
+                      getRedirect={props => {
+                        // eslint-disable-line
+                        if (
+                          (props.isAuthenticated && !props.isOnboarded) ||
+                          (!props.isAuthenticated && props.needsPasswordMigration)
+                        ) {
+                          return '/auth/register';
+                        }
+                        return '/auth';
+                      }}
+                      render={props => (
+                        <MainScreen
+                          {...props}
+                          segment={this.props.segment}
+                          commandLineArgs={this.props.commandLineArgs}
+                        />
+                      )}
+                    />
+                  </div>
+                ) : (
+                  <a id="app-loading" onClick={this._openDevTools}>
+                    Loading...
+                  </a>
+                )}
             </Router>
           </Provider>
         </XDLProvider>

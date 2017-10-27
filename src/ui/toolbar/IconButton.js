@@ -38,23 +38,23 @@ export default class IconButton extends React.Component {
       this.props.isDisabled ? styles.containerDisabled : null,
     ];
     const iconEl = (
-      <div
-        className={css(styles.iconContainer)}
-        style={{ borderColor: this.props.color }}>
+      <div className={css(styles.iconContainer)} style={{ borderColor: this.props.color }}>
         <img src={this.props.iconUrl} className={css(styles.icon)} />
         {this.props.badgeCount && this._renderBadge()}
       </div>
     );
 
-    const mainEl = this.props.popover
-      ? <Popover
-          isToLeft={this.props.isPopoverToLeft}
-          body={this.props.popover}
-          arrowOffset={20}
-          popoverOffset={-10}>
-          {iconEl}
-        </Popover>
-      : iconEl;
+    const mainEl = this.props.popover ? (
+      <Popover
+        isToLeft={this.props.isPopoverToLeft}
+        body={this.props.popover}
+        arrowOffset={20}
+        popoverOffset={-10}>
+        {iconEl}
+      </Popover>
+    ) : (
+      iconEl
+    );
 
     return (
       <button
@@ -62,9 +62,7 @@ export default class IconButton extends React.Component {
         disabled={this.props.isDisabled}
         onClick={this.props.onClick}>
         {mainEl}
-        <div style={{ color: this.props.color }}>
-          {this.props.label}
-        </div>
+        <div style={{ color: this.props.color }}>{this.props.label}</div>
       </button>
     );
   }

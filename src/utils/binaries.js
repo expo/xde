@@ -3,15 +3,7 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 import spawnAsync from '@expo/spawn-async';
 
-import {
-  Binaries,
-  ErrorCode,
-  Logger,
-  NotificationCode,
-  UserSettings,
-  Utils,
-  XDLError,
-} from 'xdl';
+import { Binaries, ErrorCode, Logger, NotificationCode, UserSettings, Utils, XDLError } from 'xdl';
 let runas = null; // defer until used
 
 const INSTALL_PATH = '/usr/local/bin';
@@ -66,11 +58,7 @@ async function _installBinaryAsync(name) {
     if (
       runas(
         '/bin/ln',
-        [
-          '-s',
-          path.join(_expoBinaryDirectory(), name, name),
-          path.join(INSTALL_PATH, name),
-        ],
+        ['-s', path.join(_expoBinaryDirectory(), name, name), path.join(INSTALL_PATH, name)],
         { admin: true }
       ) !== 0
     ) {
@@ -89,10 +77,7 @@ async function _installBinaryAsync(name) {
 
 async function _copyBinariesToExpoDirAsync() {
   if (process.platform !== 'darwin') {
-    throw new XDLError(
-      ErrorCode.PLATFORM_NOT_SUPPORTED,
-      'Platform not supported.'
-    );
+    throw new XDLError(ErrorCode.PLATFORM_NOT_SUPPORTED, 'Platform not supported.');
   }
 
   await Utils.ncpAsync(Binaries.OSX_SOURCE_PATH, _expoBinaryDirectory());
@@ -103,9 +88,7 @@ async function _binaryInstalledAsync(name) {
     let result = await spawnAsync('which', [name]);
     // We add watchman to PATH when starting packager, so make sure we're not using that version
     return (
-      result.stdout &&
-      result.stdout.length > 1 &&
-      !result.stdout.includes(Binaries.OSX_SOURCE_PATH)
+      result.stdout && result.stdout.length > 1 && !result.stdout.includes(Binaries.OSX_SOURCE_PATH)
     );
   } catch (e) {
     console.log(e.toString());

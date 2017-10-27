@@ -29,14 +29,10 @@ class StackFrame extends React.Component {
 
   _renderMessage = () => {
     if (process.platform === 'darwin') {
-      let { path, lineNumber, columnNumber, methodName } = this._extractParts(
-        this.props.text
-      );
+      let { path, lineNumber, columnNumber, methodName } = this._extractParts(this.props.text);
       return (
         <span>
-          <a
-            className={this.props.linkClassName}
-            onClick={() => this._openFile(path)}>
+          <a className={this.props.linkClassName} onClick={() => this._openFile(path)}>
             {path}
           </a>:{lineNumber}:{columnNumber} in {methodName}
         </span>
@@ -124,8 +120,7 @@ export default class ConsoleLog extends React.Component {
     // From http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     const node = this._scrollContainerRef;
     if (node) {
-      this.shouldScrollBottom =
-        node.scrollTop + node.offsetHeight === node.scrollHeight;
+      this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
     }
   }
 
@@ -201,14 +196,14 @@ export default class ConsoleLog extends React.Component {
               <pre style={this._getLogPreStyles(log, index)}>
                 {stack
                   .split('\n')
-                  .map(line =>
+                  .map(line => (
                     <StackFrame
                       className={css(styles.stackFrame)}
                       linkClassName={css(styles.stackFrameLink)}
                       projectRoot={this.props.projectRoot}
                       text={line}
                     />
-                  )}
+                  ))}
               </pre>
             );
           }}
@@ -239,16 +234,10 @@ export default class ConsoleLog extends React.Component {
     let message = _.trim(log.msg);
 
     return (
-      <div
-        key={index}
-        style={{ ...this._getLogContainerStyles(log, index), marginBottom: 3 }}>
+      <div key={index} style={{ ...this._getLogContainerStyles(log, index), marginBottom: 3 }}>
         {this._renderLeftMsgPlain(log)}
         <pre style={this._getLogPreStyles(log, index)}>
-          {this._shouldLinkify(log)
-            ? <Linkify>
-                {message}
-              </Linkify>
-            : message}
+          {this._shouldLinkify(log) ? <Linkify>{message}</Linkify> : message}
         </pre>
       </div>
     );
@@ -269,11 +258,7 @@ export default class ConsoleLog extends React.Component {
       leftMsgStyle.color = log.leftMsgColor;
     }
 
-    return (
-      <span style={leftMsgStyle}>
-        {leftMsg}
-      </span>
-    );
+    return <span style={leftMsgStyle}>{leftMsg}</span>;
   };
 
   _renderLoading() {
@@ -282,9 +267,7 @@ export default class ConsoleLog extends React.Component {
     if (isLoading) {
       return (
         <div style={InlineStyles.loadingIndicator} key={-1}>
-          <LoadingIndicator
-            color={{ red: 255, green: 255, blue: 255, alpha: 1 }}
-          />
+          <LoadingIndicator color={{ red: 255, green: 255, blue: 255, alpha: 1 }} />
         </div>
       );
     } else {
@@ -315,9 +298,7 @@ export default class ConsoleLog extends React.Component {
     }
 
     return (
-      <a
-        style={InlineStyles.clearButtonLink}
-        onClick={this.props.onClickClearLogs}>
+      <a style={InlineStyles.clearButtonLink} onClick={this.props.onClickClearLogs}>
         <img src="./IconClear.png" style={InlineStyles.clearButton} />
       </a>
     );

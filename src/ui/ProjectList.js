@@ -25,15 +25,11 @@ class Project extends React.Component {
     const { name, readableRoot, icon } = this.props.project;
 
     const trimName =
-      name.length > 32
-        ? `${name.substring(0, 14)}...${name.substring(name.length - 15)}`
-        : name;
+      name.length > 32 ? `${name.substring(0, 14)}...${name.substring(name.length - 15)}` : name;
 
     const trimRoot =
       readableRoot.length > 44
-        ? `${readableRoot.substring(0, 20)}...${readableRoot.substring(
-            readableRoot.length - 21
-          )}`
+        ? `${readableRoot.substring(0, 20)}...${readableRoot.substring(readableRoot.length - 21)}`
         : readableRoot;
 
     return (
@@ -63,16 +59,12 @@ export default class ProjectList extends React.Component {
   };
 
   _renderProject = (project, index) => {
-    return (
-      <Project key={index} project={project} onSelect={this.props.onSelect} />
-    );
+    return <Project key={index} project={project} onSelect={this.props.onSelect} />;
   };
 
   render() {
     const listWrapperAlign =
-      this.props.projects.length < 3
-        ? styles.listWrapperCenter
-        : styles.listWrapperLeft;
+      this.props.projects.length < 3 ? styles.listWrapperCenter : styles.listWrapperLeft;
 
     return (
       <div className={css(styles.container)}>
@@ -95,20 +87,22 @@ export default class ProjectList extends React.Component {
             </div>
           </div>
         </div>
-        {this.props.projects.length > 0
-          ? <div className={css(styles.listWrapper, listWrapperAlign)}>
-              <div className={css(styles.heading)}>My Projects</div>
-              <div className={css(styles.cardList)}>
-                {this.props.projects.map(this._renderProject)}
-              </div>
+        {this.props.projects.length > 0 ? (
+          <div className={css(styles.listWrapper, listWrapperAlign)}>
+            <div className={css(styles.heading)}>My Projects</div>
+            <div className={css(styles.cardList)}>
+              {this.props.projects.map(this._renderProject)}
             </div>
-          : <div className={css(styles.listWrapper, styles.help)}>
-              Not sure? Check out our{' '}
-              <a href="https://docs.expo.io/versions/latest/guides/up-and-running.html">
-                Up and Running
-              </a>{' '}
-              guide.
-            </div>}
+          </div>
+        ) : (
+          <div className={css(styles.listWrapper, styles.help)}>
+            Not sure? Check out our{' '}
+            <a href="https://docs.expo.io/versions/latest/guides/up-and-running.html">
+              Up and Running
+            </a>{' '}
+            guide.
+          </div>
+        )}
       </div>
     );
   }

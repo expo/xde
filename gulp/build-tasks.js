@@ -22,9 +22,7 @@ let tasks = {
       let versionResult = await spawnAsync(electron, ['--version']);
       let electronVersion = /v(\d+\.\d+\.\d+)/.exec(versionResult.stdout)[1];
 
-      logger.info(
-        `Rebuilding native Node modules for Electron ${electronVersion}...`
-      );
+      logger.info(`Rebuilding native Node modules for Electron ${electronVersion}...`);
       await rebuild(
         path.resolve(paths.app),
         electronVersion,

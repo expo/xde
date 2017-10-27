@@ -23,9 +23,7 @@ export default class Tab extends React.Component {
       <div style={Styles.container}>
         {React.Children.only(this.props.children)}
         <div style={Styles.bottomBar}>
-          <div style={Styles.bottomBarLeft}>
-            {bottomBarLeftContent}
-          </div>
+          <div style={Styles.bottomBarLeft}>{bottomBarLeftContent}</div>
           <div style={Styles.bottomBarRight}>
             {this._renderClearLogs()}
             {bottomBarRightContent}

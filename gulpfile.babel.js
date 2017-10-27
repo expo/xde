@@ -31,18 +31,9 @@ function getReleaseTask(platforms, isTest = false) {
 }
 
 gulp.task('rebuild', gulp.parallel(tasks.buildNativeModules(), tasks.icon));
-gulp.task(
-  'rebuild:force',
-  gulp.parallel(tasks.buildNativeModules(true), tasks.icon)
-);
-gulp.task(
-  'release',
-  gulp.series(getReleaseTask(['mac', 'win', 'linux']), tasks.verifyMacApp)
-);
-gulp.task(
-  'release:mac',
-  gulp.series(getReleaseTask(['mac']), tasks.verifyMacApp)
-);
+gulp.task('rebuild:force', gulp.parallel(tasks.buildNativeModules(true), tasks.icon));
+gulp.task('release', gulp.series(getReleaseTask(['mac', 'win', 'linux']), tasks.verifyMacApp));
+gulp.task('release:mac', gulp.series(getReleaseTask(['mac']), tasks.verifyMacApp));
 gulp.task('release:windows', getReleaseTask(['win']));
 gulp.task('release:linux', getReleaseTask(['linux']));
 

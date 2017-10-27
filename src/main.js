@@ -67,10 +67,7 @@ app.on('will-quit', async event => {
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'development') {
     const devToolsInstaller = require('electron-devtools-installer');
-    const {
-      default: installExtension,
-      REACT_DEVELOPER_TOOLS,
-    } = devToolsInstaller;
+    const { default: installExtension, REACT_DEVELOPER_TOOLS } = devToolsInstaller;
 
     installExtension(REACT_DEVELOPER_TOOLS)
       .then(name => console.log(`Added Extension:  ${name}`))

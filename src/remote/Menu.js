@@ -6,10 +6,7 @@ function _installShellCommands(window) {
       {
         label: 'Install Shell Commands',
         click: () => {
-          window.webContents.send(
-            'menu-item-clicked',
-            'install-shell-commands'
-          );
+          window.webContents.send('menu-item-clicked', 'install-shell-commands');
         },
       },
       {
@@ -27,10 +24,7 @@ function _installIosSimulatorApp(window, isProjectOpen) {
       {
         label: 'Install iOS Simulator App',
         click: () => {
-          window.webContents.send(
-            'menu-item-clicked',
-            'install-ios-simulator-app'
-          );
+          window.webContents.send('menu-item-clicked', 'install-ios-simulator-app');
         },
         enabled: isProjectOpen,
       },
@@ -73,18 +67,14 @@ function setupMenu(window, isProjectOpen) {
       submenu: [
         {
           label: 'Reload',
-          accelerator: process.platform === 'darwin'
-            ? 'Alt+Command+R'
-            : 'Ctrl+Shift+R',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+R' : 'Ctrl+Shift+R',
           click: () => {
             BrowserWindow.getFocusedWindow().reload();
           },
         },
         {
           label: 'Toggle DevTools',
-          accelerator: process.platform === 'darwin'
-            ? 'Alt+Command+I'
-            : 'Ctrl+Shift+I',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
           click: () => {
             BrowserWindow.getFocusedWindow().toggleDevTools();
           },

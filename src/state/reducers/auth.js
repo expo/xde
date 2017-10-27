@@ -15,12 +15,7 @@ UserManager.initialize();
 
 /** Action Types **/
 
-export type ActionTypes =
-  | 'CHECK_SESSION'
-  | 'REGISTER'
-  | 'LOGIN'
-  | 'FORGOT_PASSWORD'
-  | 'LOGOUT';
+export type ActionTypes = 'CHECK_SESSION' | 'REGISTER' | 'LOGIN' | 'FORGOT_PASSWORD' | 'LOGOUT';
 
 /** Actions **/
 
@@ -47,10 +42,7 @@ export const actions = {
       })
     ),
 
-  login: (
-    loginType: LoginType,
-    loginArgs?: { username: string, password: string }
-  ) =>
+  login: (loginType: LoginType, loginArgs?: { username: string, password: string }) =>
     asyncAction(
       'LOGIN',
       async () => {
@@ -72,8 +64,7 @@ export const actions = {
       })
     ),
 
-  logout: () =>
-    asyncAction('LOGOUT', async () => await UserManager.logoutAsync()),
+  logout: () => asyncAction('LOGOUT', async () => await UserManager.logoutAsync()),
 
   forgotPassword: (usernameOrEmail: string) =>
     asyncAction('FORGOT_PASSWORD', async () => {

@@ -7,9 +7,7 @@ import StyleConstants from './StyleConstants';
 
 const mapStateToProps = (state, props) => {
   return {
-    notifications: props.projectRoot
-      ? state.notifications[props.projectRoot]
-      : null,
+    notifications: props.projectRoot ? state.notifications[props.projectRoot] : null,
   };
 };
 

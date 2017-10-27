@@ -37,7 +37,8 @@ class ForgotPasswordScreen extends React.Component {
           <div className={css(styles.fieldContainer)}>
             <h3 className={css(styles.title)}>Reset your password</h3>
             <p className={css(styles.smallText, styles.gray)}>
-              Enter your username or e-mail address below and we will e-mail you a link to a page where you can set a new password.
+              Enter your username or e-mail address below and we will e-mail you a link to a page
+              where you can set a new password.
             </p>
             <TextInput
               ref="username"
@@ -51,11 +52,7 @@ class ForgotPasswordScreen extends React.Component {
               disabled={this.props.isLoggingIn}
               isLoading={this.props.isLoggingIn}
               renderRightIcon={() => (
-                <img
-                  key="right"
-                  src="./arrow.svg"
-                  style={{ width: 15, height: 15 }}
-                />
+                <img key="right" src="./arrow.svg" style={{ width: 15, height: 15 }} />
               )}>
               Reset your password
             </Button>
@@ -65,11 +62,8 @@ class ForgotPasswordScreen extends React.Component {
               // </p>
             }
             <p className={css(styles.smallText, styles.black)}>
-              Already have a username/password?
-              {' '}
-              <Link
-                to="/auth/login"
-                style={{ color: StyleConstants.colorText }}>
+              Already have a username/password?{' '}
+              <Link to="/auth/login" style={{ color: StyleConstants.colorText }}>
                 Sign in
               </Link>
             </p>

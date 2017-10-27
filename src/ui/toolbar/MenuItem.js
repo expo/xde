@@ -67,9 +67,7 @@ export default class MenuItem extends React.Component {
     const isFlyoutMenu = !!this.props.children;
     const menuItemStyle = {
       ...Styles.menuItem,
-      ...(this.state.isHovered && !this.props.isDisabled
-        ? Styles.menuItemHovered
-        : {}),
+      ...(this.state.isHovered && !this.props.isDisabled ? Styles.menuItemHovered : {}),
       ...(this.props.isDisabled ? Styles.menuItemDisabled : {}),
     };
     if (this.props.color) {
@@ -84,10 +82,12 @@ export default class MenuItem extends React.Component {
         onMouseLeave={this._onMouseLeave}>
         {this.props.checkState !== 'uncheckable' && this._renderCheck()}
         <div style={Styles.label}>{this.props.label}</div>
-        {this.props.shortcut &&
+        {this.props.shortcut && (
           <div style={Styles.shortcut}>
-            {this._metaKey()}{this.props.shortcut}
-          </div>}
+            {this._metaKey()}
+            {this.props.shortcut}
+          </div>
+        )}
         {isFlyoutMenu && <span>►</span>}
         {isFlyoutMenu && this.state.isHovered && this._renderFlyout()}
       </div>
