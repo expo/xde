@@ -315,10 +315,7 @@ class NewProjectModal extends React.Component {
           name: this.state.projectName,
           progressFunction: progress => {
             if (this._currentRequestID === requestID) {
-              Logger.notifications.info(
-                { code: NotificationCode.DOWNLOAD },
-                Math.round(progress * 100)
-              );
+              Logger.notifications.info({ code: NotificationCode.DOWNLOAD }, progress);
             }
           },
           retryFunction: () =>
