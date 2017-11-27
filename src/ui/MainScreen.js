@@ -15,14 +15,10 @@ import {
   ProjectSettings,
   ProjectUtils,
   Simulator,
-  UrlUtils,
   UserSettings,
   Versions,
   XDLState,
 } from 'xdl';
-
-Config.developerTool = 'xde';
-Config.useReduxNotifications = true;
 
 import fs from 'fs';
 import { StyleSheet, css } from 'aphrodite/no-important';
@@ -52,6 +48,9 @@ import ToolBar from './toolbar/ToolBar';
 import PackagerNotificationsSwitcher from './PackagerNotificationsSwitcher';
 import Tab from './Tab';
 import { installShellCommandsAsync } from '../utils/binaries';
+
+Config.developerTool = 'xde';
+Config.useReduxNotifications = true;
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 const OPTIONS_ICON_SIZE = 22;
