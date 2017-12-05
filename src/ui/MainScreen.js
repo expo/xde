@@ -437,21 +437,6 @@ class MainScreen extends React.Component {
       /* eslint-enable react/jsx-no-bind */
     });
 
-    const protocolMenuItems = ['exp', 'http', 'redirect'].map(option => {
-      const checkState = this.state.projectSettings.urlType === option ? 'checked' : 'unchecked';
-
-      /* eslint-disable react/jsx-no-bind */
-      return (
-        <MenuItem
-          label={option}
-          key={option}
-          checkState={checkState}
-          onClick={() => this._setProjectSettingAsync({ urlType: option })}
-        />
-      );
-      /* eslint-enable react/jsx-no-bind */
-    });
-
     const otherMenuItems = [
       {
         label: 'Development Mode',
@@ -478,9 +463,6 @@ class MainScreen extends React.Component {
       <div>
         <MenuItem label="Host" checkState="unchecked">
           <div style={SharedStyles.hoverBox}>{hostMenuItems}</div>
-        </MenuItem>
-        <MenuItem label="Protocol" checkState="unchecked">
-          <div style={SharedStyles.hoverBox}>{protocolMenuItems}</div>
         </MenuItem>
         {otherMenuItems}
       </div>
