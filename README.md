@@ -5,6 +5,9 @@ Download the latest version of XDE for [macOS](https://xde-updates.exponentjs.co
 
 On Linux, open with `chmod a+x XDE*.AppImage` and `./XDE*.AppImage`.
 
+If you have problems with the code in this repository, please file issues & bug reports
+at https://github.com/expo/expo. Thanks!
+
 ## Making a New Project
 
 To make a new project, just click the "New" button in the upper left hand corner of the window. Then choose or make an empty directory where you want your project to live and hit OK.
