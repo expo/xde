@@ -660,20 +660,36 @@ class MainScreen extends React.Component {
       }
     }
 
+    let releaseChannel = 'dev';
+    let channelRe = new RegExp(/^[a-z\d][a-z\d._-]*$/);
+    if (releaseChannel && !channelRe.test(releaseChannel)) {
+      this._showNotification(
+        'error',
+        'Release channel name can only contain lowercase letters, numbers and special characters . _ and -'
+      );
+      return;
+    }
+
     this._logInfo('Publishing...');
     try {
-      let result = await Project.publishAsync(this.state.projectRoot);
+      let result = await Project.publishAsync(this.state.projectRoot, {
+        releaseChannel,
+      });
       await new Promise(resolve => {
         requestAnimationFrame(resolve);
       });
 
-      this._logInfo(`Published to ${result.url}`);
+      let url = result.url;
+      if (releaseChannel && releaseChannel !== 'default') {
+        url = `${url}?release-channel=${releaseChannel}`;
+      }
+      this._logInfo(`Published to ${url}`);
       let notificationMessage = 'Project published successfully.';
       let sendTo = this.state.sendTo;
       if (sendTo) {
         try {
-          await Exp.sendAsync(sendTo, result.url);
-          this._logInfo(`Sent link ${result.url} to ${sendTo}.`);
+          await Exp.sendAsync(sendTo, url);
+          this._logInfo(`Sent link ${url} to ${sendTo}.`);
         } catch (err) {
           this._logError(`Could not send link to ${sendTo}: ${err}`);
         }
