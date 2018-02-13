@@ -61,6 +61,8 @@ type Props = {
 
 type State = {
   shiftSelected: boolean,
+  publishChannelIndex: number,
+  publishChannelOptions: Array<string>,
 };
 
 const mapStateToProps = (state, props) => {
@@ -83,6 +85,8 @@ class ToolBar extends React.Component {
     super(props, context);
     this.state = {
       shiftSelected: false,
+      publishChannelIndex: 0,
+      publishChannelOptions: ['default'],
     };
   }
 
@@ -240,6 +244,12 @@ class ToolBar extends React.Component {
     );
   }
 
+  _setSelectedChannel = event => {
+    this.setState({
+      publishChannelIndex: parseInt(event.target.value),
+    });
+  };
+
   _maybePublish = event => {
     if (event.type === 'keypress' && event.key !== 'Enter') {
       return;
@@ -249,9 +259,13 @@ class ToolBar extends React.Component {
   };
 
   _onPublishClick = event => {
-    if (this._releaseChannelInput.value) {
+    let { publishChannelIndex, publishChannelOptions } = this.state
+    let isInputBoxOption = publishChannelIndex === publishChannelOptions.length
+    let channel = isInputBoxOption ? this._releaseChannelInput.value : publishChannelOptions[publishChannelIndex]
+
+    if (channel) {
       this._getTogglePopoverFn(PopoverEnum.Publish)(event);
-      this.props.onPublishClick(this._releaseChannelInput.value);
+      this.props.onPublishClick(channel);
     }
   };
 
@@ -262,20 +276,37 @@ class ToolBar extends React.Component {
 
     return (
       <div onClick={this._onMenuClick}>
-        <input
-          className={css(styles.popoverInput, styles.publishInput)}
-          ref={r => {
-            this._releaseChannelInput = r;
-          }}
-          onKeyPress={this._maybePublish}
-          placeholder="Release channel name"
-        />
+        <div className={css(styles.publishHeader)}>Select Release Channel</div>
+        {this._renderChannelOptions()}
         <a onClick={this._onPublishClick} className={css(styles.popoverSubmit)}>
           Publish
         </a>
       </div>
     );
-  }
+  };
+
+  _renderChannelOptions = () => {
+    let options = [...this.state.publishChannelOptions, '']
+    return options.map((option, index) => {
+      let isInputBoxOption = index === options.length - 1
+
+      return (<div key={option} className={css(styles.releaseChannelRow)}>
+        <input type="radio"
+          className={css(styles.releaseChannelRadio)}
+          value={index}
+          onChange={this._setSelectedChannel}
+          checked={this.state.publishChannelIndex === index} />
+        {isInputBoxOption ?
+          <input className={css(styles.popoverInput, styles.publishInput)}
+            ref={r => {
+              this._releaseChannelInput = r;
+            }}
+            onKeyPress={this._maybePublish}
+            placeholder="Channel name" /> :
+          <div className={css(styles.releaseChannelName)}>{option}</div>}
+      </div>)
+    })
+  };
 
   _maybeSendLink = event => {
     if (event.type === 'keypress' && event.key !== 'Enter') {
@@ -536,6 +567,31 @@ const styles = StyleSheet.create({
     fontSize: StyleConstants.fontSizeMd,
     textDecoration: 'none',
   },
+  publishHeader: {
+    color: StyleConstants.colorText,
+    fontSize: StyleConstants.fontSizeMd,
+    fontWeight: 'bold',
+    padding: StyleConstants.gutterMd,
+  },
+  releaseChannelRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingLeft: StyleConstants.gutterMd,
+    paddingRight: StyleConstants.gutterMd,
+    paddingTop: StyleConstants.gutterSm,
+    paddingBottom: StyleConstants.gutterSm,
+  },
+  releaseChannelRadio: {
+    margin: 0,
+  },
+  releaseChannelName: {
+    cursor: 'default',
+    color: StyleConstants.colorText,
+    fontSize: StyleConstants.fontSizeMd,
+    marginLeft: StyleConstants.gutterMd,
+  },
   qrCode: {
     marginTop: StyleConstants.gutterLg,
   },
@@ -551,16 +607,19 @@ const styles = StyleSheet.create({
     color: StyleConstants.colorSubtitle,
     display: 'block',
     fontSize: StyleConstants.fontSizeMd,
-    marginLeft: 'auto',
-    marginRight: 'auto',
     marginBottom: StyleConstants.gutterMd,
     padding: StyleConstants.gutterSm,
   },
   publishInput: {
     textAlign: 'left',
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: StyleConstants.gutterMd,
+    marginBottom: 0,
   },
   sendLinkInput: {
     textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   popoverSubmit: {
     cursor: 'pointer',
