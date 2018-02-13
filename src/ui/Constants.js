@@ -1,6 +1,7 @@
 export const PopoverEnum = {
   PROJECT: 'Project',
   HELP: 'Help',
+  PUBLISH: 'Publish',
   SHARE: 'Share',
   DEVICE: 'Device',
   USER: 'User',

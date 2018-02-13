@@ -77,6 +77,7 @@ class ToolBar extends React.Component {
   props: Props;
   state: State;
   _sendLinkInput: HTMLInputElement;
+  _releaseChannelInput: HTMLInputElement;
 
   constructor(props, context) {
     super(props, context);
@@ -239,6 +240,43 @@ class ToolBar extends React.Component {
     );
   }
 
+  _maybePublish = event => {
+    if (event.type === 'keypress' && event.key !== 'Enter') {
+      return;
+    }
+
+    this._onPublishClick(event);
+  };
+
+  _onPublishClick = event => {
+    if (this._releaseChannelInput.value) {
+      this._getTogglePopoverFn(PopoverEnum.Publish)(event);
+      this.props.onPublishClick(this._releaseChannelInput.value);
+    }
+  };
+
+  _renderPopoverPublish() {
+    if (this.props.openPopover !== PopoverEnum.PUBLISH) {
+      return null;
+    }
+
+    return (
+      <div onClick={this._onMenuClick}>
+        <input
+          className={css(styles.popoverInput, styles.publishInput)}
+          ref={r => {
+            this._releaseChannelInput = r;
+          }}
+          onKeyPress={this._maybePublish}
+          placeholder="Release channel name"
+        />
+        <a onClick={this._onPublishClick} className={css(styles.popoverSubmit)}>
+          Publish
+        </a>
+      </div>
+    );
+  }
+
   _maybeSendLink = event => {
     if (event.type === 'keypress' && event.key !== 'Enter') {
       return;
@@ -269,7 +307,7 @@ class ToolBar extends React.Component {
         </div>
         <div className={css(styles.shareOrDiv)}>- or -</div>
         <input
-          className={css(styles.sendLinkInput)}
+          className={css(styles.popoverInput, styles.sendLinkInput)}
           autoFocus
           ref={r => {
             this._sendLinkInput = r;
@@ -278,7 +316,7 @@ class ToolBar extends React.Component {
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
-        <a onClick={this._onSendLinkClick} className={css(styles.sendLinkSubmit)}>
+      <a onClick={this._onSendLinkClick} className={css(styles.popoverSubmit)}>
           Send Link
         </a>
       </div>
@@ -390,7 +428,8 @@ class ToolBar extends React.Component {
               label="Publish"
               color="#18B405"
               isDisabled={!this.props.isProjectRunning}
-              onClick={this.props.onPublishClick}
+              onClick={this._getTogglePopoverFn(PopoverEnum.PUBLISH)}
+              popover={this._renderPopoverPublish()}
               styles={styles.rightSpaced}
             />
             <IconButton
@@ -507,7 +546,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     padding: StyleConstants.gutterMd,
   },
-  sendLinkInput: {
+  popoverInput: {
     ...SharedStyles.input,
     color: StyleConstants.colorSubtitle,
     display: 'block',
@@ -516,9 +555,14 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginBottom: StyleConstants.gutterMd,
     padding: StyleConstants.gutterSm,
+  },
+  publishInput: {
+    textAlign: 'left',
+  },
+  sendLinkInput: {
     textAlign: 'center',
   },
-  sendLinkSubmit: {
+  popoverSubmit: {
     cursor: 'pointer',
     display: 'block',
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
