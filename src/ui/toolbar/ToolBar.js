@@ -5,6 +5,7 @@
 import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
 import { Analytics, Android, FileSystem, Simulator, XDLState } from 'xdl';
+import _ from 'lodash';
 import QRCode from 'qrcode.react';
 
 import { actions } from 'xde/state';
@@ -38,6 +39,9 @@ type Props = {
   },
   sendTo?: string,
   userName?: string,
+  publishHistory?: Array<{
+    channel: string,
+  }>,
 
   onAppendErrors: () => void,
   onAppendLogs: () => void,
@@ -61,7 +65,7 @@ type Props = {
 
 type State = {
   shiftSelected: boolean,
-  publishChannelIndex: number,
+  selectedChannelIndex: number,
   publishChannelOptions: Array<string>,
 };
 
@@ -85,7 +89,7 @@ class ToolBar extends React.Component {
     super(props, context);
     this.state = {
       shiftSelected: false,
-      publishChannelIndex: 0,
+      selectedChannelIndex: 0,
       publishChannelOptions: ['default'],
     };
   }
@@ -244,9 +248,15 @@ class ToolBar extends React.Component {
     );
   }
 
+  get releaseChannelOptions() {
+    let recentChannels = _.map(this.props.publishHistory, result => result.channel);
+    // The empty string is a placeholder for the input box
+    return _.uniq(['default', ...recentChannels, ''])
+  }
+
   _setSelectedChannel = event => {
     this.setState({
-      publishChannelIndex: parseInt(event.target.value),
+      selectedChannelIndex: parseInt(event.target.value),
     });
   };
 
@@ -259,13 +269,14 @@ class ToolBar extends React.Component {
   };
 
   _onPublishClick = event => {
-    let { publishChannelIndex, publishChannelOptions } = this.state
-    let isInputBoxOption = publishChannelIndex === publishChannelOptions.length
-    let channel = isInputBoxOption ? this._releaseChannelInput.value : publishChannelOptions[publishChannelIndex]
+    let channelOptions = this.releaseChannelOptions
+    let isInputBoxOption = this.state.selectedChannelIndex === (channelOptions.length - 1)
+    let channel = isInputBoxOption ? this._releaseChannelInput.value : channelOptions[this.state.selectedChannelIndex]
 
     if (channel) {
       this._getTogglePopoverFn(PopoverEnum.Publish)(event);
       this.props.onPublishClick(channel);
+      this.setState({selectedChannelIndex: 0})
     }
   };
 
@@ -286,16 +297,16 @@ class ToolBar extends React.Component {
   };
 
   _renderChannelOptions = () => {
-    let options = [...this.state.publishChannelOptions, '']
-    return options.map((option, index) => {
-      let isInputBoxOption = index === options.length - 1
+    let channelOptions = this.releaseChannelOptions
+    return channelOptions.map((option, index) => {
+      let isInputBoxOption = index === channelOptions.length - 1
 
       return (<div key={option} className={css(styles.releaseChannelRow)}>
         <input type="radio"
           className={css(styles.releaseChannelRadio)}
           value={index}
           onChange={this._setSelectedChannel}
-          checked={this.state.publishChannelIndex === index} />
+          checked={this.state.selectedChannelIndex === index} />
         {isInputBoxOption ?
           <input className={css(styles.popoverInput, styles.publishInput)}
             ref={r => {

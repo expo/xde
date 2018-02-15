@@ -1,6 +1,7 @@
 import {
   Analytics,
   Android,
+  Api,
   Binaries,
   Config,
   Diagnostics,
@@ -103,6 +104,7 @@ class MainScreen extends React.Component {
       projectRoot: null,
       projectJson: null,
       recentExps: [],
+      publishHistory: null,
       projectSettings: null,
       notification: null,
       computedUrl: null,
@@ -526,6 +528,7 @@ class MainScreen extends React.Component {
                 projectJson={this.state.projectJson}
                 projectRoot={this.state.projectRoot}
                 projectSettings={this.state.projectSettings}
+                publishHistory={this.state.publishHistory}
                 sendTo={this.state.sendTo}
               />
               {this.state.projectSettings && this._renderUrlInput()}
@@ -637,7 +640,15 @@ class MainScreen extends React.Component {
     this.setState({ notification: null });
   }
 
-  _publishClickedAsync = async () => {
+  _publishClickedAsync = async releaseChannel => {
+    let channelRe = new RegExp(/^[a-z\d][a-z\d._-]*$/);
+    if (releaseChannel && !channelRe.test(releaseChannel)) {
+      this._showNotification(
+        'error',
+        'Release channel name can only contain lowercase letters, numbers and special characters . _ and -'
+      );
+      return;
+    }
     let confirmBeforePublish = await UserSettings.getAsync('confirmBeforePublish', true);
 
     if (confirmBeforePublish) {
@@ -658,16 +669,6 @@ class MainScreen extends React.Component {
       } else if (choice === 2) {
         return;
       }
-    }
-
-    let releaseChannel = 'dev';
-    let channelRe = new RegExp(/^[a-z\d][a-z\d._-]*$/);
-    if (releaseChannel && !channelRe.test(releaseChannel)) {
-      this._showNotification(
-        'error',
-        'Release channel name can only contain lowercase letters, numbers and special characters . _ and -'
-      );
-      return;
     }
 
     this._logInfo('Publishing...');
@@ -696,6 +697,7 @@ class MainScreen extends React.Component {
         notificationMessage = `${notificationMessage} Sent to ${sendTo}`;
       }
       this._showNotification('success', notificationMessage);
+      this._getPublishHistoryAsync();
     } catch (err) {
       this._showNotification('error', 'Project failed to publish.');
       this._logError(`Failed to publish package: ${err.message}`);
@@ -938,6 +940,7 @@ class MainScreen extends React.Component {
           let computedUrl = await this._computeUrlAsync(projectRoot);
           let expoSdkStatus = await Doctor.getExpoSdkStatus(projectRoot);
           this._getRecentProjects();
+          this._getPublishHistoryAsync();
           this.setState({
             computedUrl,
             isProjectRunning: true,
@@ -972,6 +975,7 @@ class MainScreen extends React.Component {
         projectRoot: null,
         projectJson: null,
         computedUrl: null,
+        publishHistory: null,
         isProjectRunning: false,
         expJson: null,
         logs: [],
@@ -1029,6 +1033,19 @@ class MainScreen extends React.Component {
         console.error("Couldn't get list of recent Exps :(", err);
       }
     );
+  };
+
+  _getPublishHistoryAsync = async () => {
+    let formData = new FormData();
+    formData.append('queryType', 'history');
+    formData.append('slug', await Project.getSlugAsync(this.state.projectRoot));
+    formData.append('version', 2);
+    formData.append('count', 10);
+    let { queryResult } = await Api.callMethodAsync('publishInfo', [], 'post', null, {
+      formData,
+    });
+
+    this.setState({ publishHistory: queryResult });
   };
 
   _parseCommandLineArgsAsync = async () => {
