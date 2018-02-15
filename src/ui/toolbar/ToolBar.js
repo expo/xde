@@ -6,6 +6,7 @@ import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
 import { Analytics, Android, FileSystem, Simulator, XDLState } from 'xdl';
 import _ from 'lodash';
+import moment from 'moment';
 import QRCode from 'qrcode.react';
 
 import { actions } from 'xde/state';
@@ -41,6 +42,7 @@ type Props = {
   userName?: string,
   publishHistory?: Array<{
     channel: string,
+    publishedTime: string,
   }>,
 
   onAppendErrors: () => void,
@@ -300,6 +302,9 @@ class ToolBar extends React.Component {
     let channelOptions = this.releaseChannelOptions
     return channelOptions.map((option, index) => {
       let isInputBoxOption = index === channelOptions.length - 1
+      let releases = _.filter(this.props.publishHistory, ({ channel }) => channel === option)
+      let releaseDates = _.map(releases, release => release.publishedTime)
+      let lastReleaseDate = _.head(releaseDates)
 
       return (<div key={option} className={css(styles.releaseChannelRow)}>
         <input type="radio"
@@ -315,6 +320,7 @@ class ToolBar extends React.Component {
             onKeyPress={this._maybePublish}
             placeholder="Channel name" /> :
           <div className={css(styles.releaseChannelName)}>{option}</div>}
+        {lastReleaseDate && <div className={css(styles.releaseChannelDate)}>{`last updated ${moment(lastReleaseDate).fromNow()}`}</div>}
       </div>)
     })
   };
@@ -472,6 +478,7 @@ class ToolBar extends React.Component {
               isDisabled={!this.props.isProjectRunning}
               onClick={this._getTogglePopoverFn(PopoverEnum.PUBLISH)}
               popover={this._renderPopoverPublish()}
+              isPopoverToLeft
               styles={styles.rightSpaced}
             />
             <IconButton
@@ -602,6 +609,15 @@ const styles = StyleSheet.create({
     color: StyleConstants.colorText,
     fontSize: StyleConstants.fontSizeMd,
     marginLeft: StyleConstants.gutterMd,
+  },
+  releaseChannelDate: {
+    cursor: 'default',
+    color: StyleConstants.colorSubtitle,
+    fontSize: StyleConstants.fontSizeMd,
+    fontStyle: 'italic',
+    whiteSpace: 'nowrap',
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: StyleConstants.gutterMd,
   },
   qrCode: {
     marginTop: StyleConstants.gutterLg,
