@@ -26,6 +26,9 @@ export const actions = {
     asyncAction(
       'CHECK_SESSION',
       async () => {
+        // migrate from auth0 to sessions, if available
+        await UserManager.migrateAuth0ToSessionAsync();
+
         const user = await UserManager.getCurrentUserAsync();
         if (!user) {
           const legacyUser = await UserManager.getLegacyUserData();
@@ -46,6 +49,9 @@ export const actions = {
     asyncAction(
       'LOGIN',
       async () => {
+        // migrate from auth0 to sessions, if available
+        await UserManager.migrateAuth0ToSessionAsync();
+
         const currentWindow = remote.getCurrentWindow();
         try {
           const user = await UserManager.loginAsync(loginType, loginArgs);
@@ -68,6 +74,9 @@ export const actions = {
 
   forgotPassword: (usernameOrEmail: string) =>
     asyncAction('FORGOT_PASSWORD', async () => {
+      // migrate from auth0 to sessions, if available
+      await UserManager.migrateAuth0ToSessionAsync();
+
       let result = await UserManager.forgotPasswordAsync(usernameOrEmail);
 
       if (result) {
@@ -82,6 +91,9 @@ export const actions = {
     asyncAction(
       'REGISTER',
       async (dispatch: AppDispatch, getState: () => AppState) => {
+        // migrate from auth0 to sessions, if available
+        await UserManager.migrateAuth0ToSessionAsync();
+
         const state = getState();
         const user = await UserManager.registerAsync(userData, state.auth.user);
         return {
