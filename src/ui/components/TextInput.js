@@ -16,7 +16,7 @@ type Props = {
   styles?: any,
   value?: ?string,
   valueTransformer?: (val: string) => string,
-  autofocus: ?boolean,
+  autoFocus?: boolean,
 };
 
 type State = {
@@ -38,20 +38,11 @@ export default class TextInput extends React.Component {
     return this.state.value.trim();
   }
 
-  componentDidMount() {
-    if (this.props.autofocus) {
-      this._input && this._input.focus();
-    }
-  }
-
   render() {
     const { styles: extraStyles, valueTransformer, ...inputProps } = this.props;
 
     return (
       <input
-        ref={view => {
-          this._input = view;
-        }}
         className={css(styles.input, extraStyles)}
         {...inputProps}
         onChange={this._onValueChange}

@@ -47,6 +47,7 @@ export default class LoginForm extends React.Component {
         <div style={{ width: 270 }}>
           <TextInput
             ref="username"
+            autoFocus
             styles={styles.input}
             type="text"
             placeholder="Username or e-mail address"

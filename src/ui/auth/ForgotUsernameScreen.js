@@ -26,6 +26,7 @@ export default class ForgotUsernameScreen extends React.Component {
             </p>
             <TextInput
               ref="username"
+              autoFocus
               styles={styles.input}
               type="text"
               placeholder="E-mail address"

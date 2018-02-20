@@ -101,7 +101,7 @@ export default class RegisterForm extends React.Component {
         <div className={css(styles.fieldContainerInner)}>
           <TextInput
             ref="givenName"
-            autofocus
+            autoFocus
             styles={styles.input}
             type="text"
             placeholder="First name"
@@ -167,7 +167,7 @@ export default class RegisterForm extends React.Component {
         <div className={css(styles.fieldContainerInner)}>
           <TextInput
             ref="givenName"
-            autofocus
+            autoFocus
             styles={styles.input}
             type="text"
             placeholder="First name"
