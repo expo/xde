@@ -72,7 +72,7 @@ export default class LoginForm extends React.Component {
             renderRightIcon={() => (
               <img key="right" src="./arrow.svg" className={css(styles.svgArrow)} />
             )}>
-            Sign In With Github
+            Sign In With GitHub
           </Button>
         </div>
         <div
