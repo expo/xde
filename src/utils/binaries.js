@@ -1,22 +1,38 @@
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import path from 'path';
+import promisify from 'util.promisify';
 import spawnAsync from '@expo/spawn-async';
+import sudo from 'sudo-prompt';
 
 import { Binaries, ErrorCode, Logger, NotificationCode, UserSettings, Utils, XDLError } from 'xdl';
-let runas = null; // defer until used
 
+const sudoAsync = promisify(sudo.exec);
+const sudoOptions = {
+  name: 'Expo XDE',
+};
 const INSTALL_PATH = '/usr/local/bin';
 
 export async function installShellCommandsAsync() {
+  if (process.platform !== 'darwin') {
+    throw new XDLError(ErrorCode.PLATFORM_NOT_SUPPORTED, 'Platform not supported.');
+  }
+
   await Binaries.sourceBashLoginScriptsAsync();
   await _copyBinariesToExpoDirAsync();
 
   let binaries = ['adb', 'watchman', 'xde'];
   let installedBinaries = [];
+  let commands = [];
   for (let i = 0; i < binaries.length; i++) {
-    if (await _installBinaryAsync(binaries[i])) {
-      installedBinaries.push(binaries[i]);
+    let name = binaries[i];
+    if (!await _binaryInstalledAsync(name) && !await _binaryExistsAsync(name)) {
+      installedBinaries.push(name);
+      commands.push(
+        `rm -f ${path.join(INSTALL_PATH, name)};`,
+        `mkdir -p ${INSTALL_PATH};`,
+        `ln -s ${path.join(_expoBinaryDirectory(), name, name)} ${path.join(INSTALL_PATH, name)};`
+      );
     }
   }
 
@@ -25,61 +41,25 @@ export async function installShellCommandsAsync() {
       { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
       `Shell commands ${binaries.join(', ')} are already installed`
     );
-  } else {
-    Logger.notifications.info(
-      { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
-      `Installed ${installedBinaries.join(', ')} to your shell`
-    );
-  }
-}
-
-// Only called on darwin
-async function _installBinaryAsync(name) {
-  if ((await _binaryInstalledAsync(name)) || (await _binaryExistsAsync(name))) {
-    return false;
+    return;
   }
 
   try {
-    if (!runas) {
-      runas = require('runas');
-    }
-
-    // adb lives at ~/.expo/adb/adb
-    try {
-      runas('/bin/rm', ['-f', path.join(INSTALL_PATH, name)], { admin: true });
-    } catch (e) {
-      // Don't worry if we can't rm the file, we'll just get an error later
-    }
-
-    if (runas('/bin/mkdir', ['-p', INSTALL_PATH], { admin: true }) !== 0) {
-      throw new Error(`Could not run \`mkdir -p ${INSTALL_PATH}\`.`);
-    }
-
-    if (
-      runas(
-        '/bin/ln',
-        ['-s', path.join(_expoBinaryDirectory(), name, name), path.join(INSTALL_PATH, name)],
-        { admin: true }
-      ) !== 0
-    ) {
-      throw new Error(`Could not symlink \`${name}\`.`);
-    }
-
-    return true;
+    await sudoAsync(commands.join('\n'), sudoOptions);
   } catch (e) {
     Logger.notifications.error(
       { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
-      `Error installing ${name}: ${e.message}`
+      'Error installing shell commands'
     );
     throw e;
   }
+  Logger.notifications.info(
+    { code: NotificationCode.INSTALL_SHELL_COMMANDS_RESULT },
+    `Installed ${installedBinaries.join(', ')} to your shell`
+  );
 }
 
 async function _copyBinariesToExpoDirAsync() {
-  if (process.platform !== 'darwin') {
-    throw new XDLError(ErrorCode.PLATFORM_NOT_SUPPORTED, 'Platform not supported.');
-  }
-
   await Utils.ncpAsync(Binaries.OSX_SOURCE_PATH, _expoBinaryDirectory());
 }
 
