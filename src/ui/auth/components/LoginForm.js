@@ -20,7 +20,7 @@ export type LoginFormData = {
 type Props = {
   isLoggingIn: boolean,
   currentLoginMethod: ?string,
-  onLogin: (loginType: 'user-pass' | 'github', formData?: LoginFormData) => void | Promise<void>,
+  onLogin: (loginType: 'user-pass', formData?: LoginFormData) => void | Promise<void>,
 };
 
 export default class LoginForm extends React.Component {
@@ -63,17 +63,6 @@ export default class LoginForm extends React.Component {
             )}>
             Sign In
           </Button>
-          <Button
-            styles={[styles.button, styles.githubButton]}
-            type="button"
-            onClick={this._onGithubClick}
-            disabled={this.props.isLoggingIn}
-            isLoading={this.props.isLoggingIn && this.props.currentLoginMethod === 'github'}
-            renderRightIcon={() => (
-              <img key="right" src="./arrow.svg" className={css(styles.svgArrow)} />
-            )}>
-            Sign In With Github
-          </Button>
         </div>
         <div
           style={{
@@ -104,18 +93,6 @@ export default class LoginForm extends React.Component {
       </div>
     );
   }
-
-  _onFacebookClick = () => {
-    this.props.onLogin('facebook');
-  };
-
-  _onGithubClick = () => {
-    this.props.onLogin('github');
-  };
-
-  _onGoogleClick = () => {
-    this.props.onLogin('google');
-  };
 
   _onSubmitLogin = async (e: any) => {
     e.preventDefault();
@@ -168,11 +145,6 @@ const styles = StyleSheet.create({
 
   button: {
     marginBottom: 20,
-  },
-
-  githubButton: {
-    color: 'black',
-    backgroundColor: 'rgba(0, 0, 0, .1);',
   },
 
   svgArrow: {
