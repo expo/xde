@@ -29,7 +29,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "exponent",
+        "owner": "expo",
         "repo": "xde"
       }
     ],

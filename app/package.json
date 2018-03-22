@@ -5,18 +5,18 @@
   "description": "The Expo Development Environment",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/exponent/xde.git"
+    "url": "git+https://github.com/expo/xde.git"
   },
   "author": "Expo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/exponent/xde/issues"
+    "url": "https://github.com/expo/xde/issues"
   },
   "scripts": {
     "flow-typed": "flow-typed install --flowVersion=\"$(flow version | awk '{ print $9 }')\""
   },
   "main": "./build/main.js",
-  "homepage": "https://github.com/exponent/xde#readme",
+  "homepage": "https://github.com/expo/xde#readme",
   "powertools": {
     "group": [
       "dev-tools",
