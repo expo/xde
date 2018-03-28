@@ -22,7 +22,6 @@ import type { AppState } from 'xde/state/types';
 type Props = {
   pathname: string,
   isAuthenticated: boolean,
-  isOnboarded: boolean,
   authErrorMessage: ?string,
   router: {
     transitionTo: (path: string) => void,
@@ -35,7 +34,6 @@ class AuthScreen extends React.Component {
   static data = ({ auth }: AppState) => ({
     authErrorMessage: auth.error,
     isAuthenticated: auth.authenticated,
-    isOnboarded: auth.isOnboarded,
   });
 
   props: Props;
@@ -48,13 +46,10 @@ class AuthScreen extends React.Component {
 
   componentWillReceiveProps(nextProps: Props) {
     if (
-      nextProps.isAuthenticated !== this.props.isAuthenticated ||
-      nextProps.isOnboarded !== this.props.isOnboarded
+      nextProps.isAuthenticated !== this.props.isAuthenticated
     ) {
-      if (nextProps.isAuthenticated && nextProps.isOnboarded) {
+      if (nextProps.isAuthenticated) {
         this.props.router.transitionTo('/');
-      } else if (nextProps.isAuthenticated && !nextProps.isOnboarded) {
-        this.props.router.transitionTo('/auth/register');
       } else {
         this.props.router.transitionTo('/auth/login');
       }

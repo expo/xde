@@ -71,12 +71,6 @@ export default class RootApp extends React.Component {
                       pattern="/"
                       getRedirect={props => {
                         // eslint-disable-line
-                        if (
-                          (props.isAuthenticated && !props.isOnboarded) ||
-                          (!props.isAuthenticated && props.needsPasswordMigration)
-                        ) {
-                          return '/auth/register';
-                        }
                         return '/auth';
                       }}
                       render={props => (

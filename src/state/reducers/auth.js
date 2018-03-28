@@ -31,11 +31,7 @@ export const actions = {
 
         const user = await UserManager.getCurrentUserAsync();
         if (!user) {
-          const legacyUser = await UserManager.getLegacyUserData();
-          if (!legacyUser) {
-            throw new Error('');
-          }
-          return { user: legacyUser };
+          throw new Error('');
         }
         return { user };
       },
@@ -114,8 +110,6 @@ type State = {
   pendingAction: ?ActionTypes,
   error: ?string,
   authenticated: boolean,
-  needsPasswordMigration: boolean,
-  isOnboarded: boolean,
   accessToken: ?string,
   idToken: ?string, // jwt
   user: ?UserOrLegacyUser,
@@ -125,9 +119,7 @@ const initialState: State = {
   loginType: null,
   pendingAction: null,
   error: null,
-  needsPasswordMigration: false,
   authenticated: false,
-  isOnboarded: false,
   accessToken: null,
   idToken: null,
   user: null,
@@ -157,9 +149,7 @@ function authComplete(state: State, action: LoginAction): State {
     ...state,
     pendingAction: null,
     error: null,
-    needsPasswordMigration: user.kind === 'legacyUser',
     authenticated: !!user.accessToken,
-    isOnboarded: !!user.userMetadata.onboarded,
     accessToken: user.accessToken || null,
     idToken: user.idToken || null,
     user,

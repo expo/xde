@@ -17,8 +17,6 @@ type MatchWhenAuthorizedProps = {
   render: ?Function,
   getRedirect: (props: Object) => string,
   isAuthenticated: boolean,
-  isOnboarded: boolean,
-  needsPasswordMigration: boolean,
 };
 
 /**
@@ -27,16 +25,12 @@ type MatchWhenAuthorizedProps = {
  */
 export const MatchWhenAuthorized = connect(({ auth }: AppState) => ({
   isAuthenticated: auth.authenticated,
-  isOnboarded: auth.isOnboarded,
-  needsPasswordMigration: auth.needsPasswordMigration,
 }))(
   ({
     component: Component,
     render,
     getRedirect,
     isAuthenticated,
-    isOnboarded,
-    needsPasswordMigration,
     ...rest
   }: MatchWhenAuthorizedProps) => (
     <Match
@@ -44,7 +38,7 @@ export const MatchWhenAuthorized = connect(({ auth }: AppState) => ({
       render={(
         props //eslint-disable-line
       ) =>
-        isAuthenticated && isOnboarded ? (
+        isAuthenticated ? (
           render && typeof render === 'function' ? (
             render(props)
           ) : (
@@ -53,11 +47,7 @@ export const MatchWhenAuthorized = connect(({ auth }: AppState) => ({
         ) : (
           <Redirect
             to={{
-              pathname: getRedirect({
-                isAuthenticated,
-                isOnboarded,
-                needsPasswordMigration,
-              }),
+              pathname: getRedirect({ isAuthenticated }),
               state: { from: props.location },
             }}
           />
