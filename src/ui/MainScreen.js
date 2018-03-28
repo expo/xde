@@ -767,13 +767,14 @@ class MainScreen extends React.Component {
     try {
       await Exp.sendAsync(sendTo, url_);
       this._logInfo(`Sent link ${url_} to ${sendTo}.`);
-      UserSettings.updateAsync('sendTo', sendTo);
     } catch (err) {
       this._logError(`Could not send link to ${sendTo}: ${err}`);
       this._logError(
         "If you're trying to SMS a link to a mobile device, make sure you are using the `+` sign and the country code at the beginning of the number."
       );
+      return;
     }
+    await UserSettings.setAsync('sendTo', sendTo);
   };
 
   _onClickClearDeviceLogs = () => {
