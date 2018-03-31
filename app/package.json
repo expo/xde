@@ -1,7 +1,7 @@
 {
   "name": "xde",
   "productName": "Expo XDE",
-  "version": "2.24.1",
+  "version": "2.24.2",
   "description": "The Expo Development Environment",
   "repository": {
     "type": "git",
@@ -57,6 +57,6 @@
     "sudo-prompt": "^8.1.0",
     "tree-kill": "^1.1.0",
     "util.promisify": "^1.0.0",
-    "xdl": "48.1.4"
+    "xdl": "48.3.0"
   }
 }
