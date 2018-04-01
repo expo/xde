@@ -149,7 +149,7 @@ function authComplete(state: State, action: LoginAction): State {
     ...state,
     pendingAction: null,
     error: null,
-    authenticated: !!user.accessToken,
+    authenticated: !!user.accessToken || !!user.sessionSecret,
     accessToken: user.accessToken || null,
     idToken: user.idToken || null,
     user,
