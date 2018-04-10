@@ -366,7 +366,7 @@ export default class ConsoleLog extends React.Component {
     }
 
     // Lower priority of packager logs
-    if (log.tag === 'packager' && log.level === bunyan.INFO) {
+    if (log.tag === 'metro' && log.level === bunyan.INFO) {
       logStyle = InlineStyles.logDebug;
     }
 
