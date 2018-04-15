@@ -26,9 +26,6 @@ export const actions = {
     asyncAction(
       'CHECK_SESSION',
       async () => {
-        // migrate from auth0 to sessions, if available
-        await UserManager.migrateAuth0ToSessionAsync();
-
         const user = await UserManager.getCurrentUserAsync();
         if (!user) {
           throw new Error('');
@@ -45,9 +42,6 @@ export const actions = {
     asyncAction(
       'LOGIN',
       async () => {
-        // migrate from auth0 to sessions, if available
-        await UserManager.migrateAuth0ToSessionAsync();
-
         const currentWindow = remote.getCurrentWindow();
         try {
           const user = await UserManager.loginAsync(loginType, loginArgs);
@@ -70,9 +64,6 @@ export const actions = {
 
   forgotPassword: (usernameOrEmail: string) =>
     asyncAction('FORGOT_PASSWORD', async () => {
-      // migrate from auth0 to sessions, if available
-      await UserManager.migrateAuth0ToSessionAsync();
-
       let result = await UserManager.forgotPasswordAsync(usernameOrEmail);
 
       if (result) {
@@ -87,9 +78,6 @@ export const actions = {
     asyncAction(
       'REGISTER',
       async (dispatch: AppDispatch, getState: () => AppState) => {
-        // migrate from auth0 to sessions, if available
-        await UserManager.migrateAuth0ToSessionAsync();
-
         const state = getState();
         const user = await UserManager.registerAsync(userData, state.auth.user);
         return {
@@ -110,8 +98,6 @@ type State = {
   pendingAction: ?ActionTypes,
   error: ?string,
   authenticated: boolean,
-  accessToken: ?string,
-  idToken: ?string, // jwt
   user: ?UserOrLegacyUser,
 };
 
@@ -120,8 +106,6 @@ const initialState: State = {
   pendingAction: null,
   error: null,
   authenticated: false,
-  accessToken: null,
-  idToken: null,
   user: null,
 };
 
@@ -149,9 +133,7 @@ function authComplete(state: State, action: LoginAction): State {
     ...state,
     pendingAction: null,
     error: null,
-    authenticated: !!user.accessToken || !!user.sessionSecret,
-    accessToken: user.accessToken || null,
-    idToken: user.idToken || null,
+    authenticated: !!user.sessionSecret,
     user,
   };
 }

@@ -663,9 +663,6 @@ class MainScreen extends React.Component {
 
     this._logInfo('Publishing...');
     try {
-      // migrate from auth0 to sessions, if available
-      await UserManager.migrateAuth0ToSessionAsync();
-
       let result = await Project.publishAsync(this.state.projectRoot);
       await new Promise(resolve => {
         requestAnimationFrame(resolve);
