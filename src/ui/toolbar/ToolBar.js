@@ -71,7 +71,7 @@ const mapStateToProps = (state, props) => {
 
 class ToolBar extends React.Component {
   static data = ({ auth }: AppState) => ({
-    userName: auth.user && auth.user.nickname,
+    userName: auth.user && auth.user.username,
   });
 
   props: Props;
