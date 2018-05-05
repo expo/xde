@@ -5,6 +5,8 @@
 import { StyleSheet, css } from 'aphrodite';
 import React from 'react';
 import { Analytics, Android, FileSystem, Simulator, XDLState } from 'xdl';
+import _ from 'lodash';
+import moment from 'moment';
 import QRCode from 'qrcode.react';
 
 import { actions } from 'xde/state';
@@ -38,6 +40,10 @@ type Props = {
   },
   sendTo?: string,
   userName?: string,
+  publishHistory?: Array<{
+    channel: string,
+    publishedTime: string,
+  }>,
 
   onAppendErrors: () => void,
   onAppendLogs: () => void,
@@ -61,6 +67,8 @@ type Props = {
 
 type State = {
   shiftSelected: boolean,
+  selectedChannelIndex: number,
+  publishChannelOptions: Array<string>,
 };
 
 const mapStateToProps = (state, props) => {
@@ -77,11 +85,14 @@ class ToolBar extends React.Component {
   props: Props;
   state: State;
   _sendLinkInput: HTMLInputElement;
+  _releaseChannelInput: HTMLInputElement;
 
   constructor(props, context) {
     super(props, context);
     this.state = {
       shiftSelected: false,
+      selectedChannelIndex: 0,
+      publishChannelOptions: ['default'],
     };
   }
 
@@ -239,6 +250,81 @@ class ToolBar extends React.Component {
     );
   }
 
+  get releaseChannelOptions() {
+    let recentChannels = _.map(this.props.publishHistory, result => result.channel);
+    // The empty string is a placeholder for the input box
+    return _.uniq(['default', ...recentChannels, ''])
+  }
+
+  _setSelectedChannel = event => {
+    this.setState({
+      selectedChannelIndex: parseInt(event.target.value),
+    });
+  };
+
+  _maybePublish = event => {
+    if (event.type === 'keypress' && event.key !== 'Enter') {
+      return;
+    }
+
+    this._onPublishClick(event);
+  };
+
+  _onPublishClick = event => {
+    let channelOptions = this.releaseChannelOptions
+    let isInputBoxOption = this.state.selectedChannelIndex === (channelOptions.length - 1)
+    let channel = isInputBoxOption ? this._releaseChannelInput.value : channelOptions[this.state.selectedChannelIndex]
+
+    if (channel) {
+      this._getTogglePopoverFn(PopoverEnum.Publish)(event);
+      this.props.onPublishClick(channel);
+      this.setState({selectedChannelIndex: 0})
+    }
+  };
+
+  _renderPopoverPublish() {
+    if (this.props.openPopover !== PopoverEnum.PUBLISH) {
+      return null;
+    }
+
+    return (
+      <div onClick={this._onMenuClick}>
+        <div className={css(styles.publishHeader)}>Select Release Channel</div>
+        {this._renderChannelOptions()}
+        <a onClick={this._onPublishClick} className={css(styles.popoverSubmit)}>
+          Publish
+        </a>
+      </div>
+    );
+  };
+
+  _renderChannelOptions = () => {
+    let channelOptions = this.releaseChannelOptions
+    return channelOptions.map((option, index) => {
+      let isInputBoxOption = index === channelOptions.length - 1
+      let releases = _.filter(this.props.publishHistory, ({ channel }) => channel === option)
+      let releaseDates = _.map(releases, release => release.publishedTime)
+      let lastReleaseDate = _.head(releaseDates)
+
+      return (<div key={option} className={css(styles.releaseChannelRow)}>
+        <input type="radio"
+          className={css(styles.releaseChannelRadio)}
+          value={index}
+          onChange={this._setSelectedChannel}
+          checked={this.state.selectedChannelIndex === index} />
+        {isInputBoxOption ?
+          <input className={css(styles.popoverInput, styles.publishInput)}
+            ref={r => {
+              this._releaseChannelInput = r;
+            }}
+            onKeyPress={this._maybePublish}
+            placeholder="Channel name" /> :
+          <div className={css(styles.releaseChannelName)}>{option}</div>}
+        {lastReleaseDate && <div className={css(styles.releaseChannelDate)}>{`last updated ${moment(lastReleaseDate).fromNow()}`}</div>}
+      </div>)
+    })
+  };
+
   _maybeSendLink = event => {
     if (event.type === 'keypress' && event.key !== 'Enter') {
       return;
@@ -269,7 +355,7 @@ class ToolBar extends React.Component {
         </div>
         <div className={css(styles.shareOrDiv)}>- or -</div>
         <input
-          className={css(styles.sendLinkInput)}
+          className={css(styles.popoverInput, styles.sendLinkInput)}
           autoFocus
           ref={r => {
             this._sendLinkInput = r;
@@ -278,7 +364,7 @@ class ToolBar extends React.Component {
           defaultValue={this.props.sendTo}
           placeholder="Email or phone"
         />
-        <a onClick={this._onSendLinkClick} className={css(styles.sendLinkSubmit)}>
+      <a onClick={this._onSendLinkClick} className={css(styles.popoverSubmit)}>
           Send Link
         </a>
       </div>
@@ -390,7 +476,9 @@ class ToolBar extends React.Component {
               label="Publish"
               color="#18B405"
               isDisabled={!this.props.isProjectRunning}
-              onClick={this.props.onPublishClick}
+              onClick={this._getTogglePopoverFn(PopoverEnum.PUBLISH)}
+              popover={this._renderPopoverPublish()}
+              isPopoverToLeft
               styles={styles.rightSpaced}
             />
             <IconButton
@@ -497,6 +585,40 @@ const styles = StyleSheet.create({
     fontSize: StyleConstants.fontSizeMd,
     textDecoration: 'none',
   },
+  publishHeader: {
+    color: StyleConstants.colorText,
+    fontSize: StyleConstants.fontSizeMd,
+    fontWeight: 'bold',
+    padding: StyleConstants.gutterMd,
+  },
+  releaseChannelRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingLeft: StyleConstants.gutterMd,
+    paddingRight: StyleConstants.gutterMd,
+    paddingTop: StyleConstants.gutterSm,
+    paddingBottom: StyleConstants.gutterSm,
+  },
+  releaseChannelRadio: {
+    margin: 0,
+  },
+  releaseChannelName: {
+    cursor: 'default',
+    color: StyleConstants.colorText,
+    fontSize: StyleConstants.fontSizeMd,
+    marginLeft: StyleConstants.gutterMd,
+  },
+  releaseChannelDate: {
+    cursor: 'default',
+    color: StyleConstants.colorSubtitle,
+    fontSize: StyleConstants.fontSizeMd,
+    fontStyle: 'italic',
+    whiteSpace: 'nowrap',
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: StyleConstants.gutterMd,
+  },
   qrCode: {
     marginTop: StyleConstants.gutterLg,
   },
@@ -507,18 +629,26 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     padding: StyleConstants.gutterMd,
   },
-  sendLinkInput: {
+  popoverInput: {
     ...SharedStyles.input,
     color: StyleConstants.colorSubtitle,
     display: 'block',
     fontSize: StyleConstants.fontSizeMd,
-    marginLeft: 'auto',
-    marginRight: 'auto',
     marginBottom: StyleConstants.gutterMd,
     padding: StyleConstants.gutterSm,
-    textAlign: 'center',
   },
-  sendLinkSubmit: {
+  publishInput: {
+    textAlign: 'left',
+    marginLeft: StyleConstants.gutterMd,
+    marginRight: StyleConstants.gutterMd,
+    marginBottom: 0,
+  },
+  sendLinkInput: {
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  popoverSubmit: {
     cursor: 'pointer',
     display: 'block',
     borderTop: `1px solid ${StyleConstants.colorBorder}`,
